@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "91A32EF6-7814-4B18-8A15-AC6897C5E7A6",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:MichiMark.xcodeproj",
+      "identifier" : "812CAE612EEA953A002E65FF",
+      "name" : "MichiMark"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:MichiMark.xcodeproj",
+        "identifier" : "812CAE6E2EEA953A002E65FF",
+        "name" : "MichiMarkTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:MichiMark.xcodeproj",
+        "identifier" : "812CAE782EEA953A002E65FF",
+        "name" : "MichiMarkUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

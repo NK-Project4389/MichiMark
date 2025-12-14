@@ -31,6 +31,7 @@
 		812CAE622EEA953A002E65FF /* MichiMark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MichiMark.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		812CAE6F2EEA953A002E65FF /* MichiMarkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MichiMarkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		812CAE792EEA953A002E65FF /* MichiMarkUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MichiMarkUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		81DE9FE32EEEE490004FAED5 /* MichiMark.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MichiMark.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -80,6 +81,7 @@
 		812CAE592EEA953A002E65FF = {
 			isa = PBXGroup;
 			children = (
+				81DE9FE32EEEE490004FAED5 /* MichiMark.xctestplan */,
 				812CAE642EEA953A002E65FF /* MichiMark */,
 				812CAE722EEA953A002E65FF /* MichiMarkTests */,
 				812CAE7C2EEA953A002E65FF /* MichiMarkUITests */,
