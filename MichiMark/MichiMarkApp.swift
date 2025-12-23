@@ -5,11 +5,11 @@ import ComposableArchitecture
 struct MichiMarkApp: App {
     var body: some Scene {
         WindowGroup {
-            EventListView(
+            RootView(
                 store: Store(
-                    initialState: EventListReducer.State(),
+                    initialState: RootReducer.State(),
                     reducer: {
-                        EventListReducer()
+                        RootReducer()
                     }
                 )
             )

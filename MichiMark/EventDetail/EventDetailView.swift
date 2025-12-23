@@ -3,7 +3,7 @@ import ComposableArchitecture
 
 struct EventDetailView: View {
 
-    let store: StoreOf<EventDetail>
+    let store: StoreOf<EventDetailReducer>
 
     var body: some View {
         VStack(spacing: 0) {
@@ -15,7 +15,7 @@ struct EventDetailView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button {
-                    store.send(.backButtonTapped)
+                    store.send(.dismissTapped)
                 } label: {
                     Image(systemName: "chevron.left")
                 }
@@ -24,70 +24,47 @@ struct EventDetailView: View {
     }
 }
 
-// MARK: - Content
+
 private extension EventDetailView {
 
     @ViewBuilder
     var contentView: some View {
-        WithViewStore(store, observe: \.selectedTab) { viewStore in
-            switch viewStore.state {
-            case .basic:
-                BasicInfoView(
-                    store: store.scope(
-                        state: \.basicInfoState,
-                        action: \.basicInfo
-                    )
-                )
-
-            case .michi:
-                Text("ミチ情報")
-
-            case .payment:
-                Text("支払情報")
-
-            case .summary:
-                Text("集計")
-
-            case .route:
-                Text("軌跡")
+        WithPerceptionTracking {
+            switch store.selectedTab {
+            case .basicInfo:
+                BasicInfoView(store: store.scope(state: \.basicInfo, action: \.basicInfo))
+            case .michiInfo:
+                MichiInfoView(store: store.scope(state: \.michiInfo, action: \.michiInfo))
+            case .paymentInfo:
+                PaymentInfoView(store: store.scope(state: \.paymentInfo, action: \.paymentInfo))
+            case .summaryInfo:
+                SummaryView(store: store.scope(state: \.summaryInfo, action: \.summaryInfo))
+            case .routeInfo:
+                RouteInfoView(store: store.scope(state: \.routeInfo, action: \.routeInfo))
             }
         }
     }
-}
-
-// MARK: - TabBar
-private extension EventDetailView {
 
     var tabBar: some View {
-        WithViewStore(store, observe: \.selectedTab) { viewStore in
-            HStack {
-                tabButton("基本情報", .basic, viewStore)
-                tabButton("ミチ", .michi, viewStore)
-                tabButton("支払", .payment, viewStore)
-                tabButton("集計", .summary, viewStore)
-                tabButton("軌跡", .route, viewStore)
-            }
-            .padding(.vertical, 8)
-            .background(.ultraThinMaterial)
+        HStack {
+            tabButton(.basicInfo, title: "基本")
+            tabButton(.michiInfo, title: "ミチ")
+            tabButton(.paymentInfo, title: "支払")
+            tabButton(.summaryInfo, title: "要約")
+            tabButton(.routeInfo, title: "経路")
         }
+        .padding(.vertical, 8)
+        .background(Color(.systemBackground))
     }
 
-
-    func tabButton(
-        _ title: String,
-        _ tab: EventDetailTab,
-        _ viewStore: ViewStore<EventDetailTab, EventDetail.Action>
-    ) -> some View {
+    func tabButton(_ tab: EventDetailTab, title: String) -> some View {
         Button {
-            viewStore.send(.tabSelected(tab))
+            store.send(.tabSelected(tab))
         } label: {
             Text(title)
                 .font(.footnote)
+                .foregroundColor(store.selectedTab == tab ? .primary : .secondary)
                 .frame(maxWidth: .infinity)
-                .foregroundStyle(
-                    viewStore.state == tab ? .primary : .secondary
-                )
         }
     }
-
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-struct Event: Equatable, Identifiable, Sendable {
+struct Event: Equatable, Identifiable {
     let id: UUID
     var eventDate: Date
     var eventName: String
@@ -9,6 +9,7 @@ struct Event: Equatable, Identifiable, Sendable {
     var tagNames: [String]
     var kmPerGas: Double
     var gasPrice: Double
+    var payMemberName: String
 
     init(
         id: UUID = UUID(),
@@ -18,7 +19,8 @@ struct Event: Equatable, Identifiable, Sendable {
         memberNames: [String],
         tagNames: [String],
         kmPerGas: Double,
-        gasPrice: Double
+        gasPrice: Double,
+        payMemberName: String
     ) {
         self.id = id
         self.eventDate = eventDate
@@ -28,5 +30,6 @@ struct Event: Equatable, Identifiable, Sendable {
         self.tagNames = tagNames
         self.kmPerGas = kmPerGas
         self.gasPrice = gasPrice
+        self.payMemberName = payMemberName
     }
 }

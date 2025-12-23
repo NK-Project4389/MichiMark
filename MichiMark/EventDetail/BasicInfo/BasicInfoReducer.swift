@@ -1,55 +1,58 @@
 import ComposableArchitecture
+import Foundation
 
-struct BasicInfoReducer: Reducer {
+@Reducer
+struct BasicInfoReducer {
 
-    typealias State = BasicInfoState
-    typealias Action = BasicInfoAction
+    @ObservableState
+    struct State: Equatable {
+        // 永続State
+        var eventDate: Date = Date()
+        var eventName: String = ""
+        var transName: String = ""
+        var memberNames: [String] = []
+        var tagNames: [String] = []
+        var kmPerGas: Double? = nil
+        var gasPrice: Int? = nil
+        var payMemberName: String? = nil
+
+        // 外部依存
+        var eventID: EventID
+    }
+
+    enum Action {
+        // タップ
+        case transEditTapped
+        case memberEditTapped
+        case tagEditTapped
+        case payMemberEditTapped
+        case saveTapped
+        case backTapped
+
+        // 入力
+        case eventDateTapped
+        case eventDateChanged(Date)
+        case eventNameChanged(String)
+        case kmPerGasChanged(String)
+        case gasPriceChanged(String)
+    }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-
             case let .eventDateChanged(date):
                 state.eventDate = date
                 return .none
-
             case let .eventNameChanged(text):
                 state.eventName = text
                 return .none
-
-            case let .transNameChanged(text):
-                state.transName = text
-                return .none
-
-            case .addMemberTapped:
-                return .none
-
-            case let .removeMember(name):
-                state.memberNames.removeAll { $0 == name }
-                if state.payMemberName == name {
-                    state.payMemberName = nil
-                }
-                return .none
-
-            case .addTagTapped:
-                return .none
-
-            case let .removeTag(tag):
-                state.tagNames.removeAll { $0 == tag }
-                return .none
-
             case let .kmPerGasChanged(text):
-                state.kmPerGas = text.isEmpty ? nil : Double(text)
+                state.kmPerGas = Double(text)
                 return .none
-
             case let .gasPriceChanged(text):
-                state.gasPrice = text.isEmpty ? nil : Int(text)
+                state.gasPrice = Int(text)
                 return .none
-
-            case .payMemberTapped:
-                return .none
-
-            case .appeared:
+            default:
                 return .none
             }
         }
