@@ -19,8 +19,7 @@ struct RootView: View {
                 MarkDetailView(store: store)
 
             case let .linkDetail(store):
-                //LinkDetailView(store: store)
-                EmptyView()
+                LinkDetailView(store: store)
             }
         }
     }
