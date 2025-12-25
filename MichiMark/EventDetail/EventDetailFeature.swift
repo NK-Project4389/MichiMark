@@ -15,9 +15,8 @@ struct EventDetailReducer {
         // 子Feature state
         var basicInfo = BasicInfoReducer.State(eventID: UUID())
         var michiInfo = MichiInfoReducer.State(eventID: UUID())
-        var paymentInfo = PaymentInfoReducer.State()
-        var summaryInfo = SummaryReducer.State()
-        var routeInfo = RouteInfoReducer.State()
+        var paymentInfo = PaymentInfoReducer.State(eventID: UUID())
+        var overview = OverviewReducer.State()
 
         // Mark/Link の遷移（EventDetail が管理）
         @Presents var destination: Destination.State?
@@ -27,9 +26,8 @@ struct EventDetailReducer {
             self.selectedTab = .basicInfo
             self.basicInfo = BasicInfoReducer.State(eventID: eventID)
             self.michiInfo = MichiInfoReducer.State(eventID: eventID)
-            self.paymentInfo = PaymentInfoReducer.State()
-            self.summaryInfo = SummaryReducer.State()
-            self.routeInfo = RouteInfoReducer.State()
+            self.paymentInfo = PaymentInfoReducer.State(eventID: eventID)
+            self.overview = OverviewReducer.State()
             self.destination = nil
         }
     }
@@ -40,14 +38,15 @@ struct EventDetailReducer {
         case basicInfo(BasicInfoReducer.Action)
         case michiInfo(MichiInfoReducer.Action)
         case paymentInfo(PaymentInfoReducer.Action)
-        case summaryInfo(SummaryReducer.Action)
-        case routeInfo(RouteInfoReducer.Action)
+        case overview(OverviewReducer.Action)
         // ★ Root に通知するための Action
         case delegate(Delegate)
 
         enum Delegate {
             case openMarkDetail(MarkLinkID)
             case openLinkDetail(MarkLinkID)
+            case openPaymentDetail(PaymentID)
+            case dismiss
         }
         // View 側の戻るボタン（既存Viewに合わせて用意）
         case dismissTapped
@@ -65,8 +64,7 @@ struct EventDetailReducer {
         Scope(state: \.basicInfo, action: \.basicInfo) { BasicInfoReducer() }
         Scope(state: \.michiInfo, action: \.michiInfo) { MichiInfoReducer() }
         Scope(state: \.paymentInfo, action: \.paymentInfo) { PaymentInfoReducer() }
-        Scope(state: \.summaryInfo, action: \.summaryInfo) { SummaryReducer() }
-        Scope(state: \.routeInfo, action: \.routeInfo) { RouteInfoReducer() }
+        Scope(state: \.overview, action: \.overview) { OverviewReducer() }
 
         Reduce { state, action in
             switch action {
@@ -76,7 +74,7 @@ struct EventDetailReducer {
                 return .none
 
             case .dismissTapped:
-                return .none
+                return .send(.delegate(.dismiss))
 
             // MichiInfo → EventDetail（Navigation）
             case let .michiInfo(.markTapped(markLinkID)):
@@ -88,8 +86,15 @@ struct EventDetailReducer {
             case .michiInfo(.addMarkTapped):
                 let newID = UUID()
                 return .send(.delegate(.openMarkDetail(newID)))
+            
+            // PaymentInfo > EventDetail (Navigation)
+            case let .paymentInfo(.paymentTapped(PaymentID)):
+                return .send(.delegate(.openPaymentDetail(PaymentID)))
 
-
+            case .paymentInfo(.addPaymentTapped):
+                let newID = UUID()
+                return .send(.delegate(.openPaymentDetail(newID)))
+                
             // ✅ 追加（これがないとエラー）
             case .michiInfo(.appeared):
                 return .none
@@ -98,8 +103,7 @@ struct EventDetailReducer {
             // 子 Feature からの Action はここで握りつぶす
             case .basicInfo,
                  .paymentInfo,
-                 .summaryInfo,
-                 .routeInfo:
+                 .overview:
                 return .none
 
             case .destination:

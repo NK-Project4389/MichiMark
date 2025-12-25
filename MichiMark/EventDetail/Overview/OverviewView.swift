@@ -1,13 +1,13 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct SummaryView: View {
-    let store: StoreOf<SummaryReducer>
+struct OverviewView: View {
+    let store: StoreOf<OverviewReducer>
 
     var body: some View {
         WithPerceptionTracking {
             VStack(spacing: 12) {
-                Text("サマリ情報")
+                Text("振り返り")
                     .font(.title3)
                     .fontWeight(.semibold)
 

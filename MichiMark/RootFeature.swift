@@ -39,8 +39,11 @@ struct RootReducer {
     enum Path {
         case eventDetail(EventDetailReducer)
         case settings(SettingsReducer)
-        case markDetail(MarkDetailReducer)   // ★追加
-        case linkDetail(LinkDetailReducer)   // ★追加
+        case transSetting(TransSettingReducer)
+        case transSettingDetail(TransSettingDetailReducer)
+        case markDetail(MarkDetailReducer)
+        case linkDetail(LinkDetailReducer)
+        case paymentDetail(PaymentDetailReducer)
     }
 
     var body: some ReducerOf<Self> {
@@ -125,6 +128,117 @@ struct RootReducer {
                     )
                 )
                 return .none
+            
+            // ============================
+            // EventDetail → Root（delegate）
+            // ============================
+            case let .path(
+                .element(
+                    id: elementID,
+                    action: .eventDetail(.delegate(.openPaymentDetail(paymentID)))
+                )
+            ):
+                guard
+                    let eventDetailState = state.path[id: elementID]?.eventDetail
+                else { return .none }
+
+                state.path.append(
+                    .paymentDetail(
+                        PaymentDetailReducer.State(
+                            eventID: eventDetailState.eventID,
+                            paymentID: paymentID
+                        )
+                    )
+                )
+                return .none
+
+                
+            // ============================
+            // EventDetail → Root（dismiss）
+            // ============================
+
+            case .path(
+              .element(id: _, action: .eventDetail(.delegate(.dismiss)))
+            ):
+              print("✅ Root received dismiss delegate")
+              if !state.path.isEmpty {
+                state.path.removeLast()
+              } else {
+                print("⚠️ path is empty")
+              }
+              return .none
+            
+            // ============================
+            // Settings → Root（Navigation）
+            // ============================
+
+            case let .path(
+                .element(id: _, action: .settings(action))
+            ):
+                switch action {
+
+                case .transSettingSelected:
+                    state.path.append(.transSetting(TransSettingReducer.State(
+                        transes: [
+                            TransInfo(id: UUID(),transName: "自動車",isVisible: true),
+                            TransInfo(id: UUID(),transName: "自転車",isVisible: true),
+                            TransInfo(id: UUID(),transName: "電車",isVisible: false),
+                        ]
+                    )))
+                    return .none
+
+                case .memberSettingSelected:
+                    // 一次対応（未実装）
+                    print("MemberSetting 未実装")
+                    return .none
+
+                case .tagSettingSelected:
+                    print("TagSetting 未実装")
+                    return .none
+
+                case .actionSettingSelected:
+                    print("ActionSetting 未実装")
+                    return .none
+
+                case .backTapped:
+                    state.path.popLast()
+                    return .none
+                }
+            // ============================
+            // TransSetting → Root
+            // ============================
+
+            case let .path(
+                .element(_, action: .transSetting(action))
+            ):
+                switch action {
+
+                case let .transSelected(transID):
+                    state.path.append(.transSettingDetail(
+                        TransSettingDetailReducer.State(transID: transID)
+                    ))
+                    return .none
+
+                case .addTransTapped:
+                    state.path.append(.transSettingDetail(
+                        TransSettingDetailReducer.State(transID: UUID())
+                    ))
+                    return .none
+                }
+            // ============================
+            // TransSettingDetail → Root
+            // ============================
+
+            case let .path(
+                .element(_, action: .transSettingDetail(action))
+            ):
+                switch action {
+                case .saveTapped, .backTapped:
+                    state.path.popLast()
+                    return .none
+                default:
+                    return .none
+                }
 
 
             // ============================

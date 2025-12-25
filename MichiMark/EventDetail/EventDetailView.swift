@@ -37,10 +37,8 @@ private extension EventDetailView {
                 MichiInfoView(store: store.scope(state: \.michiInfo, action: \.michiInfo))
             case .paymentInfo:
                 PaymentInfoView(store: store.scope(state: \.paymentInfo, action: \.paymentInfo))
-            case .summaryInfo:
-                SummaryView(store: store.scope(state: \.summaryInfo, action: \.summaryInfo))
-            case .routeInfo:
-                RouteInfoView(store: store.scope(state: \.routeInfo, action: \.routeInfo))
+            case .overview:
+                OverviewView(store: store.scope(state: \.overview, action: \.overview))
             }
         }
     }
@@ -50,8 +48,7 @@ private extension EventDetailView {
             tabButton(.basicInfo, title: "基本")
             tabButton(.michiInfo, title: "ミチ")
             tabButton(.paymentInfo, title: "支払")
-            tabButton(.summaryInfo, title: "要約")
-            tabButton(.routeInfo, title: "経路")
+            tabButton(.overview, title: "振り返り")
         }
         .padding(.vertical, 8)
         .background(Color(.systemBackground))

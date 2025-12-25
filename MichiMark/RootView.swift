@@ -2,24 +2,40 @@ import SwiftUI
 import ComposableArchitecture
 
 struct RootView: View {
-    @Bindable var store: StoreOf<RootReducer>
+    let store: StoreOf<RootReducer>
 
     var body: some View {
-        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-            EventListView(store: store.scope(state: \.eventList, action: \.eventList))
+        NavigationStackStore(
+            store.scope(state: \.path, action: \.path)
+        ) {
+            EventListView(
+                store: store.scope(
+                    state: \.eventList,
+                    action: \.eventList
+                )
+            )
         } destination: { pathStore in
             switch pathStore.case {
-            case let .eventDetail(detailStore):
-                EventDetailView(store: detailStore)
+            case let .eventDetail(store):
+                EventDetailView(store: store)
 
-            case let .settings(settingsStore):
-                SettingsView(store: settingsStore)
+            case let .settings(store):
+                SettingsView(store: store)
+                
+            case let .transSetting(store):
+                TransSettingView(store: store)
+
+            case let .transSettingDetail(store):
+                TransSettingDetailView(store: store)
                 
             case let .markDetail(store):
                 MarkDetailView(store: store)
 
             case let .linkDetail(store):
                 LinkDetailView(store: store)
+            
+            case let .paymentDetail(store):
+                PaymentDetailView(store: store)
             }
         }
     }
