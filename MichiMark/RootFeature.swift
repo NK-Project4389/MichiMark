@@ -41,6 +41,12 @@ struct RootReducer {
         case settings(SettingsReducer)
         case transSetting(TransSettingReducer)
         case transSettingDetail(TransSettingDetailReducer)
+        case memberSetting(MemberSettingReducer)
+        case memberSettingDetail(MemberSettingDetailReducer)
+        case tagSetting(TagSettingReducer)
+        case tagSettingDetail(TagSettingDetailReducer)
+        case actionSetting(ActionSettingReducer)
+        case actionSettingDetail(ActionSettingDetailReducer)
         case markDetail(MarkDetailReducer)
         case linkDetail(LinkDetailReducer)
         case paymentDetail(PaymentDetailReducer)
@@ -188,16 +194,30 @@ struct RootReducer {
                     return .none
 
                 case .memberSettingSelected:
-                    // 一次対応（未実装）
-                    print("MemberSetting 未実装")
+                    state.path.append(.memberSetting(MemberSettingReducer.State(
+                        members: [
+                            MemberInfo(id: UUID(),memberName: "黒崎",isVisible: true),
+                            MemberInfo(id: UUID(),memberName: "森",isVisible: true),
+                        ]
+                    )))
                     return .none
 
                 case .tagSettingSelected:
-                    print("TagSetting 未実装")
+                    state.path.append(.tagSetting(TagSettingReducer.State(
+                        tags: [
+                            TagInfo(id: UUID(),tagName: "旅行",isVisible: true),
+                            TagInfo(id: UUID(),tagName: "仕事",isVisible: true),
+                        ]
+                    )))
                     return .none
 
                 case .actionSettingSelected:
-                    print("ActionSetting 未実装")
+                    state.path.append(.actionSetting(ActionSettingReducer.State(
+                        actions: [
+                            ActionInfo(id: UUID(),actionName: "休憩",isVisible: true),
+                            ActionInfo(id: UUID(),actionName: "レジャー",isVisible: true),
+                        ]
+                    )))
                     return .none
 
                 case .backTapped:
@@ -240,8 +260,69 @@ struct RootReducer {
                     return .none
                 }
 
-
             // ============================
+            // MemberSetting → Root
+            // ============================
+
+            case let .path(
+                .element(_, action: .memberSetting(action))
+            ):
+                switch action {
+
+                case let .memberSelected(MemberID):
+                    state.path.append(.memberSettingDetail(
+                        MemberSettingDetailReducer.State(memberID: MemberID)
+                    ))
+                    return .none
+
+                case .addMemberTapped:
+                    state.path.append(.memberSettingDetail(
+                        MemberSettingDetailReducer.State(memberID: UUID())
+                    ))
+                    return .none
+                }
+            // ============================
+            // TagSetting → Root
+            // ============================
+
+            case let .path(
+                .element(_, action: .tagSetting(action))
+            ):
+                switch action {
+
+                case let .tagSelected(TagID):
+                    state.path.append(.tagSettingDetail(
+                        TagSettingDetailReducer.State(tagID: TagID)
+                    ))
+                    return .none
+
+                case .addTagTapped:
+                    state.path.append(.tagSettingDetail(
+                        TagSettingDetailReducer.State(tagID: UUID())
+                    ))
+                    return .none
+                }
+            // ============================
+            // TagSetting → Root
+            // ============================
+
+            case let .path(
+                .element(_, action: .actionSetting(action))
+            ):
+                switch action {
+
+                case let .actionSelected(ActionID):
+                    state.path.append(.actionSettingDetail(
+                        ActionSettingDetailReducer.State(actionID: ActionID)
+                    ))
+                    return .none
+
+                case .addActionTapped:
+                    state.path.append(.actionSettingDetail(
+                        ActionSettingDetailReducer.State(actionID: UUID())
+                    ))
+                    return .none
+                }// ============================
             // NavigationStack pop
             // ============================
 
