@@ -1,10 +1,3 @@
-//
-//  MichiMarkTests.swift
-//  MichiMarkTests
-//
-//  Created by 黒崎信行 on 2025/12/11.
-//
-
 import XCTest
 @testable import MichiMark
 

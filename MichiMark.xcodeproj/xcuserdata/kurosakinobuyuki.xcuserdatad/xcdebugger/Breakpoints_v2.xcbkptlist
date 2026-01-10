@@ -231,20 +231,6 @@
             continueAfterRunningActions = "No"
             symbolName = "*0x104b216a0">
             <Locations>
-               <Location
-                  uuid = "25A505BF-0263-43E2-BE77-130EAF0BD340 - 8989fb08eaef1785"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "protocol witness for ComposableArchitecture.Core.send(&#x3c4;_0_0.Action) -&gt; Swift.Optional&lt;Swift.Task&lt;(), Swift.Never&gt;&gt; in conformance ComposableArchitecture.RootCore&lt;&#x3c4;_0_0&gt; : ComposableArchitecture.Core in ComposableArchitecture"
-                  moduleName = "MichiMark.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///%3Ccompiler-generated%3E"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "0"
-                  endingLineNumber = "0">
-               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -260,6 +246,22 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "9"
             endingLineNumber = "9"
+            landmarkName = "State"
+            landmarkType = "14">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FF819784-ECAD-43A0-B547-3875E4BB80B8"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MichiMark/EventDetail/LinkDetail/LinkDetailReducer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "18"
+            endingLineNumber = "18"
             landmarkName = "State"
             landmarkType = "14">
          </BreakpointContent>
