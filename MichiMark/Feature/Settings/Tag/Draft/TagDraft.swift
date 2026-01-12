@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TagDraft: Equatable {
+public struct TagDraft: Equatable, Sendable {
     var tagName: String
     var isVisible: Bool
 

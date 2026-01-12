@@ -1,6 +1,6 @@
 import Foundation
 
-public struct MemberDraft: Equatable {
+public struct MemberDraft: Equatable, Sendable {
     var memberName: String
     var mailAddress: String
     var isVisible: Bool

@@ -12,12 +12,14 @@ public struct TransItemProjection: Identifiable, Equatable {
         self.transName = domain.transName
         self.kmPerGas = domain.kmPerGas
         if let kmPerGas = domain.kmPerGas {
-            self.displayKmPerGas = "\(Double(kmPerGas) / 10) km/L"
+//            self.displayKmPerGas = "\(Double(kmPerGas) / 10) km/L"
+            self.displayKmPerGas = "\(Double(kmPerGas) / 10)"
         } else {
-            self.displayKmPerGas = "未設定"
+            self.displayKmPerGas = ""
         }
         self.meterValue = domain.meterValue
-        self.displayMeterValue = domain.meterValue.map { "\($0) km" } ?? "未設定"
+//        self.displayMeterValue = domain.meterValue.map { "\($0) km" } ?? ""
+        self.displayMeterValue = domain.meterValue.map { "\($0)" } ?? ""
         self.isVisible = domain.isVisible
     }
 }

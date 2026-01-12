@@ -12,29 +12,40 @@ struct TransSettingView: View {
 
                     section(title: "表示") {
                         ForEach(viewStore.state.filter { $0.isVisible }) { trans in
-                            transRow(trans)
+                            formRow(trans)
                         }
                     }
 
                     section(title: "非表示") {
                         ForEach(viewStore.state.filter { !$0.isVisible }) { trans in
-                            transRow(trans)
+                            formRow(trans)
                         }
                     }
                 }
                 .padding()
             }
-            .navigationTitle("交通手段一覧")
+            .navigationTitle("タグ一覧")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                store.send(.onAppear)
+            }
             .safeAreaInset(edge: .bottom) {
                 addButton {
                     store.send(.addTransTapped)
                 }
             }
+            .navigationDestination(
+                store: store.scope(
+                    state: \.$detail,
+                    action: TransSettingReducer.Action.detail
+                )
+            ) { detailStore in
+                TransSettingDetailView(store: detailStore)
+            }
         }
     }
 
-    private func transRow(_ trans: TransItemProjection) -> some View {
+    private func formRow(_ trans: TransItemProjection) -> some View {
         Button {
             store.send(.transSelected(trans.id))
         } label: {

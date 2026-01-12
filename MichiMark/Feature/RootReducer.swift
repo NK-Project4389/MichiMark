@@ -40,13 +40,13 @@ struct RootReducer {
         case eventDetail(EventDetailReducer)
         case settings(SettingsReducer)
         case transSetting(TransSettingReducer)
-        case transSettingDetail(TransSettingDetailReducer)
+//        case transSettingDetail(TransSettingDetailReducer)
         case memberSetting(MemberSettingReducer)
-        case memberSettingDetail(MemberSettingDetailReducer)
+//        case memberSettingDetail(MemberSettingDetailReducer)
         case tagSetting(TagSettingReducer)
-        case tagSettingDetail(TagSettingDetailReducer)
+//        case tagSettingDetail(TagSettingDetailReducer)
         case actionSetting(ActionSettingReducer)
-        case actionSettingDetail(ActionSettingDetailReducer)
+        //case actionSettingDetail(ActionSettingDetailReducer)
         case markDetail(MarkDetailReducer)
         case linkDetail(LinkDetailReducer)
         case paymentDetail(PaymentDetailReducer)
@@ -212,12 +212,6 @@ struct RootReducer {
             case .path(
                 .element(id: _, action: .eventDetail(.core(.delegate(.dismiss))))
             ):
-              print("✅ Root received dismiss delegate")
-              if !state.path.isEmpty {
-                state.path.removeLast()
-              } else {
-                print("⚠️ path is empty")
-              }
               return .none
             
             // ============================
@@ -228,198 +222,186 @@ struct RootReducer {
                 .element(id: _, action: .settings(action))
             ):
                 switch action {
-                    
+
                 case .transSettingSelected:
-                    state.path.append(.transSetting(TransSettingReducer.State(
-                        transes: [
-                            TransItemProjection(domain: TransDomain(id: UUID(),transName: "私有車")),
-                            TransItemProjection(domain: TransDomain(id: UUID(),transName: "社用車"))
-                        ]
-                    )))
+                    state.path.append(.transSetting(TransSettingReducer.State()))
                     return .none
 
                 case .memberSettingSelected:
-                    state.path.append(.memberSetting(MemberSettingReducer.State(
-                        members: [
-                            MemberItemProjection(domain: MemberDomain(id: UUID(),memberName: "黒崎")),
-                            MemberItemProjection(domain: MemberDomain(id: UUID(),memberName: "森"))
-                        ]
-                    )))
+                    state.path.append(.memberSetting(MemberSettingReducer.State()))
                     return .none
 
                 case .tagSettingSelected:
-                    state.path.append(.tagSetting(TagSettingReducer.State(
-                        tags: [
-                            TagItemProjection(domain: TagDomain(id: UUID(), tagName: "仕事")),
-                            TagItemProjection(domain: TagDomain(id: UUID(), tagName: "旅行"))
-                        ]
-                    )))
+                    state.path.append(.tagSetting(TagSettingReducer.State()))
                     return .none
 
                 case .actionSettingSelected:
-                    state.path.append(.actionSetting(ActionSettingReducer.State(
-                        actions: [
-                            ActionItemProjection(domain: ActionDomain(id: UUID(),actionName: "休憩")),
-                            ActionItemProjection(domain: ActionDomain(id: UUID(),actionName: "レジャー"))
-                        ]
-                    )))
+                    state.path.append(.actionSetting(ActionSettingReducer.State()))
                     return .none
 
                 case .backTapped:
-                    state.path.popLast()
                     return .none
                 }
             // ============================
             // TransSetting → Root
             // ============================
 
-            case let .path(
-                .element(_, action: .transSetting(action))
-            ):
-                switch action {
-
-                case let .transSelected(transID):
-                    let projection = TransItemProjection(
-                        domain: TransDomain(id: transID, transName: "")
-                    )
-                    state.path.append(
-                        .transSettingDetail(
-                            TransSettingDetailReducer.State(projection: projection)
-                        )
-                    )
-                    return .none
-
-                case .addTransTapped:
-                    let projection = TransItemProjection(
-                        domain: TransDomain(id: UUID(), transName: "")
-                    )
-                    state.path.append(
-                        .transSettingDetail(
-                            TransSettingDetailReducer.State(projection: projection)
-                        )
-                    )
-                    return .none
-                }
-            // ============================
+//            case let .path(
+//                .element(_, action: .transSetting(action))
+//            ):
+//                switch action {
+//
+//                case let .transSelected(transID):
+//                    let projection = TransItemProjection(
+//                        domain: TransDomain(id: transID, transName: "")
+//                    )
+//                    state.path.append(
+//                        .transSettingDetail(
+//                            TransSettingDetailReducer.State(projection: projection)
+//                        )
+//                    )
+//                    return .none
+//
+//                case .addTransTapped:
+//                    let projection = TransItemProjection(
+//                        domain: TransDomain(id: UUID(), transName: "")
+//                    )
+//                    state.path.append(
+//                        .transSettingDetail(
+//                            TransSettingDetailReducer.State(projection: projection)
+//                        )
+//                    )
+//                    return .none
+//                }
+//            // ============================
             // TransSettingDetail → Root
             // ============================
 
-            case let .path(
-                .element(_, action: .transSettingDetail(action))
-            ):
-                switch action {
-                case .saveTapped, .backTapped:
-                    state.path.popLast()
-                    return .none
-                default:
-                    return .none
-                }
+//            case let .path(
+//                .element(_, action: .transSettingDetail(action))
+//            ):
+//                switch action {
+//                case .saveTapped, .backTapped:
+////                    state.path.popLast()
+//                    return .none
+//                default:
+//                    return .none
+//                }
 
             // ============================
             // MemberSetting → Root
             // ============================
 
-            case let .path(
-                .element(_, action: .memberSetting(action))
-            ):
-                switch action {
-                case let .memberSelected(memberID):
-                    let projection = MemberItemProjection(
-                        domain: MemberDomain(id: memberID, memberName: "")
-                    )
-                    state.path.append(
-                        .memberSettingDetail(
-                            MemberSettingDetailReducer.State(projection: projection)
-                        )
-                    )
-                    return .none
-
-                case .addMemberTapped:
-                    let projection = MemberItemProjection(
-                        domain: MemberDomain(id: UUID(), memberName: "")
-                    )
-                    state.path.append(
-                        .memberSettingDetail(
-                            MemberSettingDetailReducer.State(projection: projection)
-                        )
-                    )
-                    return .none
-                }
+//            case let .path(
+//                .element(_, action: .memberSetting(action))
+//            ):
+//                switch action {
+//                case let .memberSelected(memberID):
+//                    let projection = MemberItemProjection(
+//                        domain: MemberDomain(id: memberID, memberName: "")
+//                    )
+//                    state.path.append(
+//                        .memberSettingDetail(
+//                            MemberSettingDetailReducer.State(projection: projection)
+//                        )
+//                    )
+//                    return .none
+//
+//                case .addMemberTapped:
+//                    let projection = MemberItemProjection(
+//                        domain: MemberDomain(id: UUID(), memberName: "")
+//                    )
+//                    state.path.append(
+//                        .memberSettingDetail(
+//                            MemberSettingDetailReducer.State(projection: projection)
+//                        )
+//                    )
+//                    return .none
+//                }
             // ============================
             // TagSetting → Root
             // ============================
 
-            case let .path(
-                .element(_, action: .tagSetting(action))
-            ):
-                switch action {
-
-                case let .tagSelected(tagID):
-                    let projection = TagItemProjection(
-                        domain: TagDomain(id: tagID, tagName: "")
-                    )
-                    state.path.append(
-                        .tagSettingDetail(
-                            TagSettingDetailReducer.State(projection: projection)
-                        )
-                    )
-                    return .none
-
-                case .addTagTapped:
-                    let projection = TagItemProjection(
-                        domain: TagDomain(id: UUID(), tagName: "")
-                    )
-                    state.path.append(
-                        .tagSettingDetail(
-                            TagSettingDetailReducer.State(projection: projection)
-                        )
-                    )
-                    return .none
-                }
+//            case let .path(
+//                .element(_, action: .tagSetting(action))
+//            ):
+//                switch action {
+//
+//                case let .tagSelected(tagID):
+//                    let projection = TagItemProjection(
+//                        domain: TagDomain(id: tagID, tagName: "")
+//                    )
+//                    state.path.append(
+//                        .tagSettingDetail(
+//                            TagSettingDetailReducer.State(projection: projection)
+//                        )
+//                    )
+//                    return .none
+//
+//                case .addTagTapped:
+//                    let projection = TagItemProjection(
+//                        domain: TagDomain(id: UUID(), tagName: "")
+//                    )
+//                    state.path.append(
+//                        .tagSettingDetail(
+//                            TagSettingDetailReducer.State(projection: projection)
+//                        )
+//                    )
+//                    return .none
+//                }
             // ============================
             // ActionSetting → Root
             // ============================
+            
+                
+//            case let .path(
+//                .element(_, action: .actionSetting(action))
+//            ):
+//                switch action {
 
-            case let .path(
-                .element(_, action: .actionSetting(action))
-            ):
-                switch action {
+                    
+//                case let .actionSelected(actionID):
+//                    let projection = ActionItemProjection(
+//                        domain: ActionDomain(id: actionID, actionName: "")
+//                    )
+//                    state.path.append(
+//                        .actionSettingDetail(
+//                            ActionSettingDetailReducer.State(projection: projection)
+//                        )
+//                    )
+//                    return .none
+//
+//                case .addActionTapped:
+//                    let domain = ActionDomain.init(id: UUID(), actionName: "")
+//                    
+//                    let projection = ActionItemProjection(domain: domain)
+//                    
+//                    state.path.append(
+//                        .actionSettingDetail(
+//                            ActionSettingDetailReducer.State(projection: projection)
+//                        )
+//                    )
+//                    return .none
+                
+//                case .actionSelected,.addActionTapped,.onAppear, .actionsLoaded, .detail:
+//                    return .none
+//                }
 
-                case let .actionSelected(actionID):
-                    let projection = ActionItemProjection(
-                        domain: ActionDomain(id: actionID, actionName: "")
-                    )
-                    state.path.append(
-                        .actionSettingDetail(
-                            ActionSettingDetailReducer.State(projection: projection)
-                        )
-                    )
-                    return .none
-
-                case .addActionTapped:
-                    let projection = ActionItemProjection(
-                        domain: ActionDomain(id: UUID(), actionName: "")
-                    )
-                    state.path.append(
-                        .actionSettingDetail(
-                            ActionSettingDetailReducer.State(projection: projection)
-                        )
-                    )
-                    return .none
-                }
             // ============================
             // NavigationStack pop
             // ============================
 
-            case .path(.popFrom):
-                return .none
-
-
-            // ============================
-            // それ以外の path Action はすべて無視
-            // ============================
-
-            case .path:
+//            case .path(.popFrom):
+//                return .none
+//
+//
+//            // ============================
+//            // それ以外の path Action はすべて無視
+//            // ============================
+//
+//            case .path:
+//                return .none
+            default:
                 return .none
             }
         }

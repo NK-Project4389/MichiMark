@@ -5,10 +5,15 @@ import Foundation
 struct TagSettingDetailReducer {
 
     @ObservableState
-    struct State: Equatable {
+    struct State {
         let tagID: TagID
         let projection: TagItemProjection
         var draft: TagDraft
+        
+        var validationError: ValidationError?
+        
+        var isSaving: Bool = false
+        @Presents var alert: AlertState<Action>?
         
         init(projection: TagItemProjection){
             self.tagID = TagID()
@@ -23,6 +28,17 @@ struct TagSettingDetailReducer {
         case visibleToggled
         case saveTapped
         case backTapped
+        
+        case savingFinished
+        case saveFailed(String)
+        case alert(PresentationAction<Action>)
+        case clearAlert
+        
+        case delegate(Delegate)
+        enum Delegate {
+            case dismiss
+            case saveRequested(TagID, TagDraft)
+        }
     }
 
     var body: some ReducerOf<Self> {
@@ -30,13 +46,65 @@ struct TagSettingDetailReducer {
             switch action {
             case let .tagNameChanged(text):
                 state.draft.tagName = text
-                return .none
+                // ★ Validation 判定
+                if text.trimmingCharacters(in: .whitespaces).isEmpty {
+                    state.validationError = .empty
+                } else {
+                    state.validationError = nil
+                }
+                
+                return .send(.clearAlert)
 
             case .visibleToggled:
                 state.draft.isVisible.toggle()
-                return .none
+                return .send(.clearAlert)
 
-            case .saveTapped, .backTapped:
+            case .saveTapped:
+                state.alert = nil
+
+                guard state.validationError == nil else {
+                    state.alert = AlertState {
+                        TextState("入力エラー")
+                    } actions: {
+                        ButtonState(role: .cancel) {
+                            TextState("OK")
+                        }
+                    } message: {
+                        TextState("タグ名を入力してください")
+                    }
+                    return .none
+                }
+
+                state.isSaving = true
+                return .send(
+                    .delegate(.saveRequested(state.tagID, state.draft))
+                )
+            
+            case .backTapped:
+                return .none
+            
+            case .savingFinished:
+                state.isSaving = false
+                return .none
+                
+            case let .saveFailed(message):
+                state.isSaving = false
+                state.alert = AlertState {
+                    TextState("保存エラー")
+                } actions: {
+                    ButtonState(role: .cancel) {
+                        TextState("OK")
+                    }
+                } message: {
+                    TextState(message)
+                }
+                return .none
+            
+            case .clearAlert:
+                state.alert = nil
+                return .none
+            
+            case .alert, .delegate:
                 return .none
             }
         }

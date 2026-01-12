@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ActionDraft: Equatable {
+public struct ActionDraft: Equatable, Sendable {
     var actionName: String
     var isVisible: Bool
 

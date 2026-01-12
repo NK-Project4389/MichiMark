@@ -12,13 +12,13 @@ struct MemberSettingView: View {
 
                     section(title: "表示") {
                         ForEach(viewStore.state.filter { $0.isVisible }) { member in
-                            memberRow(member)
+                            formRow(member)
                         }
                     }
 
                     section(title: "非表示") {
                         ForEach(viewStore.state.filter { !$0.isVisible }) { member in
-                            memberRow(member)
+                            formRow(member)
                         }
                     }
                 }
@@ -26,15 +26,26 @@ struct MemberSettingView: View {
             }
             .navigationTitle("メンバー一覧")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                store.send(.onAppear)
+            }
             .safeAreaInset(edge: .bottom) {
                 addButton {
                     store.send(.addMemberTapped)
                 }
             }
+            .navigationDestination(
+                store: store.scope(
+                    state: \.$detail,
+                    action: MemberSettingReducer.Action.detail
+                )
+            ) { detailStore in
+                MemberSettingDetailView(store: detailStore)
+            }
         }
     }
 
-    private func memberRow(_ member: MemberItemProjection) -> some View {
+    private func formRow(_ member: MemberItemProjection) -> some View {
         Button {
             store.send(.memberSelected(member.id))
         } label: {

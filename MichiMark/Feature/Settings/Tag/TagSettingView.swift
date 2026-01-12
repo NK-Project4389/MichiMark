@@ -26,10 +26,21 @@ struct TagSettingView: View {
             }
             .navigationTitle("タグ一覧")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                store.send(.onAppear)
+            }
             .safeAreaInset(edge: .bottom) {
                 addButton {
                     store.send(.addTagTapped)
                 }
+            }
+            .navigationDestination(
+                store: store.scope(
+                    state: \.$detail,
+                    action: TagSettingReducer.Action.detail
+                )
+            ) { detailStore in
+                TagSettingDetailView(store: detailStore)
             }
         }
     }

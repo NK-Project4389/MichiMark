@@ -1,40 +1,76 @@
 import SwiftUI
 import ComposableArchitecture
 
+private struct ViewState: Equatable {
+    let draft: ActionDraft
+    let isSaving: Bool
+
+    init(state: ActionSettingDetailReducer.State) {
+        self.draft = state.draft
+        self.isSaving = state.isSaving
+    }
+}
+
 struct ActionSettingDetailView: View {
 
     let store: StoreOf<ActionSettingDetailReducer>
 
     var body: some View {
-        WithViewStore(store, observe: { $0 }) { viewStore in
-            VStack(spacing: 0) {
-                formRow(title: "アクション名") {
-                    TextField("入力", text: viewStore.binding(
-                        get: { $0.draft.actionName },
-                        send: ActionSettingDetailReducer.Action.actionNameChanged
-                    ))
+        WithViewStore(store, observe: ViewState.init) { viewStore in
+            ZStack {
+                VStack(spacing: 0) {
+                    formRow(title: "行動名") {
+
+                        TextField(
+                            "入力",
+                            text: viewStore.binding(
+                                get: { $0.draft.actionName },
+                                send: ActionSettingDetailReducer.Action.actionNameChanged
+                            )
+                        )
+
+                        Toggle(
+                            "非表示",
+                            isOn: viewStore.binding(
+                                get: { !$0.draft.isVisible },
+                                send: { _ in .visibleToggled }
+                            )
+                        )
+                        .padding()
+
+                        Spacer()
+
+                        Button("保存") {
+                            viewStore.send(.saveTapped)
+                        }
+                        .padding()
+                        .background(Color(.systemGray4))
+                        .clipShape(RoundedRectangle(cornerRadius: 24))
+                        .padding()
+                    }
+                    .navigationTitle("行動詳細")
+                    .navigationBarTitleDisplayMode(.inline)
                 }
 
-                Toggle("非表示",     isOn: viewStore.binding(
-                    get: { !$0.draft.isVisible },
-                    send: { _ in .visibleToggled }
-                    )
-                )
-                .padding()
+                if viewStore.isSaving {
+                    Color.black.opacity(0.2)
+                        .ignoresSafeArea()
 
-                Spacer()
-
-                Button("保存") {
-                    viewStore.send(.saveTapped)
+                    ProgressView("保存中...")
+                        .padding()
+                        .background(Color(.systemBackground))
+                        .cornerRadius(12)
                 }
-                .padding()
-                .background(Color(.systemGray4))
-                .clipShape(RoundedRectangle(cornerRadius: 24))
-                .padding()
             }
-            .navigationTitle("行動詳細")
-            .navigationBarTitleDisplayMode(.inline)
+            .disabled(viewStore.isSaving)
         }
+        .alert(
+            store: store.scope(
+                state: \.$alert,
+                action: ActionSettingDetailReducer.Action.alert
+            )
+        )
+        
     }
 
     private func formRow<Content: View>(

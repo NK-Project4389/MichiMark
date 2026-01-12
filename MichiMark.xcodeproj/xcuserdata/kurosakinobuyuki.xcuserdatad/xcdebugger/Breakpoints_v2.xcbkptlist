@@ -8,21 +8,12 @@
          BreakpointExtensionID = "Xcode.Breakpoint.SymbolicBreakpoint">
          <BreakpointContent
             uuid = "1482E933-1429-43F6-AA79-AD2049BC03B4"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             symbolName = "Swift._fatalErrorMessage"
             moduleName = "">
             <Locations>
-               <Location
-                  uuid = "1482E933-1429-43F6-AA79-AD2049BC03B4 - d5392fc09ffa7ed"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Swift._fatalErrorMessage(_: Swift.StaticString, _: Swift.StaticString, file: Swift.StaticString, line: Swift.UInt, flags: Swift.UInt32) -&gt; Swift.Never"
-                  moduleName = "libswiftCore.dylib"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -30,93 +21,12 @@
          BreakpointExtensionID = "Xcode.Breakpoint.SymbolicBreakpoint">
          <BreakpointContent
             uuid = "E922B9EC-218A-4633-9E1E-FE8630BB7D34"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             symbolName = "fatalError"
             moduleName = "">
             <Locations>
-               <Location
-                  uuid = "E922B9EC-218A-4633-9E1E-FE8630BB7D34 - d706d7fa28a3c26f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "swift::fatalError(unsigned int, char const*, ...)"
-                  moduleName = "libswiftCore.dylib"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
-               <Location
-                  uuid = "E922B9EC-218A-4633-9E1E-FE8630BB7D34 - ca6694a842a331bb"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Swift.fatalError(_: @autoclosure () -&gt; Swift.String, file: Swift.StaticString, line: Swift.UInt) -&gt; Swift.Never"
-                  moduleName = "libswiftCore.dylib"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
-               <Location
-                  uuid = "E922B9EC-218A-4633-9E1E-FE8630BB7D34 - d572b9a0ba57e34d"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[RGSiriSchemaRGCacheManagerCallFailed fatalError]"
-                  moduleName = "SiriInstrumentation"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
-               <Location
-                  uuid = "E922B9EC-218A-4633-9E1E-FE8630BB7D34 - ea62ece6baf6a3a4"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[RGSiriSchemaRGCatalogFailed fatalError]"
-                  moduleName = "SiriInstrumentation"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
-               <Location
-                  uuid = "E922B9EC-218A-4633-9E1E-FE8630BB7D34 - f4f3d290430546fc"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[RGSiriSchemaRGGMSCallFailed fatalError]"
-                  moduleName = "SiriInstrumentation"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
-               <Location
-                  uuid = "E922B9EC-218A-4633-9E1E-FE8630BB7D34 - 5af0c537984b9e66"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[RGSiriSchemaRGHallucinationDetectionFailed fatalError]"
-                  moduleName = "SiriInstrumentation"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
-               <Location
-                  uuid = "E922B9EC-218A-4633-9E1E-FE8630BB7D34 - 1688e98481876ce"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[RGSiriSchemaRGInferenceFailed fatalError]"
-                  moduleName = "SiriInstrumentation"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
-               <Location
-                  uuid = "E922B9EC-218A-4633-9E1E-FE8630BB7D34 - 9aa01c429c6f1f1e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[RGSiriSchemaRGOverrideFailed fatalError]"
-                  moduleName = "SiriInstrumentation"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
-               <Location
-                  uuid = "E922B9EC-218A-4633-9E1E-FE8630BB7D34 - 95aa9e5b029a2553"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[RGSiriSchemaRGValidationFailed fatalError]"
-                  moduleName = "SiriInstrumentation"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -124,39 +34,12 @@
          BreakpointExtensionID = "Xcode.Breakpoint.SymbolicBreakpoint">
          <BreakpointContent
             uuid = "D7362493-042B-4A32-AA9C-4740DF22D893"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             symbolName = "_assertionFailure"
             moduleName = "">
             <Locations>
-               <Location
-                  uuid = "D7362493-042B-4A32-AA9C-4740DF22D893 - 84176f8c87a11fa9"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Swift._assertionFailure(_: Swift.StaticString, _: Swift.StaticString, file: Swift.StaticString, line: Swift.UInt, flags: Swift.UInt32) -&gt; Swift.Never"
-                  moduleName = "libswiftCore.dylib"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
-               <Location
-                  uuid = "D7362493-042B-4A32-AA9C-4740DF22D893 - 30119614d8f223f9"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Swift._assertionFailure(_: Swift.StaticString, _: Swift.String, file: Swift.StaticString, line: Swift.UInt, flags: Swift.UInt32) -&gt; Swift.Never"
-                  moduleName = "libswiftCore.dylib"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
-               <Location
-                  uuid = "D7362493-042B-4A32-AA9C-4740DF22D893 - 1ac6c1f204d425a7"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Swift._assertionFailure(_: Swift.StaticString, _: Swift.String, flags: Swift.UInt32) -&gt; Swift.Never"
-                  moduleName = "libswiftCore.dylib"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -164,39 +47,12 @@
          BreakpointExtensionID = "Xcode.Breakpoint.SymbolicBreakpoint">
          <BreakpointContent
             uuid = "E5341437-ED65-4474-9EDF-9572019F00CE"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             symbolName = "preconditionFailure"
             moduleName = "">
             <Locations>
-               <Location
-                  uuid = "E5341437-ED65-4474-9EDF-9572019F00CE - 336381827541a2b0"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Swift.preconditionFailure(_: @autoclosure () -&gt; Swift.String, file: Swift.StaticString, line: Swift.UInt) -&gt; Swift.Never"
-                  moduleName = "libswiftCore.dylib"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
-               <Location
-                  uuid = "E5341437-ED65-4474-9EDF-9572019F00CE - bfbc4be909a934f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "SwiftUI.preconditionFailure(_: @autoclosure () -&gt; Swift.String, file: Swift.StaticString, line: Swift.UInt) -&gt; Swift.Never"
-                  moduleName = "SwiftUICore"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
-               <Location
-                  uuid = "E5341437-ED65-4474-9EDF-9572019F00CE - 5867e1eb9f5368ca"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "SwiftUI.preconditionFailure(@autoclosure () -&gt; Swift.String) -&gt; Swift.Never"
-                  moduleName = "SwiftUICore"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -204,21 +60,12 @@
          BreakpointExtensionID = "Xcode.Breakpoint.SymbolicBreakpoint">
          <BreakpointContent
             uuid = "5AA49E1D-9076-485F-A62A-E825673FC915"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             symbolName = "swift_unexpectedError"
             moduleName = "">
             <Locations>
-               <Location
-                  uuid = "5AA49E1D-9076-485F-A62A-E825673FC915 - 1ea88da7e237caa1"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "swift_unexpectedError"
-                  moduleName = "libswiftCore.dylib"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -226,7 +73,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.AddressBreakpoint">
          <BreakpointContent
             uuid = "25A505BF-0263-43E2-BE77-130EAF0BD340"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             symbolName = "*0x104b216a0">
@@ -238,7 +85,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "F29BC8C0-A74F-4544-BA7E-ACD975073FFC"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MichiMark/EventDetail/PaymentDetail/PaymentDetailFeature.swift"
@@ -254,7 +101,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "FF819784-ECAD-43A0-B547-3875E4BB80B8"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MichiMark/EventDetail/LinkDetail/LinkDetailReducer.swift"
@@ -264,6 +111,54 @@
             endingLineNumber = "18"
             landmarkName = "State"
             landmarkType = "14">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F8B68CE8-87C7-4614-97F8-FB5CE6634D8D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MichiMark/Feature/Settings/Action/ActionSettingFeature.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "24"
+            endingLineNumber = "24"
+            landmarkName = "ActionSettingReducer"
+            landmarkType = "14">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9B01E4C1-C860-434C-8871-BDCAB65DB7E8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MichiMark/Feature/Settings/Member/MemberSettingFeature.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "51032603-2585-4CB4-9504-272CC7894611"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MichiMark/Feature/Settings/Member/MemberSettingDetailFeature.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "body"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

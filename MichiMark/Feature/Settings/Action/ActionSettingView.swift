@@ -26,10 +26,22 @@ struct ActionSettingView: View {
             }
             .navigationTitle("行動一覧")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                store.send(.onAppear)
+            }
             .safeAreaInset(edge: .bottom) {
                 addButton {
                     store.send(.addActionTapped)
                 }
+            }
+            // ⭐ Detail 画面遷移（PresentationState）
+            .navigationDestination(
+                store: store.scope(
+                    state: \.$detail,
+                    action: ActionSettingReducer.Action.detail
+                )
+            ) { detailStore in
+                ActionSettingDetailView(store: detailStore)
             }
         }
     }
