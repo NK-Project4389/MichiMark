@@ -25,10 +25,22 @@ struct BasicInfoReducer {
 
             self.draft = BasicInfoDraft(
                 eventName: projection.eventName,
-                kmPerGas: projection.displayKmPerGas,
-                pricePerGas: projection.displayPricePerGas
+
+                selectedTransID: projection.trans?.id,
+
+                selectedTagIDs: Set(projection.tags.map(\.id)),
+                selectedMemberIDs: Set(projection.members.map(\.id)),
+                
+                selectedTagNames: [:],
+                selectedMemberNames: [:],
+
+                kmPerGas: projection.kmPerGas.map { String(Double($0) / 10.0) } ?? "",
+                pricePerGas: projection.pricePerGas.map(String.init) ?? "",
+
+                selectedPayMemberID: projection.payMember?.id
             )
         }
+
     }
 
     enum Action {
@@ -38,6 +50,12 @@ struct BasicInfoReducer {
         case kmPerGasChanged(String)
         case pricePerGasChanged(String)
 
+        // MARK: Tap（遷移トリガ）
+        case transTapped
+        case membersTapped
+        case tagsTapped
+        case payMemberTapped
+        
         // MARK: - Tap
         case saveTapped
         
@@ -46,6 +64,7 @@ struct BasicInfoReducer {
 
         enum Delegate {
             case saveDraft(EventID, BasicInfoDraft)
+            case membersSelectionRequested(ids: Set<MemberID>, useCase: MemberSelectionUseCase)
         }
     }
 
@@ -65,6 +84,25 @@ struct BasicInfoReducer {
                 state.draft.pricePerGas = text
                 return .none
 
+            case .membersTapped:
+                return .send(
+                    .delegate(.membersSelectionRequested(
+                        ids: state.draft.selectedMemberIDs,
+                        useCase: .totalMembers
+                    ))
+                )
+            
+            case .payMemberTapped:
+                return .send(
+                    .delegate(.membersSelectionRequested(
+                        ids: state.draft.selectedPayMemberID.map{ [$0] } ?? [],
+                        useCase: .gasPayer
+                    ))
+                )
+                
+            case .transTapped,  .tagsTapped:
+                return .none
+                
             case .saveTapped:
                 //return .send(
                 //    .delegate(.saveDraft(state.eventID, state.draft))

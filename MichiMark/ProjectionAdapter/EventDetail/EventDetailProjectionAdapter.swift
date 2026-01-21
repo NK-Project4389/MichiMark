@@ -26,7 +26,7 @@ public struct EventDetailProjectionAdapter {
         members: [MemberDomain],
         actions: [ActionDomain],
         tags: [TagDomain],
-        trans: [TransDomain]
+        trans: TransDomain
     ) -> EventDetailProjection {
 
         return EventDetailProjection(

@@ -23,14 +23,14 @@ struct EventListProjectionAdapter {
 
     private func adaptItem(event: EventDomain) -> EventSummaryItemProjection {
 
-        let validMarkLinks = event.markLinks
+        let validMarkLinks = event.markLinks?
             .filter { !$0.isDeleted }
 
-        let fromDate = validMarkLinks
+        let fromDate = validMarkLinks?
             .map { $0.markLinkDate }
             .min() ?? event.createdAt
 
-        let toDate = validMarkLinks
+        let toDate = validMarkLinks?
             .map { $0.markLinkDate }
             .max() ?? event.createdAt
 

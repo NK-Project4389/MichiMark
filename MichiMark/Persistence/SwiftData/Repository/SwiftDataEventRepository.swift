@@ -1,14 +1,14 @@
 import SwiftData
 import Foundation
 
-protocol EventRepository {
+protocol SwiftDataEventRepository {
     func fetch(by id: EventID) -> EventCore?
     func fetchAll() -> [EventCore]
     func save(_ event: EventCore)
     func delete(by id: EventID)
 }
 
-final class DefaultEventRepository: EventRepository {
+final class DefaultEventRepository: SwiftDataEventRepository {
 
     // MARK: - Dependencies
     private let context: ModelContext

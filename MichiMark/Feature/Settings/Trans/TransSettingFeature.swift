@@ -46,7 +46,8 @@ struct TransSettingReducer {
                 return .none
                 
             case .addTransTapped:
-                let domain = TransDomain(id: UUID(), transName: "")
+                let newID = TransID()
+                let domain = TransDomain(id: newID, transName: "")
                 let projection = TransItemProjection(domain: domain)
                 state.detail = TransSettingDetailReducer.State(projection: projection)
                 return .none

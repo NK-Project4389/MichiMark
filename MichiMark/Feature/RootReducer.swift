@@ -37,19 +37,24 @@ struct RootReducer {
 
     @Reducer
     enum Path {
-        case eventDetail(EventDetailReducer)
+        //設定系
         case settings(SettingsReducer)
         case transSetting(TransSettingReducer)
-//        case transSettingDetail(TransSettingDetailReducer)
         case memberSetting(MemberSettingReducer)
-//        case memberSettingDetail(MemberSettingDetailReducer)
         case tagSetting(TagSettingReducer)
-//        case tagSettingDetail(TagSettingDetailReducer)
         case actionSetting(ActionSettingReducer)
-        //case actionSettingDetail(ActionSettingDetailReducer)
+        //イベント詳細
+        case eventDetail(EventDetailReducer)
+        //ミチ情報
         case markDetail(MarkDetailReducer)
         case linkDetail(LinkDetailReducer)
+        //支払情報
         case paymentDetail(PaymentDetailReducer)
+        //選択
+        case transSelect(TransSelectReducer)
+        case memberSelect(MemberSelectReducer)
+        case tagSelect(TagSelectReducer)
+        case actionSelect(ActionSelectReducer)
     }
 
     var body: some ReducerOf<Self> {
@@ -62,12 +67,7 @@ struct RootReducer {
             // ============================
             // EventList → Root（Navigation）
             // ============================
-
-//            case let .eventList(.eventTapped(eventID)):
-//                state.path.append(
-//                    .eventDetail(EventDetailReducer.State(eventID: eventID))
-//                )
-//                return .none
+            //EventList側へ処理へ委譲
             case let .eventList(.eventTapped(eventID)):
                 let projection = EventDetailProjection.empty(eventID: eventID)
                 state.path.append(
@@ -75,48 +75,26 @@ struct RootReducer {
                         EventDetailReducer.State(projection: projection)
                     )
                 )
+                return .none
+                
+            case .eventList(.addButtonTapped):
+                let newEventID = EventID()
+                let projection = EventDetailProjection.empty(eventID: newEventID)
 
-//                state.path.append(
-////                    .eventDetail(
-////                        EventDetailReducer.State(projection: projection)
-////                    )
-//                    .eventDetail(
-//                        EventDetailReducer.State(
-//                            core: EventDetailCoreReducer.State(
-//                                eventID: eventID,
-//                                projection: projection,
-//                                basicInfo: .init(projection: projection.basicInfo),
-//                                michiInfo: .init(projection: projection.michiInfo),
-//                                paymentInfo: .init(projection: projection.paymentInfo),
-//                                overview: .init(projection: projection.overview)
-//                            )
-//                        )
-//                    )
-//                )
+                state.path.append(
+                    .eventDetail(
+                        EventDetailReducer.State(projection: projection)
+                    )
+                )
                 return .none
 
+
+                //EventList側へ処理へ委譲
             case .eventList(.settingsButtonTapped):
                 state.path.append(.settings(SettingsReducer.State()))
                 return .none
 
-            case .eventList(.addButtonTapped):
-                let new = EventDomain(
-                    id: UUID(),
-                    eventName: "New Event",
-                    trans: TransDomain(
-                        id: UUID(),
-                        transName: "車"
-                    )
-                    // createdAt / updatedAt は EventDomain 側 init のデフォルトで Date() が入ります
-                )
-                state.eventList.events.insert(new, at: 0)
-                return .none
-
-
-            case let .eventList(.deleteEventTapped(eventID)):
-                state.eventList.events.removeAll { $0.id == eventID }
-                return .none
-
+                //EventList側へ処理へ委譲
             case .eventList(.appeared),
                  .eventList(.deleteResponse):
                 return .none
@@ -242,165 +220,172 @@ struct RootReducer {
                 case .backTapped:
                     return .none
                 }
-            // ============================
-            // TransSetting → Root
-            // ============================
 
-//            case let .path(
-//                .element(_, action: .transSetting(action))
-//            ):
-//                switch action {
-//
-//                case let .transSelected(transID):
-//                    let projection = TransItemProjection(
-//                        domain: TransDomain(id: transID, transName: "")
-//                    )
-//                    state.path.append(
-//                        .transSettingDetail(
-//                            TransSettingDetailReducer.State(projection: projection)
-//                        )
-//                    )
-//                    return .none
-//
-//                case .addTransTapped:
-//                    let projection = TransItemProjection(
-//                        domain: TransDomain(id: UUID(), transName: "")
-//                    )
-//                    state.path.append(
-//                        .transSettingDetail(
-//                            TransSettingDetailReducer.State(projection: projection)
-//                        )
-//                    )
-//                    return .none
-//                }
-//            // ============================
-            // TransSettingDetail → Root
-            // ============================
+            // MARK: 選択画面遷移
+            // MARK: Trans
+            case let .path(
+                .element(id: elementID,
+                         action: .eventDetail(.core(.delegate(.openTransSelect))))
+            ):
+                guard
+                    let eventDetail = state.path[id: elementID]?.eventDetail
+                else { return .none }
 
-//            case let .path(
-//                .element(_, action: .transSettingDetail(action))
-//            ):
-//                switch action {
-//                case .saveTapped, .backTapped:
-////                    state.path.popLast()
-//                    return .none
-//                default:
-//                    return .none
-//                }
+                let selectedID = eventDetail.core.basicInfo.draft.selectedTransID
 
-            // ============================
-            // MemberSetting → Root
-            // ============================
+                state.path.append(
+                    .transSelect(
+                        TransSelectReducer.State(
+                            items: [],
+                            selectedID: selectedID
+                        )
+                    )
+                )
+                return .none
+                
+            // MARK: Member
+            case let .path(
+                .element(id: elementID,
+                         action: .eventDetail(.core(.delegate(.openTotalMemberSelect(ids)))))
+            ):
+                guard
+                    let eventDetail = state.path[id: elementID]?.eventDetail
+                else { return .none }
 
-//            case let .path(
-//                .element(_, action: .memberSetting(action))
-//            ):
-//                switch action {
-//                case let .memberSelected(memberID):
-//                    let projection = MemberItemProjection(
-//                        domain: MemberDomain(id: memberID, memberName: "")
-//                    )
-//                    state.path.append(
-//                        .memberSettingDetail(
-//                            MemberSettingDetailReducer.State(projection: projection)
-//                        )
-//                    )
-//                    return .none
-//
-//                case .addMemberTapped:
-//                    let projection = MemberItemProjection(
-//                        domain: MemberDomain(id: UUID(), memberName: "")
-//                    )
-//                    state.path.append(
-//                        .memberSettingDetail(
-//                            MemberSettingDetailReducer.State(projection: projection)
-//                        )
-//                    )
-//                    return .none
-//                }
-            // ============================
-            // TagSetting → Root
-            // ============================
-
-//            case let .path(
-//                .element(_, action: .tagSetting(action))
-//            ):
-//                switch action {
-//
-//                case let .tagSelected(tagID):
-//                    let projection = TagItemProjection(
-//                        domain: TagDomain(id: tagID, tagName: "")
-//                    )
-//                    state.path.append(
-//                        .tagSettingDetail(
-//                            TagSettingDetailReducer.State(projection: projection)
-//                        )
-//                    )
-//                    return .none
-//
-//                case .addTagTapped:
-//                    let projection = TagItemProjection(
-//                        domain: TagDomain(id: UUID(), tagName: "")
-//                    )
-//                    state.path.append(
-//                        .tagSettingDetail(
-//                            TagSettingDetailReducer.State(projection: projection)
-//                        )
-//                    )
-//                    return .none
-//                }
-            // ============================
-            // ActionSetting → Root
-            // ============================
+                state.path.append(
+                    .memberSelect(
+                        MemberSelectReducer.State(
+                            items: [],
+                            selectedIDs: ids,
+                            mode: .multiple,
+                            useCase: .totalMembers
+                        )
+                    )
+                )
+                return .none
             
+            // MARK: Tag
+            case let .path(
+                .element(id: elementID,
+                         action: .eventDetail(.core(.delegate(.openTagSelect))))
+            ):
+                guard
+                    let eventDetail = state.path[id: elementID]?.eventDetail
+                else { return .none }
                 
-//            case let .path(
-//                .element(_, action: .actionSetting(action))
-//            ):
-//                switch action {
+                let selectedIDs = eventDetail.core.basicInfo.draft.selectedTagIDs
 
+                state.path.append(
+                    .tagSelect(
+                        TagSelectReducer.State(
+                            items: [],
+                            selectedIDs: selectedIDs
+                        )
+                    )
+                )
+                return .none
+                
+            // MARK: PayMember
+            case let .path(
+                .element(id: elementID,
+                         action: .eventDetail(.core(.delegate(.openGasPayMemberSelect(ids)))))
+            ):
+                guard
+                    let eventDetail = state.path[id: elementID]?.eventDetail
+                else { return .none }
+
+                state.path.append(
+                    .memberSelect(
+                        MemberSelectReducer.State(
+                            items: [],
+                            selectedIDs: ids,
+                            mode: .single,
+                            useCase: .gasPayer
+                        )
+                    )
+                )
+                return .none
+                
+            // MARK: 選択結果返送
+            // MARK: Trans
+            case let .path(
+                .element(
+                    id: _,
+                    action: .transSelect(.delegate(.selected(id, name)))
+                )
+            ):
+                guard
+                    let eventDetailID = state.path.ids.dropLast().last
+                else { return .none }
+
+                if case .eventDetail(var eventDetailState) = state.path[id: eventDetailID] {
+                    eventDetailState.core.basicInfo.draft.selectedTransID = id
+                    eventDetailState.core.basicInfo.draft.selectedTransName = name
+
+                    state.path[id: eventDetailID] = .eventDetail(eventDetailState)
+                }
+
+                state.path.removeLast()
+                return .none
+
+                
+            // MARK: Member
+            case let .path(
+                .element(
+                    id: _,
+                    action: .memberSelect(.delegate(.selected(ids, names, useCase)))
+                )
+            ):
+                guard let eventDetailID = state.path.ids.dropLast().last
+                else { return .none }
+
+                switch useCase {
+                case .totalMembers:
+                    if case .eventDetail(var eventDetailState) = state.path[id: eventDetailID] {
+                        eventDetailState.core.basicInfo.draft.selectedMemberIDs = ids
+                        eventDetailState.core.basicInfo.draft.selectedMemberNames = names
+
+                        state.path[id: eventDetailID] = .eventDetail(eventDetailState)
+                    }
                     
-//                case let .actionSelected(actionID):
-//                    let projection = ActionItemProjection(
-//                        domain: ActionDomain(id: actionID, actionName: "")
-//                    )
-//                    state.path.append(
-//                        .actionSettingDetail(
-//                            ActionSettingDetailReducer.State(projection: projection)
-//                        )
-//                    )
-//                    return .none
-//
-//                case .addActionTapped:
-//                    let domain = ActionDomain.init(id: UUID(), actionName: "")
-//                    
-//                    let projection = ActionItemProjection(domain: domain)
-//                    
-//                    state.path.append(
-//                        .actionSettingDetail(
-//                            ActionSettingDetailReducer.State(projection: projection)
-//                        )
-//                    )
-//                    return .none
+                    state.path.removeLast()
+                    return .none
+                case .gasPayer:
+                    if case .eventDetail(var eventDetailState) = state.path[id: eventDetailID] {
+                        let payerID = ids.first
+                        let payerName = payerID.flatMap { names[$0] }
+                        eventDetailState.core.basicInfo.draft.selectedPayMemberID = ids.first
+                        eventDetailState.core.basicInfo.draft.selectedPayMemberName = payerName
+
+                        state.path[id: eventDetailID] = .eventDetail(eventDetailState)
+                    }
+                    
+                    state.path.removeLast()
+                    return .none
+                default:
+                    return .none
+                }
                 
-//                case .actionSelected,.addActionTapped,.onAppear, .actionsLoaded, .detail:
-//                    return .none
-//                }
+            // MARK: Tag
+            case let .path(
+                .element(
+                    id: _,
+                    action: .tagSelect(.delegate(.selected(ids, names)))
+                )
+            ):
+                guard let eventDetailID = state.path.ids.dropLast().last
+                else { return .none }
 
-            // ============================
-            // NavigationStack pop
-            // ============================
+                if case .eventDetail(var eventDetailState) = state.path[id: eventDetailID] {
+                    eventDetailState.core.basicInfo.draft.selectedTagIDs = ids
+                    eventDetailState.core.basicInfo.draft.selectedTagNames = names
 
-//            case .path(.popFrom):
-//                return .none
-//
-//
-//            // ============================
-//            // それ以外の path Action はすべて無視
-//            // ============================
-//
-//            case .path:
-//                return .none
+                    state.path[id: eventDetailID] = .eventDetail(eventDetailState)
+                }
+
+                state.path.removeLast()
+                return .none
+
             default:
                 return .none
             }

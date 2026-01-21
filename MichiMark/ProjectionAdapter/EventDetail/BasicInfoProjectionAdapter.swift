@@ -8,11 +8,10 @@ struct BasicInfoProjectionAdapter {
         event: EventDomain,
         members: [MemberDomain],
         tags: [TagDomain],
-        trans: [TransDomain]
+        trans: TransDomain?
     ) -> BasicInfoProjection {
 
         let transProjection = trans
-            .first(where: { $0.id == event.trans.id })
             .map { TransItemProjection(domain: $0) }
 
         let memberProjections = members

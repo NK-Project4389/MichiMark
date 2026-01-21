@@ -75,21 +75,21 @@ final class DefaultEventMapper: EventMapper {
         model.trans = domain.trans
             .map { transMapper.toModel($0, context: context) }
 
-        model.members = domain.members
-            .map { memberMapper.toModel($0, context: context) }
+        model.members = domain.members?
+            .map { memberMapper.toModel($0, context: context) } ?? []
 
-        model.tags = domain.tags
-            .map { tagMapper.toModel($0, context: context) }
+        model.tags = domain.tags?
+            .map { tagMapper.toModel($0, context: context) } ?? []
 
         model.payMember = domain.payMember
             .map { memberMapper.toModel($0, context: context) }
 
         // ---- 従属 Entity（cascade）----
-        model.markLinks = domain.markLinks
-            .map { markLinkMapper.toModel($0, context: context) }
+        model.markLinks = domain.markLinks?
+            .map { markLinkMapper.toModel($0, context: context) } ?? []
 
-        model.payments = domain.payments
-            .map { paymentMapper.toModel($0, context: context) }
+        model.payments = domain.payments?
+            .map { paymentMapper.toModel($0, context: context) } ?? []
 
         // ---- 日時制御 ----
         model.updatedAt = .now

@@ -16,7 +16,7 @@ struct TagSettingDetailReducer {
         @Presents var alert: AlertState<Action>?
         
         init(projection: TagItemProjection){
-            self.tagID = TagID()
+            self.tagID = projection.id
             self.projection = projection
             self.draft = TagDraft(projection: projection)
         }

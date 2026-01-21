@@ -46,7 +46,8 @@ struct MemberSettingReducer {
                 return .none
 
             case .addMemberTapped:
-                let domain = MemberDomain(id: UUID(), memberName: "")
+                let newID = MemberID()
+                let domain = MemberDomain(id: newID, memberName: "")
                 let projection = MemberItemProjection(domain: domain)
                 state.detail = MemberSettingDetailReducer.State(projection: projection)
                 return .none

@@ -20,6 +20,11 @@ struct EventDetailReducer {
         case openMarkDetail(MarkLinkID)
         case openLinkDetail(MarkLinkID)
         case openPaymentDetail(PaymentID)
+        // MARK: 選択画面
+        case openTransSelect
+        case openTotalMemberSelect(ids: Set<MemberID>)
+        case openTagSelect
+        case openGasPayMemberSelect(ids: Set<MemberID>)
         case dismiss
     }
 
@@ -31,11 +36,22 @@ struct EventDetailReducer {
     }
 
     var body: some ReducerOf<Self> {
-        Scope(state: \.core, action: \.core){
+        Reduce { state, action in
+            switch action {
+            case .dismissTapped:
+                return .send(.core(.delegate(.dismiss)))
+
+            default:
+                return .none
+            }
+        }
+
+        Scope(state: \.core, action: \.core) {
             EventDetailCoreReducer()
         }
         .ifLet(\.$destination, action: \.destination)
     }
+
 }
 
 @Reducer
@@ -92,7 +108,7 @@ struct EventDetailCoreReducer {
 
     var body: some ReducerOf<Self> {
         CombineReducers{
-//            Scope(state: \.basicInfo, action: \.basicInfo) { BasicInfoReducer() }
+            Scope(state: \.basicInfo, action: \.basicInfo) { BasicInfoReducer() }
 //            Scope(state: \.michiInfo, action: \.michiInfo) { MichiInfoReducer() }
 //            Scope(state: \.paymentInfo, action: \.paymentInfo) { PaymentInfoReducer() }
 //            Scope(state: \.overview, action: \.overview) { OverviewReducer() }
@@ -112,6 +128,27 @@ struct EventDetailCoreReducer {
 //                        .saveBasicInfoDraft(eventID, draft)
 //                    )
                     return .none
+                case .basicInfo(.transTapped):
+                    return .send(.delegate(.openTransSelect))
+
+//                case .basicInfo(.membersTapped):
+                case let .basicInfo(.delegate(.membersSelectionRequested(ids, useCase))):
+                    switch useCase {
+                    case .totalMembers:
+                        return .send(.delegate(.openTotalMemberSelect(ids: ids)))
+                    case .gasPayer:
+                        return .send(.delegate(.openGasPayMemberSelect(ids: ids)))
+                    default:
+                        return .none
+                    }
+                    
+
+                case .basicInfo(.tagsTapped):
+                    return .send(.delegate(.openTagSelect))
+
+//                case .basicInfo(.payMemberTapped):
+//                    return .send(.delegate(.openPayMemberSelect))
+
                 
 //                case let .saveBasicInfoDraft(eventID, draft):
 //                    //現時点では受け取るだけ
@@ -124,88 +161,13 @@ struct EventDetailCoreReducer {
 
                 case .michiInfo, .paymentInfo, .overview:
                     return .none
-                
+                    
                 case .delegate:
                     return .none
                 
                 
                 }
             }
-//            Reduce { state, action in
-//                switch action {
-//                    
-//                case let .tabSelected(tab):
-//                    state.selectedTab = tab
-//                    return .none
-//                    
-
-//                    
-//                    //BasicInfo → EventDetail（Navigation）
-//                case let .basicInfo(.delegate(.saveDraft(eventID, draft))):
-//                    return .none
-//                    
-//                case let .applyProjection(projection):
-//                    //                state.projection = projection
-//                    //
-//                    //                // 子 Feature へ再注入
-//                    //                state.basicInfo.projection = projection.basicInfo
-//                    //                state.basicInfo.draft = .init(
-//                    //                    eventName: projection.basicInfo.eventName,
-//                    //                    eventDate: projection.basicInfo.eventDate,
-//                    //                    kmPerGas: projection.basicInfo.rawKmPerGas ?? "",
-//                    //                    pricePerGas: projection.basicInfo.rawPricePerGas ?? ""
-//                    //                )
-//                    //
-//                    //                state.michiInfo.projection = projection.michiInfo
-//                    //                state.paymentInfo.projection = projection.paymentInfo
-//                    //                state.overview.projection = projection.overview
-//                    
-//                    return .none
-//                    
-//                    // MichiInfo → EventDetail（Navigation）
-//                case let .michiInfo(.delegate(delegate)):
-//                    switch delegate {
-//                        
-//                    case let .openMarkDetail(eventID, markLinkID):
-//                        return .send(.delegate(.openMarkDetail(markLinkID)))
-//                        
-//                    case let .openLinkDetail(eventID, markLinkID):
-//                        return .send(.delegate(.openLinkDetail(markLinkID)))
-//                        
-//                    case .addMark(eventID):
-//                        let newID = MarkLinkID()
-//                        return .send(.delegate(.openMarkDetail(newID)))
-//                    }
-//                    
-//                    // PaymentInfo > EventDetail (Navigation)
-//                    //            case let .paymentInfo(.paymentTapped(PaymentID)):
-//                    //                return .send(.delegate(.openPaymentDetail(PaymentID)))
-//                case let .paymentInfo(.paymentTapped(paymentID)):
-//                    return .send(.delegate(.openPaymentDetail(paymentID)))
-//                    
-//                    
-//                case .paymentInfo(.addPaymentTapped):
-//                    //                let newID = UUID()
-//                    //                return .send(.delegate(.openPaymentDetail(newID)))
-//                    let newID = PaymentID()
-//                    return .send(.delegate(.openPaymentDetail(newID)))
-//                    
-//                    // ✅ 追加（これがないとエラー）
-//                case .michiInfo(.appeared):
-//                    return .none
-//                case .delegate:
-//                    return .none
-//                    // 子 Feature からの Action はここで握りつぶす
-//                case .basicInfo,
-//                        .paymentInfo,
-//                        .michiInfo,
-//                        .overview:
-//                    return .none
-//                    
-//                case .destination:
-//                    return .none
-//                }
-//            }
             
         }
     }

@@ -1,12 +1,22 @@
 import SwiftUI
 import ComposableArchitecture
 
+private struct ViewState: Equatable {
+    let draft: BasicInfoDraft
+    let projection: BasicInfoProjection
+
+    init(state: BasicInfoReducer.State) {
+        self.draft = state.draft
+        self.projection = state.projection
+    }
+}
+
 struct BasicInfoView: View {
 
     let store: StoreOf<BasicInfoReducer>
 
     var body: some View {
-            WithViewStore(store, observe: { $0 }) { viewStore in
+        WithViewStore(store, observe: ViewState.init) { viewStore in
                 ScrollView {
                     VStack(spacing: 24) {
 
@@ -20,12 +30,59 @@ struct BasicInfoView: View {
                             )
                             .textFieldStyle(.roundedBorder)
 
-                            BasicInfoRow(
-                                icon: "car",
-                                title: "交通手段",
-                                value: viewStore.projection.trans?.transName ?? "未設定",
-                                showsChevron: true
-                            )
+                            Button {
+                                viewStore.send(.transTapped)
+                            } label: {
+                                BasicInfoRow(
+                                    icon: "car",
+                                    title: "交通手段",
+                                    value: viewStore.draft.selectedTransName ?? "未設定",
+                                    showsChevron: true
+                                )
+                            }
+
+                            
+                            Button {
+                                viewStore.send(.membersTapped)
+                            } label: {
+                                BasicInfoRow(
+                                    icon: "person",
+                                    title: "メンバー",
+                                    value: nil,
+                                    showsChevron: true
+                                )
+                            }
+
+                            if !viewStore.draft.selectedMemberIDs.isEmpty {
+                                Text(
+                                    viewStore.draft.selectedMemberNames.values.joined(separator: ", ")
+                                )
+                                .font(.footnote)
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 8)
+                            }
+
+                            
+                            Button {
+                                viewStore.send(.tagsTapped)
+                            } label: {
+                                BasicInfoRow(
+                                    icon: "tag",
+                                    title: "タグ",
+                                    value: nil,
+                                    showsChevron: true
+                                )
+                            }
+
+                            if !viewStore.draft.selectedTagIDs.isEmpty {
+                                Text(
+                                    viewStore.draft.selectedTagNames.values.joined(separator: ", ")
+                                )
+                                .font(.footnote)
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 8)
+                            }
+
                         }
 
                         section {
@@ -46,7 +103,20 @@ struct BasicInfoView: View {
                                 )
                             )
                             .keyboardType(.numberPad)
+                            
+                            Button {
+                                viewStore.send(.payMemberTapped)
+                            } label: {
+                                BasicInfoRow(
+                                    icon: "banknote",
+                                    title: "支払者",
+                                    value: viewStore.draft.selectedPayMemberName ?? "未設定",
+                                    showsChevron: true
+                                )
+                            }
+
                         }
+                        
                     }
                     .padding(.horizontal)
                 }
@@ -82,4 +152,5 @@ struct BasicInfoView: View {
                 .foregroundColor(.primary)
         }
     }
+
 }

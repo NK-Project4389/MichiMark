@@ -16,7 +16,7 @@ struct TransSettingDetailReducer {
         @Presents var alert: AlertState<Action>?
         
         init(projection: TransItemProjection){
-            self.transID = TransID()
+            self.transID = projection.id
             self.projection = projection
             self.draft = TransDraft(projection: projection)
         }

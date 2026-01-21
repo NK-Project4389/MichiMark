@@ -4,6 +4,9 @@ import ComposableArchitecture
 struct RootView: View {
     let store: StoreOf<RootReducer>
 
+    init(store: StoreOf<RootReducer>) {
+            self.store = store
+        }
     var body: some View {
         NavigationStackStore(
             store.scope(state: \.path, action: \.path)
@@ -31,6 +34,11 @@ struct RootView: View {
 //            case let .tagSettingDetail(store):TagSettingDetailView(store: store)
             case let .actionSetting(store):ActionSettingView(store: store)
             //case let .actionSettingDetail(store):ActionSettingDetailView(store: store)
+            // MARK: 選択画面
+            case let .transSelect(store):TransSelectView(store: store)
+            case let .memberSelect(store):MemberSelectView(store: store)
+            case let .tagSelect(store):TagSelectView(store: store)
+            case let .actionSelect(store):ActionSelectView(store: store)
             }
         }
     }

@@ -46,7 +46,8 @@ struct TagSettingReducer {
                 return .none
                 
             case .addTagTapped:
-                let domain = TagDomain(id: UUID(), tagName: "")
+                let newID = TagID()
+                let domain = TagDomain(id: newID, tagName: "")
                 let projection = TagItemProjection(domain: domain)
                 state.detail = TagSettingDetailReducer.State(projection: projection)
                 return .none
