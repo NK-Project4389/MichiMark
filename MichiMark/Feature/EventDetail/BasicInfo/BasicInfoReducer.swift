@@ -104,10 +104,9 @@ struct BasicInfoReducer {
                 return .none
                 
             case .saveTapped:
-                //return .send(
-                //    .delegate(.saveDraft(state.eventID, state.draft))
-                //)
-                return .none
+                return .send(
+                    .delegate(.saveDraft(state.eventID, state.draft))
+                )
 
             case .delegate:
                 return .none

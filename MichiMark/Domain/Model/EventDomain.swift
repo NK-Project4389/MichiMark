@@ -1,28 +1,5 @@
 import Foundation
 
-//let id: EventID
-//
-//var eventName: String
-//
-//var trans: TransCore?
-//var members: [MemberCore]?
-//var tags: [TagCore]?
-//
-///// 単位: 0.1km/L（10倍値）
-//var kmPerGas: Int?
-//var pricePerGas: Int?
-//
-//var payMember: MemberCore?
-//
-//var markLinks: [MarkLinkCore]?
-//var payments: [PaymentCore]?
-//
-//var isDeleted: Bool
-//
-//var schemaVersion: Int
-//let createdAt: Date
-//var updatedAt: Date
-
 struct EventDomain: Equatable, Sendable {
     let id: EventID
     var eventName: String/// 入力必須（Stateでは空欄許可）
@@ -67,5 +44,26 @@ struct EventDomain: Equatable, Sendable {
         self.isDeleted = isDeleted
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+    }
+}
+
+extension EventDomain {
+
+    func updatingBasicInfo(
+        from draft: BasicInfoDraft
+    ) -> EventDomain {
+
+        var updated = self
+        updated.eventName = draft.eventName
+
+        if let km = Double(draft.kmPerGas) {
+            updated.kmPerGas = Int(km * 10)
+        } else {
+            updated.kmPerGas = nil
+        }
+
+        updated.pricePerGas = Int(draft.pricePerGas)
+        updated.updatedAt = Date()
+        return updated
     }
 }

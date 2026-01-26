@@ -39,14 +39,17 @@ struct EventListReducer {
                     await send(.eventsLoaded(events))
                 }
 
+            case let .eventsLoaded(events):
+                state.events = events
+                return .none
+
             case let .deleteEventTapped(id):
                 return .run { _ in
                     try await eventRepositoryProtocol.delete(id: id)
                 }
             case .eventTapped,
-                    .eventsLoaded,
-                 .addButtonTapped,
-                 .settingsButtonTapped:
+                .addButtonTapped,
+                .settingsButtonTapped:
                 // RootFeature へ通知するのみ
                 return .none
 

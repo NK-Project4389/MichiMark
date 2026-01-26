@@ -4,6 +4,12 @@ actor InMemoryTagRepository: TagRepository {
 
     private var storage: [TagID: TagCore] = [:]
     private let schemaVersion = 1
+    
+    init() {
+        Task { [weak self] in
+            await self?.seedIfNeeded()
+        }
+    }
 
     func fetchAll() async throws -> [TagDomain] {
         storage.values
@@ -31,5 +37,32 @@ actor InMemoryTagRepository: TagRepository {
         existing.updatedAt = tag.updatedAt
 
         storage[tag.id] = existing
+    }
+    
+    private func seedIfNeeded() async {
+        guard storage.isEmpty else { return }
+
+        let test1 = TagCore(
+            id: TagID(),
+            tagName: "Test1",
+            isVisible: true,
+            isDeleted: false,
+            schemaVersion: 1,
+            createdAt: Date(),
+            updatedAt: Date()
+        )
+
+        let test2 = TagCore(
+            id: TagID(),
+            tagName: "Test1",
+            isVisible: true,
+            isDeleted: false,
+            schemaVersion: 1,
+            createdAt: Date(),
+            updatedAt: Date()
+        )
+
+        storage[test1.id] = test1
+        storage[test2.id] = test2
     }
 }

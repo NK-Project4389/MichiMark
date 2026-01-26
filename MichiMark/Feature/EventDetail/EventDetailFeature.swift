@@ -3,6 +3,7 @@ import Foundation
 
 @Reducer
 struct EventDetailReducer {
+    @Dependency(\.dismiss) var dismiss
 
     @ObservableState
     struct State{
@@ -14,6 +15,8 @@ struct EventDetailReducer {
         case core(EventDetailCoreReducer.Action)
         case destination(PresentationAction<Destination.Action>)
         case dismissTapped
+        
+        case delegate(Delegate)
     }
     
     enum Delegate {
@@ -25,6 +28,7 @@ struct EventDetailReducer {
         case openTotalMemberSelect(ids: Set<MemberID>)
         case openTagSelect
         case openGasPayMemberSelect(ids: Set<MemberID>)
+        case saved
         case dismiss
     }
 
@@ -38,8 +42,16 @@ struct EventDetailReducer {
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+//            case .dismissTapped:
+//                return .send(.core(.delegate(.dismiss)))
             case .dismissTapped:
-                return .send(.core(.delegate(.dismiss)))
+                return .run { _ in
+                    await dismiss()
+                }
+
+                
+            case .core(.delegate(let delegate)):
+                return .send(.delegate(delegate))
 
             default:
                 return .none
@@ -56,7 +68,11 @@ struct EventDetailReducer {
 
 @Reducer
 struct EventDetailCoreReducer {
+    @Dependency(\.eventRepositoryProtocol)
+    var eventRepository
 
+    @Dependency(\.dismiss) var dismiss
+    
     @ObservableState
     struct State{
         // 外部依存（識別子）
@@ -103,6 +119,7 @@ struct EventDetailCoreReducer {
         case paymentInfo(PaymentInfoReducer.Action)
         case overview(OverviewReducer.Action)
         // ★ Root に通知するための Action
+        case saveCompleted
         case delegate(EventDetailReducer.Delegate)
     }
 
@@ -113,25 +130,41 @@ struct EventDetailCoreReducer {
 //            Scope(state: \.paymentInfo, action: \.paymentInfo) { PaymentInfoReducer() }
 //            Scope(state: \.overview, action: \.overview) { OverviewReducer() }
             
-//            Reduce { _, _ in .none }
             Reduce { state, action in
                 switch action {
                 case let .tabSelected(tab):
                     state.selectedTab = tab
                     return .none
-
-//                case .dismissTapped:
-//                    return .send(.delegate(.dismiss))
                     
+                // MARK: BasicInfo
+                //保存ボタン押下
                 case let .basicInfo(.delegate(.saveDraft(eventID, draft))):
-//                    return .send(
-//                        .saveBasicInfoDraft(eventID, draft)
-//                    )
-                    return .none
+                    return .run { send in
+                        let current: EventDomain
+                        do {
+                            current = try await eventRepository.fetch(id: eventID)
+                        } catch RepositoryError.notFound {
+                            current = EventDomain(id: eventID, eventName: "")
+                        }
+
+                        let updated = current.updatingBasicInfo(from: draft)
+                        try await eventRepository.save(updated)
+
+                        await send(.saveCompleted)   // ★ Effect 完了通知
+                    } catch: { error, _ in
+                        print("Save failed:", error)
+                    }
+                    
+                case .saveCompleted:
+                    return .run { send in
+                        await send(.delegate(.saved))  // 親に通知
+                        await dismiss()                // 正規ルートで pop
+                    }
+
+                //交通手段ボタン押下
                 case .basicInfo(.transTapped):
                     return .send(.delegate(.openTransSelect))
-
-//                case .basicInfo(.membersTapped):
+                //メンバーボタン、支払い者ボタン押下
                 case let .basicInfo(.delegate(.membersSelectionRequested(ids, useCase))):
                     switch useCase {
                     case .totalMembers:
@@ -141,28 +174,19 @@ struct EventDetailCoreReducer {
                     default:
                         return .none
                     }
-                    
-
+                //タグボタン押下
                 case .basicInfo(.tagsTapped):
                     return .send(.delegate(.openTagSelect))
-
-//                case .basicInfo(.payMemberTapped):
-//                    return .send(.delegate(.openPayMemberSelect))
-
-                
-//                case let .saveBasicInfoDraft(eventID, draft):
-//                    //現時点では受け取るだけ
-//                    //BasicInfo Draftの保存を後で実装
-//                    return .none
                 
                 case .basicInfo:
                     return .none
                 
-
+                // MARK: MichiInfo、PaymentInfo、Overview
                 case .michiInfo, .paymentInfo, .overview:
                     return .none
-                    
-                case .delegate:
+                
+                // その他
+                default:
                     return .none
                 
                 

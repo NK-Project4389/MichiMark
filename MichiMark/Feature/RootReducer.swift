@@ -34,6 +34,8 @@ struct RootReducer {
         case eventList(EventListReducer.Action)
         case path(StackAction<Path.State, Path.Action>)
     }
+    
+    @Dependency(\.eventRepositoryProtocol) var eventRepositoryProtocol
 
     @Reducer
     enum Path {
@@ -65,7 +67,7 @@ struct RootReducer {
             switch action {
 
             // ============================
-            // EventList → Root（Navigation）
+            // MARK: EventList → Root（Navigation）
             // ============================
             //EventList側へ処理へ委譲
             case let .eventList(.eventTapped(eventID)):
@@ -76,6 +78,24 @@ struct RootReducer {
                     )
                 )
                 return .none
+//                将来的にCoreDomainから呼び出す
+//                return .run { [eventID] send in
+//                    let event = try await eventRepositoryProtocol.fetch(id: eventID)
+//
+//                    let projection = EventDetailProjectionAdapter()
+//                        .adapt(event: event)
+//
+//                    await send(
+//                        .path(
+//                            .push(
+//                                id: StackElementID(),
+//                                state: .eventDetail(
+//                                    EventDetailReducer.State(projection: projection)
+//                                )
+//                            )
+//                        )
+//                    )
+//                }
                 
             case .eventList(.addButtonTapped):
                 let newEventID = EventID()
@@ -101,8 +121,9 @@ struct RootReducer {
 
 
             // ============================
-            // EventDetail → Root（delegate）
+            // MARK: EventDetail → Root（delegate）
             // ============================
+            //MichiInfo
             case let .path(.element(
                     id: elementID,
                     action: .eventDetail(.core(.delegate(.openMarkDetail(markLinkID))))
@@ -152,10 +173,6 @@ struct RootReducer {
                 )
                 return .none
 
-            
-            // ============================
-            // EventDetail → Root（delegate）
-            // ============================
             case let .path(
                 .element(
                     id: elementID,
@@ -181,19 +198,21 @@ struct RootReducer {
                 )
                 return .none
 
-
+            case let .path(
+              .element(id: elementID, action: .eventDetail(.core(.delegate(.saved))))
+            ):
+                return .send(.eventList(.appeared))
+//                // 1) 一覧再読込指示
+//                let reload = Effect.send(RootReducer.Action.eventList(.appeared))
+//
+//                // 2) 同じ elementID を pop（どの eventDetail を閉じるか明確）
+//                state.path.pop(from: elementID)
+//
+//                // 3) effect を返す
+//                return reload
                 
             // ============================
-            // EventDetail → Root（dismiss）
-            // ============================
-
-            case .path(
-                .element(id: _, action: .eventDetail(.core(.delegate(.dismiss))))
-            ):
-              return .none
-            
-            // ============================
-            // Settings → Root（Navigation）
+            // MARK: Settings → Root（Navigation）
             // ============================
 
             case let .path(

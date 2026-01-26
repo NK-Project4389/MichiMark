@@ -20,16 +20,15 @@ actor InMemoryEventRepository: EventRepositoryProtocol {
     }
 
     func save(_ event: EventDomain) async throws {
-        func save(_ event: EventDomain) async throws {
-            var core = EventAdapter.toCore(
-                event,
-                schemaVersion: schemaVersion
-            )
-            core.updatedAt = Date()
-            core.isDeleted = false
-            storage[event.id] = core
-        }
+        var core = EventAdapter.toCore(
+            event,
+            schemaVersion: schemaVersion
+        )
+        core.updatedAt = Date()
+        core.isDeleted = false
+        storage[event.id] = core
     }
+
 
     func delete(id: EventID) async throws {
         guard var core = storage[id] else {
