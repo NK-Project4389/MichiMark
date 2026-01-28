@@ -1,20 +1,12 @@
 import Foundation
 
 struct BasicInfoDraft: Equatable {
-
-    // イベント
-    var eventName: String
-
-    // 交通手段（選択状態）
-    var selectedTransID: TransID?
+    var eventName: String// イベント
+    var selectedTransID: TransID?// 交通手段（選択状態）
     var selectedTransName: String?
-
-    // タグ・メンバー（選択状態）
-    var selectedTagIDs: Set<TagID>
-    var selectedMemberIDs: Set<MemberID>
-
-    // タグ・メンバー（表示名）
-    var selectedTagNames: [TagID: String]
+    var selectedTagIDs: Set<TagID>// タグ（選択状態）
+    var selectedMemberIDs: Set<MemberID>//メンバー（複数状態）
+    var selectedTagNames: [TagID: String]// タグ・メンバー（表示名）
     var selectedMemberNames: [MemberID: String]
     
     // 燃費・単価（入力状態）
@@ -25,3 +17,4 @@ struct BasicInfoDraft: Equatable {
     var selectedPayMemberID: MemberID?
     var selectedPayMemberName: String?
 }
+

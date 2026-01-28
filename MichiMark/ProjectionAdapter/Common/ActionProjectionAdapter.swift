@@ -8,11 +8,15 @@ struct ActionProjectionAdapter {
     ) -> [ActionItemProjection] {
         actions
             .filter { !$0.isDeleted }
-            .map { ActionItemProjection(domain: $0) }
+            .map { adapt($0) }
     }
 
     // Domain → Projection（詳細）
-    func adaptItem(_ domain: ActionDomain) -> ActionItemProjection {
-        ActionItemProjection(domain: domain)
+    func adapt(_ domain: ActionDomain) -> ActionItemProjection {
+        ActionItemProjection(
+            id: domain.id,
+            actionName: domain.actionName,
+            isVisible: domain.isVisible
+        )
     }
 }

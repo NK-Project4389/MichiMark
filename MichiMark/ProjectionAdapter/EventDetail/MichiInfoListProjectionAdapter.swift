@@ -1,6 +1,55 @@
 import Foundation
 
-struct MichiInfoListProjectionAdapter {
+struct MarkLinkProjectionAdapter {
+    // MARK: - Public
+    
+    func adaptList(
+        markLinks: [MarkLinkDomain]
+    ) -> [MarkLinkItemProjection] {
+        markLinks
+            .filter { !$0.isDeleted }
+            .sorted { $0.markLinkSeq < $1.markLinkSeq }
+            .map { adapt($0) }
+    }
+
+    func adapt(
+        _ domain: MarkLinkDomain
+    ) -> MarkLinkItemProjection {
+
+        MarkLinkItemProjection(
+            id: domain.id,
+            markLinkSeq: domain.markLinkSeq,
+            markLinkType: domain.markLinkType,
+            displayDate: formatDate(domain.markLinkDate),
+            markLinkName: domain.markLinkName ?? "",
+            members: formatMembers(domain.members),
+            displayMeterValue: formatMeter(
+                type: domain.markLinkType,
+                value: domain.meterValue
+            ),
+            displayDistanceValue: formatDistance(
+                type: domain.markLinkType,
+                value: domain.distanceValue
+            ),
+            actions: formatActions(domain.actions),
+            isFuel: domain.isFuel,
+            pricePerGas: formatPricePerGas(
+                isFuel: domain.isFuel,
+                value: domain.pricePerGas
+            ),
+            gasQuantity: formatGasQuantity(
+                isFuel: domain.isFuel,
+                value: domain.gasQuantity
+            ),
+            gasPrice: formatGasPrice(
+                isFuel: domain.isFuel,
+                value: domain.gasPrice
+            ),
+            memo: domain.memo
+        )
+    }
+    
+    // MARK: - Private formatting
 
     private let dateFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -8,41 +57,74 @@ struct MichiInfoListProjectionAdapter {
         f.dateFormat = "yyyy/MM/dd"
         return f
     }()
-
-    func adapt(markLinks: [MarkLinkDomain]) -> MichiInfoListProjection {
-
-        let items = markLinks
-            .filter { !$0.isDeleted }
-            .sorted { $0.markLinkSeq < $1.markLinkSeq }
-            .map { adaptItem($0) }
-
-        return MichiInfoListProjection(items: items)
+    
+    private func formatDate(_ date: Date) -> String {
+        dateFormatter.string(from: date)
     }
 
-    func adaptItem(_ domain: MarkLinkDomain) -> MarkLinkItemProjection {
-
-        let title = domain.markLinkName
-            ?? (domain.markLinkType == .mark ? "マーク" : "リンク")
-
-        let distanceText: String? = {
-            if domain.markLinkType == .link,
-               let value = domain.distanceValue {
-                return "\(value) km"
-            }
-            return nil
-        }()
-
-        let actions = domain.actions
+    private func formatMembers(
+        _ members: [MemberDomain]
+    ) -> [MemberItemProjection] {
+        let memberAdapter = MemberProjectionAdapter()
+        return members
             .filter { !$0.isDeleted && $0.isVisible }
-            .map { ActionItemProjection(domain: $0) }
+            .map { memberAdapter.adapt($0) }
+    }
+    
+    private func formatMeter(
+        type: MarkOrLink,
+        value: Int?
+    ) -> String? {
+        guard type == .mark,
+              let value
+        else { return nil }
+        return "\(value)"
+    }
 
-        return MarkLinkItemProjection(
-            id: domain.id,
-            title: title,
-            displayDate: dateFormatter.string(from: domain.markLinkDate),
-            displayDistance: distanceText,
-            actions: actions,
-            isFuel: domain.isFuel
-        )
+    private func formatDistance(
+        type: MarkOrLink,
+        value: Int?
+    ) -> String? {
+        guard type == .link,
+              let value
+        else { return nil }
+        return "\(value)"
+    }
+
+    private func formatActions(
+        _ actions: [ActionDomain]
+    ) -> [ActionItemProjection] {
+        let actionAdapter = ActionProjectionAdapter()
+        return actions
+            .filter { !$0.isDeleted && $0.isVisible }
+            .map { actionAdapter.adapt($0) }
+    }
+
+    private func formatPricePerGas(
+        isFuel: Bool,
+        value: Int?
+    ) -> Int? {
+        guard isFuel,
+              let value
+        else { return nil }
+        return value
+    }
+
+    private func formatGasQuantity(
+        isFuel: Bool,
+        value: Int?
+    ) -> Double? {
+        guard isFuel,
+              let value
+        else { return nil }
+        return Double(value) / 10.0
+    }
+
+    private func formatGasPrice(
+        isFuel: Bool,
+        value: Int?
+    ) -> Int? {
+        guard isFuel else { return nil }
+        return value
     }
 }

@@ -8,21 +8,19 @@ struct MichiInfoView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                ForEach(store.projection.items) { item in
-                    if item.displayDistance == nil {
-                        MichiMarkCardView(
-                            title: item.title,
-                            showsLinkBelow: false
-                        )
-                        .onTapGesture {
+                ForEach(Array(store.projection.items.enumerated()), id: \.element.id) { index, item in
+
+                    MichiTimelineRowView(
+                        item: item,
+                        isFirst: index == 0,
+                        isLast: index == store.projection.items.count - 1,
+                        onMarkTap: {
                             store.send(.markTapped(item.id))
+                        },
+                        onLinkTap: {
+                            store.send(.linkTapped(item.id))
                         }
-                    } else {
-                        MichiLinkView()
-                            .onTapGesture {
-                                store.send(.linkTapped(item.id))
-                            }
-                    }
+                    )
                 }
             }
             .padding(.top)
@@ -32,11 +30,9 @@ struct MichiInfoView: View {
                 store.send(.addMarkTapped)
             }
         }
-        .onAppear {
-            store.send(.appeared)
-        }
     }
 }
+
 
 
 private extension MichiInfoView {
@@ -66,4 +62,49 @@ private extension MichiInfoView {
         }
         .padding()
     }
+}
+
+import SwiftUI
+
+struct TimelineColumnView: View {
+
+    let isFirst: Bool
+    let isLast: Bool
+    let showsPlus: Bool
+
+    var body: some View {
+        VStack(spacing: 0) {
+
+            // 上の線
+            if !isFirst {
+                Rectangle()
+                    .fill(Color.black)
+                    .frame(width: 2)
+                    .frame(maxHeight: .infinity)
+            }
+
+            // ノード（●）
+            Circle()
+                .fill(Color.black)
+                .frame(width: 10, height: 10)
+
+            // ＋（挿入用：今回は表示だけ）
+            if showsPlus {
+                Image(systemName: "plus.circle.fill")
+                    .foregroundColor(.green)
+                    .padding(.vertical, 6)
+            }
+
+            // 下の線
+            if !isLast {
+                Rectangle()
+                    .fill(Color.black)
+                    .frame(width: 2)
+                    .frame(maxHeight: .infinity)
+            }
+        }
+        .frame(width: 24)
+        .allowsHitTesting(false)
+    }
+    
 }

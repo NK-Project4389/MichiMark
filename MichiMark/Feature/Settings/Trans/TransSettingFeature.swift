@@ -25,6 +25,8 @@ struct TransSettingReducer {
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
+            let transAdapter = TransProjectionAdapter()
+            
             switch action {
             case .onAppear:
                 return .run { send in
@@ -34,7 +36,7 @@ struct TransSettingReducer {
                 
             case let .transesLoaded(domains):
                 state.transes = IdentifiedArray(
-                    uniqueElements: domains.map(TransItemProjection.init)
+                    uniqueElements: domains.map{ transAdapter.adapt($0) }
                     )
                 return .none
                 
@@ -48,7 +50,7 @@ struct TransSettingReducer {
             case .addTransTapped:
                 let newID = TransID()
                 let domain = TransDomain(id: newID, transName: "")
-                let projection = TransItemProjection(domain: domain)
+                let projection = transAdapter.adapt(domain)
                 state.detail = TransSettingDetailReducer.State(projection: projection)
                 return .none
                 

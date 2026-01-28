@@ -43,10 +43,11 @@ struct TransSelectReducer {
                     }
 
             case let .transResponse(.success(domains)):
+                let transAdapter = TransProjectionAdapter()
                 state.isLoading = false
                 state.items = domains
                     .filter { $0.isVisible }
-                    .map(TransItemProjection.init)
+                    .map { transAdapter.adapt($0) }
                 return .none
 
             case .transResponse(.failure):

@@ -17,13 +17,12 @@ struct PaymentInfoProjectionAdapter {
     }
 
     private func adaptItem(_ domain: PaymentDomain) -> PaymentItemProjection {
-        PaymentItemProjection(
+        let memberAdapter = MemberProjectionAdapter()
+        return PaymentItemProjection(
             id: domain.id,
             displayAmount: "\(domain.paymentAmount) 円",
-            payer: MemberItemProjection(domain: domain.paymentMember),
-            splitMembers: domain.splitMembers.map {
-                MemberItemProjection(domain: $0)
-            },
+            payer: memberAdapter.adapt( domain.paymentMember),
+            splitMembers: domain.splitMembers.map { memberAdapter.adapt($0) },
             memo: domain.paymentMemo
         )
     }

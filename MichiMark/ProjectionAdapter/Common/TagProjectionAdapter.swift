@@ -1,18 +1,21 @@
 import Foundation
 
 struct TagProjectionAdapter {
-
     // Domain → Projection（一覧）
     func adaptList(
         tags: [TagDomain]
     ) -> [TagItemProjection] {
         tags
             .filter { !$0.isDeleted }
-            .map { TagItemProjection(domain: $0) }
+            .map { adapt($0) }
     }
-
+    
     // Domain → Projection（詳細）
-    func adaptItem(_ domain: TagDomain) -> TagItemProjection {
-        TagItemProjection(domain: domain)
+    func adapt(_ domain: TagDomain) -> TagItemProjection {
+        TagItemProjection(
+            id: domain.id,
+            tagName: domain.tagName,
+            isVisible: domain.isVisible
+        )
     }
 }

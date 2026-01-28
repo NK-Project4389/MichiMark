@@ -3,18 +3,18 @@ import Foundation
 public struct EventDetailProjectionAdapter {
 
     private let basicInfoAdapter: BasicInfoProjectionAdapter
-    private let michiInfoAdapter: MichiInfoListProjectionAdapter
+    private let markLinkAdapter: MarkLinkProjectionAdapter
     private let paymentInfoAdapter: PaymentInfoProjectionAdapter
     private let overviewAdapter: OverviewProjectionAdapter
 
     init(
         basicInfoAdapter: BasicInfoProjectionAdapter,
-        michiInfoAdapter: MichiInfoListProjectionAdapter,
+        markLinkAdapter: MarkLinkProjectionAdapter,
         paymentInfoAdapter: PaymentInfoProjectionAdapter,
         overviewAdapter: OverviewProjectionAdapter
     ) {
         self.basicInfoAdapter = basicInfoAdapter
-        self.michiInfoAdapter = michiInfoAdapter
+        self.markLinkAdapter = markLinkAdapter
         self.paymentInfoAdapter = paymentInfoAdapter
         self.overviewAdapter = overviewAdapter
     }
@@ -37,8 +37,8 @@ public struct EventDetailProjectionAdapter {
                 tags: tags,
                 trans: trans
             ),
-            michiInfo: michiInfoAdapter.adapt(
-                markLinks: markLinks
+            michiInfo: MichiInfoListProjection(
+                items: markLinkAdapter.adaptList(markLinks: markLinks)
             ),
             paymentInfo: paymentInfoAdapter.adapt(
                 payments: payments

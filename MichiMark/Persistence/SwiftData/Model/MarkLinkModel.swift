@@ -12,6 +12,10 @@ final class MarkLinkModel {
 
     var date: Date
     var name: String?
+    
+    @Relationship(deleteRule: .nullify)
+    var members: [MemberModel]
+    
     var meterValue: Int?
     var distanceValue: Int?
 
@@ -39,6 +43,7 @@ final class MarkLinkModel {
         typeRawValue: String,
         date: Date,
         name: String? = nil,
+        members: [MemberModel] = [],
         meterValue: Int? = nil,
         distanceValue: Int? = nil,
         actions: [ActionModel] = [],
@@ -55,8 +60,9 @@ final class MarkLinkModel {
         self.id = id
         self.sortOrder = sortOrder
         self.typeRawValue = typeRawValue
-        self.name = name
         self.date = date
+        self.name = name
+        self.members = members
         self.meterValue = meterValue
         self.distanceValue = distanceValue
         self.actions = actions

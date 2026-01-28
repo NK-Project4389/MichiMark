@@ -16,9 +16,14 @@ final class DefaultMarkLinkMapper: MarkLinkMapper {
 
     // MARK: - Dependencies
     private let actionMapper: ActionMapper
+    private let memberMapper: MemberMapper
 
-    init(actionMapper: ActionMapper) {
+    init(
+        actionMapper: ActionMapper,
+        memberMapper: MemberMapper
+    ) {
         self.actionMapper = actionMapper
+        self.memberMapper = memberMapper
     }
 
     // MARK: - Domain → Model
@@ -67,6 +72,10 @@ final class DefaultMarkLinkMapper: MarkLinkMapper {
         model.gasQuantity = domain.gasQuantity   // 10倍値保持
         model.gasPrice = domain.gasPrice
 
+        // ---- Member（共有マスタ / nullify）----
+        model.members = domain.members
+            .map { memberMapper.toModel($0, context: context) }
+        
         // ---- Action（共有マスタ / nullify）----
         model.actions = domain.actions
             .map { actionMapper.toModel($0, context: context) }
@@ -90,6 +99,7 @@ final class DefaultMarkLinkMapper: MarkLinkMapper {
             markLinkType: markOrLink(from: model.typeRawValue),
             markLinkDate: model.date,
             markLinkName: model.name,
+            members: model.members.map { memberMapper.toDomain($0) },
             meterValue: model.meterValue,
             distanceValue: model.distanceValue,
             actions: model.actions.map { actionMapper.toDomain($0) },

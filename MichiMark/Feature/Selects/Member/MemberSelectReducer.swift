@@ -35,6 +35,7 @@ struct MemberSelectReducer {
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
+            
             switch action {
 
             case .appeared:
@@ -50,10 +51,11 @@ struct MemberSelectReducer {
                     }
 
             case let .membersResponse(.success(domains)):
+                let memberAdapter = MemberProjectionAdapter()
                 state.isLoading = false
                 state.items = domains
                     .filter { $0.isVisible }
-                    .map(MemberItemProjection.init)
+                    .map{ memberAdapter.adapt($0) }
                 return .none
 
             case .membersResponse(.failure):

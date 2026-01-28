@@ -25,6 +25,8 @@ struct ActionSettingReducer {
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
+            let actionAdapter = ActionProjectionAdapter()
+            
             switch action{
             case .onAppear:
                 return .run { send in
@@ -34,7 +36,7 @@ struct ActionSettingReducer {
                 
             case let .actionsLoaded(domains):
                 state.actions = IdentifiedArray(
-                                uniqueElements: domains.map(ActionItemProjection.init)
+                    uniqueElements: domains.map{ actionAdapter.adapt($0) }
                             )
                 return .none
                 
@@ -47,7 +49,7 @@ struct ActionSettingReducer {
 
             case .addActionTapped:
                 let domain = ActionDomain(id: UUID(), actionName: "")
-                let projection = ActionItemProjection(domain: domain)
+                let projection = actionAdapter.adapt(domain)
                 state.detail = ActionSettingDetailReducer.State(projection: projection)
                 return .none
                 

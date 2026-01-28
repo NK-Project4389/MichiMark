@@ -46,10 +46,12 @@ struct ActionSelectReducer {
                     }
 
             case let .actionsResponse(.success(domains)):
+                let actionAdapter = ActionProjectionAdapter()
+                
                 state.isLoading = false
                 state.items = domains
                     .filter { $0.isVisible }
-                    .map(ActionItemProjection.init)
+                    .map{ actionAdapter.adapt($0) }
                 return .none
 
             case .actionsResponse(.failure):

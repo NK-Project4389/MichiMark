@@ -10,20 +10,23 @@ struct BasicInfoProjectionAdapter {
         tags: [TagDomain],
         trans: TransDomain?
     ) -> BasicInfoProjection {
+        let transAdapter = TransProjectionAdapter()
+        let memberAdapter = MemberProjectionAdapter()
+        let tagAdapter = TagProjectionAdapter()
 
         let transProjection = trans
-            .map { TransItemProjection(domain: $0) }
+            .map { transAdapter.adapt($0) }
 
         let memberProjections = members
             .filter { !$0.isDeleted && $0.isVisible }
-            .map { MemberItemProjection(domain: $0) }
+            .map { memberAdapter.adapt($0) }
 
         let tagProjections = tags
             .filter { !$0.isDeleted && $0.isVisible }
-            .map { TagItemProjection(domain: $0) }
+            .map { tagAdapter.adapt($0) }
 
         let paymentMemberProjection = event.payMember
-            .map { MemberItemProjection(domain: $0) }
+            .map { memberAdapter.adapt($0) }
 
         return BasicInfoProjection(
             id: event.id,

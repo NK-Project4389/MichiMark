@@ -1,26 +1,15 @@
 public struct BasicInfoProjection: Equatable {
     public let id: EventID
 
-    // イベント
-    public let eventName: String
-
-    // 交通手段（単数表示想定）
-    public let trans: TransItemProjection?
-
-    // タグ・メンバー（複数）
-    public let tags: [TagItemProjection]
-    public let members: [MemberItemProjection]
-
-    // 燃費
-    public let kmPerGas: Int?
+    public let eventName: String// イベント
+    public let trans: TransItemProjection?// 交通手段（単数表示想定）
+    public let tags: [TagItemProjection]// タグ（複数）
+    public let members: [MemberItemProjection]//メンバー（複数）
+    public let kmPerGas: Int?// 燃費
     public let displayKmPerGas: String
-
-    // ガソリン単価
-    public let pricePerGas: Int?
+    public let pricePerGas: Int?// ガソリン単価
     public let displayPricePerGas: String
-
-    // 支払者
-    public let payMember: MemberItemProjection?
+    public let payMember: MemberItemProjection?// 支払者
 }
 
 extension BasicInfoProjection {

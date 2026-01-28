@@ -11,7 +11,8 @@ extension EventDetailProjection {
         .init(
             eventId: eventID,
             basicInfo: .empty(eventID: eventID),
-            michiInfo: .empty,
+//            michiInfo: .empty,
+            michiInfo: .dummy,
             paymentInfo: .empty,
             overview: .empty
         )

@@ -24,6 +24,8 @@ struct TagSettingReducer {
     @Dependency(\.tagRepository) var tagRepository
 
     var body: some ReducerOf<Self> {
+        let tagAdapter = TagProjectionAdapter()
+        
         Reduce { state, action in
             switch action {
             case .onAppear:
@@ -34,7 +36,7 @@ struct TagSettingReducer {
                 
             case let .tagsLoaded(domains):
                 state.tags = IdentifiedArray(
-                    uniqueElements: domains.map(TagItemProjection.init)
+                    uniqueElements: domains.map{ tagAdapter.adapt($0) }
                     )
                 return .none
                 
@@ -48,7 +50,7 @@ struct TagSettingReducer {
             case .addTagTapped:
                 let newID = TagID()
                 let domain = TagDomain(id: newID, tagName: "")
-                let projection = TagItemProjection(domain: domain)
+                let projection = tagAdapter.adapt(domain)
                 state.detail = TagSettingDetailReducer.State(projection: projection)
                 return .none
                 

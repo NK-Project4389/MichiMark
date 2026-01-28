@@ -43,10 +43,11 @@ struct TagSelectReducer {
                     }
 
             case let .tagsResponse(.success(domains)):
+                let tagAdapter = TagProjectionAdapter()
                 state.isLoading = false
                 state.items = domains
                     .filter { $0.isVisible }
-                    .map(TagItemProjection.init)
+                    .map{ tagAdapter.adapt($0) }
                 return .none
 
             case .tagsResponse(.failure):

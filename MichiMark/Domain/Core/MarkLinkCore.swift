@@ -8,6 +8,8 @@ struct MarkLinkCore: Equatable {
     
     var markLinkDate: Date
     var markLinkName: String?
+    
+    var members: [MemberCore]
 
     /// 累積メーター（km）
     var meterValue: Int?

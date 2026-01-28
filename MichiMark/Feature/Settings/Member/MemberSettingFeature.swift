@@ -24,6 +24,8 @@ struct MemberSettingReducer {
     @Dependency(\.memberRepository) var memberRepository
 
     var body: some ReducerOf<Self> {
+        let memberAdapter = MemberProjectionAdapter()
+        
         Reduce { state, action in
             switch action{
             case .onAppear:
@@ -34,7 +36,7 @@ struct MemberSettingReducer {
                 
             case let .membersLoaded(domains):
                 state.members = IdentifiedArray(
-                                uniqueElements: domains.map(MemberItemProjection.init)
+                    uniqueElements: domains.map{ memberAdapter.adapt($0)}
                             )
                 return .none
                 
@@ -48,7 +50,7 @@ struct MemberSettingReducer {
             case .addMemberTapped:
                 let newID = MemberID()
                 let domain = MemberDomain(id: newID, memberName: "")
-                let projection = MemberItemProjection(domain: domain)
+                let projection = memberAdapter.adapt(domain)
                 state.detail = MemberSettingDetailReducer.State(projection: projection)
                 return .none
                 

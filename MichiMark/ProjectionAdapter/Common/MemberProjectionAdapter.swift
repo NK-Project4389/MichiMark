@@ -8,11 +8,16 @@ struct MemberProjectionAdapter {
     ) -> [MemberItemProjection] {
         members
             .filter { !$0.isDeleted }
-            .map { MemberItemProjection(domain: $0) }
+            .map { adapt($0) }
     }
 
     // Domain → Projection（詳細）
-    func adaptItem(_ domain: MemberDomain) -> MemberItemProjection {
-        MemberItemProjection(domain: domain)
+    func adapt(_ domain: MemberDomain) -> MemberItemProjection {
+        MemberItemProjection(
+            id: domain.id,
+            memberName: domain.memberName,
+            mailAddress: domain.mailAddress ?? "",
+            isVisible: domain.isVisible
+        )
     }
 }

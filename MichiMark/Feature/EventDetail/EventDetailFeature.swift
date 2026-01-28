@@ -126,7 +126,7 @@ struct EventDetailCoreReducer {
     var body: some ReducerOf<Self> {
         CombineReducers{
             Scope(state: \.basicInfo, action: \.basicInfo) { BasicInfoReducer() }
-//            Scope(state: \.michiInfo, action: \.michiInfo) { MichiInfoReducer() }
+            Scope(state: \.michiInfo, action: \.michiInfo) { MichiInfoReducer() }
 //            Scope(state: \.paymentInfo, action: \.paymentInfo) { PaymentInfoReducer() }
 //            Scope(state: \.overview, action: \.overview) { OverviewReducer() }
             
@@ -181,7 +181,18 @@ struct EventDetailCoreReducer {
                 case .basicInfo:
                     return .none
                 
-                // MARK: MichiInfo、PaymentInfo、Overview
+                // MARK: MichiInfo
+                case let .michiInfo(.delegate(.openMarkDetail(_, markLinkID))):
+                    return .send(.delegate(.openMarkDetail(markLinkID)))
+
+                case let .michiInfo(.delegate(.openLinkDetail(_, markLinkID))):
+                    return .send(.delegate(.openLinkDetail(markLinkID)))
+
+                case .michiInfo(.delegate(.addMark(_))):
+                    // 今回はまだ遷移しなくてOK
+                    return .none
+
+                // MARK: Other
                 case .michiInfo, .paymentInfo, .overview:
                     return .none
                 

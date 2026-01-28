@@ -137,11 +137,14 @@ struct RootReducer {
                 else {
                     return .none
                 }
+                
+                let markDetailDraft = MarkDetailDraft.init(projection: itemProjection)
 
                 state.path.append(
                     .markDetail(
                         MarkDetailReducer.State(
                             projection: itemProjection,
+                            draft: markDetailDraft,
                             eventID: eventDetail.core.eventID,
                             markLinkID: markLinkID
                         )
@@ -241,6 +244,9 @@ struct RootReducer {
                 }
 
             // MARK: 選択画面遷移
+                
+                
+                
             // MARK: Trans
             case let .path(
                 .element(id: elementID,
