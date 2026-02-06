@@ -6,28 +6,25 @@ struct ActionSelectReducer {
 
     @ObservableState
     struct State: Equatable {
-        /// 表示用（候補）
         var items: [ActionItemProjection]
-
-        /// 選択中（Draft に反映される）
         var selectedIDs: Set<ActionID>
+        let useCase: ActionSelectionUseCase
         var isLoading = false
     }
 
     enum Action {
         case appeared
         case actionsResponse(TaskResult<[ActionDomain]>)
-        
         case toggle(ActionID)
         case doneTapped
         case delegate(Delegate)
     }
 
     enum Delegate {
-        case selected(ids: Set<ActionID>, names: [ActionID: String])
+        case selected(ids: Set<ActionID>, names: [ActionID: String], useCase: ActionSelectionUseCase)
     }
     
-    @Dependency(\.actionRepository) var actionsRepository
+    @Dependency(\.actionRepository) var actionRepository
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -39,7 +36,7 @@ struct ActionSelectReducer {
                         await send(
                             .actionsResponse(
                                 TaskResult {
-                                    try await actionsRepository.fetchAll()
+                                    try await actionRepository.fetchAll()
                                 }
                             )
                         )
@@ -47,7 +44,6 @@ struct ActionSelectReducer {
 
             case let .actionsResponse(.success(domains)):
                 let actionAdapter = ActionProjectionAdapter()
-                
                 state.isLoading = false
                 state.items = domains
                     .filter { $0.isVisible }
@@ -66,7 +62,7 @@ struct ActionSelectReducer {
                     state.selectedIDs.insert(id)
                 }
                 return .none
-
+                
             case .doneTapped:
                 let selectedNames: [ActionID: String] =
                         Dictionary(
@@ -77,7 +73,8 @@ struct ActionSelectReducer {
                         )
                 return .send(.delegate(.selected(
                     ids: state.selectedIDs,
-                    names: selectedNames
+                    names: selectedNames,
+                    useCase: state.useCase
                 )))
 
             case .delegate:

@@ -171,8 +171,8 @@
             filePath = "MichiMark/Feature/EventDetail/EventDetailFeature.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "166"
-            endingLineNumber = "166"
+            startingLineNumber = "193"
+            endingLineNumber = "193"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -219,8 +219,8 @@
             filePath = "MichiMark/Feature/EventDetail/EventDetailFeature.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "169"
-            endingLineNumber = "169"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -251,8 +251,8 @@
             filePath = "MichiMark/Feature/RootReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "379"
-            endingLineNumber = "379"
+            startingLineNumber = "431"
+            endingLineNumber = "431"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>

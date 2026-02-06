@@ -6,14 +6,15 @@ struct MichiInfoView: View {
     let store: StoreOf<MichiInfoReducer>
 
     var body: some View {
+        let items = store.displayItems
         ScrollView {
             VStack(spacing: 0) {
-                ForEach(Array(store.projection.items.enumerated()), id: \.element.id) { index, item in
+                ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
 
                     MichiTimelineRowView(
                         item: item,
                         isFirst: index == 0,
-                        isLast: index == store.projection.items.count - 1,
+                        isLast: index == items.count - 1,
                         onMarkTap: {
                             store.send(.markTapped(item.id))
                         },

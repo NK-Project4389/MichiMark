@@ -26,6 +26,16 @@ struct RootReducer {
         // 子Feature（常駐）
         var eventList = EventListReducer.State()
 
+        // SelectionFeature の中継用（意味解釈はしない）
+        // TODO: SelectionContext が増えた場合は enum + associated value への昇格を検討する
+        var selectionContextTrans: SelectionContext<TransID, EventDetailReducer.Action>?
+        var selectionSourceElementIDTrans: StackElementID?
+        var selectionContextMember: SelectionContext<MemberID, EventDetailReducer.Action>?
+        var selectionSourceElementIDMember: StackElementID?
+        var selectionContextTag: SelectionContext<TagID, EventDetailReducer.Action>?
+        var selectionSourceElementIDTag: StackElementID?
+        var selectionContextAction: SelectionContext<ActionID, Action>?
+
         // 外部依存State
         var appMode: AppMode = .personal
     }
@@ -33,6 +43,10 @@ struct RootReducer {
     enum Action {
         case eventList(EventListReducer.Action)
         case path(StackAction<Path.State, Path.Action>)
+        case presentTransSelection(SelectionContext<TransID, EventDetailReducer.Action>)
+        case presentMemberSelection(SelectionContext<MemberID, EventDetailReducer.Action>)
+        case presentTagSelection(SelectionContext<TagID, EventDetailReducer.Action>)
+        case presentActionSelection(SelectionContext<ActionID, Action>)
     }
     
     @Dependency(\.eventRepositoryProtocol) var eventRepositoryProtocol
@@ -47,16 +61,15 @@ struct RootReducer {
         case actionSetting(ActionSettingReducer)
         //イベント詳細
         case eventDetail(EventDetailReducer)
-        //ミチ情報
-        case markDetail(MarkDetailReducer)
-        case linkDetail(LinkDetailReducer)
-        //支払情報
-        case paymentDetail(PaymentDetailReducer)
         //選択
         case transSelect(TransSelectReducer)
         case memberSelect(MemberSelectReducer)
         case tagSelect(TagSelectReducer)
         case actionSelect(ActionSelectReducer)
+        case transSelection(SelectionFeature<TransID>)
+        case memberSelection(SelectionFeature<MemberID>)
+        case tagSelection(SelectionFeature<TagID>)
+        case actionSelection(SelectionFeature<ActionID>)
     }
 
     var body: some ReducerOf<Self> {
@@ -119,92 +132,215 @@ struct RootReducer {
                  .eventList(.deleteResponse):
                 return .none
 
-
             // ============================
-            // MARK: EventDetail → Root（delegate）
+            // MARK: SelectionFeature (汎用)
             // ============================
-            //MichiInfo
-            case let .path(.element(
-                    id: elementID,
-                    action: .eventDetail(.core(.delegate(.openMarkDetail(markLinkID))))
-                )
-            ):
 
-                guard
-                    let eventDetail = state.path[id: elementID]?.eventDetail,
-                    let itemProjection = eventDetail.core.projection.michiInfo.items
-                        .first(where: { $0.id == markLinkID })
-                else {
-                    return .none
-                }
-                
-                let markDetailDraft = MarkDetailDraft.init(projection: itemProjection)
-
+            case let .presentTransSelection(context):
+                state.selectionContextTrans = context
+                state.selectionSourceElementIDTrans = nil
                 state.path.append(
-                    .markDetail(
-                        MarkDetailReducer.State(
-                            projection: itemProjection,
-                            draft: markDetailDraft,
-                            eventID: eventDetail.core.eventID,
-                            markLinkID: markLinkID
+                    .transSelection(
+                        SelectionFeature<TransID>.State(
+                            // TODO: 呼び出し元から items を受け取れるようにする
+                            items: [],
+                            selected: context.preselected,
+                            allowsMultipleSelection: context.allowsMultipleSelection
                         )
                     )
                 )
                 return .none
-
-            case let .path(.element(
-                    id: elementID,
-                    action: .eventDetail(.core(.delegate(.openLinkDetail(markLinkID))))
-                )
-            ):
-                guard
-                    let eventDetail = state.path[id: elementID]?.eventDetail,
-                    let itemProjection = eventDetail.core.projection.michiInfo.items
-                        .first(where: { $0.id == markLinkID })
-                else {
-                    return .none
-                }
-
+                
+            case let .presentMemberSelection(context):
+                state.selectionContextMember = context
+                state.selectionSourceElementIDMember = nil
                 state.path.append(
-                    .linkDetail(
-                        LinkDetailReducer.State(
-                            projection: itemProjection,
-                            eventID: eventDetail.core.eventID,
-                            markLinkID: markLinkID
+                    .memberSelection(
+                        SelectionFeature<MemberID>.State(
+                            items: [],
+                            selected: context.preselected,
+                            allowsMultipleSelection: context.allowsMultipleSelection
+                        )
+                    )
+                )
+                return .none
+                
+            case let .presentTagSelection(context):
+                state.selectionContextTag = context
+                state.selectionSourceElementIDTag = nil
+                state.path.append(
+                    .tagSelection(
+                        SelectionFeature<TagID>.State(
+                            items: [],
+                            selected: context.preselected,
+                            allowsMultipleSelection: context.allowsMultipleSelection
+                        )
+                    )
+                )
+                return .none
+                
+            case let .presentActionSelection(context):
+                state.selectionContextAction = context
+                state.path.append(
+                    .actionSelection(
+                        SelectionFeature<ActionID>.State(
+                            items: [],
+                            selected: context.preselected,
+                            allowsMultipleSelection: context.allowsMultipleSelection
                         )
                     )
                 )
                 return .none
 
             case let .path(
-                .element(
-                    id: elementID,
-                    action: .eventDetail(.core(.delegate(.openPaymentDetail(paymentID))))
-                )
+                .element(id: elementID, action: .transSelection(.delegate(.selected(ids))))
             ):
                 guard
-                    let eventDetail = state.path[id: elementID]?.eventDetail,
-                    let paymentProjection = eventDetail.core.projection.paymentInfo.items
-                        .first(where: { $0.id == paymentID })
-                else {
-                    return .none
-                }
-
-                state.path.append(
-                    .paymentDetail(
-                        PaymentDetailReducer.State(
-                            projection: paymentProjection,
-                            eventID: eventDetail.core.eventID,
-                            paymentID: paymentID
+                    let context = state.selectionContextTrans,
+                    let sourceID = state.selectionSourceElementIDTrans
+                else { return .none }
+                state.selectionContextTrans = nil
+                state.selectionSourceElementIDTrans = nil
+                state.path.pop(from: elementID)
+                // Root は ID の意味解釈をせず、SelectionContext のクロージャへ中継するだけ
+                return .send(
+                    .path(
+                        .element(
+                            id: sourceID,
+                            action: .eventDetail(context.onSelected(ids))
                         )
                     )
                 )
-                return .none
+
+            case let .path(
+                .element(id: elementID, action: .transSelection(.delegate(.cancelled)))
+            ):
+                guard
+                    let context = state.selectionContextTrans,
+                    let sourceID = state.selectionSourceElementIDTrans
+                else { return .none }
+                state.selectionContextTrans = nil
+                state.selectionSourceElementIDTrans = nil
+                state.path.pop(from: elementID)
+                return .send(
+                    .path(
+                        .element(
+                            id: sourceID,
+                            action: .eventDetail(context.onCancelled())
+                        )
+                    )
+                )
+                
+            case let .path(
+                .element(id: elementID, action: .memberSelection(.delegate(.selected(ids))))
+            ):
+                guard
+                    let context = state.selectionContextMember,
+                    let sourceID = state.selectionSourceElementIDMember
+                else { return .none }
+                state.selectionContextMember = nil
+                state.selectionSourceElementIDMember = nil
+                state.path.pop(from: elementID)
+                // Root は ID の意味解釈をせず、SelectionContext のクロージャへ中継するだけ
+                return .send(
+                    .path(
+                        .element(
+                            id: sourceID,
+                            action: .eventDetail(context.onSelected(ids))
+                        )
+                    )
+                )
+                
+            case let .path(
+                .element(id: elementID, action: .memberSelection(.delegate(.cancelled)))
+            ):
+                guard
+                    let context = state.selectionContextMember,
+                    let sourceID = state.selectionSourceElementIDMember
+                else { return .none }
+                state.selectionContextMember = nil
+                state.selectionSourceElementIDMember = nil
+                state.path.pop(from: elementID)
+                return .send(
+                    .path(
+                        .element(
+                            id: sourceID,
+                            action: .eventDetail(context.onCancelled())
+                        )
+                    )
+                )
+                
+            case let .path(
+                .element(id: elementID, action: .tagSelection(.delegate(.selected(ids))))
+            ):
+                guard
+                    let context = state.selectionContextTag,
+                    let sourceID = state.selectionSourceElementIDTag
+                else { return .none }
+                state.selectionContextTag = nil
+                state.selectionSourceElementIDTag = nil
+                state.path.pop(from: elementID)
+                // Root は ID の意味解釈をせず、SelectionContext のクロージャへ中継するだけ
+                return .send(
+                    .path(
+                        .element(
+                            id: sourceID,
+                            action: .eventDetail(context.onSelected(ids))
+                        )
+                    )
+                )
+                
+            case let .path(
+                .element(id: elementID, action: .tagSelection(.delegate(.cancelled)))
+            ):
+                guard
+                    let context = state.selectionContextTag,
+                    let sourceID = state.selectionSourceElementIDTag
+                else { return .none }
+                state.selectionContextTag = nil
+                state.selectionSourceElementIDTag = nil
+                state.path.pop(from: elementID)
+                return .send(
+                    .path(
+                        .element(
+                            id: sourceID,
+                            action: .eventDetail(context.onCancelled())
+                        )
+                    )
+                )
+                
+            case let .path(
+                .element(id: elementID, action: .actionSelection(.delegate(.selected(ids))))
+            ):
+                guard let context = state.selectionContextAction else { return .none }
+                state.selectionContextAction = nil
+                state.path.pop(from: elementID)
+                // Root は ID の意味解釈をせず、SelectionContext のクロージャへ中継するだけ
+                return .send(context.onSelected(ids))
+                
+            case let .path(
+                .element(id: elementID, action: .actionSelection(.delegate(.cancelled)))
+            ):
+                guard let context = state.selectionContextAction else { return .none }
+                state.selectionContextAction = nil
+                state.path.pop(from: elementID)
+                return .send(context.onCancelled())
+
+
+            // ============================
+            // MARK: EventDetail → Root（delegate）
+            // ============================
 
             case let .path(
               .element(id: elementID, action: .eventDetail(.core(.delegate(.saved))))
             ):
                 return .send(.eventList(.appeared))
+
+            case let .path(
+                .element(id: elementID, action: .eventDetail(.delegate(.dismiss)))
+            ):
+                state.path.pop(from: elementID)
+                return .none
 //                // 1) 一覧再読込指示
 //                let reload = Effect.send(RootReducer.Action.eventList(.appeared))
 //
@@ -250,82 +386,102 @@ struct RootReducer {
             // MARK: Trans
             case let .path(
                 .element(id: elementID,
-                         action: .eventDetail(.core(.delegate(.openTransSelect))))
+                         action: .eventDetail(.delegate(.transSelectionRequested(context: context, items: items))))
             ):
-                guard
-                    let eventDetail = state.path[id: elementID]?.eventDetail
-                else { return .none }
-
-                let selectedID = eventDetail.core.basicInfo.draft.selectedTransID
-
+                state.selectionContextTrans = context
+                state.selectionSourceElementIDTrans = elementID
                 state.path.append(
-                    .transSelect(
-                        TransSelectReducer.State(
-                            items: [],
-                            selectedID: selectedID
+                    .transSelection(
+                        SelectionFeature<TransID>.State(
+                            items: items,
+                            selected: context.preselected,
+                            allowsMultipleSelection: context.allowsMultipleSelection
                         )
                     )
                 )
                 return .none
                 
             // MARK: Member
+            // BasicInfo
+            // TotalMember
             case let .path(
                 .element(id: elementID,
-                         action: .eventDetail(.core(.delegate(.openTotalMemberSelect(ids)))))
+                         action: .eventDetail(.delegate(.totalMembersSelectionRequested(context: context, items: items))))
             ):
-                guard
-                    let eventDetail = state.path[id: elementID]?.eventDetail
-                else { return .none }
-
+                state.selectionContextMember = context
+                state.selectionSourceElementIDMember = elementID
+                state.path.append(
+                    .memberSelection(
+                        SelectionFeature<MemberID>.State(
+                            items: items,
+                            selected: context.preselected,
+                            allowsMultipleSelection: context.allowsMultipleSelection
+                        )
+                    )
+                )
+                return .none
+            // GasPaymember
+            case let .path(
+                .element(id: elementID,
+                         action: .eventDetail(.delegate(.gasPayMemberSelectionRequested(context: context, items: items))))
+            ):
+                state.selectionContextMember = context
+                state.selectionSourceElementIDMember = elementID
+                state.path.append(
+                    .memberSelection(
+                        SelectionFeature<MemberID>.State(
+                            items: items,
+                            selected: context.preselected,
+                            allowsMultipleSelection: context.allowsMultipleSelection
+                        )
+                    )
+                )
+                return .none
+            // MarkDetail members selection (EventDetail delegate)
+            case let .path(
+                .element(id: _,
+                         action: .eventDetail(.delegate(.openMarkDetailMemberSelect(ids, mode))))
+                ):
                 state.path.append(
                     .memberSelect(
                         MemberSelectReducer.State(
                             items: [],
                             selectedIDs: ids,
-                            mode: .multiple,
-                            useCase: .totalMembers
+                            mode: mode,
+                            useCase: .markMembers
                         )
                     )
                 )
                 return .none
-            
             // MARK: Tag
             case let .path(
                 .element(id: elementID,
-                         action: .eventDetail(.core(.delegate(.openTagSelect))))
+                         action: .eventDetail(.delegate(.tagSelectionRequested(context: context, items: items))))
             ):
-                guard
-                    let eventDetail = state.path[id: elementID]?.eventDetail
-                else { return .none }
-                
-                let selectedIDs = eventDetail.core.basicInfo.draft.selectedTagIDs
-
+                state.selectionContextTag = context
+                state.selectionSourceElementIDTag = elementID
                 state.path.append(
-                    .tagSelect(
-                        TagSelectReducer.State(
-                            items: [],
-                            selectedIDs: selectedIDs
+                    .tagSelection(
+                        SelectionFeature<TagID>.State(
+                            items: items,
+                            selected: context.preselected,
+                            allowsMultipleSelection: context.allowsMultipleSelection
                         )
                     )
                 )
                 return .none
-                
-            // MARK: PayMember
+            // MARK: Action
+            // MichiInfo
             case let .path(
                 .element(id: elementID,
-                         action: .eventDetail(.core(.delegate(.openGasPayMemberSelect(ids)))))
-            ):
-                guard
-                    let eventDetail = state.path[id: elementID]?.eventDetail
-                else { return .none }
-
+                         action: .eventDetail(.delegate(.openMarkDetailActionSelect(ids))))):
+                
                 state.path.append(
-                    .memberSelect(
-                        MemberSelectReducer.State(
+                    .actionSelect(
+                        ActionSelectReducer.State(
                             items: [],
                             selectedIDs: ids,
-                            mode: .single,
-                            useCase: .gasPayer
+                            useCase: .markActions
                         )
                     )
                 )
@@ -361,36 +517,81 @@ struct RootReducer {
                     action: .memberSelect(.delegate(.selected(ids, names, useCase)))
                 )
             ):
-                guard let eventDetailID = state.path.ids.dropLast().last
-                else { return .none }
-
                 switch useCase {
                 case .totalMembers:
+                    guard let eventDetailID = state.path.ids.dropLast().last
+                    else { return .none }
                     if case .eventDetail(var eventDetailState) = state.path[id: eventDetailID] {
                         eventDetailState.core.basicInfo.draft.selectedMemberIDs = ids
                         eventDetailState.core.basicInfo.draft.selectedMemberNames = names
-
+                        
                         state.path[id: eventDetailID] = .eventDetail(eventDetailState)
                     }
                     
                     state.path.removeLast()
                     return .none
                 case .gasPayer:
+                    guard let eventDetailID = state.path.ids.dropLast().last
+                    else { return .none }
                     if case .eventDetail(var eventDetailState) = state.path[id: eventDetailID] {
                         let payerID = ids.first
                         let payerName = payerID.flatMap { names[$0] }
                         eventDetailState.core.basicInfo.draft.selectedPayMemberID = ids.first
                         eventDetailState.core.basicInfo.draft.selectedPayMemberName = payerName
-
+                        
                         state.path[id: eventDetailID] = .eventDetail(eventDetailState)
                     }
                     
                     state.path.removeLast()
                     return .none
+                    
+                case .markMembers:
+                    guard let eventDetailID = state.path.ids.dropLast().last
+                    else { return .none }
+//                    state.path.removeLast()
+                    return .send(
+                        .path(
+                            .element(
+                                id: eventDetailID,
+                                action: .eventDetail(
+                                    .markDetailMembersSelected(ids, names, useCase)
+                                )
+                            )
+                        )
+                    )
                 default:
                     return .none
                 }
                 
+            // MARK: Action
+            case let .path(
+                .element(
+                    id: _,
+                    action: .actionSelect(.delegate(.selected(ids, names, useCase)))
+                )
+            ):
+                switch useCase {
+                case .markActions:
+                    guard let eventDetailID = state.path.ids.dropLast().last
+                    else { return .none }
+                    state.path.removeLast()
+                    return .send(
+                        .path(
+                            .element(
+                                id: eventDetailID,
+                                action: .eventDetail(
+                                    .markDetailActionsSelected(ids, names, useCase)
+                                )
+                            )
+                        )
+                    )
+
+                case .linkActions:
+                    // まだリンク詳細側の反映先が未実装のため、選択画面は閉じる
+                    state.path.removeLast()
+                    return .none
+                }
+
             // MARK: Tag
             case let .path(
                 .element(

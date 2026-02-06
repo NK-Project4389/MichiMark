@@ -1,4 +1,4 @@
-public enum MemberSelectionUseCase {
+public enum MemberSelectionUseCase: Sendable {
     case totalMembers//基本情報
     case markMembers//マーク
     case linkMembers//リンク

@@ -204,18 +204,24 @@ struct MarkDetailView: View {
             .navigationTitle("マーク詳細")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
-                trailing: Button("保存") {
-                    viewStore.send(.saveTapped)
+                trailing: Button("反映") {
+                    viewStore.send(.applyTapped)
                 }
             )
         }
+        .sheet(
+            store: store.scope(state: \.$datePicker, action: \.datePicker)
+        ) { store in
+            DatePickerView(store: store)
+        }
+
     }
 
     // MARK: - Section
     private func section<Content: View>(
         @ViewBuilder content: () -> Content
     ) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 10) {
             content()
         }
         .padding()

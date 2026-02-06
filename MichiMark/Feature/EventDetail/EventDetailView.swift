@@ -21,6 +21,21 @@ struct EventDetailView: View {
                 }
             }
         }
+        .navigationDestination(
+            store: store.scope(
+                state: \.$destination,
+                action: EventDetailReducer.Action.destination
+            )
+        ) { destinationStore in
+            switch destinationStore.case {
+            case let .markDetail(store):
+                MarkDetailView(store: store)
+            case let .linkDetail(store):
+                LinkDetailView(store: store)
+            case let .paymentDetail(store):
+                PaymentDetailView(store: store)
+            }
+        }
     }
 }
 

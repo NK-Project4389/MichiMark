@@ -5,6 +5,12 @@ actor InMemoryActionRepository: ActionRepository {
     private var storage: [ActionID: ActionCore] = [:]
     private let schemaVersion = 1
 
+    init() {
+        Task { [weak self] in
+            await self?.seedIfNeeded()
+        }
+    }
+    
     func fetchAll() async throws -> [ActionDomain] {
         storage.values
             .filter { !$0.isDeleted }
@@ -31,5 +37,32 @@ actor InMemoryActionRepository: ActionRepository {
         existing.updatedAt = action.updatedAt
 
         storage[action.id] = existing
+    }
+    
+    private func seedIfNeeded() async {
+        guard storage.isEmpty else { return }
+        
+        let nidumi = ActionCore(
+            id: ActionID(),
+            actionName: "荷積",
+            isVisible: true,
+            isDeleted: false,
+            schemaVersion: 1,
+            createdAt: Date(),
+            updatedAt: Date()
+        )
+
+        let nioroshi = ActionCore(
+            id: ActionID(),
+            actionName: "荷降",
+            isVisible: true,
+            isDeleted: false,
+            schemaVersion: 1,
+            createdAt: Date(),
+            updatedAt: Date()
+        )
+
+        storage[nidumi.id] = nidumi
+        storage[nioroshi.id] = nioroshi
     }
 }

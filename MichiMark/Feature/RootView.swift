@@ -8,6 +8,9 @@ struct RootView: View {
             self.store = store
         }
     var body: some View {
+        // NavigationStack は RootView に 1つだけ置く。
+        // path は RootReducer.State に保持されるため View 再評価で初期化されず、
+        // ルート画面の切替も Stack の identity を変えない。
         NavigationStackStore(
             store.scope(state: \.path, action: \.path)
         ) {
@@ -21,9 +24,6 @@ struct RootView: View {
             switch pathStore.case {
             //EventDetail
             case let .eventDetail(store):EventDetailView(store: store)
-            case let .markDetail(store):MarkDetailView(store: store)
-            case let .linkDetail(store):LinkDetailView(store: store)
-            case let .paymentDetail(store):PaymentDetailView(store: store)
             //Settings
             case let .settings(store):SettingsView(store: store)
             case let .transSetting(store):TransSettingView(store: store)
@@ -39,6 +39,10 @@ struct RootView: View {
             case let .memberSelect(store):MemberSelectView(store: store)
             case let .tagSelect(store):TagSelectView(store: store)
             case let .actionSelect(store):ActionSelectView(store: store)
+            case let .transSelection(store):SelectionView(store: store)
+            case let .memberSelection(store):SelectionView(store: store)
+            case let .tagSelection(store):SelectionView(store: store)
+            case let .actionSelection(store):SelectionView(store: store)
             }
         }
     }
