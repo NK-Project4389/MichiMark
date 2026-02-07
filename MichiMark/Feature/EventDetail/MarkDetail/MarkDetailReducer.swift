@@ -4,8 +4,11 @@ import Foundation
 
 @Reducer
 struct MarkDetailReducer {
+    @Dependency(\.dismiss) var dismiss
+    
     @ObservableState
     struct State {
+        
         var projection: MarkLinkItemProjection
         var draft: MarkDetailDraft
         
@@ -92,11 +95,11 @@ struct MarkDetailReducer {
                 )
                 state.draft.selectedMemberIDs = ids
                 state.draft.selectedMemberNames = names
-                state.destination = nil
+//                state.destination = nil
                 return .none
 
             case .destination(.presented(.memberSelection(.delegate(.cancelled)))):
-                state.destination = nil
+//                state.destination = nil
                 return .none
 
             case let .destination(.presented(.actionSelection(.delegate(.selected(ids))))):
@@ -108,11 +111,11 @@ struct MarkDetailReducer {
                 )
                 state.draft.selectedActionIDs = ids
                 state.draft.selectedActionNames = names
-                state.destination = nil
+//                state.destination = nil
                 return .none
 
             case .destination(.presented(.actionSelection(.delegate(.cancelled)))):
-                state.destination = nil
+//                state.destination = nil
                 return .none
 
             case let .destination(.presented(.tagSelection(.delegate(.selected(ids))))):
@@ -124,11 +127,11 @@ struct MarkDetailReducer {
                 )
                 state.draft.selectedTagIDs = ids
                 state.draft.selectedTagNames = names
-                state.destination = nil
+//                state.destination = nil
                 return .none
 
             case .destination(.presented(.tagSelection(.delegate(.cancelled)))):
-                state.destination = nil
+//                state.destination = nil
                 return .none
 
             case let .markLinkNameChanged(text):
@@ -148,7 +151,13 @@ struct MarkDetailReducer {
                 return .none
 
             case .applyTapped:
-                return .send(.delegate(.applied(state.draft)))
+//                return .send(.delegate(.applied(state.draft)))
+                return .concatenate(
+                          .send(.delegate(.applied(state.draft))),
+                          .run { _ in
+                            await dismiss()            // ← applied の後に閉じる
+                          }
+                        )
 
             case let .fuelToggled(isOn):
                 state.draft.isFuel = isOn

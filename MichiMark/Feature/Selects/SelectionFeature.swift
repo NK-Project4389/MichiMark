@@ -3,7 +3,9 @@ import ComposableArchitecture
 import SwiftUI
 
 @Reducer
-public struct SelectionFeature<ID: Hashable & Sendable> {
+public struct SelectionFeature<ID: Hashable & Sendable> :Sendable{
+    @Dependency(\.dismiss) var dismiss
+    
     @ObservableState
     public struct State: Equatable {
         public var items: IdentifiedArrayOf<Item>
@@ -63,10 +65,17 @@ public struct SelectionFeature<ID: Hashable & Sendable> {
                 return .none
 
             case .doneTapped:
-                return .send(.delegate(.selected(state.selected)))
+              return .concatenate(
+                .send(.delegate(.selected(state.selected))),
+                .run { _ in
+                  await dismiss() 
+                }
+              )
 
             case .cancelTapped:
-                return .send(.delegate(.cancelled))
+              return .run { _ in
+                await dismiss()
+              }
 
             case .delegate:
                 return .none
