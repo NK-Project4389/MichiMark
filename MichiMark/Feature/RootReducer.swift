@@ -35,6 +35,8 @@ struct RootReducer {
         var selectionContextTag: SelectionContext<TagID, EventDetailReducer.Action>?
         var selectionSourceElementIDTag: StackElementID?
         var selectionContextAction: SelectionContext<ActionID, Action>?
+        var selectionContextActionEventDetail: SelectionContext<ActionID, EventDetailReducer.Action>?
+        var selectionSourceElementIDAction: StackElementID?
 
         // 外部依存State
         var appMode: AppMode = .personal
@@ -203,11 +205,13 @@ struct RootReducer {
                 state.selectionSourceElementIDTrans = nil
                 state.path.pop(from: elementID)
                 // Root は ID の意味解釈をせず、SelectionContext のクロージャへ中継するだけ
+                let eventDetailAction = context.onSelected(ids)
+                if case .destination(.dismiss) = eventDetailAction { return .none }
                 return .send(
                     .path(
                         .element(
                             id: sourceID,
-                            action: .eventDetail(context.onSelected(ids))
+                            action: .eventDetail(eventDetailAction)
                         )
                     )
                 )
@@ -222,11 +226,13 @@ struct RootReducer {
                 state.selectionContextTrans = nil
                 state.selectionSourceElementIDTrans = nil
                 state.path.pop(from: elementID)
+                let eventDetailAction = context.onCancelled()
+                if case .destination(.dismiss) = eventDetailAction { return .none }
                 return .send(
                     .path(
                         .element(
                             id: sourceID,
-                            action: .eventDetail(context.onCancelled())
+                            action: .eventDetail(eventDetailAction)
                         )
                     )
                 )
@@ -242,11 +248,13 @@ struct RootReducer {
                 state.selectionSourceElementIDMember = nil
                 state.path.pop(from: elementID)
                 // Root は ID の意味解釈をせず、SelectionContext のクロージャへ中継するだけ
+                let eventDetailAction = context.onSelected(ids)
+                if case .destination(.dismiss) = eventDetailAction { return .none }
                 return .send(
                     .path(
                         .element(
                             id: sourceID,
-                            action: .eventDetail(context.onSelected(ids))
+                            action: .eventDetail(eventDetailAction)
                         )
                     )
                 )
@@ -261,11 +269,13 @@ struct RootReducer {
                 state.selectionContextMember = nil
                 state.selectionSourceElementIDMember = nil
                 state.path.pop(from: elementID)
+                let eventDetailAction = context.onCancelled()
+                if case .destination(.dismiss) = eventDetailAction { return .none }
                 return .send(
                     .path(
                         .element(
                             id: sourceID,
-                            action: .eventDetail(context.onCancelled())
+                            action: .eventDetail(eventDetailAction)
                         )
                     )
                 )
@@ -281,11 +291,13 @@ struct RootReducer {
                 state.selectionSourceElementIDTag = nil
                 state.path.pop(from: elementID)
                 // Root は ID の意味解釈をせず、SelectionContext のクロージャへ中継するだけ
+                let eventDetailAction = context.onSelected(ids)
+                if case .destination(.dismiss) = eventDetailAction { return .none }
                 return .send(
                     .path(
                         .element(
                             id: sourceID,
-                            action: .eventDetail(context.onSelected(ids))
+                            action: .eventDetail(eventDetailAction)
                         )
                     )
                 )
@@ -300,11 +312,13 @@ struct RootReducer {
                 state.selectionContextTag = nil
                 state.selectionSourceElementIDTag = nil
                 state.path.pop(from: elementID)
+                let eventDetailAction = context.onCancelled()
+                if case .destination(.dismiss) = eventDetailAction { return .none }
                 return .send(
                     .path(
                         .element(
                             id: sourceID,
-                            action: .eventDetail(context.onCancelled())
+                            action: .eventDetail(eventDetailAction)
                         )
                     )
                 )
@@ -312,6 +326,22 @@ struct RootReducer {
             case let .path(
                 .element(id: elementID, action: .actionSelection(.delegate(.selected(ids))))
             ):
+                if let context = state.selectionContextActionEventDetail,
+                   let sourceID = state.selectionSourceElementIDAction {
+                    state.selectionContextActionEventDetail = nil
+                    state.selectionSourceElementIDAction = nil
+                    state.path.pop(from: elementID)
+                    let eventDetailAction = context.onSelected(ids)
+                    if case .destination(.dismiss) = eventDetailAction { return .none }
+                    return .send(
+                        .path(
+                            .element(
+                                id: sourceID,
+                                action: .eventDetail(eventDetailAction)
+                            )
+                        )
+                    )
+                }
                 guard let context = state.selectionContextAction else { return .none }
                 state.selectionContextAction = nil
                 state.path.pop(from: elementID)
@@ -321,6 +351,22 @@ struct RootReducer {
             case let .path(
                 .element(id: elementID, action: .actionSelection(.delegate(.cancelled)))
             ):
+                if let context = state.selectionContextActionEventDetail,
+                   let sourceID = state.selectionSourceElementIDAction {
+                    state.selectionContextActionEventDetail = nil
+                    state.selectionSourceElementIDAction = nil
+                    state.path.pop(from: elementID)
+                    let eventDetailAction = context.onCancelled()
+                    if case .destination(.dismiss) = eventDetailAction { return .none }
+                    return .send(
+                        .path(
+                            .element(
+                                id: sourceID,
+                                action: .eventDetail(eventDetailAction)
+                            )
+                        )
+                    )
+                }
                 guard let context = state.selectionContextAction else { return .none }
                 state.selectionContextAction = nil
                 state.path.pop(from: elementID)
@@ -439,20 +485,22 @@ struct RootReducer {
                 return .none
             // MarkDetail members selection (EventDetail delegate)
             case let .path(
-                .element(id: _,
-                         action: .eventDetail(.delegate(.openMarkDetailMemberSelect(ids, mode))))
-                ):
-                state.path.append(
-                    .memberSelect(
-                        MemberSelectReducer.State(
-                            items: [],
-                            selectedIDs: ids,
-                            mode: mode,
-                            useCase: .markMembers
+                .element(id: elementID,
+                         action: .eventDetail(.delegate(.markDetailMemberSelectionRequested(context: context, items: items))))
+            ):
+                return .send(
+                    .path(
+                        .element(
+                            id: elementID,
+                            action: .eventDetail(
+                                .presentMemberSelectionFromMarkDetail(
+                                    context: context,
+                                    items: items
+                                )
+                            )
                         )
                     )
                 )
-                return .none
             // MARK: Tag
             case let .path(
                 .element(id: elementID,
@@ -474,18 +522,40 @@ struct RootReducer {
             // MichiInfo
             case let .path(
                 .element(id: elementID,
-                         action: .eventDetail(.delegate(.openMarkDetailActionSelect(ids))))):
-                
-                state.path.append(
-                    .actionSelect(
-                        ActionSelectReducer.State(
-                            items: [],
-                            selectedIDs: ids,
-                            useCase: .markActions
+                         action: .eventDetail(.delegate(.markDetailActionSelectionRequested(context: context, items: items))))):
+                return .send(
+                    .path(
+                        .element(
+                            id: elementID,
+                            action: .eventDetail(
+                                .presentActionSelectionFromMarkDetail(
+                                    context: context,
+                                    items: items
+                                )
+                            )
                         )
                     )
                 )
-                return .none
+                
+            case let .path(
+                .element(
+                    id: elementID,
+                    action: .eventDetail(.delegate(.markDetailTagSelectionRequested(context: context, items: items)))
+                )
+            ):
+                return .send(
+                    .path(
+                        .element(
+                            id: elementID,
+                            action: .eventDetail(
+                                .presentTagSelectionFromMarkDetail(
+                                    context: context,
+                                    items: items
+                                )
+                            )
+                        )
+                    )
+                )
                 
             // MARK: 選択結果返送
             // MARK: Trans
@@ -498,16 +568,15 @@ struct RootReducer {
                 guard
                     let eventDetailID = state.path.ids.dropLast().last
                 else { return .none }
-
-                if case .eventDetail(var eventDetailState) = state.path[id: eventDetailID] {
-                    eventDetailState.core.basicInfo.draft.selectedTransID = id
-                    eventDetailState.core.basicInfo.draft.selectedTransName = name
-
-                    state.path[id: eventDetailID] = .eventDetail(eventDetailState)
-                }
-
                 state.path.removeLast()
-                return .none
+                return .send(
+                    .path(
+                        .element(
+                            id: eventDetailID,
+                            action: .eventDetail(.transSelectionResultReceived(id, name))
+                        )
+                    )
+                )
 
                 
             // MARK: Member
@@ -521,40 +590,39 @@ struct RootReducer {
                 case .totalMembers:
                     guard let eventDetailID = state.path.ids.dropLast().last
                     else { return .none }
-                    if case .eventDetail(var eventDetailState) = state.path[id: eventDetailID] {
-                        eventDetailState.core.basicInfo.draft.selectedMemberIDs = ids
-                        eventDetailState.core.basicInfo.draft.selectedMemberNames = names
-                        
-                        state.path[id: eventDetailID] = .eventDetail(eventDetailState)
-                    }
-                    
                     state.path.removeLast()
-                    return .none
+                    return .send(
+                        .path(
+                            .element(
+                                id: eventDetailID,
+                                action: .eventDetail(.totalMembersSelectionResultReceived(ids, names))
+                            )
+                        )
+                    )
                 case .gasPayer:
                     guard let eventDetailID = state.path.ids.dropLast().last
                     else { return .none }
-                    if case .eventDetail(var eventDetailState) = state.path[id: eventDetailID] {
-                        let payerID = ids.first
-                        let payerName = payerID.flatMap { names[$0] }
-                        eventDetailState.core.basicInfo.draft.selectedPayMemberID = ids.first
-                        eventDetailState.core.basicInfo.draft.selectedPayMemberName = payerName
-                        
-                        state.path[id: eventDetailID] = .eventDetail(eventDetailState)
-                    }
-                    
+                    let payerID = ids.first
+                    let payerName = payerID.flatMap { names[$0] }
                     state.path.removeLast()
-                    return .none
+                    return .send(
+                        .path(
+                            .element(
+                                id: eventDetailID,
+                                action: .eventDetail(.gasPayMemberSelectionResultReceived(payerID, payerName))
+                            )
+                        )
+                    )
                     
                 case .markMembers:
                     guard let eventDetailID = state.path.ids.dropLast().last
                     else { return .none }
-//                    state.path.removeLast()
                     return .send(
                         .path(
                             .element(
                                 id: eventDetailID,
                                 action: .eventDetail(
-                                    .markDetailMembersSelected(ids, names, useCase)
+                                    .markDetailMemberSelectionResultReceived(ids, names)
                                 )
                             )
                         )
@@ -580,7 +648,7 @@ struct RootReducer {
                             .element(
                                 id: eventDetailID,
                                 action: .eventDetail(
-                                    .markDetailActionsSelected(ids, names, useCase)
+                                    .markDetailActionSelectionResultReceived(ids, names)
                                 )
                             )
                         )
@@ -601,16 +669,15 @@ struct RootReducer {
             ):
                 guard let eventDetailID = state.path.ids.dropLast().last
                 else { return .none }
-
-                if case .eventDetail(var eventDetailState) = state.path[id: eventDetailID] {
-                    eventDetailState.core.basicInfo.draft.selectedTagIDs = ids
-                    eventDetailState.core.basicInfo.draft.selectedTagNames = names
-
-                    state.path[id: eventDetailID] = .eventDetail(eventDetailState)
-                }
-
                 state.path.removeLast()
-                return .none
+                return .send(
+                    .path(
+                        .element(
+                            id: eventDetailID,
+                            action: .eventDetail(.tagSelectionResultReceived(ids, names))
+                        )
+                    )
+                )
 
             default:
                 return .none

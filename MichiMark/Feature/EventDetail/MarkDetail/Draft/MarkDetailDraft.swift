@@ -8,6 +8,8 @@ struct MarkDetailDraft: Equatable {
     var markLinkName: String
     var selectedMemberIDs: Set<MemberID>
     var selectedMemberNames: [MemberID: String]
+    var selectedTagIDs: Set<TagID>
+    var selectedTagNames: [TagID: String]
     var displayMeterValue: String//メーター
     var displayDistanceValue: String//走行距離
     var selectedActionIDs: Set<ActionID>//行動
@@ -34,6 +36,9 @@ extension MarkDetailDraft {
             uniqueKeysWithValues:
                 projection.members.map { ($0.id, $0.memberName) }
         )
+
+        self.selectedTagIDs = []
+        self.selectedTagNames = [:]
 
         self.displayMeterValue = projection.displayMeterValue ?? ""
         self.displayDistanceValue = projection.displayDistanceValue ?? ""

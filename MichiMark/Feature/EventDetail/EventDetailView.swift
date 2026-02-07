@@ -3,7 +3,7 @@ import ComposableArchitecture
 
 struct EventDetailView: View {
 
-    let store: StoreOf<EventDetailReducer>
+    @Bindable var store: StoreOf<EventDetailReducer>
 
     var body: some View {
         VStack(spacing: 0) {
@@ -22,9 +22,9 @@ struct EventDetailView: View {
             }
         }
         .navigationDestination(
-            store: store.scope(
-                state: \.$destination,
-                action: EventDetailReducer.Action.destination
+            item: $store.scope(
+                state: \.destination,
+                action: \.destination
             )
         ) { destinationStore in
             switch destinationStore.case {

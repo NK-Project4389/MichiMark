@@ -34,6 +34,18 @@ struct EventDetailReducer {
         case markDetailMemberSelectionResultReceived(Set<MemberID>, [MemberID: String])
         case markDetailActionSelectionResultReceived(Set<ActionID>, [ActionID: String])
         case markDetailTagSelectionResultReceived(Set<TagID>, [TagID: String])
+        case presentMemberSelectionFromMarkDetail(
+            context: SelectionContext<MemberID, EventDetailReducer.Action>,
+            items: IdentifiedArrayOf<SelectionFeature<MemberID>.Item>
+        )
+        case presentActionSelectionFromMarkDetail(
+            context: SelectionContext<ActionID, EventDetailReducer.Action>,
+            items: IdentifiedArrayOf<SelectionFeature<ActionID>.Item>
+        )
+        case presentTagSelectionFromMarkDetail(
+            context: SelectionContext<TagID, EventDetailReducer.Action>,
+            items: IdentifiedArrayOf<SelectionFeature<TagID>.Item>
+        )
         case transSelectionResultReceived(TransID?, String?)
         case transSelectionCancelled
         case totalMembersSelectionResultReceived(Set<MemberID>, [MemberID: String])
@@ -158,6 +170,45 @@ struct EventDetailReducer {
 
             case let .destination(.presented(.markDetail(.delegate(.tagSelectionRequested(ids))))):
                 return .send(.core(.markDetailTagSelectionRequested(ids)))
+
+            case let .presentMemberSelectionFromMarkDetail(context, items):
+                guard case var .markDetail(markDetailState) = state.destination
+                else { return .none }
+                markDetailState.destination = .memberSelection(
+                    SelectionFeature<MemberID>.State(
+                        items: items,
+                        selected: context.preselected,
+                        allowsMultipleSelection: context.allowsMultipleSelection
+                    )
+                )
+                state.destination = .markDetail(markDetailState)
+                return .none
+
+            case let .presentActionSelectionFromMarkDetail(context, items):
+                guard case var .markDetail(markDetailState) = state.destination
+                else { return .none }
+                markDetailState.destination = .actionSelection(
+                    SelectionFeature<ActionID>.State(
+                        items: items,
+                        selected: context.preselected,
+                        allowsMultipleSelection: context.allowsMultipleSelection
+                    )
+                )
+                state.destination = .markDetail(markDetailState)
+                return .none
+
+            case let .presentTagSelectionFromMarkDetail(context, items):
+                guard case var .markDetail(markDetailState) = state.destination
+                else { return .none }
+                markDetailState.destination = .tagSelection(
+                    SelectionFeature<TagID>.State(
+                        items: items,
+                        selected: context.preselected,
+                        allowsMultipleSelection: context.allowsMultipleSelection
+                    )
+                )
+                state.destination = .markDetail(markDetailState)
+                return .none
 
             // MichiInfo MarkDetail メンバー選択　上位通知
             case let .markDetailMemberSelectionResultReceived(ids, names):
