@@ -537,26 +537,6 @@ struct RootReducer {
                     )
                 )
                 
-            case let .path(
-                .element(
-                    id: elementID,
-                    action: .eventDetail(.delegate(.markDetailTagSelectionRequested(context: context, items: items)))
-                )
-            ):
-                return .send(
-                    .path(
-                        .element(
-                            id: elementID,
-                            action: .eventDetail(
-                                .presentTagSelectionFromMarkDetail(
-                                    context: context,
-                                    items: items
-                                )
-                            )
-                        )
-                    )
-                )
-                
             // MARK: 選択結果返送
             // MARK: Trans
             case let .path(

@@ -33,7 +33,6 @@ struct EventDetailReducer {
         // 設定ボタン
         case markDetailMemberSelectionResultReceived(Set<MemberID>, [MemberID: String])
         case markDetailActionSelectionResultReceived(Set<ActionID>, [ActionID: String])
-        case markDetailTagSelectionResultReceived(Set<TagID>, [TagID: String])
         case presentMemberSelectionFromMarkDetail(
             context: SelectionContext<MemberID, EventDetailReducer.Action>,
             items: IdentifiedArrayOf<SelectionFeature<MemberID>.Item>
@@ -41,10 +40,6 @@ struct EventDetailReducer {
         case presentActionSelectionFromMarkDetail(
             context: SelectionContext<ActionID, EventDetailReducer.Action>,
             items: IdentifiedArrayOf<SelectionFeature<ActionID>.Item>
-        )
-        case presentTagSelectionFromMarkDetail(
-            context: SelectionContext<TagID, EventDetailReducer.Action>,
-            items: IdentifiedArrayOf<SelectionFeature<TagID>.Item>
         )
         case transSelectionResultReceived(TransID?, String?)
         case transSelectionCancelled
@@ -55,7 +50,6 @@ struct EventDetailReducer {
         case tagSelectionCancelled
         case markDetailMemberSelectionCancelled
         case markDetailActionSelectionCancelled
-        case markDetailTagSelectionCancelled
         
         case delegate(Delegate)
     }
@@ -89,10 +83,6 @@ struct EventDetailReducer {
         case markDetailActionSelectionRequested(
             context: SelectionContext<ActionID, EventDetailReducer.Action>,
             items: IdentifiedArrayOf<SelectionFeature<ActionID>.Item>
-        )
-        case markDetailTagSelectionRequested(
-            context: SelectionContext<TagID, EventDetailReducer.Action>,
-            items: IdentifiedArrayOf<SelectionFeature<TagID>.Item>
         )
         case saved
         case dismiss
@@ -168,9 +158,6 @@ struct EventDetailReducer {
             case let .destination(.presented(.markDetail(.delegate(.actionSelectionRequested(ids))))):
                 return .send(.core(.markDetailActionSelectionRequested(ids)))
 
-            case let .destination(.presented(.markDetail(.delegate(.tagSelectionRequested(ids))))):
-                return .send(.core(.markDetailTagSelectionRequested(ids)))
-
             case let .presentMemberSelectionFromMarkDetail(context, items):
                 guard case var .markDetail(markDetailState) = state.destination
                 else { return .none }
@@ -189,19 +176,6 @@ struct EventDetailReducer {
                 else { return .none }
                 markDetailState.destination = .actionSelection(
                     SelectionFeature<ActionID>.State(
-                        items: items,
-                        selected: context.preselected,
-                        allowsMultipleSelection: context.allowsMultipleSelection
-                    )
-                )
-                state.destination = .markDetail(markDetailState)
-                return .none
-
-            case let .presentTagSelectionFromMarkDetail(context, items):
-                guard case var .markDetail(markDetailState) = state.destination
-                else { return .none }
-                markDetailState.destination = .tagSelection(
-                    SelectionFeature<TagID>.State(
                         items: items,
                         selected: context.preselected,
                         allowsMultipleSelection: context.allowsMultipleSelection
@@ -233,18 +207,6 @@ struct EventDetailReducer {
                     ?? MarkDetailDraft(projection: itemProjection)
                 draft.selectedActionIDs = ids
                 draft.selectedActionNames = names
-                state.core.michiInfo.draftByID[markLinkID] = draft
-                return .none
-
-            case let .markDetailTagSelectionResultReceived(ids, names):
-                guard let markLinkID = state.editingMarkLinkID else { return .none }
-                guard let itemProjection = state.core.projection.michiInfo.items
-                    .first(where: { $0.id == markLinkID })
-                else { return .none }
-                var draft = state.core.michiInfo.draftByID[markLinkID]
-                    ?? MarkDetailDraft(projection: itemProjection)
-                draft.selectedTagIDs = ids
-                draft.selectedTagNames = names
                 state.core.michiInfo.draftByID[markLinkID] = draft
                 return .none
                 
@@ -378,7 +340,6 @@ struct EventDetailCoreReducer {
         case delegate(EventDetailReducer.Delegate)
         case markDetailMemberSelectionRequested(Set<MemberID>)
         case markDetailActionSelectionRequested(Set<ActionID>)
-        case markDetailTagSelectionRequested(Set<TagID>)
     }
 
     var body: some ReducerOf<Self> {
@@ -664,48 +625,6 @@ struct EventDetailCoreReducer {
                         }
                     }
 
-                case let .markDetailTagSelectionRequested(ids):
-                    return .run { [ids] send in
-                        do {
-                            let domains = try await tagRepository.fetchAll()
-                            let projections = TagProjectionAdapter()
-                                .adaptList(tags: domains)
-                                .filter { $0.isVisible }
-
-                            let items = IdentifiedArrayOf<SelectionFeature<TagID>.Item>(
-                                uniqueElements: projections.map { projection in
-                                    SelectionFeature<TagID>.Item(
-                                        id: projection.id,
-                                        title: projection.tagName,
-                                        subtitle: nil
-                                    )
-                                }
-                            )
-
-                            let nameMap = Dictionary(
-                                uniqueKeysWithValues: projections.map { ($0.id, $0.tagName) }
-                            )
-
-                            let context = SelectionContext<TagID, EventDetailReducer.Action>(
-                                preselected: ids,
-                                allowsMultipleSelection: true,
-                                onSelected: { selectedIDs in
-                                    let names = Dictionary(
-                                        uniqueKeysWithValues: selectedIDs.compactMap { id in
-                                            nameMap[id].map { (id, $0) }
-                                        }
-                                    )
-                                    return .markDetailTagSelectionResultReceived(selectedIDs, names)
-                                },
-                                onCancelled: { .markDetailTagSelectionCancelled }
-                            )
-
-                            await send(.delegate(.markDetailTagSelectionRequested(context: context, items: items)))
-                        } catch {
-                            // エラー時は何もしない（表示側の責務に委譲）
-                        }
-                    }
-                
                 case .basicInfo:
                     return .none
                 

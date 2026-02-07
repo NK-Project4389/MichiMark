@@ -111,31 +111,6 @@ struct MarkDetailView: View {
                     }
                 }
 
-                // MARK: - タグ
-                section {
-                    Button {
-                        store.send(.tagsTapped)
-                    } label: {
-                        BasicInfoRow(
-                            icon: "tag",
-                            title: "タグ",
-                            value: nil,
-                            showsChevron: true
-                        )
-                    }
-
-                    if !store.draft.selectedTagIDs.isEmpty {
-                        Text(
-                            store.draft.selectedTagNames
-                                .values
-                                .joined(separator: ", ")
-                        )
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                        .padding(.horizontal, 8)
-                    }
-                }
-
                 // MARK: - メモ
                 section {
                     TextField(
@@ -230,8 +205,6 @@ struct MarkDetailView: View {
             case let .memberSelection(store):
                 SelectionView(store: store)
             case let .actionSelection(store):
-                SelectionView(store: store)
-            case let .tagSelection(store):
                 SelectionView(store: store)
             }
         }

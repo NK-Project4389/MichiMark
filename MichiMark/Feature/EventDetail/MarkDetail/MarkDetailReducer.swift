@@ -20,7 +20,6 @@ struct MarkDetailReducer {
     enum Destination {
         case memberSelection(SelectionFeature<MemberID>)
         case actionSelection(SelectionFeature<ActionID>)
-        case tagSelection(SelectionFeature<TagID>)
     }
 
     enum Action {
@@ -33,7 +32,6 @@ struct MarkDetailReducer {
         case datePicker(PresentationAction<DatePickerReducer.Action>)
         case membersTapped
         case actionsTapped
-        case tagsTapped
         case applyTapped
         case backTapped
         
@@ -47,7 +45,6 @@ struct MarkDetailReducer {
         enum Delegate {
             case memberSelectionRequested(ids: Set<MemberID>)
             case actionSelectionRequested(ids: Set<ActionID>)
-            case tagSelectionRequested(ids: Set<TagID>)
             case applied(MarkDetailDraft)
         }
     }
@@ -76,13 +73,6 @@ struct MarkDetailReducer {
                 return .send(
                     .delegate(.actionSelectionRequested(
                         ids: state.draft.selectedActionIDs
-                    ))
-                )
-                
-            case .tagsTapped:
-                return .send(
-                    .delegate(.tagSelectionRequested(
-                        ids: state.draft.selectedTagIDs
                     ))
                 )
 
@@ -115,22 +105,6 @@ struct MarkDetailReducer {
                 return .none
 
             case .destination(.presented(.actionSelection(.delegate(.cancelled)))):
-//                state.destination = nil
-                return .none
-
-            case let .destination(.presented(.tagSelection(.delegate(.selected(ids))))):
-                guard case let .tagSelection(selectionState) = state.destination else { return .none }
-                let names = Dictionary(
-                    uniqueKeysWithValues: selectionState.items
-                        .filter { ids.contains($0.id) }
-                        .map { ($0.id, $0.title) }
-                )
-                state.draft.selectedTagIDs = ids
-                state.draft.selectedTagNames = names
-//                state.destination = nil
-                return .none
-
-            case .destination(.presented(.tagSelection(.delegate(.cancelled)))):
 //                state.destination = nil
                 return .none
 
