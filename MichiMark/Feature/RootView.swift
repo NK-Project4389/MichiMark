@@ -24,6 +24,9 @@ struct RootView: View {
             switch pathStore.case {
             //EventDetail
             case let .eventDetail(store):EventDetailView(store: store)
+            case let .markDetail(store):MarkDetailView(store: store)
+            case let .linkDetail(store):LinkDetailView(store: store)
+            case let .paymentDetail(store):PaymentDetailView(store: store)
             //Settings
             case let .settings(store):SettingsView(store: store)
             case let .transSetting(store):TransSettingView(store: store)

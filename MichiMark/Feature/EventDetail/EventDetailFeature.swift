@@ -19,38 +19,18 @@ struct EventDetailReducer {
     @ObservableState
     struct State{
         var core: EventDetailCoreReducer.State
-        @Presents var destination: Destination.State?
-        var editingMarkLinkID: MarkLinkID?
     }
 
     enum Action {
         // CoreReducerへの橋渡し
         case core(EventDetailCoreReducer.Action)
-        // ナビゲーション
-        case destination(PresentationAction<Destination.Action>)
         // EventDetail 戻るボタン
         case dismissTapped
         // 設定ボタン
-        case markDetailMemberSelectionResultReceived(Set<MemberID>, [MemberID: String])
-        case markDetailActionSelectionResultReceived(Set<ActionID>, [ActionID: String])
-        case linkDetailMemberSelectionResultReceived(Set<MemberID>, [MemberID: String])
-        case linkDetailActionSelectionResultReceived(Set<ActionID>, [ActionID: String])
-        case presentMemberSelectionFromMarkDetail(
-            context: SelectionContext<MemberID, EventDetailReducer.Action>,
-            items: IdentifiedArrayOf<SelectionFeature<MemberID>.Item>
-        )
-        case presentActionSelectionFromMarkDetail(
-            context: SelectionContext<ActionID, EventDetailReducer.Action>,
-            items: IdentifiedArrayOf<SelectionFeature<ActionID>.Item>
-        )
-        case presentMemberSelectionFromLinkDetail(
-            context: SelectionContext<MemberID, EventDetailReducer.Action>,
-            items: IdentifiedArrayOf<SelectionFeature<MemberID>.Item>
-        )
-        case presentActionSelectionFromLinkDetail(
-            context: SelectionContext<ActionID, EventDetailReducer.Action>,
-            items: IdentifiedArrayOf<SelectionFeature<ActionID>.Item>
-        )
+        case markDetailMemberSelectionResultReceived(MarkLinkID, Set<MemberID>, [MemberID: String])
+        case markDetailActionSelectionResultReceived(MarkLinkID, Set<ActionID>, [ActionID: String])
+        case linkDetailMemberSelectionResultReceived(MarkLinkID, Set<MemberID>, [MemberID: String])
+        case linkDetailActionSelectionResultReceived(MarkLinkID, Set<ActionID>, [ActionID: String])
         case transSelectionResultReceived(TransID?, String?)
         case transSelectionCancelled
         case totalMembersSelectionResultReceived(Set<MemberID>, [MemberID: String])
@@ -108,13 +88,6 @@ struct EventDetailReducer {
         case dismiss
     }
 
-    @Reducer
-    enum Destination {
-        case markDetail(MarkDetailReducer)
-        case linkDetail(LinkDetailReducer)
-        case paymentDetail(PaymentDetailReducer)
-    }
-
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
@@ -126,155 +99,8 @@ struct EventDetailReducer {
             case .core(.delegate(let delegate)):
                 return .send(.delegate(delegate))
             
-            // MichiInfo マーク詳細
-            case let .delegate(.openMarkDetail(markLinkID)):
-                guard let itemProjection = state.core.projection.michiInfo.items
-                    .first(where: { $0.id == markLinkID })
-                else { return .none }
-
-                let markDetailDraft = state.core.michiInfo.draftByID[markLinkID]
-                    ?? MarkDetailDraft(projection: itemProjection)
-                state.editingMarkLinkID = markLinkID
-                state.destination = .markDetail(
-                    MarkDetailReducer.State(
-                        projection: itemProjection,
-                        draft: markDetailDraft
-                    )
-                )
-                return .none
-
-            // MichiInfo リンク詳細
-            case let .delegate(.openLinkDetail(markLinkID)):
-                guard let itemProjection = state.core.projection.michiInfo.items
-                    .first(where: { $0.id == markLinkID })
-                else { return .none }
-
-                let linkDetailDraft = state.core.michiInfo.linkDraftByID[markLinkID]
-                    ?? LinkDetailDraft(projection: itemProjection)
-                state.editingMarkLinkID = markLinkID
-                state.destination = .linkDetail(
-                    LinkDetailReducer.State(
-                        projection: itemProjection,
-                        draft: linkDetailDraft
-                    )
-                )
-                return .none
-
-            // MichiInfo MarkDetail 反映ボタン
-            case let .destination(.presented(.markDetail(.delegate(.applied(draft))))):
-                guard let markLinkID = state.editingMarkLinkID else {
-                    state.destination = nil
-                    return .none
-                }
-                state.destination = nil
-                state.editingMarkLinkID = nil
-                return .send(
-                    .core(.michiInfo(.markDetailDraftApplied(markLinkID, draft)))
-                )
-
-            // MichiInfo LinkDetail 反映ボタン
-            case let .destination(.presented(.linkDetail(.delegate(.applied(draft))))):
-              guard let markLinkID = state.editingMarkLinkID else {
-                state.destination = nil
-                return .none
-              }
-
-              // ① 先に必要な state を整理
-              state.editingMarkLinkID = nil
-
-              // ② Core へ通知（destination はまだ生きている）
-              let effect: Effect<Action> =
-                .send(.core(.michiInfo(.linkDetailDraftApplied(markLinkID, draft))))
-
-              // ③ reducer の最後で閉じる（Effect 生成後）
-              state.destination = nil
-
-              return effect
-
-//            case let .destination(.presented(.linkDetail(.delegate(.applied(draft))))):
-//                guard let markLinkID = state.editingMarkLinkID else {
-//                    state.destination = nil
-//                    return .none
-//                }
-//                state.destination = nil
-//                state.editingMarkLinkID = nil
-//                return .send(
-//                    .core(.michiInfo(.linkDetailDraftApplied(markLinkID, draft)))
-//                    
-//                    .send(.destination(.dismiss))
-//                )
-
-            // MichiInfo MarkDetail メンバー選択　受信
-            case let .destination(.presented(.markDetail(.delegate(.memberSelectionRequested(ids))))):
-                return .send(.core(.markDetailMemberSelectionRequested(ids)))
-
-            // MichiInfo MarkDetail 行動選択
-            case let .destination(.presented(.markDetail(.delegate(.actionSelectionRequested(ids))))):
-                return .send(.core(.markDetailActionSelectionRequested(ids)))
-                
-            // MichiInfo LinkDetail メンバー選択　受信
-            case let .destination(.presented(.linkDetail(.delegate(.memberSelectionRequested(ids))))):
-                return .send(.core(.linkDetailMemberSelectionRequested(ids)))
-
-            // MichiInfo LinkDetail 行動選択
-            case let .destination(.presented(.linkDetail(.delegate(.actionSelectionRequested(ids))))):
-                return .send(.core(.linkDetailActionSelectionRequested(ids)))
-
-            case let .presentMemberSelectionFromMarkDetail(context, items):
-                guard case var .markDetail(markDetailState) = state.destination
-                else { return .none }
-                markDetailState.destination = .memberSelection(
-                    SelectionFeature<MemberID>.State(
-                        items: items,
-                        selected: context.preselected,
-                        allowsMultipleSelection: context.allowsMultipleSelection
-                    )
-                )
-                state.destination = .markDetail(markDetailState)
-                return .none
-
-            case let .presentActionSelectionFromMarkDetail(context, items):
-                guard case var .markDetail(markDetailState) = state.destination
-                else { return .none }
-                markDetailState.destination = .actionSelection(
-                    SelectionFeature<ActionID>.State(
-                        items: items,
-                        selected: context.preselected,
-                        allowsMultipleSelection: context.allowsMultipleSelection
-                    )
-                )
-                state.destination = .markDetail(markDetailState)
-                return .none
-                
-            case let .presentMemberSelectionFromLinkDetail(context, items):
-                guard case var .linkDetail(linkDetailState) = state.destination
-                else { return .none }
-                linkDetailState.destination = .memberSelection(
-                    SelectionFeature<MemberID>.State(
-                        items: items,
-                        selected: context.preselected,
-                        allowsMultipleSelection: context.allowsMultipleSelection
-                    )
-                )
-                state.destination = .linkDetail(linkDetailState)
-                return .none
-
-            case let .presentActionSelectionFromLinkDetail(context, items):
-                guard case var .linkDetail(linkDetailState) = state.destination
-                else { return .none }
-                linkDetailState.destination = .actionSelection(
-                    SelectionFeature<ActionID>.State(
-                        items: items,
-                        selected: context.preselected,
-                        allowsMultipleSelection: context.allowsMultipleSelection
-                    )
-                )
-                state.destination = .linkDetail(linkDetailState)
-                return .none
-
             // MichiInfo MarkDetail メンバー選択　上位通知
-            case let .markDetailMemberSelectionResultReceived(ids, names):
-                guard let markLinkID = state.editingMarkLinkID else { return .none }
+            case let .markDetailMemberSelectionResultReceived(markLinkID, ids, names):
                 guard let itemProjection = state.core.projection.michiInfo.items
                     .first(where: { $0.id == markLinkID })
                 else { return .none }
@@ -286,8 +112,7 @@ struct EventDetailReducer {
                 return .none
 
             // MichiInfo MarkDetail 行動選択　上位通知
-            case let .markDetailActionSelectionResultReceived(ids, names):
-                guard let markLinkID = state.editingMarkLinkID else { return .none }
+            case let .markDetailActionSelectionResultReceived(markLinkID, ids, names):
                 guard let itemProjection = state.core.projection.michiInfo.items
                     .first(where: { $0.id == markLinkID })
                 else { return .none }
@@ -299,8 +124,7 @@ struct EventDetailReducer {
                 return .none
                 
             // MichiInfo LinkDetail メンバー選択　上位通知
-            case let .linkDetailMemberSelectionResultReceived(ids, names):
-                guard let markLinkID = state.editingMarkLinkID else { return .none }
+            case let .linkDetailMemberSelectionResultReceived(markLinkID, ids, names):
                 guard let itemProjection = state.core.projection.michiInfo.items
                     .first(where: { $0.id == markLinkID })
                 else { return .none }
@@ -312,8 +136,7 @@ struct EventDetailReducer {
                 return .none
 
             // MichiInfo LinkDetail 行動選択　上位通知
-            case let .linkDetailActionSelectionResultReceived(ids, names):
-                guard let markLinkID = state.editingMarkLinkID else { return .none }
+            case let .linkDetailActionSelectionResultReceived(markLinkID, ids, names):
                 guard let itemProjection = state.core.projection.michiInfo.items
                     .first(where: { $0.id == markLinkID })
                 else { return .none }
@@ -322,21 +145,6 @@ struct EventDetailReducer {
                 draft.selectedActionIDs = ids
                 draft.selectedActionNames = names
                 state.core.michiInfo.linkDraftByID[markLinkID] = draft
-                return .none
-                
-            // PaymentInfo 支払詳細
-            case let .delegate(.openPaymentDetail(paymentID)):
-                guard let paymentProjection = state.core.projection.paymentInfo.items
-                    .first(where: { $0.id == paymentID })
-                else { return .none }
-
-                state.destination = .paymentDetail(
-                    PaymentDetailReducer.State(
-                        projection: paymentProjection,
-                        eventID: state.core.eventID,
-                        paymentID: paymentID
-                    )
-                )
                 return .none
                 
             // Trans 選択結果（Draft 更新）
@@ -378,7 +186,6 @@ struct EventDetailReducer {
         Scope(state: \.core, action: \.core) {
             EventDetailCoreReducer()
         }
-        .ifLet(\.$destination, action: \.destination)
     }
 
 }
@@ -452,10 +259,10 @@ struct EventDetailCoreReducer {
         // ★ Root に通知するための Action
         case saveCompleted
         case delegate(EventDetailReducer.Delegate)
-        case markDetailMemberSelectionRequested(Set<MemberID>)
-        case markDetailActionSelectionRequested(Set<ActionID>)
-        case linkDetailMemberSelectionRequested(Set<MemberID>)
-        case linkDetailActionSelectionRequested(Set<ActionID>)
+        case markDetailMemberSelectionRequested(MarkLinkID, Set<MemberID>)
+        case markDetailActionSelectionRequested(MarkLinkID, Set<ActionID>)
+        case linkDetailMemberSelectionRequested(MarkLinkID, Set<MemberID>)
+        case linkDetailActionSelectionRequested(MarkLinkID, Set<ActionID>)
     }
 
     var body: some ReducerOf<Self> {
@@ -654,8 +461,8 @@ struct EventDetailCoreReducer {
                     }
 
                 // MARK: MarkDetail selection
-                case let .markDetailMemberSelectionRequested(ids):
-                    return .run { [ids] send in
+                case let .markDetailMemberSelectionRequested(markLinkID, ids):
+                    return .run { [markLinkID, ids] send in
                         do {
                             let domains = try await memberRepository.fetchAll()
                             let projections = MemberProjectionAdapter()
@@ -688,7 +495,7 @@ struct EventDetailCoreReducer {
                                             nameMap[id].map { (id, $0) }
                                         }
                                     )
-                                    return .markDetailMemberSelectionResultReceived(selectedIDs, names)
+                                    return .markDetailMemberSelectionResultReceived(markLinkID, selectedIDs, names)
                                 },
                                 onCancelled: { .markDetailMemberSelectionCancelled }
                             )
@@ -699,8 +506,8 @@ struct EventDetailCoreReducer {
                         }
                     }
 
-                case let .markDetailActionSelectionRequested(ids):
-                    return .run { [ids] send in
+                case let .markDetailActionSelectionRequested(markLinkID, ids):
+                    return .run { [markLinkID, ids] send in
                         do {
                             let domains = try await actionRepository.fetchAll()
                             let projections = ActionProjectionAdapter()
@@ -730,7 +537,7 @@ struct EventDetailCoreReducer {
                                             nameMap[id].map { (id, $0) }
                                         }
                                     )
-                                    return .markDetailActionSelectionResultReceived(selectedIDs, names)
+                                    return .markDetailActionSelectionResultReceived(markLinkID, selectedIDs, names)
                                 },
                                 onCancelled: { .markDetailActionSelectionCancelled }
                             )
@@ -741,8 +548,8 @@ struct EventDetailCoreReducer {
                         }
                     }
 
-                case let .linkDetailMemberSelectionRequested(ids):
-                    return .run { [ids] send in
+                case let .linkDetailMemberSelectionRequested(markLinkID, ids):
+                    return .run { [markLinkID, ids] send in
                         do {
                             let domains = try await memberRepository.fetchAll()
                             let projections = MemberProjectionAdapter()
@@ -775,7 +582,7 @@ struct EventDetailCoreReducer {
                                             nameMap[id].map { (id, $0) }
                                         }
                                     )
-                                    return .linkDetailMemberSelectionResultReceived(selectedIDs, names)
+                                    return .linkDetailMemberSelectionResultReceived(markLinkID, selectedIDs, names)
                                 },
                                 onCancelled: { .linkDetailMemberSelectionCancelled }
                             )
@@ -786,8 +593,8 @@ struct EventDetailCoreReducer {
                         }
                     }
 
-                case let .linkDetailActionSelectionRequested(ids):
-                    return .run { [ids] send in
+                case let .linkDetailActionSelectionRequested(markLinkID, ids):
+                    return .run { [markLinkID, ids] send in
                         do {
                             let domains = try await actionRepository.fetchAll()
                             let projections = ActionProjectionAdapter()
@@ -817,7 +624,7 @@ struct EventDetailCoreReducer {
                                             nameMap[id].map { (id, $0) }
                                         }
                                     )
-                                    return .linkDetailActionSelectionResultReceived(selectedIDs, names)
+                                    return .linkDetailActionSelectionResultReceived(markLinkID, selectedIDs, names)
                                 },
                                 onCancelled: { .linkDetailActionSelectionCancelled }
                             )
@@ -860,6 +667,5 @@ struct EventDetailCoreReducer {
 extension EventDetailReducer.State {
     init(projection: EventDetailProjection) {
         self.core = EventDetailCoreReducer.State(projection: projection)
-        self.editingMarkLinkID = nil
     }
 }

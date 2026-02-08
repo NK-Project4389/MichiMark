@@ -4,22 +4,13 @@ import Foundation
 
 @Reducer
 struct MarkDetailReducer {
-    @Dependency(\.dismiss) var dismiss
-    
     @ObservableState
     struct State {
-        
+        var markLinkID: MarkLinkID
         var projection: MarkLinkItemProjection
         var draft: MarkDetailDraft
-        
-        @Presents var destination: Destination.State?
-        @Presents var datePicker: DatePickerReducer.State?
-    }
 
-    @Reducer
-    enum Destination {
-        case memberSelection(SelectionFeature<MemberID>)
-        case actionSelection(SelectionFeature<ActionID>)
+        @Presents var datePicker: DatePickerReducer.State?
     }
 
     enum Action {
@@ -34,10 +25,11 @@ struct MarkDetailReducer {
         case actionsTapped
         case applyTapped
         case backTapped
+        case memberSelectionResultReceived(Set<MemberID>, [MemberID: String])
+        case actionSelectionResultReceived(Set<ActionID>, [ActionID: String])
         
         case fuelToggled(Bool)
         case fuel(FuelDetailReducer.Action)
-        case destination(PresentationAction<Destination.Action>)
         
         // MARK: - Delegate
         case delegate(Delegate)
@@ -76,36 +68,14 @@ struct MarkDetailReducer {
                     ))
                 )
 
-            case let .destination(.presented(.memberSelection(.delegate(.selected(ids))))):
-                guard case let .memberSelection(selectionState) = state.destination else { return .none }
-                let names = Dictionary(
-                    uniqueKeysWithValues: selectionState.items
-                        .filter { ids.contains($0.id) }
-                        .map { ($0.id, $0.title) }
-                )
+            case let .memberSelectionResultReceived(ids, names):
                 state.draft.selectedMemberIDs = ids
                 state.draft.selectedMemberNames = names
-//                state.destination = nil
                 return .none
 
-            case .destination(.presented(.memberSelection(.delegate(.cancelled)))):
-//                state.destination = nil
-                return .none
-
-            case let .destination(.presented(.actionSelection(.delegate(.selected(ids))))):
-                guard case let .actionSelection(selectionState) = state.destination else { return .none }
-                let names = Dictionary(
-                    uniqueKeysWithValues: selectionState.items
-                        .filter { ids.contains($0.id) }
-                        .map { ($0.id, $0.title) }
-                )
+            case let .actionSelectionResultReceived(ids, names):
                 state.draft.selectedActionIDs = ids
                 state.draft.selectedActionNames = names
-//                state.destination = nil
-                return .none
-
-            case .destination(.presented(.actionSelection(.delegate(.cancelled)))):
-//                state.destination = nil
                 return .none
 
             case let .markLinkNameChanged(text):
@@ -125,13 +95,7 @@ struct MarkDetailReducer {
                 return .none
 
             case .applyTapped:
-//                return .send(.delegate(.applied(state.draft)))
-                return .concatenate(
-                          .send(.delegate(.applied(state.draft))),
-                          .run { _ in
-                            await dismiss()            // ← applied の後に閉じる
-                          }
-                        )
+                return .send(.delegate(.applied(state.draft)))
 
             case let .fuelToggled(isOn):
                 state.draft.isFuel = isOn
@@ -162,7 +126,6 @@ struct MarkDetailReducer {
         .ifLet(\.draft.fuelDetail, action: \.fuel) {
             FuelDetailReducer()
         }
-        .ifLet(\.$destination, action: \.destination)
         .ifLet(\.$datePicker, action: \.datePicker) {
             DatePickerReducer()
         }

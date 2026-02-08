@@ -185,16 +185,6 @@ struct LinkDetailView: View {
                 store.send(.applyTapped)
             }
         )
-        .navigationDestination(
-            item: $store.scope(state: \.destination, action: \.destination)
-        ) { destinationStore in
-            switch destinationStore.case {
-            case let .memberSelection(store):
-                SelectionView(store: store)
-            case let .actionSelection(store):
-                SelectionView(store: store)
-            }
-        }
         .sheet(
             item: $store.scope(state: \.datePicker, action: \.datePicker)
         ) { store in
