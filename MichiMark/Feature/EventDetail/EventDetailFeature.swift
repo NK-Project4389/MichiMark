@@ -33,11 +33,21 @@ struct EventDetailReducer {
         // 設定ボタン
         case markDetailMemberSelectionResultReceived(Set<MemberID>, [MemberID: String])
         case markDetailActionSelectionResultReceived(Set<ActionID>, [ActionID: String])
+        case linkDetailMemberSelectionResultReceived(Set<MemberID>, [MemberID: String])
+        case linkDetailActionSelectionResultReceived(Set<ActionID>, [ActionID: String])
         case presentMemberSelectionFromMarkDetail(
             context: SelectionContext<MemberID, EventDetailReducer.Action>,
             items: IdentifiedArrayOf<SelectionFeature<MemberID>.Item>
         )
         case presentActionSelectionFromMarkDetail(
+            context: SelectionContext<ActionID, EventDetailReducer.Action>,
+            items: IdentifiedArrayOf<SelectionFeature<ActionID>.Item>
+        )
+        case presentMemberSelectionFromLinkDetail(
+            context: SelectionContext<MemberID, EventDetailReducer.Action>,
+            items: IdentifiedArrayOf<SelectionFeature<MemberID>.Item>
+        )
+        case presentActionSelectionFromLinkDetail(
             context: SelectionContext<ActionID, EventDetailReducer.Action>,
             items: IdentifiedArrayOf<SelectionFeature<ActionID>.Item>
         )
@@ -50,6 +60,8 @@ struct EventDetailReducer {
         case tagSelectionCancelled
         case markDetailMemberSelectionCancelled
         case markDetailActionSelectionCancelled
+        case linkDetailMemberSelectionCancelled
+        case linkDetailActionSelectionCancelled
         
         case delegate(Delegate)
     }
@@ -81,6 +93,14 @@ struct EventDetailReducer {
             items: IdentifiedArrayOf<SelectionFeature<MemberID>.Item>
         )
         case markDetailActionSelectionRequested(
+            context: SelectionContext<ActionID, EventDetailReducer.Action>,
+            items: IdentifiedArrayOf<SelectionFeature<ActionID>.Item>
+        )
+        case linkDetailMemberSelectionRequested(
+            context: SelectionContext<MemberID, EventDetailReducer.Action>,
+            items: IdentifiedArrayOf<SelectionFeature<MemberID>.Item>
+        )
+        case linkDetailActionSelectionRequested(
             context: SelectionContext<ActionID, EventDetailReducer.Action>,
             items: IdentifiedArrayOf<SelectionFeature<ActionID>.Item>
         )
@@ -129,11 +149,13 @@ struct EventDetailReducer {
                     .first(where: { $0.id == markLinkID })
                 else { return .none }
 
+                let linkDetailDraft = state.core.michiInfo.linkDraftByID[markLinkID]
+                    ?? LinkDetailDraft(projection: itemProjection)
+                state.editingMarkLinkID = markLinkID
                 state.destination = .linkDetail(
                     LinkDetailReducer.State(
                         projection: itemProjection,
-                        eventID: state.core.eventID,
-                        markLinkID: markLinkID
+                        draft: linkDetailDraft
                     )
                 )
                 return .none
@@ -150,6 +172,38 @@ struct EventDetailReducer {
                     .core(.michiInfo(.markDetailDraftApplied(markLinkID, draft)))
                 )
 
+            // MichiInfo LinkDetail 反映ボタン
+            case let .destination(.presented(.linkDetail(.delegate(.applied(draft))))):
+              guard let markLinkID = state.editingMarkLinkID else {
+                state.destination = nil
+                return .none
+              }
+
+              // ① 先に必要な state を整理
+              state.editingMarkLinkID = nil
+
+              // ② Core へ通知（destination はまだ生きている）
+              let effect: Effect<Action> =
+                .send(.core(.michiInfo(.linkDetailDraftApplied(markLinkID, draft))))
+
+              // ③ reducer の最後で閉じる（Effect 生成後）
+              state.destination = nil
+
+              return effect
+
+//            case let .destination(.presented(.linkDetail(.delegate(.applied(draft))))):
+//                guard let markLinkID = state.editingMarkLinkID else {
+//                    state.destination = nil
+//                    return .none
+//                }
+//                state.destination = nil
+//                state.editingMarkLinkID = nil
+//                return .send(
+//                    .core(.michiInfo(.linkDetailDraftApplied(markLinkID, draft)))
+//                    
+//                    .send(.destination(.dismiss))
+//                )
+
             // MichiInfo MarkDetail メンバー選択　受信
             case let .destination(.presented(.markDetail(.delegate(.memberSelectionRequested(ids))))):
                 return .send(.core(.markDetailMemberSelectionRequested(ids)))
@@ -157,6 +211,14 @@ struct EventDetailReducer {
             // MichiInfo MarkDetail 行動選択
             case let .destination(.presented(.markDetail(.delegate(.actionSelectionRequested(ids))))):
                 return .send(.core(.markDetailActionSelectionRequested(ids)))
+                
+            // MichiInfo LinkDetail メンバー選択　受信
+            case let .destination(.presented(.linkDetail(.delegate(.memberSelectionRequested(ids))))):
+                return .send(.core(.linkDetailMemberSelectionRequested(ids)))
+
+            // MichiInfo LinkDetail 行動選択
+            case let .destination(.presented(.linkDetail(.delegate(.actionSelectionRequested(ids))))):
+                return .send(.core(.linkDetailActionSelectionRequested(ids)))
 
             case let .presentMemberSelectionFromMarkDetail(context, items):
                 guard case var .markDetail(markDetailState) = state.destination
@@ -183,6 +245,32 @@ struct EventDetailReducer {
                 )
                 state.destination = .markDetail(markDetailState)
                 return .none
+                
+            case let .presentMemberSelectionFromLinkDetail(context, items):
+                guard case var .linkDetail(linkDetailState) = state.destination
+                else { return .none }
+                linkDetailState.destination = .memberSelection(
+                    SelectionFeature<MemberID>.State(
+                        items: items,
+                        selected: context.preselected,
+                        allowsMultipleSelection: context.allowsMultipleSelection
+                    )
+                )
+                state.destination = .linkDetail(linkDetailState)
+                return .none
+
+            case let .presentActionSelectionFromLinkDetail(context, items):
+                guard case var .linkDetail(linkDetailState) = state.destination
+                else { return .none }
+                linkDetailState.destination = .actionSelection(
+                    SelectionFeature<ActionID>.State(
+                        items: items,
+                        selected: context.preselected,
+                        allowsMultipleSelection: context.allowsMultipleSelection
+                    )
+                )
+                state.destination = .linkDetail(linkDetailState)
+                return .none
 
             // MichiInfo MarkDetail メンバー選択　上位通知
             case let .markDetailMemberSelectionResultReceived(ids, names):
@@ -208,6 +296,32 @@ struct EventDetailReducer {
                 draft.selectedActionIDs = ids
                 draft.selectedActionNames = names
                 state.core.michiInfo.draftByID[markLinkID] = draft
+                return .none
+                
+            // MichiInfo LinkDetail メンバー選択　上位通知
+            case let .linkDetailMemberSelectionResultReceived(ids, names):
+                guard let markLinkID = state.editingMarkLinkID else { return .none }
+                guard let itemProjection = state.core.projection.michiInfo.items
+                    .first(where: { $0.id == markLinkID })
+                else { return .none }
+                var draft = state.core.michiInfo.linkDraftByID[markLinkID]
+                    ?? LinkDetailDraft(projection: itemProjection)
+                draft.selectedMemberIDs = ids
+                draft.selectedMemberNames = names
+                state.core.michiInfo.linkDraftByID[markLinkID] = draft
+                return .none
+
+            // MichiInfo LinkDetail 行動選択　上位通知
+            case let .linkDetailActionSelectionResultReceived(ids, names):
+                guard let markLinkID = state.editingMarkLinkID else { return .none }
+                guard let itemProjection = state.core.projection.michiInfo.items
+                    .first(where: { $0.id == markLinkID })
+                else { return .none }
+                var draft = state.core.michiInfo.linkDraftByID[markLinkID]
+                    ?? LinkDetailDraft(projection: itemProjection)
+                draft.selectedActionIDs = ids
+                draft.selectedActionNames = names
+                state.core.michiInfo.linkDraftByID[markLinkID] = draft
                 return .none
                 
             // PaymentInfo 支払詳細
@@ -340,6 +454,8 @@ struct EventDetailCoreReducer {
         case delegate(EventDetailReducer.Delegate)
         case markDetailMemberSelectionRequested(Set<MemberID>)
         case markDetailActionSelectionRequested(Set<ActionID>)
+        case linkDetailMemberSelectionRequested(Set<MemberID>)
+        case linkDetailActionSelectionRequested(Set<ActionID>)
     }
 
     var body: some ReducerOf<Self> {
@@ -620,6 +736,93 @@ struct EventDetailCoreReducer {
                             )
 
                             await send(.delegate(.markDetailActionSelectionRequested(context: context, items: items)))
+                        } catch {
+                            // エラー時は何もしない（表示側の責務に委譲）
+                        }
+                    }
+
+                case let .linkDetailMemberSelectionRequested(ids):
+                    return .run { [ids] send in
+                        do {
+                            let domains = try await memberRepository.fetchAll()
+                            let projections = MemberProjectionAdapter()
+                                .adaptList(members: domains)
+                                .filter { $0.isVisible }
+
+                            let items = IdentifiedArrayOf<SelectionFeature<MemberID>.Item>(
+                                uniqueElements: projections.map { projection in
+                                    let subtitle = projection.mailAddress?.isEmpty == false
+                                        ? projection.mailAddress
+                                        : nil
+                                    return SelectionFeature<MemberID>.Item(
+                                        id: projection.id,
+                                        title: projection.memberName,
+                                        subtitle: subtitle
+                                    )
+                                }
+                            )
+
+                            let nameMap = Dictionary(
+                                uniqueKeysWithValues: projections.map { ($0.id, $0.memberName) }
+                            )
+
+                            let context = SelectionContext<MemberID, EventDetailReducer.Action>(
+                                preselected: ids,
+                                allowsMultipleSelection: true,
+                                onSelected: { selectedIDs in
+                                    let names = Dictionary(
+                                        uniqueKeysWithValues: selectedIDs.compactMap { id in
+                                            nameMap[id].map { (id, $0) }
+                                        }
+                                    )
+                                    return .linkDetailMemberSelectionResultReceived(selectedIDs, names)
+                                },
+                                onCancelled: { .linkDetailMemberSelectionCancelled }
+                            )
+
+                            await send(.delegate(.linkDetailMemberSelectionRequested(context: context, items: items)))
+                        } catch {
+                            // エラー時は何もしない（表示側の責務に委譲）
+                        }
+                    }
+
+                case let .linkDetailActionSelectionRequested(ids):
+                    return .run { [ids] send in
+                        do {
+                            let domains = try await actionRepository.fetchAll()
+                            let projections = ActionProjectionAdapter()
+                                .adaptList(actions: domains)
+                                .filter { $0.isVisible }
+
+                            let items = IdentifiedArrayOf<SelectionFeature<ActionID>.Item>(
+                                uniqueElements: projections.map { projection in
+                                    SelectionFeature<ActionID>.Item(
+                                        id: projection.id,
+                                        title: projection.actionName,
+                                        subtitle: nil
+                                    )
+                                }
+                            )
+
+                            let nameMap = Dictionary(
+                                uniqueKeysWithValues: projections.map { ($0.id, $0.actionName) }
+                            )
+
+                            let context = SelectionContext<ActionID, EventDetailReducer.Action>(
+                                preselected: ids,
+                                allowsMultipleSelection: true,
+                                onSelected: { selectedIDs in
+                                    let names = Dictionary(
+                                        uniqueKeysWithValues: selectedIDs.compactMap { id in
+                                            nameMap[id].map { (id, $0) }
+                                        }
+                                    )
+                                    return .linkDetailActionSelectionResultReceived(selectedIDs, names)
+                                },
+                                onCancelled: { .linkDetailActionSelectionCancelled }
+                            )
+
+                            await send(.delegate(.linkDetailActionSelectionRequested(context: context, items: items)))
                         } catch {
                             // エラー時は何もしない（表示側の責務に委譲）
                         }

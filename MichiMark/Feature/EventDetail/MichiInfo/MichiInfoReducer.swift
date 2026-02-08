@@ -9,6 +9,7 @@ struct MichiInfoReducer {
         var projection: MichiInfoListProjection
         var eventID: EventID
         var draftByID: [MarkLinkID: MarkDetailDraft]
+        var linkDraftByID: [MarkLinkID: LinkDetailDraft]
         
         init(
             projection: MichiInfoListProjection,
@@ -17,6 +18,7 @@ struct MichiInfoReducer {
             self.projection = projection
             self.eventID = eventID
             self.draftByID = [:]
+            self.linkDraftByID = [:]
         }
     }
 
@@ -26,6 +28,7 @@ struct MichiInfoReducer {
         case linkTapped(MarkLinkID)
         case addMarkTapped
         case markDetailDraftApplied(MarkLinkID, MarkDetailDraft)
+        case linkDetailDraftApplied(MarkLinkID, LinkDetailDraft)
         
         case delegate(Delegate)
 
@@ -55,6 +58,10 @@ struct MichiInfoReducer {
             case let .markDetailDraftApplied(markLinkID, draft):
                 state.draftByID[markLinkID] = draft
                 return .none
+                
+            case let .linkDetailDraftApplied(markLinkID, draft):
+                state.linkDraftByID[markLinkID] = draft
+                return .none
 
             case .delegate:
                 return .none
@@ -66,7 +73,10 @@ struct MichiInfoReducer {
 extension MichiInfoReducer.State {
     var displayItems: [MarkLinkItemProjection] {
         projection.items.map { item in
-            if let draft = draftByID[item.id] {
+            if item.markLinkType == .link, let draft = linkDraftByID[item.id] {
+                return draft.toProjection(id: item.id)
+            }
+            if item.markLinkType == .mark, let draft = draftByID[item.id] {
                 return draft.toProjection(id: item.id)
             }
             return item

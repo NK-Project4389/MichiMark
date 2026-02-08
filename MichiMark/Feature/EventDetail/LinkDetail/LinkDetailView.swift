@@ -1,66 +1,217 @@
-// MichiMarkInfoView.swift
 import SwiftUI
 import ComposableArchitecture
 
 struct LinkDetailView: View {
 
-    let store: Store<LinkDetailReducer.State, LinkDetailReducer.Action>
+    @Bindable var store: StoreOf<LinkDetailReducer>
 
     var body: some View {
-        WithViewStore(store, observe: { $0 }) { _ in
-            ZStack(alignment: .bottomTrailing) {
-                ScrollView {
-                    VStack(spacing: 0) {
-                        section(title: "場所")
-                        section(title: "メンバー")
-                        section(title: "走行距離", trailing: "km")
-                        section(title: "行動", subtitle: "行動追加")
-                        section(title: "メモ")
-                        section(title: "給油")
+        ScrollView {
+            VStack(spacing: 24) {
+
+                // MARK: - 日付
+                section {
+                    Button {
+                        store.send(.dateTapped)
+                    } label: {
+                        BasicInfoRow(
+                            icon: "calendar",
+                            title: "日付",
+                            value: store.draft.displayDate,
+                            showsChevron: true
+                        )
                     }
                 }
 
-                saveButton
+
+                // MARK: - 場所
+                section {
+                    TextField(
+                        "地点",
+                        text: Binding(
+                            get: { store.draft.markLinkName },
+                            set: { store.send(.markLinkNameChanged($0)) }
+                        )
+                    )
+                    .textFieldStyle(.roundedBorder)
+                }
+
+                // MARK: - メンバー
+                section {
+                    Button {
+                        store.send(.membersTapped)
+                    } label: {
+                        BasicInfoRow(
+                            icon: "person",
+                            title: "メンバー",
+                            value: nil,
+                            showsChevron: true
+                        )
+                    }
+
+                    if !store.draft.selectedMemberIDs.isEmpty {
+                        Text(
+                            store.draft.selectedMemberNames
+                                .values
+                                .joined(separator: ", ")
+                        )
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 8)
+                    }
+                }
+
+                // MARK: - 走行距離
+                section {
+                    TextField(
+                        "走行距離 (km)",
+                        text: Binding(
+                            get: { store.draft.displayDistanceValue },
+                            set: { store.send(.distanceValueChanged($0)) }
+                        )
+                    )
+                    .keyboardType(.numberPad)
+                }
+
+                // MARK: - 行動
+                section {
+                    Button {
+                        store.send(.actionsTapped)
+                    } label: {
+                        BasicInfoRow(
+                            icon: "figure.walk",
+                            title: "行動",
+                            value: nil,
+                            showsChevron: true
+                        )
+                    }
+
+                    if !store.draft.selectedActionIDs.isEmpty {
+                        Text(
+                            store.draft.selectedActionNames
+                                .values
+                                .joined(separator: ", ")
+                        )
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 8)
+                    }
+                }
+
+                // MARK: - メモ
+                section {
+                    TextField(
+                        "メモ",
+                        text: Binding(
+                            get: { store.draft.memo },
+                            set: { store.send(.memoChanged($0)) }
+                        ),
+                        axis: .vertical
+                    )
+                    .textFieldStyle(.roundedBorder)
+                }
+
+                // MARK: - 給油
+                // MARK: - 給油（Inline）
+                // MARK: - 給油（Inline）
+                section {
+                    Toggle(
+                        "給油",
+                        isOn: Binding(
+                            get: { store.draft.isFuel },
+                            set: { store.send(.fuelToggled($0)) }
+                        )
+                    )
+
+                    if store.draft.isFuel {
+
+                        TextField(
+                            "単価（円/L）",
+                            text: Binding(
+                                get: { store.draft.fuelDetail?.pricePerGas ?? "" },
+                                set: { store.send(.fuel(.pricePerGasChanged($0))) }
+                            )
+                        )
+                        .keyboardType(.numberPad)
+                        .textFieldStyle(.roundedBorder)
+
+                        TextField(
+                            "給油量（L）",
+                            text: Binding(
+                                get: { store.draft.fuelDetail?.gasQuantity ?? "" },
+                                set: { store.send(.fuel(.gasQuantityChanged($0))) }
+                            )
+                        )
+                        .keyboardType(.decimalPad)
+                        .textFieldStyle(.roundedBorder)
+
+                        TextField(
+                            "合計金額（円）",
+                            text: Binding(
+                                get: { store.draft.fuelDetail?.gasPrice ?? "" },
+                                set: { store.send(.fuel(.gasPriceChanged($0))) }
+                            )
+                        )
+                        .keyboardType(.numberPad)
+                        .textFieldStyle(.roundedBorder)
+
+                        // 注意書き
+                        Text("※ 単価は計算対象外です")
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+
+                        HStack {
+                            Button("計算") {
+                                store.send(.fuel(.calculateTapped))
+                            }
+
+                            Spacer()
+
+                            Button("給油情報をクリア", role: .destructive) {
+                                store.send(.fuel(.clearTapped))
+                            }
+                        }
+                        .font(.footnote)
+                    }
+                }
+
             }
-            .navigationTitle("リンク詳細")
-            .navigationBarTitleDisplayMode(.inline)
+            .padding(.horizontal)
         }
+        .navigationTitle("リンク詳細")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(
+            trailing: Button("反映") {
+                store.send(.applyTapped)
+            }
+        )
+        .navigationDestination(
+            item: $store.scope(state: \.destination, action: \.destination)
+        ) { destinationStore in
+            switch destinationStore.case {
+            case let .memberSelection(store):
+                SelectionView(store: store)
+            case let .actionSelection(store):
+                SelectionView(store: store)
+            }
+        }
+        .sheet(
+            item: $store.scope(state: \.datePicker, action: \.datePicker)
+        ) { store in
+            DatePickerView(store: store)
+        }
+
     }
 
-    private func section(
-        title: String,
-        subtitle: String? = nil,
-        trailing: String? = nil
+    // MARK: - Section
+    private func section<Content: View>(
+        @ViewBuilder content: () -> Content
     ) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(title)
-                    .font(.headline)
-                Spacer()
-                if let trailing {
-                    Text(trailing)
-                        .foregroundColor(.secondary)
-                }
-            }
-
-            if let subtitle {
-                Text(subtitle)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
+        VStack(alignment: .leading, spacing: 10) {
+            content()
         }
         .padding()
-        .frame(maxWidth: .infinity)
-        .overlay(
-            Divider(), alignment: .bottom
-        )
-    }
-
-    private var saveButton: some View {
-        Button("保存") {}
-            .padding()
-            .background(Color(.systemGray4))
-            .clipShape(RoundedRectangle(cornerRadius: 24))
-            .padding()
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

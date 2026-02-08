@@ -501,6 +501,24 @@ struct RootReducer {
                         )
                     )
                 )
+            // LinkDetail members selection (EventDetail delegate)
+            case let .path(
+                .element(id: elementID,
+                         action: .eventDetail(.delegate(.linkDetailMemberSelectionRequested(context: context, items: items))))
+            ):
+                return .send(
+                    .path(
+                        .element(
+                            id: elementID,
+                            action: .eventDetail(
+                                .presentMemberSelectionFromLinkDetail(
+                                    context: context,
+                                    items: items
+                                )
+                            )
+                        )
+                    )
+                )
             // MARK: Tag
             case let .path(
                 .element(id: elementID,
@@ -529,6 +547,22 @@ struct RootReducer {
                             id: elementID,
                             action: .eventDetail(
                                 .presentActionSelectionFromMarkDetail(
+                                    context: context,
+                                    items: items
+                                )
+                            )
+                        )
+                    )
+                )
+            case let .path(
+                .element(id: elementID,
+                         action: .eventDetail(.delegate(.linkDetailActionSelectionRequested(context: context, items: items))))):
+                return .send(
+                    .path(
+                        .element(
+                            id: elementID,
+                            action: .eventDetail(
+                                .presentActionSelectionFromLinkDetail(
                                     context: context,
                                     items: items
                                 )
