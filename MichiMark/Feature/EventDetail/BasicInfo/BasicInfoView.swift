@@ -3,11 +3,9 @@ import ComposableArchitecture
 
 private struct ViewState: Equatable {
     let draft: BasicInfoDraft
-    let projection: BasicInfoProjection
 
     init(state: BasicInfoReducer.State) {
         self.draft = state.draft
-        self.projection = state.projection
     }
 }
 

@@ -22,10 +22,9 @@ struct LinkDetailReducer {
         case datePicker(PresentationAction<DatePickerReducer.Action>)
         case membersTapped
         case actionsTapped
+        case applySelection(useCase: SelectionUseCase, ids: [UUID], names: [UUID: String])
         case applyTapped
         case backTapped
-        case memberSelectionResultReceived(Set<MemberID>, [MemberID: String])
-        case actionSelectionResultReceived(Set<ActionID>, [ActionID: String])
 
         case fuelToggled(Bool)
         case fuel(FuelDetailReducer.Action)
@@ -34,8 +33,7 @@ struct LinkDetailReducer {
         case delegate(Delegate)
 
         enum Delegate {
-            case memberSelectionRequested(ids: Set<MemberID>)
-            case actionSelectionRequested(ids: Set<ActionID>)
+            case selectionRequested(useCase: SelectionUseCase)
             case applied(LinkDetailDraft)
         }
     }
@@ -55,26 +53,33 @@ struct LinkDetailReducer {
 
             case .membersTapped:
                 return .send(
-                    .delegate(.memberSelectionRequested(
-                        ids: state.draft.selectedMemberIDs
-                    ))
+                    .delegate(.selectionRequested(useCase: .linkMembers))
                 )
 
             case .actionsTapped:
                 return .send(
-                    .delegate(.actionSelectionRequested(
-                        ids: state.draft.selectedActionIDs
-                    ))
+                    .delegate(.selectionRequested(useCase: .linkActions))
                 )
 
-            case let .memberSelectionResultReceived(ids, names):
-                state.draft.selectedMemberIDs = ids
-                state.draft.selectedMemberNames = names
-                return .none
+            case let .applySelection(useCase, ids, names):
+                var shouldSyncProjection = false
+                switch useCase {
+                case .linkMembers:
+                    state.draft.selectedMemberIDs = Set(ids)
+                    state.draft.selectedMemberNames = names
+                    shouldSyncProjection = true
 
-            case let .actionSelectionResultReceived(ids, names):
-                state.draft.selectedActionIDs = ids
-                state.draft.selectedActionNames = names
+                case .linkActions:
+                    state.draft.selectedActionIDs = Set(ids)
+                    state.draft.selectedActionNames = names
+                    shouldSyncProjection = true
+
+                default:
+                    break
+                }
+                if shouldSyncProjection {
+                    state.projection = state.draft.toProjection(id: state.markLinkID)
+                }
                 return .none
 
             case let .markLinkNameChanged(text):

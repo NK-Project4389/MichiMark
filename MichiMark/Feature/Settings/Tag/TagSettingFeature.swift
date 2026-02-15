@@ -17,6 +17,7 @@ struct TagSettingReducer {
         
         case tagSelected(TagID)
         case addTagTapped
+        case startCreate
         
         case detail(PresentationAction<TagSettingDetailReducer.Action>)
     }
@@ -48,6 +49,13 @@ struct TagSettingReducer {
                 return .none
                 
             case .addTagTapped:
+                let newID = TagID()
+                let domain = TagDomain(id: newID, tagName: "")
+                let projection = tagAdapter.adapt(domain)
+                state.detail = TagSettingDetailReducer.State(projection: projection)
+                return .none
+
+            case .startCreate:
                 let newID = TagID()
                 let domain = TagDomain(id: newID, tagName: "")
                 let projection = tagAdapter.adapt(domain)
@@ -98,4 +106,3 @@ struct TagSettingReducer {
         }
     }
 }
-

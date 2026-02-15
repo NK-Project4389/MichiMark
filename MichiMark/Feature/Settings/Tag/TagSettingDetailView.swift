@@ -37,19 +37,7 @@
                                 )
                             )
                             .padding()
-
-                            Spacer()
-
-                            Button("保存") {
-                                viewStore.send(.saveTapped)
-                            }
-                            .padding()
-                            .background(Color(.systemGray4))
-                            .clipShape(RoundedRectangle(cornerRadius: 24))
-                            .padding()
                         }
-                        .navigationTitle("タグ詳細")
-                        .navigationBarTitleDisplayMode(.inline)
                     }
 
                     if viewStore.isSaving {
@@ -63,6 +51,16 @@
                     }
                 }
                 .disabled(viewStore.isSaving)
+                .navigationTitle("タグ詳細")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("保存") {
+                            viewStore.send(.saveTapped)
+                        }
+                        .disabled(viewStore.isSaving)
+                    }
+                }
             }
             .alert(
                 store: store.scope(

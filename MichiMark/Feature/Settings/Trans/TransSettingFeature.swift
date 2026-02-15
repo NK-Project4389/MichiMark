@@ -17,6 +17,7 @@ struct TransSettingReducer {
         
         case transSelected(TransID)
         case addTransTapped
+        case startCreate
         
         case detail(PresentationAction<TransSettingDetailReducer.Action>)
     }
@@ -48,6 +49,13 @@ struct TransSettingReducer {
                 return .none
                 
             case .addTransTapped:
+                let newID = TransID()
+                let domain = TransDomain(id: newID, transName: "")
+                let projection = transAdapter.adapt(domain)
+                state.detail = TransSettingDetailReducer.State(projection: projection)
+                return .none
+
+            case .startCreate:
                 let newID = TransID()
                 let domain = TransDomain(id: newID, transName: "")
                 let projection = transAdapter.adapt(domain)
@@ -91,4 +99,3 @@ struct TransSettingReducer {
         }
     }
 }
-

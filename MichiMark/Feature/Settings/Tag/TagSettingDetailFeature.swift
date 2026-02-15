@@ -38,6 +38,7 @@ struct TagSettingDetailReducer {
         enum Delegate {
             case dismiss
             case saveRequested(TagID, TagDraft)
+            case didSave(TagID)
         }
     }
 
@@ -85,7 +86,7 @@ struct TagSettingDetailReducer {
             
             case .savingFinished:
                 state.isSaving = false
-                return .none
+                return .send(.delegate(.didSave(state.tagID)))
                 
             case let .saveFailed(message):
                 state.isSaving = false

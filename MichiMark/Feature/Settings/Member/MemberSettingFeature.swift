@@ -17,6 +17,7 @@ struct MemberSettingReducer {
         
         case memberSelected(MemberID)
         case addMemberTapped
+        case startCreate
         
         case detail(PresentationAction<MemberSettingDetailReducer.Action>)
     }
@@ -48,6 +49,13 @@ struct MemberSettingReducer {
                 return .none
 
             case .addMemberTapped:
+                let newID = MemberID()
+                let domain = MemberDomain(id: newID, memberName: "")
+                let projection = memberAdapter.adapt(domain)
+                state.detail = MemberSettingDetailReducer.State(projection: projection)
+                return .none
+
+            case .startCreate:
                 let newID = MemberID()
                 let domain = MemberDomain(id: newID, memberName: "")
                 let projection = memberAdapter.adapt(domain)
@@ -98,4 +106,3 @@ struct MemberSettingReducer {
         }
     }
 }
-

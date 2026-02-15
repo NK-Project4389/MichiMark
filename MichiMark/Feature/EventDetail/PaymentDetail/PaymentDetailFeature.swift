@@ -7,6 +7,7 @@ struct PaymentDetailReducer {
     @ObservableState
     struct State: Equatable {
         var projection: PaymentItemProjection
+        var draft: PaymentDraft
         
         // 外部依存
         var eventID: EventID
@@ -20,6 +21,7 @@ struct PaymentDetailReducer {
             paymentID: PaymentID
         ) {
             self.projection = projection
+            self.draft = PaymentDraft(projection: projection)
             self.eventID = eventID
             self.paymentID = paymentID
         }
@@ -32,10 +34,17 @@ struct PaymentDetailReducer {
         case paymentMemberEditTapped
         case splitMemberEditTapped
 
+        case applySelection(useCase: SelectionUseCase, ids: [UUID], names: [UUID: String])
+
         case saveTapped
         case backTapped
 
         case destination(PresentationAction<Destination.Action>)
+        case delegate(Delegate)
+    }
+
+    enum Delegate {
+        case selectionRequested(useCase: SelectionUseCase)
     }
 
     @Reducer
@@ -51,11 +60,24 @@ struct PaymentDetailReducer {
         Reduce { state, action in
             switch action {
             case .paymentMemberEditTapped:
-                //state.destination = .paymentMemberSelection
-                return .none
+                return .send(.delegate(.selectionRequested(useCase: .payMember)))
 
             case .splitMemberEditTapped:
-                //state.destination = .splitMemberSelection
+                return .send(.delegate(.selectionRequested(useCase: .splitMembers)))
+
+            case let .applySelection(useCase, ids, names):
+                switch useCase {
+                case .payMember:
+                    state.draft.payMemberID = ids.first
+                    state.draft.payMemberName = ids.first.flatMap { names[$0] }
+
+                case .splitMembers:
+                    state.draft.splitMemberIDs = Set(ids)
+                    state.draft.splitMemberNames = names
+
+                default:
+                    break
+                }
                 return .none
 
             default:

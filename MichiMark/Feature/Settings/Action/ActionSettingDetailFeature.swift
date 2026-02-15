@@ -38,6 +38,7 @@ struct ActionSettingDetailReducer {
         enum Delegate {
             case dismiss
             case saveRequested(ActionID, ActionDraft)
+            case didSave(ActionID)
         }
     }
 
@@ -83,7 +84,7 @@ struct ActionSettingDetailReducer {
             
             case .savingFinished:
                 state.isSaving = false
-                return .none
+                return .send(.delegate(.didSave(state.actionID)))
 
             case let .saveFailed(message):
                 state.isSaving = false

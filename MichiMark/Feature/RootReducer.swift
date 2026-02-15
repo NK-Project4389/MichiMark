@@ -15,16 +15,17 @@ struct RootReducer {
         case settings
     }
 
-    enum MemberSelectionSource: Equatable {
+    enum SelectionSource: Equatable {
         case eventDetail(StackElementID)
         case markDetail(StackElementID)
         case linkDetail(StackElementID)
+        case paymentDetail(StackElementID)
     }
 
-    enum ActionSelectionSource: Equatable {
-        case eventDetail(StackElementID)
-        case markDetail(StackElementID)
-        case linkDetail(StackElementID)
+    struct PendingSelection: Equatable {
+        let useCase: SelectionUseCase
+        let source: SelectionSource
+        let settingsElementID: StackElementID
     }
 
     @ObservableState
@@ -38,17 +39,9 @@ struct RootReducer {
         // 子Feature（常駐）
         var eventList = EventListReducer.State()
 
-        // SelectionFeature の中継用（意味解釈はしない）
-        // TODO: SelectionContext が増えた場合は enum + associated value への昇格を検討する
-        var selectionContextTrans: SelectionContext<TransID, EventDetailReducer.Action>?
-        var selectionSourceElementIDTrans: StackElementID?
-        var selectionContextMember: SelectionContext<MemberID, EventDetailReducer.Action>?
-        var selectionSourceElementIDMember: MemberSelectionSource?
-        var selectionContextTag: SelectionContext<TagID, EventDetailReducer.Action>?
-        var selectionSourceElementIDTag: StackElementID?
-        var selectionContextAction: SelectionContext<ActionID, Action>?
-        var selectionContextActionEventDetail: SelectionContext<ActionID, EventDetailReducer.Action>?
-        var selectionSourceElementIDAction: ActionSelectionSource?
+        // SelectionFeature の中継用
+        var selectionSource: SelectionSource?
+        var pendingSelection: PendingSelection?
 
         // EventDetail から開いた Mark/Link の追跡
         var markDetailSourceByElementID: [StackElementID: StackElementID] = [:]
@@ -61,36 +54,39 @@ struct RootReducer {
     enum Action {
         case eventList(EventListReducer.Action)
         case path(StackAction<Path.State, Path.Action>)
-        case presentTransSelection(SelectionContext<TransID, EventDetailReducer.Action>)
-        case presentMemberSelection(SelectionContext<MemberID, EventDetailReducer.Action>)
-        case presentTagSelection(SelectionContext<TagID, EventDetailReducer.Action>)
-        case presentActionSelection(SelectionContext<ActionID, Action>)
+        case selectionItemsLoaded(
+            useCase: SelectionUseCase,
+            items: [SelectionItem],
+            preselectedIDs: Set<UUID>,
+            source: SelectionSource
+        )
     }
     
     @Dependency(\.eventRepositoryProtocol) var eventRepositoryProtocol
+    @Dependency(\.transRepository) var transRepository
+    @Dependency(\.memberRepository) var memberRepository
+    @Dependency(\.tagRepository) var tagRepository
+    @Dependency(\.actionRepository) var actionRepository
 
     @Reducer
     enum Path {
         //設定系
         case settings(SettingsReducer)
         case transSetting(TransSettingReducer)
+        case transSettingCreate(TransSettingCreateReducer)
         case memberSetting(MemberSettingReducer)
+        case memberSettingCreate(MemberSettingCreateReducer)
         case tagSetting(TagSettingReducer)
+        case tagSettingCreate(TagSettingCreateReducer)
         case actionSetting(ActionSettingReducer)
+        case actionSettingCreate(ActionSettingCreateReducer)
         //イベント詳細
         case eventDetail(EventDetailReducer)
         case markDetail(MarkDetailReducer)
         case linkDetail(LinkDetailReducer)
         case paymentDetail(PaymentDetailReducer)
         //選択
-        case transSelect(TransSelectReducer)
-        case memberSelect(MemberSelectReducer)
-        case tagSelect(TagSelectReducer)
-        case actionSelect(ActionSelectReducer)
-        case transSelection(SelectionFeature<TransID>)
-        case memberSelection(SelectionFeature<MemberID>)
-        case tagSelection(SelectionFeature<TagID>)
-        case actionSelection(SelectionFeature<ActionID>)
+        case selection(SelectionFeature)
     }
 
     var body: some ReducerOf<Self> {
@@ -156,418 +152,184 @@ struct RootReducer {
             // ============================
             // MARK: SelectionFeature (汎用)
             // ============================
-
-            case let .presentTransSelection(context):
-                state.selectionContextTrans = context
-                state.selectionSourceElementIDTrans = nil
-                state.path.append(
-                    .transSelection(
-                        SelectionFeature<TransID>.State(
-                            // TODO: 呼び出し元から items を受け取れるようにする
-                            items: [],
-                            selected: context.preselected,
-                            allowsMultipleSelection: context.allowsMultipleSelection
-                        )
-                    )
-                )
-                return .none
-                
-            case let .presentMemberSelection(context):
-                state.selectionContextMember = context
-                state.selectionSourceElementIDMember = nil
-                state.path.append(
-                    .memberSelection(
-                        SelectionFeature<MemberID>.State(
-                            items: [],
-                            selected: context.preselected,
-                            allowsMultipleSelection: context.allowsMultipleSelection
-                        )
-                    )
-                )
-                return .none
-                
-            case let .presentTagSelection(context):
-                state.selectionContextTag = context
-                state.selectionSourceElementIDTag = nil
-                state.path.append(
-                    .tagSelection(
-                        SelectionFeature<TagID>.State(
-                            items: [],
-                            selected: context.preselected,
-                            allowsMultipleSelection: context.allowsMultipleSelection
-                        )
-                    )
-                )
-                return .none
-                
-            case let .presentActionSelection(context):
-                state.selectionContextAction = context
-                state.path.append(
-                    .actionSelection(
-                        SelectionFeature<ActionID>.State(
-                            items: [],
-                            selected: context.preselected,
-                            allowsMultipleSelection: context.allowsMultipleSelection
-                        )
-                    )
-                )
-                return .none
-
-            case let .path(
-                .element(id: elementID, action: .transSelection(.delegate(.selected(ids))))
-            ):
-                guard let context = state.selectionContextTrans else { return .none }
-                let sourceID = state.selectionSourceElementIDTrans
-                state.selectionContextTrans = nil
-                state.selectionSourceElementIDTrans = nil
-                state.path.pop(from: elementID)
-                // Root は ID の意味解釈をせず、SelectionContext のクロージャへ中継するだけ
-                let eventDetailAction = context.onSelected(ids)
-                guard let sourceID else { return .none }
-                return .send(
-                    .path(
-                        .element(
-                            id: sourceID,
-                            action: .eventDetail(eventDetailAction)
-                        )
-                    )
-                )
-
-            case let .path(
-                .element(id: elementID, action: .transSelection(.delegate(.cancelled)))
-            ):
-                guard let context = state.selectionContextTrans else { return .none }
-                let sourceID = state.selectionSourceElementIDTrans
-                state.selectionContextTrans = nil
-                state.selectionSourceElementIDTrans = nil
-                state.path.pop(from: elementID)
-                let eventDetailAction = context.onCancelled()
-                guard let sourceID else { return .none }
-                return .send(
-                    .path(
-                        .element(
-                            id: sourceID,
-                            action: .eventDetail(eventDetailAction)
-                        )
-                    )
-                )
-                
-            case let .path(
-                .element(id: elementID, action: .memberSelection(.delegate(.selected(ids))))
-            ):
-                guard let context = state.selectionContextMember else { return .none }
-                let sourceID = state.selectionSourceElementIDMember
-                let selectionItems: IdentifiedArrayOf<SelectionFeature<MemberID>.Item>
-                if case let .memberSelection(selectionState)? = state.path[id: elementID] {
-                    selectionItems = selectionState.items
-                } else {
-                    selectionItems = []
-                }
-
-                state.selectionContextMember = nil
-                state.selectionSourceElementIDMember = nil
-                state.path.pop(from: elementID)
-
-                let names = Dictionary(
-                    uniqueKeysWithValues: selectionItems
-                        .filter { ids.contains($0.id) }
-                        .map { ($0.id, $0.title) }
-                )
-
-                var effects: [Effect<Action>] = []
-                let eventDetailAction = context.onSelected(ids)
-
-                guard let sourceID else { return .none }
-                switch sourceID {
-                case let .eventDetail(eventDetailID):
-                    effects.append(
-                        .send(
-                            .path(
-                                .element(
-                                    id: eventDetailID,
-                                    action: .eventDetail(eventDetailAction)
-                                )
-                            )
-                        )
-                    )
-                case let .markDetail(markDetailID):
-                    if let eventDetailID = state.markDetailSourceByElementID[markDetailID] {
-                        effects.append(
-                            .send(
-                                .path(
-                                    .element(
-                                        id: eventDetailID,
-                                        action: .eventDetail(eventDetailAction)
-                                    )
-                                )
-                            )
-                        )
+            case let .selectionItemsLoaded(useCase, items, preselectedIDs, source):
+                state.selectionSource = source
+                var resolvedItems = items
+                var resolvedPreselectedIDs = preselectedIDs
+                switch useCase {
+                case .eventTrans, .eventTags, .gasPayMember:
+                    if case let .eventDetail(elementID) = source,
+                       case let .eventDetail(eventDetailState)? = state.path[id: elementID] {
+                        let draft = eventDetailState.core.basicInfo.draft
+                        switch useCase {
+                        case .eventTrans:
+                            resolvedPreselectedIDs = draft.selectedTransID.map { [$0] } ?? []
+                        case .eventTags:
+                            resolvedPreselectedIDs = draft.selectedTagIDs
+                        case .gasPayMember:
+                            resolvedPreselectedIDs = draft.selectedPayMemberID.map { [$0] } ?? []
+                        default:
+                            break
+                        }
                     }
-                    effects.append(
-                        .send(
-                            .path(
-                                .element(
-                                    id: markDetailID,
-                                    action: .markDetail(.memberSelectionResultReceived(ids, names))
-                                )
-                            )
-                        )
-                    )
-                case let .linkDetail(linkDetailID):
-                    if let eventDetailID = state.linkDetailSourceByElementID[linkDetailID] {
-                        effects.append(
-                            .send(
-                                .path(
-                                    .element(
-                                        id: eventDetailID,
-                                        action: .eventDetail(eventDetailAction)
-                                    )
-                                )
-                            )
-                        )
-                    }
-                    effects.append(
-                        .send(
-                            .path(
-                                .element(
-                                    id: linkDetailID,
-                                    action: .linkDetail(.memberSelectionResultReceived(ids, names))
-                                )
-                            )
-                        )
-                    )
+                default:
+                    break
                 }
+                let selectionState = SelectionFactory.make(
+                    useCase: useCase,
+                    items: resolvedItems,
+                    preselectedIDs: resolvedPreselectedIDs
+                )
+                state.path.append(.selection(selectionState))
+                return .none
 
-                return .merge(effects)
-                
             case let .path(
-                .element(id: elementID, action: .memberSelection(.delegate(.cancelled)))
+                .element(id: elementID, action: .selection(.delegate(.completed(useCase, ids, names))))
             ):
-                guard let context = state.selectionContextMember else { return .none }
-                let sourceID = state.selectionSourceElementIDMember
-                state.selectionContextMember = nil
-                state.selectionSourceElementIDMember = nil
+                guard let source = state.selectionSource else { return .none }
+                state.selectionSource = nil
                 state.path.pop(from: elementID)
-                let eventDetailAction = context.onCancelled()
-                guard let sourceID else { return .none }
-                switch sourceID {
-                case let .eventDetail(eventDetailID):
+
+                switch source {
+                case let .eventDetail(targetID):
                     return .send(
                         .path(
                             .element(
-                                id: eventDetailID,
-                                action: .eventDetail(eventDetailAction)
-                            )
-                        )
-                    )
-                case let .markDetail(markDetailID):
-                    guard let eventDetailID = state.markDetailSourceByElementID[markDetailID] else {
-                        return .none
-                    }
-                    return .send(
-                        .path(
-                            .element(
-                                id: eventDetailID,
-                                action: .eventDetail(eventDetailAction)
-                            )
-                        )
-                    )
-                case let .linkDetail(linkDetailID):
-                    guard let eventDetailID = state.linkDetailSourceByElementID[linkDetailID] else {
-                        return .none
-                    }
-                    return .send(
-                        .path(
-                            .element(
-                                id: eventDetailID,
-                                action: .eventDetail(eventDetailAction)
-                            )
-                        )
-                    )
-                }
-                
-            case let .path(
-                .element(id: elementID, action: .tagSelection(.delegate(.selected(ids))))
-            ):
-                guard let context = state.selectionContextTag else { return .none }
-                let sourceID = state.selectionSourceElementIDTag
-                state.selectionContextTag = nil
-                state.selectionSourceElementIDTag = nil
-                state.path.pop(from: elementID)
-                // Root は ID の意味解釈をせず、SelectionContext のクロージャへ中継するだけ
-                let eventDetailAction = context.onSelected(ids)
-                guard let sourceID else { return .none }
-                return .send(
-                    .path(
-                        .element(
-                            id: sourceID,
-                            action: .eventDetail(eventDetailAction)
-                        )
-                    )
-                )
-                
-            case let .path(
-                .element(id: elementID, action: .tagSelection(.delegate(.cancelled)))
-            ):
-                guard let context = state.selectionContextTag else { return .none }
-                let sourceID = state.selectionSourceElementIDTag
-                state.selectionContextTag = nil
-                state.selectionSourceElementIDTag = nil
-                state.path.pop(from: elementID)
-                let eventDetailAction = context.onCancelled()
-                guard let sourceID else { return .none }
-                return .send(
-                    .path(
-                        .element(
-                            id: sourceID,
-                            action: .eventDetail(eventDetailAction)
-                        )
-                    )
-                )
-                
-            case let .path(
-                .element(id: elementID, action: .actionSelection(.delegate(.selected(ids))))
-            ):
-                if let context = state.selectionContextActionEventDetail {
-                    let sourceID = state.selectionSourceElementIDAction
-                    let selectionItems: IdentifiedArrayOf<SelectionFeature<ActionID>.Item>
-                    if case let .actionSelection(selectionState)? = state.path[id: elementID] {
-                        selectionItems = selectionState.items
-                    } else {
-                        selectionItems = []
-                    }
-
-                    state.selectionContextActionEventDetail = nil
-                    state.selectionSourceElementIDAction = nil
-                    state.path.pop(from: elementID)
-
-                    let names = Dictionary(
-                        uniqueKeysWithValues: selectionItems
-                            .filter { ids.contains($0.id) }
-                            .map { ($0.id, $0.title) }
-                    )
-
-                    var effects: [Effect<Action>] = []
-                    let eventDetailAction = context.onSelected(ids)
-                    guard let sourceID else { return .none }
-                    switch sourceID {
-                    case let .eventDetail(eventDetailID):
-                        effects.append(
-                            .send(
-                                .path(
-                                    .element(
-                                        id: eventDetailID,
-                                        action: .eventDetail(eventDetailAction)
-                                    )
-                                )
-                            )
-                        )
-                    case let .markDetail(markDetailID):
-                        if let eventDetailID = state.markDetailSourceByElementID[markDetailID] {
-                            effects.append(
-                                .send(
-                                    .path(
-                                        .element(
-                                            id: eventDetailID,
-                                            action: .eventDetail(eventDetailAction)
+                                id: targetID,
+                                action: .eventDetail(
+                                    .core(
+                                    .basicInfo(
+                                        .applySelection(
+                                            useCase: useCase,
+                                            ids: ids,
+                                            names: names
                                         )
                                     )
                                 )
                             )
-                        }
-                        effects.append(
-                            .send(
-                                .path(
-                                    .element(
-                                        id: markDetailID,
-                                        action: .markDetail(.actionSelectionResultReceived(ids, names))
-                                    )
-                                )
-                            )
                         )
-                    case let .linkDetail(linkDetailID):
-                        if let eventDetailID = state.linkDetailSourceByElementID[linkDetailID] {
-                            effects.append(
-                                .send(
-                                    .path(
-                                        .element(
-                                            id: eventDetailID,
-                                            action: .eventDetail(eventDetailAction)
-                                        )
-                                    )
-                                )
-                            )
-                        }
-                        effects.append(
-                            .send(
-                                .path(
-                                    .element(
-                                        id: linkDetailID,
-                                        action: .linkDetail(.actionSelectionResultReceived(ids, names))
-                                    )
-                                )
-                            )
                         )
-                    }
+                    )
 
-                    return .merge(effects)
+                case let .markDetail(targetID):
+                    return .send(
+                        .path(
+                            .element(
+                                id: targetID,
+                                action: .markDetail(
+                                    .applySelection(
+                                        useCase: useCase,
+                                        ids: ids,
+                                        names: names
+                                    )
+                                )
+                            )
+                        )
+                    )
+
+                case let .linkDetail(targetID):
+                    return .send(
+                        .path(
+                            .element(
+                                id: targetID,
+                                action: .linkDetail(
+                                    .applySelection(
+                                        useCase: useCase,
+                                        ids: ids,
+                                        names: names
+                                    )
+                                )
+                            )
+                        )
+                    )
+
+                case let .paymentDetail(targetID):
+                    return .send(
+                        .path(
+                            .element(
+                                id: targetID,
+                                action: .paymentDetail(
+                                    .applySelection(
+                                        useCase: useCase,
+                                        ids: ids,
+                                        names: names
+                                    )
+                                )
+                            )
+                        )
+                    )
                 }
-                guard let context = state.selectionContextAction else { return .none }
-                state.selectionContextAction = nil
-                state.path.pop(from: elementID)
-                // Root は ID の意味解釈をせず、SelectionContext のクロージャへ中継するだけ
-                return .send(context.onSelected(ids))
-                
+
             case let .path(
-                .element(id: elementID, action: .actionSelection(.delegate(.cancelled)))
+                .element(id: _, action: .selection(.delegate(.requestCreate(useCase))))
             ):
-                if let context = state.selectionContextActionEventDetail {
-                    let sourceID = state.selectionSourceElementIDAction
-                    state.selectionContextActionEventDetail = nil
-                    state.selectionSourceElementIDAction = nil
-                    state.path.pop(from: elementID)
-                    let eventDetailAction = context.onCancelled()
-                    guard let sourceID else { return .none }
-                    switch sourceID {
-                    case let .eventDetail(eventDetailID):
-                        return .send(
-                            .path(
-                                .element(
-                                    id: eventDetailID,
-                                    action: .eventDetail(eventDetailAction)
-                                )
-                            )
-                        )
-                    case let .markDetail(markDetailID):
-                        guard let eventDetailID = state.markDetailSourceByElementID[markDetailID] else {
-                            return .none
-                        }
-                        return .send(
-                            .path(
-                                .element(
-                                    id: eventDetailID,
-                                    action: .eventDetail(eventDetailAction)
-                                )
-                            )
-                        )
-                    case let .linkDetail(linkDetailID):
-                        guard let eventDetailID = state.linkDetailSourceByElementID[linkDetailID] else {
-                            return .none
-                        }
-                        return .send(
-                            .path(
-                                .element(
-                                    id: eventDetailID,
-                                    action: .eventDetail(eventDetailAction)
-                                )
-                            )
-                        )
-                    }
-                }
-                guard let context = state.selectionContextAction else { return .none }
-                state.selectionContextAction = nil
-                state.path.pop(from: elementID)
-                return .send(context.onCancelled())
+                guard state.selectionSource != nil else { return .none }
+                appendSettingCreate(for: useCase, state: &state)
+                return .none
+
+            case let .path(
+                .element(
+                    id: _,
+                    action: .transSetting(.detail(.presented(.delegate(.didSave(id)))))
+                )
+            ):
+                return handleSettingDidSave(createdID: id, state: &state)
+
+            case let .path(
+                .element(
+                    id: _,
+                    action: .actionSetting(.detail(.presented(.delegate(.didSave(id)))))
+                )
+            ):
+                return handleSettingDidSave(createdID: id, state: &state)
+
+            case let .path(
+                .element(
+                    id: _,
+                    action: .memberSetting(.detail(.presented(.delegate(.didSave(id)))))
+                )
+            ):
+                return handleSettingDidSave(createdID: id, state: &state)
+
+            case let .path(
+                .element(
+                    id: _,
+                    action: .tagSetting(.detail(.presented(.delegate(.didSave(id)))))
+                )
+            ):
+                return handleSettingDidSave(createdID: id, state: &state)
+
+            case let .path(
+                .element(
+                    id: _,
+                    action: .transSettingCreate(.detail(.delegate(.didSave(id))))
+                )
+            ):
+                return handleSettingDidSave(createdID: id, state: &state)
+
+            case let .path(
+                .element(
+                    id: _,
+                    action: .memberSettingCreate(.detail(.delegate(.didSave(id))))
+                )
+            ):
+                return handleSettingDidSave(createdID: id, state: &state)
+
+            case let .path(
+                .element(
+                    id: _,
+                    action: .tagSettingCreate(.detail(.delegate(.didSave(id))))
+                )
+            ):
+                return handleSettingDidSave(createdID: id, state: &state)
+
+            case let .path(
+                .element(
+                    id: _,
+                    action: .actionSettingCreate(.detail(.delegate(.didSave(id))))
+                )
+            ):
+                return handleSettingDidSave(createdID: id, state: &state)
 
 
             // ============================
@@ -704,91 +466,43 @@ struct RootReducer {
                 )
 
             case let .path(
-                .element(id: elementID, action: .markDetail(.delegate(.memberSelectionRequested(ids))))
+                .element(id: elementID, action: .paymentDetail(.delegate(.selectionRequested(useCase))))
             ):
-                guard let eventDetailID = state.markDetailSourceByElementID[elementID],
-                      case let .markDetail(markDetailState)? = state.path[id: elementID]
-                else { return .none }
-                state.selectionSourceElementIDMember = .markDetail(elementID)
-                return .send(
-                    .path(
-                        .element(
-                            id: eventDetailID,
-                            action: .eventDetail(
-                                .core(.markDetailMemberSelectionRequested(markDetailState.markLinkID, ids))
-                            )
-                        )
-                    )
+                return requestSelection(
+                    useCase: useCase,
+                    source: .paymentDetail(elementID),
+                    state: &state
                 )
 
             case let .path(
-                .element(id: elementID, action: .markDetail(.delegate(.actionSelectionRequested(ids))))
+                .element(id: elementID, action: .markDetail(.delegate(.selectionRequested(useCase))))
             ):
-                guard let eventDetailID = state.markDetailSourceByElementID[elementID],
-                      case let .markDetail(markDetailState)? = state.path[id: elementID]
-                else { return .none }
-                state.selectionSourceElementIDAction = .markDetail(elementID)
-                return .send(
-                    .path(
-                        .element(
-                            id: eventDetailID,
-                            action: .eventDetail(
-                                .core(.markDetailActionSelectionRequested(markDetailState.markLinkID, ids))
-                            )
-                        )
-                    )
+                return requestSelection(
+                    useCase: useCase,
+                    source: .markDetail(elementID),
+                    state: &state
                 )
 
             case let .path(
-                .element(id: elementID, action: .linkDetail(.delegate(.memberSelectionRequested(ids))))
+                .element(id: elementID, action: .linkDetail(.delegate(.selectionRequested(useCase))))
             ):
-                guard let eventDetailID = state.linkDetailSourceByElementID[elementID],
-                      case let .linkDetail(linkDetailState)? = state.path[id: elementID]
-                else { return .none }
-                state.selectionSourceElementIDMember = .linkDetail(elementID)
-                return .send(
-                    .path(
-                        .element(
-                            id: eventDetailID,
-                            action: .eventDetail(
-                                .core(.linkDetailMemberSelectionRequested(linkDetailState.markLinkID, ids))
-                            )
-                        )
-                    )
-                )
-
-            case let .path(
-                .element(id: elementID, action: .linkDetail(.delegate(.actionSelectionRequested(ids))))
-            ):
-                guard let eventDetailID = state.linkDetailSourceByElementID[elementID],
-                      case let .linkDetail(linkDetailState)? = state.path[id: elementID]
-                else { return .none }
-                state.selectionSourceElementIDAction = .linkDetail(elementID)
-                return .send(
-                    .path(
-                        .element(
-                            id: eventDetailID,
-                            action: .eventDetail(
-                                .core(.linkDetailActionSelectionRequested(linkDetailState.markLinkID, ids))
-                            )
-                        )
-                    )
+                return requestSelection(
+                    useCase: useCase,
+                    source: .linkDetail(elementID),
+                    state: &state
                 )
 
             case let .path(.popFrom(id: elementID)):
                 state.markDetailSourceByElementID[elementID] = nil
                 state.linkDetailSourceByElementID[elementID] = nil
-                if case .markDetail(elementID) = state.selectionSourceElementIDMember {
-                    state.selectionSourceElementIDMember = nil
-                }
-                if case .linkDetail(elementID) = state.selectionSourceElementIDMember {
-                    state.selectionSourceElementIDMember = nil
-                }
-                if case .markDetail(elementID) = state.selectionSourceElementIDAction {
-                    state.selectionSourceElementIDAction = nil
-                }
-                if case .linkDetail(elementID) = state.selectionSourceElementIDAction {
-                    state.selectionSourceElementIDAction = nil
+                if let pending = state.pendingSelection,
+                   pending.settingsElementID == elementID {
+                    state.pendingSelection = nil
+                    return requestSelection(
+                        useCase: pending.useCase,
+                        source: pending.source,
+                        state: &state
+                    )
                 }
                 return .none
                 
@@ -822,289 +536,13 @@ struct RootReducer {
                 }
 
             // MARK: 選択画面遷移
-                
-                
-                
-            // MARK: Trans
             case let .path(
-                .element(id: elementID,
-                         action: .eventDetail(.delegate(.transSelectionRequested(context: context, items: items))))
+                .element(id: elementID, action: .eventDetail(.delegate(.selectionRequested(useCase))))
             ):
-                state.selectionContextTrans = context
-                state.selectionSourceElementIDTrans = elementID
-                state.path.append(
-                    .transSelection(
-                        SelectionFeature<TransID>.State(
-                            items: items,
-                            selected: context.preselected,
-                            allowsMultipleSelection: context.allowsMultipleSelection
-                        )
-                    )
-                )
-                return .none
-                
-            // MARK: Member
-            // BasicInfo
-            // TotalMember
-            case let .path(
-                .element(id: elementID,
-                         action: .eventDetail(.delegate(.totalMembersSelectionRequested(context: context, items: items))))
-            ):
-                state.selectionContextMember = context
-                state.selectionSourceElementIDMember = .eventDetail(elementID)
-                state.path.append(
-                    .memberSelection(
-                        SelectionFeature<MemberID>.State(
-                            items: items,
-                            selected: context.preselected,
-                            allowsMultipleSelection: context.allowsMultipleSelection
-                        )
-                    )
-                )
-                return .none
-            // GasPaymember
-            case let .path(
-                .element(id: elementID,
-                         action: .eventDetail(.delegate(.gasPayMemberSelectionRequested(context: context, items: items))))
-            ):
-                state.selectionContextMember = context
-                state.selectionSourceElementIDMember = .eventDetail(elementID)
-                state.path.append(
-                    .memberSelection(
-                        SelectionFeature<MemberID>.State(
-                            items: items,
-                            selected: context.preselected,
-                            allowsMultipleSelection: context.allowsMultipleSelection
-                        )
-                    )
-                )
-                return .none
-            // MarkDetail members selection (EventDetail delegate)
-            case let .path(
-                .element(id: elementID,
-                         action: .eventDetail(.delegate(.markDetailMemberSelectionRequested(context: context, items: items))))
-            ):
-                state.selectionContextMember = context
-                if state.selectionSourceElementIDMember == nil {
-                    state.selectionSourceElementIDMember = .eventDetail(elementID)
-                }
-                state.path.append(
-                    .memberSelection(
-                        SelectionFeature<MemberID>.State(
-                            items: items,
-                            selected: context.preselected,
-                            allowsMultipleSelection: context.allowsMultipleSelection
-                        )
-                    )
-                )
-                return .none
-            // LinkDetail members selection (EventDetail delegate)
-            case let .path(
-                .element(id: elementID,
-                         action: .eventDetail(.delegate(.linkDetailMemberSelectionRequested(context: context, items: items))))
-            ):
-                state.selectionContextMember = context
-                if state.selectionSourceElementIDMember == nil {
-                    state.selectionSourceElementIDMember = .eventDetail(elementID)
-                }
-                state.path.append(
-                    .memberSelection(
-                        SelectionFeature<MemberID>.State(
-                            items: items,
-                            selected: context.preselected,
-                            allowsMultipleSelection: context.allowsMultipleSelection
-                        )
-                    )
-                )
-                return .none
-            // MARK: Tag
-            case let .path(
-                .element(id: elementID,
-                         action: .eventDetail(.delegate(.tagSelectionRequested(context: context, items: items))))
-            ):
-                state.selectionContextTag = context
-                state.selectionSourceElementIDTag = elementID
-                state.path.append(
-                    .tagSelection(
-                        SelectionFeature<TagID>.State(
-                            items: items,
-                            selected: context.preselected,
-                            allowsMultipleSelection: context.allowsMultipleSelection
-                        )
-                    )
-                )
-                return .none
-            // MARK: Action
-            // MichiInfo
-            case let .path(
-                .element(id: elementID,
-                         action: .eventDetail(.delegate(.markDetailActionSelectionRequested(context: context, items: items))))):
-                state.selectionContextActionEventDetail = context
-                if state.selectionSourceElementIDAction == nil {
-                    state.selectionSourceElementIDAction = .eventDetail(elementID)
-                }
-                state.path.append(
-                    .actionSelection(
-                        SelectionFeature<ActionID>.State(
-                            items: items,
-                            selected: context.preselected,
-                            allowsMultipleSelection: context.allowsMultipleSelection
-                        )
-                    )
-                )
-                return .none
-            case let .path(
-                .element(id: elementID,
-                         action: .eventDetail(.delegate(.linkDetailActionSelectionRequested(context: context, items: items))))):
-                state.selectionContextActionEventDetail = context
-                if state.selectionSourceElementIDAction == nil {
-                    state.selectionSourceElementIDAction = .eventDetail(elementID)
-                }
-                state.path.append(
-                    .actionSelection(
-                        SelectionFeature<ActionID>.State(
-                            items: items,
-                            selected: context.preselected,
-                            allowsMultipleSelection: context.allowsMultipleSelection
-                        )
-                    )
-                )
-                return .none
-                
-            // MARK: 選択結果返送
-            // MARK: Trans
-            case let .path(
-                .element(
-                    id: _,
-                    action: .transSelect(.delegate(.selected(id, name)))
-                )
-            ):
-                guard
-                    let eventDetailID = state.path.ids.dropLast().last
-                else { return .none }
-                state.path.removeLast()
-                return .send(
-                    .path(
-                        .element(
-                            id: eventDetailID,
-                            action: .eventDetail(.transSelectionResultReceived(id, name))
-                        )
-                    )
-                )
-
-                
-            // MARK: Member
-            case let .path(
-                .element(
-                    id: _,
-                    action: .memberSelect(.delegate(.selected(ids, names, useCase)))
-                )
-            ):
-                switch useCase {
-                case .totalMembers:
-                    guard let eventDetailID = state.path.ids.dropLast().last
-                    else { return .none }
-                    state.path.removeLast()
-                    return .send(
-                        .path(
-                            .element(
-                                id: eventDetailID,
-                                action: .eventDetail(.totalMembersSelectionResultReceived(ids, names))
-                            )
-                        )
-                    )
-                case .gasPayer:
-                    guard let eventDetailID = state.path.ids.dropLast().last
-                    else { return .none }
-                    let payerID = ids.first
-                    let payerName = payerID.flatMap { names[$0] }
-                    state.path.removeLast()
-                    return .send(
-                        .path(
-                            .element(
-                                id: eventDetailID,
-                                action: .eventDetail(.gasPayMemberSelectionResultReceived(payerID, payerName))
-                            )
-                        )
-                    )
-                    
-                case .markMembers:
-                    guard let eventDetailID = state.path.ids.dropLast().last
-                    else { return .none }
-                    guard
-                        let markDetailID = state.path.ids.reversed().first(where: { id in
-                            if case .markDetail? = state.path[id: id] { return true }
-                            return false
-                        }),
-                        case let .markDetail(markDetailState)? = state.path[id: markDetailID]
-                    else { return .none }
-                    return .send(
-                        .path(
-                            .element(
-                                id: eventDetailID,
-                                action: .eventDetail(
-                                    .markDetailMemberSelectionResultReceived(markDetailState.markLinkID, ids, names)
-                                )
-                            )
-                        )
-                    )
-                default:
-                    return .none
-                }
-                
-            // MARK: Action
-            case let .path(
-                .element(
-                    id: _,
-                    action: .actionSelect(.delegate(.selected(ids, names, useCase)))
-                )
-            ):
-                switch useCase {
-                case .markActions:
-                    guard let eventDetailID = state.path.ids.dropLast().last
-                    else { return .none }
-                    guard
-                        let markDetailID = state.path.ids.reversed().first(where: { id in
-                            if case .markDetail? = state.path[id: id] { return true }
-                            return false
-                        }),
-                        case let .markDetail(markDetailState)? = state.path[id: markDetailID]
-                    else { return .none }
-                    state.path.removeLast()
-                    return .send(
-                        .path(
-                            .element(
-                                id: eventDetailID,
-                                action: .eventDetail(
-                                    .markDetailActionSelectionResultReceived(markDetailState.markLinkID, ids, names)
-                                )
-                            )
-                        )
-                    )
-
-                case .linkActions:
-                    // まだリンク詳細側の反映先が未実装のため、選択画面は閉じる
-                    state.path.removeLast()
-                    return .none
-                }
-
-            // MARK: Tag
-            case let .path(
-                .element(
-                    id: _,
-                    action: .tagSelect(.delegate(.selected(ids, names)))
-                )
-            ):
-                guard let eventDetailID = state.path.ids.dropLast().last
-                else { return .none }
-                state.path.removeLast()
-                return .send(
-                    .path(
-                        .element(
-                            id: eventDetailID,
-                            action: .eventDetail(.tagSelectionResultReceived(ids, names))
-                        )
-                    )
+                return requestSelection(
+                    useCase: useCase,
+                    source: .eventDetail(elementID),
+                    state: &state
                 )
 
             default:
@@ -1114,4 +552,228 @@ struct RootReducer {
 
         .forEach(\.path, action: \.path)
     }
+
+    private func requestSelection(
+        useCase: SelectionUseCase,
+        source: SelectionSource,
+        state: inout State
+    ) -> Effect<Action> {
+        let preselectedIDs = selectionPreselectedIDs(
+            useCase: useCase,
+            source: source,
+            state: state
+        )
+        return .run { [useCase, preselectedIDs, source] send in
+            let items: [SelectionItem]
+            do {
+                items = try await fetchSelectionItems(useCase: useCase)
+            } catch {
+                items = []
+            }
+            await send(
+                .selectionItemsLoaded(
+                    useCase: useCase,
+                    items: items,
+                    preselectedIDs: preselectedIDs,
+                    source: source
+                )
+            )
+        }
+    }
+
+    private func fetchSelectionItems(useCase: SelectionUseCase) async throws -> [SelectionItem] {
+        switch useCase {
+        case .eventTrans:
+            let domains = try await transRepository.fetchAll()
+            let projections = TransProjectionAdapter()
+                .adaptList(transes: domains)
+                .filter { $0.isVisible }
+            return projections.map { projection in
+                let subtitleParts = [
+                    projection.displayKmPerGas.isEmpty ? nil : "燃費 \(projection.displayKmPerGas)",
+                    projection.displayMeterValue.isEmpty ? nil : "メーター \(projection.displayMeterValue)"
+                ].compactMap { $0 }
+                let subtitle = subtitleParts.isEmpty ? nil : subtitleParts.joined(separator: " / ")
+                return SelectionItem(
+                    id: projection.id,
+                    title: projection.transName,
+                    subtitle: subtitle
+                )
+            }
+
+        case .eventMembers, .gasPayMember, .markMembers, .linkMembers, .payMember, .splitMembers:
+            let domains = try await memberRepository.fetchAll()
+            let projections = MemberProjectionAdapter()
+                .adaptList(members: domains)
+                .filter { $0.isVisible }
+            return projections.map { projection in
+                let subtitle = projection.mailAddress?.isEmpty == false
+                    ? projection.mailAddress
+                    : nil
+                return SelectionItem(
+                    id: projection.id,
+                    title: projection.memberName,
+                    subtitle: subtitle
+                )
+            }
+
+        case .eventTags:
+            let domains = try await tagRepository.fetchAll()
+            let projections = TagProjectionAdapter()
+                .adaptList(tags: domains)
+                .filter { $0.isVisible }
+            return projections.map { projection in
+                SelectionItem(
+                    id: projection.id,
+                    title: projection.tagName,
+                    subtitle: nil
+                )
+            }
+
+        case .markActions, .linkActions:
+            let domains = try await actionRepository.fetchAll()
+            let projections = ActionProjectionAdapter()
+                .adaptList(actions: domains)
+                .filter { $0.isVisible }
+            return projections.map { projection in
+                SelectionItem(
+                    id: projection.id,
+                    title: projection.actionName,
+                    subtitle: nil
+                )
+            }
+        }
+    }
+
+    private func selectionPreselectedIDs(
+        useCase: SelectionUseCase,
+        source: SelectionSource,
+        state: State
+    ) -> Set<UUID> {
+        switch useCase {
+        case .eventTrans, .eventMembers, .eventTags, .gasPayMember:
+            guard case let .eventDetail(elementID) = source,
+                  case let .eventDetail(eventDetailState)? = state.path[id: elementID]
+            else { return [] }
+            let draft = eventDetailState.core.basicInfo.draft
+            switch useCase {
+            case .eventTrans:
+                return draft.selectedTransID.map { [$0] } ?? []
+            case .eventMembers:
+                return draft.selectedMemberIDs
+            case .eventTags:
+                return draft.selectedTagIDs
+            case .gasPayMember:
+                return draft.selectedPayMemberID.map { [$0] } ?? []
+            default:
+                return []
+            }
+
+        case .markMembers, .markActions:
+            guard case let .markDetail(elementID) = source,
+                  case let .markDetail(markDetailState)? = state.path[id: elementID]
+            else { return [] }
+            switch useCase {
+            case .markMembers:
+                return markDetailState.draft.selectedMemberIDs
+            case .markActions:
+                return markDetailState.draft.selectedActionIDs
+            default:
+                return []
+            }
+
+        case .linkMembers, .linkActions:
+            guard case let .linkDetail(elementID) = source,
+                  case let .linkDetail(linkDetailState)? = state.path[id: elementID]
+            else { return [] }
+            switch useCase {
+            case .linkMembers:
+                return linkDetailState.draft.selectedMemberIDs
+            case .linkActions:
+                return linkDetailState.draft.selectedActionIDs
+            default:
+                return []
+            }
+
+        case .payMember, .splitMembers:
+            guard case let .paymentDetail(elementID) = source,
+                  case let .paymentDetail(paymentDetailState)? = state.path[id: elementID]
+            else { return [] }
+            switch useCase {
+            case .payMember:
+                return paymentDetailState.draft.payMemberID.map { [$0] } ?? []
+            case .splitMembers:
+                return paymentDetailState.draft.splitMemberIDs
+            default:
+                return []
+            }
+        }
+    }
+
+    private func appendSettingCreate(
+        for useCase: SelectionUseCase,
+        state: inout State
+    ) {
+        switch useCase {
+        case .eventTrans:
+            state.path.append(.transSettingCreate(TransSettingCreateReducer.State()))
+
+        case .eventMembers,
+             .gasPayMember,
+             .markMembers,
+             .linkMembers,
+             .payMember,
+             .splitMembers:
+            state.path.append(.memberSettingCreate(MemberSettingCreateReducer.State()))
+
+        case .eventTags:
+            state.path.append(.tagSettingCreate(TagSettingCreateReducer.State()))
+
+        case .markActions, .linkActions:
+            state.path.append(.actionSettingCreate(ActionSettingCreateReducer.State()))
+        }
+    }
+
+    private func handleSettingDidSave(
+        createdID: UUID,
+        state: inout State
+    ) -> Effect<Action> {
+
+        let ids = Array(state.path.ids)
+        guard ids.count >= 2 else { return .none }
+
+        let previousID = ids[ids.count - 2]
+
+        guard case let .selection(selectionState) = state.path[id: previousID]
+        else {
+            state.path.removeLast()
+            return .none
+        }
+
+        let isMultipleSelection = selectionState.isMultipleSelection
+
+        state.path.removeLast()
+
+        if isMultipleSelection {
+            return .send(
+                .path(
+                    .element(
+                        id: previousID,
+                        action: .selection(.reloadAfterCreate(createdID: createdID))
+                    )
+                )
+            )
+        }
+
+        return .send(
+            .path(
+                .element(
+                    id: previousID,
+                    action: .selection(.reloadAfterCreate(createdID: createdID))
+                )
+            )
+        )
+    }
+
+
 }

@@ -30,22 +30,39 @@ struct RootView: View {
             //Settings
             case let .settings(store):SettingsView(store: store)
             case let .transSetting(store):TransSettingView(store: store)
-//            case let .transSettingDetail(store):TransSettingDetailView(store: store)
+            case let .transSettingCreate(store):
+                TransSettingDetailView(
+                    store: store.scope(
+                        state: \.detail,
+                        action: TransSettingCreateReducer.Action.detail
+                    )
+                )
             case let .memberSetting(store):MemberSettingView(store: store)
-//            case let .memberSettingDetail(store):MemberSettingDetailView(store: store)
+            case let .memberSettingCreate(store):
+                MemberSettingDetailView(
+                    store: store.scope(
+                        state: \.detail,
+                        action: MemberSettingCreateReducer.Action.detail
+                    )
+                )
             case let .tagSetting(store):TagSettingView(store: store)
-//            case let .tagSettingDetail(store):TagSettingDetailView(store: store)
+            case let .tagSettingCreate(store):
+                TagSettingDetailView(
+                    store: store.scope(
+                        state: \.detail,
+                        action: TagSettingCreateReducer.Action.detail
+                    )
+                )
             case let .actionSetting(store):ActionSettingView(store: store)
-            //case let .actionSettingDetail(store):ActionSettingDetailView(store: store)
+            case let .actionSettingCreate(store):
+                ActionSettingDetailView(
+                    store: store.scope(
+                        state: \.detail,
+                        action: ActionSettingCreateReducer.Action.detail
+                    )
+                )
             // MARK: 選択画面
-            case let .transSelect(store):TransSelectView(store: store)
-            case let .memberSelect(store):MemberSelectView(store: store)
-            case let .tagSelect(store):TagSelectView(store: store)
-            case let .actionSelect(store):ActionSelectView(store: store)
-            case let .transSelection(store):SelectionView(store: store)
-            case let .memberSelection(store):SelectionView(store: store)
-            case let .tagSelection(store):SelectionView(store: store)
-            case let .actionSelection(store):SelectionView(store: store)
+            case let .selection(store):SelectionView(store: store)
             }
         }
     }

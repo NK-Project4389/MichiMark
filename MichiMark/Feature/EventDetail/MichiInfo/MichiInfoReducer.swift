@@ -57,16 +57,37 @@ struct MichiInfoReducer {
 
             case let .markDetailDraftApplied(markLinkID, draft):
                 state.draftByID[markLinkID] = draft
+                state.projection = updatingProjection(
+                    current: state.projection,
+                    markLinkID: markLinkID,
+                    item: draft.toProjection(id: markLinkID)
+                )
                 return .none
                 
             case let .linkDetailDraftApplied(markLinkID, draft):
                 state.linkDraftByID[markLinkID] = draft
+                state.projection = updatingProjection(
+                    current: state.projection,
+                    markLinkID: markLinkID,
+                    item: draft.toProjection(id: markLinkID)
+                )
                 return .none
 
             case .delegate:
                 return .none
             }
         }
+    }
+
+    private func updatingProjection(
+        current: MichiInfoListProjection,
+        markLinkID: MarkLinkID,
+        item: MarkLinkItemProjection
+    ) -> MichiInfoListProjection {
+        let items = current.items.map { existing in
+            existing.id == markLinkID ? item : existing
+        }
+        return MichiInfoListProjection(items: items)
     }
 }
 

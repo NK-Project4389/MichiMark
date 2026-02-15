@@ -58,13 +58,16 @@ struct BasicInfoReducer {
         
         // MARK: - Tap
         case saveTapped
+
+        // MARK: - Selection
+        case applySelection(useCase: SelectionUseCase, ids: [UUID], names: [UUID: String])
         
         // MARK: - Delegate
         case delegate(Delegate)
 
         enum Delegate {
             case saveDraft(EventID, BasicInfoDraft)
-            case membersSelectionRequested(ids: Set<MemberID>, useCase: MemberSelectionUseCase)
+            case selectionRequested(useCase: SelectionUseCase)
         }
     }
 
@@ -86,31 +89,100 @@ struct BasicInfoReducer {
 
             case .membersTapped:
                 return .send(
-                    .delegate(.membersSelectionRequested(
-                        ids: state.draft.selectedMemberIDs,
-                        useCase: .totalMembers
-                    ))
+                    .delegate(.selectionRequested(useCase: .eventMembers))
                 )
             
             case .payMemberTapped:
                 return .send(
-                    .delegate(.membersSelectionRequested(
-                        ids: state.draft.selectedPayMemberID.map{ [$0] } ?? [],
-                        useCase: .gasPayer
-                    ))
+                    .delegate(.selectionRequested(useCase: .gasPayMember))
                 )
                 
-            case .transTapped,  .tagsTapped:
-                return .none
+            case .transTapped:
+                return .send(.delegate(.selectionRequested(useCase: .eventTrans)))
+
+            case .tagsTapped:
+                return .send(.delegate(.selectionRequested(useCase: .eventTags)))
                 
             case .saveTapped:
                 return .send(
                     .delegate(.saveDraft(state.eventID, state.draft))
                 )
 
+            case let .applySelection(useCase, ids, names):
+                switch useCase {
+                case .eventTrans:
+                    let id = ids.first
+                    state.draft.selectedTransID = id
+                    let name = id.flatMap { names[$0] }
+                    state.draft.selectedTransName = name
+                    state.projection = updatingTransProjection(
+                        current: state.projection,
+                        transID: id,
+                        transName: name
+                    )
+
+                case .eventMembers:
+                    state.draft.selectedMemberIDs = Set(ids)
+                    state.draft.selectedMemberNames = names
+
+                case .eventTags:
+                    state.draft.selectedTagIDs = Set(ids)
+                    state.draft.selectedTagNames = names
+
+                case .gasPayMember:
+                    let id = ids.first
+                    state.draft.selectedPayMemberID = id
+                    state.draft.selectedPayMemberName = id.flatMap { names[$0] }
+
+                default:
+                    break
+                }
+                return .none
+
             case .delegate:
                 return .none
             }
         }
+    }
+
+    private func updatingTransProjection(
+        current: BasicInfoProjection,
+        transID: TransID?,
+        transName: String?
+    ) -> BasicInfoProjection {
+        let transProjection: TransItemProjection?
+        if let transID, let transName {
+            if let existing = current.trans, existing.id == transID {
+                transProjection = TransItemProjection(
+                    id: transID,
+                    transName: transName,
+                    displayKmPerGas: existing.displayKmPerGas,
+                    displayMeterValue: existing.displayMeterValue,
+                    isVisible: existing.isVisible
+                )
+            } else {
+                transProjection = TransItemProjection(
+                    id: transID,
+                    transName: transName,
+                    displayKmPerGas: "",
+                    displayMeterValue: "",
+                    isVisible: true
+                )
+            }
+        } else {
+            transProjection = nil
+        }
+        return BasicInfoProjection(
+            id: current.id,
+            eventName: current.eventName,
+            trans: transProjection,
+            tags: current.tags,
+            members: current.members,
+            kmPerGas: current.kmPerGas,
+            displayKmPerGas: current.displayKmPerGas,
+            pricePerGas: current.pricePerGas,
+            displayPricePerGas: current.displayPricePerGas,
+            payMember: current.payMember
+        )
     }
 }

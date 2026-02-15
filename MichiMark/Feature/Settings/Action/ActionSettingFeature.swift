@@ -17,6 +17,7 @@ struct ActionSettingReducer {
         
         case actionSelected(ActionID)
         case addActionTapped
+        case startCreate
         
         case detail(PresentationAction<ActionSettingDetailReducer.Action>)
     }
@@ -48,6 +49,12 @@ struct ActionSettingReducer {
                 return .none
 
             case .addActionTapped:
+                let domain = ActionDomain(id: UUID(), actionName: "")
+                let projection = actionAdapter.adapt(domain)
+                state.detail = ActionSettingDetailReducer.State(projection: projection)
+                return .none
+
+            case .startCreate:
                 let domain = ActionDomain(id: UUID(), actionName: "")
                 let projection = actionAdapter.adapt(domain)
                 state.detail = ActionSettingDetailReducer.State(projection: projection)
@@ -98,4 +105,3 @@ struct ActionSettingReducer {
         }
     }
 }
-
