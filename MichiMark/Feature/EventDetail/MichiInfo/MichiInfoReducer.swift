@@ -8,8 +8,9 @@ struct MichiInfoReducer {
     struct State: Equatable {
         var projection: MichiInfoListProjection
         var eventID: EventID
-        var draftByID: [MarkLinkID: MarkDetailDraft]
-        var linkDraftByID: [MarkLinkID: LinkDetailDraft]
+        var markDrafts: IdentifiedArrayOf<MarkDetailDraft>
+        var linkDrafts: IdentifiedArrayOf<LinkDetailDraft>
+        @Presents var addSheet: AddSheetReducer.State?
         
         init(
             projection: MichiInfoListProjection,
@@ -17,8 +18,9 @@ struct MichiInfoReducer {
         ) {
             self.projection = projection
             self.eventID = eventID
-            self.draftByID = [:]
-            self.linkDraftByID = [:]
+            self.markDrafts = []
+            self.linkDrafts = []
+            self.addSheet = nil
         }
     }
 
@@ -26,16 +28,15 @@ struct MichiInfoReducer {
         case appeared
         case markTapped(MarkLinkID)
         case linkTapped(MarkLinkID)
-        case addMarkTapped
-        case markDetailDraftApplied(MarkLinkID, MarkDetailDraft)
-        case linkDetailDraftApplied(MarkLinkID, LinkDetailDraft)
+        case addButtonTapped
+        case addSheet(PresentationAction<AddSheetReducer.Action>)
         
         case delegate(Delegate)
 
         enum Delegate {
             case openMarkDetail(EventID, MarkLinkID)
             case openLinkDetail(EventID, MarkLinkID)
-            case addMark(EventID)
+            case addMarkOrLinkSelected(MarkOrLink)
         }
     }
 
@@ -52,55 +53,39 @@ struct MichiInfoReducer {
             case let .linkTapped(id):
                 return .send(.delegate(.openLinkDetail(state.eventID, id)))
 
-            case .addMarkTapped:
-                return .send(.delegate(.addMark(state.eventID)))
+            case .addButtonTapped:
+                state.addSheet = AddSheetReducer.State()
+                return .none
 
-            case let .markDetailDraftApplied(markLinkID, draft):
-                state.draftByID[markLinkID] = draft
-                state.projection = updatingProjection(
-                    current: state.projection,
-                    markLinkID: markLinkID,
-                    item: draft.toProjection(id: markLinkID)
-                )
+            case let .addSheet(.presented(.delegate(.selected(type)))):
+                state.addSheet = nil
+                return .send(.delegate(.addMarkOrLinkSelected(type)))
+                
+            case .addSheet(.presented(.delegate(.dismiss))),
+                 .addSheet(.dismiss):
+                state.addSheet = nil
                 return .none
                 
-            case let .linkDetailDraftApplied(markLinkID, draft):
-                state.linkDraftByID[markLinkID] = draft
-                state.projection = updatingProjection(
-                    current: state.projection,
-                    markLinkID: markLinkID,
-                    item: draft.toProjection(id: markLinkID)
-                )
+            case .addSheet:
                 return .none
 
             case .delegate:
                 return .none
             }
         }
-    }
-
-    private func updatingProjection(
-        current: MichiInfoListProjection,
-        markLinkID: MarkLinkID,
-        item: MarkLinkItemProjection
-    ) -> MichiInfoListProjection {
-        let items = current.items.map { existing in
-            existing.id == markLinkID ? item : existing
+        .ifLet(\.$addSheet, action: \.addSheet) {
+            AddSheetReducer()
         }
-        return MichiInfoListProjection(items: items)
     }
 }
 
 extension MichiInfoReducer.State {
     var displayItems: [MarkLinkItemProjection] {
-        projection.items.map { item in
-            if item.markLinkType == .link, let draft = linkDraftByID[item.id] {
-                return draft.toProjection(id: item.id)
-            }
-            if item.markLinkType == .mark, let draft = draftByID[item.id] {
-                return draft.toProjection(id: item.id)
-            }
-            return item
+        let adapter = MarkLinkDraftProjectionAdapter()
+        let markItems = markDrafts.map { adapter.adapt($0) }
+        let linkItems = linkDrafts.map { adapter.adapt($0) }
+        return (markItems + linkItems).sorted { lhs, rhs in
+            lhs.markLinkSeq < rhs.markLinkSeq
         }
     }
 }

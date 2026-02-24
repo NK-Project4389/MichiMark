@@ -46,6 +46,10 @@ struct RootReducer {
         // EventDetail から開いた Mark/Link の追跡
         var markDetailSourceByElementID: [StackElementID: StackElementID] = [:]
         var linkDetailSourceByElementID: [StackElementID: StackElementID] = [:]
+        
+        // Draft（Rootが所有）
+        var markDrafts: IdentifiedArrayOf<MarkDetailDraft> = []
+        var linkDrafts: IdentifiedArrayOf<LinkDetailDraft> = []
 
         // 外部依存State
         var appMode: AppMode = .personal
@@ -102,11 +106,23 @@ struct RootReducer {
             //EventList側へ処理へ委譲
             case let .eventList(.eventTapped(eventID)):
                 let projection = EventDetailProjection.empty(eventID: eventID)
-                state.path.append(
-                    .eventDetail(
-                        EventDetailReducer.State(projection: projection)
-                    )
+                let markDrafts = IdentifiedArray(
+                    uniqueElements: projection.michiInfo.items
+                        .filter { $0.markLinkType == .mark }
+                        .map { MarkDetailDraft(projection: $0) }
                 )
+                let linkDrafts = IdentifiedArray(
+                    uniqueElements: projection.michiInfo.items
+                        .filter { $0.markLinkType == .link }
+                        .map { LinkDetailDraft(projection: $0) }
+                )
+                state.markDrafts = markDrafts
+                state.linkDrafts = linkDrafts
+
+                var eventDetailState = EventDetailReducer.State(projection: projection)
+                eventDetailState.core.michiInfo.markDrafts = markDrafts
+                eventDetailState.core.michiInfo.linkDrafts = linkDrafts
+                state.path.append(.eventDetail(eventDetailState))
                 return .none
 //                将来的にCoreDomainから呼び出す
 //                return .run { [eventID] send in
@@ -131,11 +147,23 @@ struct RootReducer {
                 let newEventID = EventID()
                 let projection = EventDetailProjection.empty(eventID: newEventID)
 
-                state.path.append(
-                    .eventDetail(
-                        EventDetailReducer.State(projection: projection)
-                    )
+                let markDrafts = IdentifiedArray(
+                    uniqueElements: projection.michiInfo.items
+                        .filter { $0.markLinkType == .mark }
+                        .map { MarkDetailDraft(projection: $0) }
                 )
+                let linkDrafts = IdentifiedArray(
+                    uniqueElements: projection.michiInfo.items
+                        .filter { $0.markLinkType == .link }
+                        .map { LinkDetailDraft(projection: $0) }
+                )
+                state.markDrafts = markDrafts
+                state.linkDrafts = linkDrafts
+
+                var eventDetailState = EventDetailReducer.State(projection: projection)
+                eventDetailState.core.michiInfo.markDrafts = markDrafts
+                eventDetailState.core.michiInfo.linkDrafts = linkDrafts
+                state.path.append(.eventDetail(eventDetailState))
                 return .none
 
 
@@ -359,11 +387,18 @@ struct RootReducer {
                 .element(id: elementID, action: .eventDetail(.delegate(.openMarkDetail(markLinkID))))
             ):
                 guard case let .eventDetail(eventDetailState)? = state.path[id: elementID] else { return .none }
-                guard let itemProjection = eventDetailState.core.projection.michiInfo.items
-                    .first(where: { $0.id == markLinkID })
-                else { return .none }
-                let markDetailDraft = eventDetailState.core.michiInfo.draftByID[markLinkID]
-                    ?? MarkDetailDraft(projection: itemProjection)
+                let markDetailDraft: MarkDetailDraft
+                let itemProjection: MarkLinkItemProjection
+                if let draft = state.markDrafts[id: markLinkID] {
+                    markDetailDraft = draft
+                    itemProjection = draft.toProjection()
+                } else if let projection = eventDetailState.core.projection.michiInfo.items
+                    .first(where: { $0.id == markLinkID }) {
+                    markDetailDraft = MarkDetailDraft(projection: projection)
+                    itemProjection = projection
+                } else {
+                    return .none
+                }
                 state.path.append(
                     .markDetail(
                         MarkDetailReducer.State(
@@ -382,11 +417,18 @@ struct RootReducer {
                 .element(id: elementID, action: .eventDetail(.delegate(.openLinkDetail(markLinkID))))
             ):
                 guard case let .eventDetail(eventDetailState)? = state.path[id: elementID] else { return .none }
-                guard let itemProjection = eventDetailState.core.projection.michiInfo.items
-                    .first(where: { $0.id == markLinkID })
-                else { return .none }
-                let linkDetailDraft = eventDetailState.core.michiInfo.linkDraftByID[markLinkID]
-                    ?? LinkDetailDraft(projection: itemProjection)
+                let linkDetailDraft: LinkDetailDraft
+                let itemProjection: MarkLinkItemProjection
+                if let draft = state.linkDrafts[id: markLinkID] {
+                    linkDetailDraft = draft
+                    itemProjection = draft.toProjection()
+                } else if let projection = eventDetailState.core.projection.michiInfo.items
+                    .first(where: { $0.id == markLinkID }) {
+                    linkDetailDraft = LinkDetailDraft(projection: projection)
+                    itemProjection = projection
+                } else {
+                    return .none
+                }
                 state.path.append(
                     .linkDetail(
                         LinkDetailReducer.State(
@@ -398,6 +440,47 @@ struct RootReducer {
                 )
                 if let newID = state.path.ids.last {
                     state.linkDetailSourceByElementID[newID] = elementID
+                }
+                return .none
+                
+            case let .path(
+                .element(id: elementID, action: .eventDetail(.delegate(.addMarkOrLinkSelected(type))))
+            ):
+                guard case .eventDetail = state.path[id: elementID] else { return .none }
+                let newMarkLinkID = MarkLinkID()
+                let allSeq = state.markDrafts.map(\.markLinkSeq) + state.linkDrafts.map(\.markLinkSeq)
+                let nextSeq = (allSeq.max() ?? 0) + 1
+                switch type {
+                case .mark:
+                    let draft = MarkDetailDraft.new(id: newMarkLinkID, markLinkSeq: nextSeq)
+                    let projection = draft.toProjection()
+                    state.path.append(
+                        .markDetail(
+                            MarkDetailReducer.State(
+                                markLinkID: newMarkLinkID,
+                                projection: projection,
+                                draft: draft
+                            )
+                        )
+                    )
+                    if let newID = state.path.ids.last {
+                        state.markDetailSourceByElementID[newID] = elementID
+                    }
+                case .link:
+                    let draft = LinkDetailDraft.new(id: newMarkLinkID, markLinkSeq: nextSeq)
+                    let projection = draft.toProjection()
+                    state.path.append(
+                        .linkDetail(
+                            LinkDetailReducer.State(
+                                markLinkID: newMarkLinkID,
+                                projection: projection,
+                                draft: draft
+                            )
+                        )
+                    )
+                    if let newID = state.path.ids.last {
+                        state.linkDetailSourceByElementID[newID] = elementID
+                    }
                 }
                 return .none
 
@@ -420,50 +503,24 @@ struct RootReducer {
                 return .none
 
             case let .path(
-                .element(id: elementID, action: .markDetail(.delegate(.applied(draft))))
+                .element(id: elementID, action: .markDetail(.delegate(.saved(draft))))
             ):
-                guard let eventDetailID = state.markDetailSourceByElementID[elementID],
-                      case let .markDetail(markDetailState)? = state.path[id: elementID]
-                else { return .none }
+                guard let eventDetailID = state.markDetailSourceByElementID[elementID] else { return .none }
+                state.markDrafts[id: draft.id] = draft
                 state.markDetailSourceByElementID[elementID] = nil
                 state.path.pop(from: elementID)
-                return .send(
-                    .path(
-                        .element(
-                            id: eventDetailID,
-                            action: .eventDetail(
-                                .core(
-                                    .michiInfo(
-                                        .markDetailDraftApplied(markDetailState.markLinkID, draft)
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
+                syncMichiInfoDrafts(for: eventDetailID, state: &state)
+                return .none
 
             case let .path(
-                .element(id: elementID, action: .linkDetail(.delegate(.applied(draft))))
+                .element(id: elementID, action: .linkDetail(.delegate(.saved(draft))))
             ):
-                guard let eventDetailID = state.linkDetailSourceByElementID[elementID],
-                      case let .linkDetail(linkDetailState)? = state.path[id: elementID]
-                else { return .none }
+                guard let eventDetailID = state.linkDetailSourceByElementID[elementID] else { return .none }
+                state.linkDrafts[id: draft.id] = draft
                 state.linkDetailSourceByElementID[elementID] = nil
                 state.path.pop(from: elementID)
-                return .send(
-                    .path(
-                        .element(
-                            id: eventDetailID,
-                            action: .eventDetail(
-                                .core(
-                                    .michiInfo(
-                                        .linkDetailDraftApplied(linkDetailState.markLinkID, draft)
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
+                syncMichiInfoDrafts(for: eventDetailID, state: &state)
+                return .none
 
             case let .path(
                 .element(id: elementID, action: .paymentDetail(.delegate(.selectionRequested(useCase))))
@@ -551,6 +608,16 @@ struct RootReducer {
         }
 
         .forEach(\.path, action: \.path)
+    }
+
+    private func syncMichiInfoDrafts(
+        for elementID: StackElementID,
+        state: inout State
+    ) {
+        guard case var .eventDetail(eventDetailState) = state.path[id: elementID] else { return }
+        eventDetailState.core.michiInfo.markDrafts = state.markDrafts
+        eventDetailState.core.michiInfo.linkDrafts = state.linkDrafts
+        state.path[id: elementID] = .eventDetail(eventDetailState)
     }
 
     private func requestSelection(

@@ -23,7 +23,7 @@ struct LinkDetailReducer {
         case membersTapped
         case actionsTapped
         case applySelection(useCase: SelectionUseCase, ids: [UUID], names: [UUID: String])
-        case applyTapped
+        case reflectButtonTapped
         case backTapped
 
         case fuelToggled(Bool)
@@ -34,7 +34,7 @@ struct LinkDetailReducer {
 
         enum Delegate {
             case selectionRequested(useCase: SelectionUseCase)
-            case applied(LinkDetailDraft)
+            case saved(LinkDetailDraft)
         }
     }
 
@@ -78,7 +78,7 @@ struct LinkDetailReducer {
                     break
                 }
                 if shouldSyncProjection {
-                    state.projection = state.draft.toProjection(id: state.markLinkID)
+                    state.projection = state.draft.toProjection()
                 }
                 return .none
 
@@ -94,7 +94,7 @@ struct LinkDetailReducer {
                 state.draft.memo = text
                 return .none
 
-            case .applyTapped:
+            case .reflectButtonTapped:
 //                return .send(.delegate(.applied(state.draft)))
 //                return .concatenate(
 //                          .send(.delegate(.applied(state.draft))),
@@ -102,7 +102,7 @@ struct LinkDetailReducer {
 //                            await dismiss()            // ← applied の後に閉じる
 //                          }
 //                        )
-                return .send(.delegate(.applied(state.draft)))
+                return .send(.delegate(.saved(state.draft)))
 
             case let .fuelToggled(isOn):
                 state.draft.isFuel = isOn

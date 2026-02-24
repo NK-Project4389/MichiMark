@@ -50,7 +50,7 @@ extension MarkLinkItemProjection {
     ) -> Self {
         .init(
             id: MarkLinkID(),
-            markLinkSeq: 0,
+            markLinkSeq: seq,
             markLinkType: markLink,
             displayDate: date,
             markLinkName: title,

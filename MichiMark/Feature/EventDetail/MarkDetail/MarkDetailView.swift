@@ -195,7 +195,7 @@ struct MarkDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(
             trailing: Button("反映") {
-                store.send(.applyTapped)
+                store.send(.reflectButtonTapped)
             }
         )
         .sheet(

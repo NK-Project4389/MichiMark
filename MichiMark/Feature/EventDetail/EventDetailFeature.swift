@@ -34,6 +34,7 @@ struct EventDetailReducer {
         case openMarkDetail(MarkLinkID)
         case openLinkDetail(MarkLinkID)
         case openPaymentDetail(PaymentID)
+        case addMarkOrLinkSelected(MarkOrLink)
         // MARK: 選択画面
         case selectionRequested(useCase: SelectionUseCase)
         case saved
@@ -178,9 +179,8 @@ struct EventDetailCoreReducer {
                 case let .michiInfo(.delegate(.openLinkDetail(_, markLinkID))):
                     return .send(.delegate(.openLinkDetail(markLinkID)))
 
-                case .michiInfo(.delegate(.addMark(_))):
-                    // 今回はまだ遷移しなくてOK
-                    return .none
+                case let .michiInfo(.delegate(.addMarkOrLinkSelected(type))):
+                    return .send(.delegate(.addMarkOrLinkSelected(type)))
 
                 // MARK: Other
                 case .michiInfo, .paymentInfo, .overview:

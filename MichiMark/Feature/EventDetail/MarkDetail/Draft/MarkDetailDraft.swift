@@ -1,6 +1,7 @@
 import Foundation
 
-struct MarkDetailDraft: Equatable {
+struct MarkDetailDraft: Equatable, Identifiable {
+    var id: MarkLinkID
     var markLinkSeq: Int
     var markLinkType: MarkOrLink
     var displayDate: String
@@ -20,6 +21,7 @@ struct MarkDetailDraft: Equatable {
 extension MarkDetailDraft {
 
     init(projection: MarkLinkItemProjection) {
+        self.id = projection.id
         self.markLinkSeq = projection.markLinkSeq
         self.markLinkType = projection.markLinkType
         self.displayDate = projection.displayDate
@@ -94,7 +96,7 @@ extension MarkDetailDraft {
 }
 
 extension MarkDetailDraft {
-    func toProjection(id: MarkLinkID) -> MarkLinkItemProjection {
+    func toProjection() -> MarkLinkItemProjection {
         let memberItems = selectedMemberIDs.map { memberID in
             MemberItemProjection(
                 id: memberID,
@@ -154,5 +156,31 @@ extension MarkDetailDraft {
         let cleaned = value.replacingOccurrences(of: ",", with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
         return cleaned.isEmpty ? nil : Double(cleaned)
+    }
+}
+
+extension MarkDetailDraft {
+    static func new(
+        id: MarkLinkID,
+        markLinkSeq: Int = 0,
+        date: Date = Date()
+    ) -> Self {
+        Self(
+            id: id,
+            markLinkSeq: markLinkSeq,
+            markLinkType: .mark,
+            displayDate: displayDateFormatter.string(from: date),
+            displayDateAsDate: date,
+            markLinkName: "",
+            selectedMemberIDs: [],
+            selectedMemberNames: [:],
+            displayMeterValue: "",
+            displayDistanceValue: "",
+            selectedActionIDs: [],
+            selectedActionNames: [:],
+            isFuel: false,
+            fuelDetail: nil,
+            memo: ""
+        )
     }
 }

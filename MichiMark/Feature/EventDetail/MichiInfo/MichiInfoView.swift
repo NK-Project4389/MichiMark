@@ -3,7 +3,7 @@ import ComposableArchitecture
 
 struct MichiInfoView: View {
 
-    let store: StoreOf<MichiInfoReducer>
+    @Bindable var store: StoreOf<MichiInfoReducer>
 
     var body: some View {
         let items = store.displayItems
@@ -28,8 +28,13 @@ struct MichiInfoView: View {
         }
         .safeAreaInset(edge: .bottom) {
             addButton {
-                store.send(.addMarkTapped)
+                store.send(.addButtonTapped)
             }
+        }
+        .sheet(
+            item: $store.scope(state: \.addSheet, action: \.addSheet)
+        ) { store in
+            AddSheetView(store: store)
         }
     }
 }
