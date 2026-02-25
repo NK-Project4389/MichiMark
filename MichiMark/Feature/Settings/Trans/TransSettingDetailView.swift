@@ -6,66 +6,64 @@ struct TransSettingDetailView: View {
     @Bindable var store: StoreOf<TransSettingDetailReducer>
 
     var body: some View {
-        WithPerceptionTracking {
-            ZStack {
-                VStack(spacing: 0) {
-                    formRow(title: "交通手段名") {
-                        TextField(
-                            "入力",
-                            text: $store.draft.transName
-                        )
-                    }
-                    
-                    formRow(title: "燃費", trailing: "km/ℓ") {
-                        TextField(
-                            "入力",
-                            text: $store.draft.displayKmPerGas
-                        )
-                        .keyboardType(.decimalPad)
-                    }
-                    
-                    formRow(title: "メーター", trailing: "km") {
-                        TextField(
-                            "入力",
-                            text: $store.draft.displayMeterValue
-                        )
-                        .keyboardType(.numberPad)
-
-                    }
-
-                    Toggle(
-                        "非表示",
-                        isOn: $store.draft.isHidden
+        ZStack {
+            VStack(spacing: 0) {
+                formRow(title: "交通手段名") {
+                    TextField(
+                        "入力",
+                        text: $store.draft.transName
                     )
-                    .padding()
+                }
+                
+                formRow(title: "燃費", trailing: "km/ℓ") {
+                    TextField(
+                        "入力",
+                        text: $store.draft.displayKmPerGas
+                    )
+                    .keyboardType(.decimalPad)
+                }
+                
+                formRow(title: "メーター", trailing: "km") {
+                    TextField(
+                        "入力",
+                        text: $store.draft.displayMeterValue
+                    )
+                    .keyboardType(.numberPad)
+
                 }
 
-                if store.isSaving {
-                    Color.black.opacity(0.2)
-                        .ignoresSafeArea()
-
-                    ProgressView("保存中...")
-                        .padding()
-                        .background(Color(.systemBackground))
-                        .cornerRadius(12)
-                }
+                Toggle(
+                    "非表示",
+                    isOn: $store.draft.isHidden
+                )
+                .padding()
             }
-            .disabled(store.isSaving)
-            .navigationTitle("タグ詳細")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("保存") {
-                        store.send(.saveTapped)
-                    }
-                    .disabled(store.isSaving)
+
+            if store.isSaving {
+                Color.black.opacity(0.2)
+                    .ignoresSafeArea()
+
+                ProgressView("保存中...")
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .cornerRadius(12)
+            }
+        }
+        .disabled(store.isSaving)
+        .navigationTitle("タグ詳細")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("保存") {
+                    store.send(.saveTapped)
                 }
+                .disabled(store.isSaving)
             }
         }
         .alert(
             store: store.scope(
                 state: \.$alert,
-                action: TransSettingDetailReducer.Action.alert
+                action: \.alert
             )
         )
         

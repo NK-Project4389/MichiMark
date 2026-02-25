@@ -6,42 +6,40 @@ struct TagSettingView: View {
     @Bindable var store: StoreOf<TagSettingReducer>
 
     var body: some View {
-        WithPerceptionTracking {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
 
-                    section(title: "表示") {
-                        ForEach(store.tags.filter { $0.isVisible }) { tag in
-                            tagRow(tag)
-                        }
-                    }
-
-                    section(title: "非表示") {
-                        ForEach(store.tags.filter { !$0.isVisible }) { tag in
-                            tagRow(tag)
-                        }
+                section(title: "表示") {
+                    ForEach(store.tags.filter { $0.isVisible }) { tag in
+                        tagRow(tag)
                     }
                 }
-                .padding()
-            }
-            .navigationTitle("タグ一覧")
-            .navigationBarTitleDisplayMode(.inline)
-            .onAppear {
-                store.send(.onAppear)
-            }
-            .safeAreaInset(edge: .bottom) {
-                addButton {
-                    store.send(.addTagTapped)
+
+                section(title: "非表示") {
+                    ForEach(store.tags.filter { !$0.isVisible }) { tag in
+                        tagRow(tag)
+                    }
                 }
             }
-            .navigationDestination(
-                store: store.scope(
-                    state: \.$detail,
-                    action: TagSettingReducer.Action.detail
-                )
-            ) { detailStore in
-                TagSettingDetailView(store: detailStore)
+            .padding()
+        }
+        .navigationTitle("タグ一覧")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            store.send(.onAppear)
+        }
+        .safeAreaInset(edge: .bottom) {
+            addButton {
+                store.send(.addTagTapped)
             }
+        }
+        .navigationDestination(
+            store: store.scope(
+                state: \.$detail,
+                action: \.detail
+            )
+        ) { detailStore in
+            TagSettingDetailView(store: detailStore)
         }
     }
 

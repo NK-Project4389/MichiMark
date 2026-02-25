@@ -13,8 +13,8 @@ struct OverviewProjectionAdapter {
             .reduce(0, +)
 
         return OverviewProjection(
-            displayTotalDistance: "\(totalDistance) km",
-            displayTotalGasCost: "\(totalGasCost) 円"
+            displayTotalDistance: "\(String(describing: totalDistance)) km",
+            displayTotalGasCost: "\(String(describing: totalGasCost)) 円"
         )
     }
 }

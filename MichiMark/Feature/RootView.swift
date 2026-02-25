@@ -36,7 +36,7 @@ struct RootView: View {
                 TransSettingDetailView(
                     store: store.scope(
                         state: \.detail,
-                        action: TransSettingCreateReducer.Action.detail
+                        action: \.detail
                     )
                 )
             case let .memberSetting(store):MemberSettingView(store: store)
@@ -44,7 +44,7 @@ struct RootView: View {
                 MemberSettingDetailView(
                     store: store.scope(
                         state: \.detail,
-                        action: MemberSettingCreateReducer.Action.detail
+                        action: \.detail
                     )
                 )
             case let .tagSetting(store):TagSettingView(store: store)
@@ -52,7 +52,7 @@ struct RootView: View {
                 TagSettingDetailView(
                     store: store.scope(
                         state: \.detail,
-                        action: TagSettingCreateReducer.Action.detail
+                        action: \.detail
                     )
                 )
             case let .actionSetting(store):ActionSettingView(store: store)
@@ -60,7 +60,7 @@ struct RootView: View {
                 ActionSettingDetailView(
                     store: store.scope(
                         state: \.detail,
-                        action: ActionSettingCreateReducer.Action.detail
+                        action: \.detail
                     )
                 )
             // MARK: 選択画面

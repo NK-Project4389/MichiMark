@@ -6,43 +6,41 @@ struct ActionSettingView: View {
     @Bindable var store: StoreOf<ActionSettingReducer>
 
     var body: some View {
-        WithPerceptionTracking {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
 
-                    section(title: "表示") {
-                        ForEach(store.actions.filter { $0.isVisible }) { action in
-                            actionRow(action)
-                        }
-                    }
-
-                    section(title: "非表示") {
-                        ForEach(store.actions.filter { !$0.isVisible }) { action in
-                            actionRow(action)
-                        }
+                section(title: "表示") {
+                    ForEach(store.actions.filter { $0.isVisible }) { action in
+                        actionRow(action)
                     }
                 }
-                .padding()
-            }
-            .navigationTitle("行動一覧")
-            .navigationBarTitleDisplayMode(.inline)
-            .onAppear {
-                store.send(.onAppear)
-            }
-            .safeAreaInset(edge: .bottom) {
-                addButton {
-                    store.send(.addActionTapped)
+
+                section(title: "非表示") {
+                    ForEach(store.actions.filter { !$0.isVisible }) { action in
+                        actionRow(action)
+                    }
                 }
             }
-            // ⭐ Detail 画面遷移（PresentationState）
-            .navigationDestination(
-                store: store.scope(
-                    state: \.$detail,
-                    action: ActionSettingReducer.Action.detail
-                )
-            ) { detailStore in
-                ActionSettingDetailView(store: detailStore)
+            .padding()
+        }
+        .navigationTitle("行動一覧")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            store.send(.onAppear)
+        }
+        .safeAreaInset(edge: .bottom) {
+            addButton {
+                store.send(.addActionTapped)
             }
+        }
+        // ⭐ Detail 画面遷移（PresentationState）
+        .navigationDestination(
+            store: store.scope(
+                state: \.$detail,
+                action: \.detail
+            )
+        ) { detailStore in
+            ActionSettingDetailView(store: detailStore)
         }
     }
 

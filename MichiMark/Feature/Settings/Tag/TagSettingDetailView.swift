@@ -6,50 +6,48 @@ struct TagSettingDetailView: View {
     @Bindable var store: StoreOf<TagSettingDetailReducer>
 
     var body: some View {
-        WithPerceptionTracking {
-            ZStack {
-                VStack(spacing: 0) {
-                    formRow(title: "タグ名") {
+        ZStack {
+            VStack(spacing: 0) {
+                formRow(title: "タグ名") {
 
-                        TextField(
-                            "入力",
-                            text: $store.draft.tagName
-                        )
+                    TextField(
+                        "入力",
+                        text: $store.draft.tagName
+                    )
 
-                        Toggle(
-                            "非表示",
-                            isOn: $store.draft.isHidden
-                        )
-                        .padding()
-                    }
-                }
-
-                if store.isSaving {
-                    Color.black.opacity(0.2)
-                        .ignoresSafeArea()
-
-                    ProgressView("保存中...")
-                        .padding()
-                        .background(Color(.systemBackground))
-                        .cornerRadius(12)
+                    Toggle(
+                        "非表示",
+                        isOn: $store.draft.isHidden
+                    )
+                    .padding()
                 }
             }
-            .disabled(store.isSaving)
-            .navigationTitle("タグ詳細")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("保存") {
-                        store.send(.saveTapped)
-                    }
-                    .disabled(store.isSaving)
+
+            if store.isSaving {
+                Color.black.opacity(0.2)
+                    .ignoresSafeArea()
+
+                ProgressView("保存中...")
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .cornerRadius(12)
+            }
+        }
+        .disabled(store.isSaving)
+        .navigationTitle("タグ詳細")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("保存") {
+                    store.send(.saveTapped)
                 }
+                .disabled(store.isSaving)
             }
         }
         .alert(
             store: store.scope(
                 state: \.$alert,
-                action: TagSettingDetailReducer.Action.alert
+                action: \.alert
             )
         )
         

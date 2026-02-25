@@ -194,7 +194,7 @@ struct RootReducer {
             // ============================
             case let .selectionItemsLoaded(useCase, items, preselectedIDs, source):
                 state.selectionSource = source
-                var resolvedItems = items
+                let resolvedItems = items
                 var resolvedPreselectedIDs = preselectedIDs
                 switch useCase {
                 case .eventTrans, .eventTags, .gasPayMember:
@@ -376,8 +376,8 @@ struct RootReducer {
             // MARK: EventDetail → Root（delegate）
             // ============================
 
-            case let .path(
-              .element(id: elementID, action: .eventDetail(.core(.delegate(.saved))))
+            case .path(
+              .element(id: _, action: .eventDetail(.core(.delegate(.saved))))
             ):
                 return .send(.eventList(.appeared))
 

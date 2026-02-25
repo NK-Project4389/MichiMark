@@ -6,42 +6,40 @@ struct MemberSettingView: View {
     @Bindable var store: StoreOf<MemberSettingReducer>
 
     var body: some View {
-        WithPerceptionTracking {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
 
-                    section(title: "表示") {
-                        ForEach(store.members.filter { $0.isVisible }) { member in
-                            formRow(member)
-                        }
-                    }
-
-                    section(title: "非表示") {
-                        ForEach(store.members.filter { !$0.isVisible }) { member in
-                            formRow(member)
-                        }
+                section(title: "表示") {
+                    ForEach(store.members.filter { $0.isVisible }) { member in
+                        formRow(member)
                     }
                 }
-                .padding()
-            }
-            .navigationTitle("メンバー一覧")
-            .navigationBarTitleDisplayMode(.inline)
-            .onAppear {
-                store.send(.onAppear)
-            }
-            .safeAreaInset(edge: .bottom) {
-                addButton {
-                    store.send(.addMemberTapped)
+
+                section(title: "非表示") {
+                    ForEach(store.members.filter { !$0.isVisible }) { member in
+                        formRow(member)
+                    }
                 }
             }
-            .navigationDestination(
-                store: store.scope(
-                    state: \.$detail,
-                    action: MemberSettingReducer.Action.detail
-                )
-            ) { detailStore in
-                MemberSettingDetailView(store: detailStore)
+            .padding()
+        }
+        .navigationTitle("メンバー一覧")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            store.send(.onAppear)
+        }
+        .safeAreaInset(edge: .bottom) {
+            addButton {
+                store.send(.addMemberTapped)
             }
+        }
+        .navigationDestination(
+            store: store.scope(
+                state: \.$detail,
+                action: \.detail
+            )
+        ) { detailStore in
+            MemberSettingDetailView(store: detailStore)
         }
     }
 

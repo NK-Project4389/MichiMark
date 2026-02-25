@@ -44,24 +44,22 @@ struct DatePickerView: View {
     @Bindable var store: StoreOf<DatePickerReducer>
 
     var body: some View {
-        WithPerceptionTracking {
-            DatePicker(
-                "",
-                selection: $store.date,
-                displayedComponents: [.date]
-            )
-            .datePickerStyle(.graphical)
-            .labelsHidden()
-            .navigationTitle(store.title)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") { store.send(.cancelTapped) }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("完了") { store.send(.doneTapped) }
-                }
+        DatePicker(
+            "",
+            selection: $store.date,
+            displayedComponents: [.date]
+        )
+        .datePickerStyle(.graphical)
+        .labelsHidden()
+        .navigationTitle(store.title)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("キャンセル") { store.send(.cancelTapped) }
             }
-            .padding()
+            ToolbarItem(placement: .confirmationAction) {
+                Button("完了") { store.send(.doneTapped) }
+            }
         }
+        .padding()
     }
 }

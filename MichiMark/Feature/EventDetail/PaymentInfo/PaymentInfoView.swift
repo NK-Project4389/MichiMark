@@ -7,25 +7,23 @@ struct PaymentInfoView: View {
 //    @Bindable var store: StoreOf<PaymentInfoReducer>
 
     var body: some View {
-        WithPerceptionTracking {
-            ScrollView {
-                VStack(spacing: 12) {
+        ScrollView {
+            VStack(spacing: 12) {
 
-                    ForEach(store.projection.items) { payment in
-                        Button {
-                            store.send(.paymentTapped(payment.id))
-                        } label: {
-                            paymentRow(payment)
-                        }
-                        .buttonStyle(.plain)
+                ForEach(store.projection.items) { payment in
+                    Button {
+                        store.send(.paymentTapped(payment.id))
+                    } label: {
+                        paymentRow(payment)
                     }
+                    .buttonStyle(.plain)
                 }
-                .padding()
             }
-            .safeAreaInset(edge: .bottom) {
-                addButton {
-                    store.send(.plusButtonTapped)
-                }
+            .padding()
+        }
+        .safeAreaInset(edge: .bottom) {
+            addButton {
+                store.send(.plusButtonTapped)
             }
         }
     }

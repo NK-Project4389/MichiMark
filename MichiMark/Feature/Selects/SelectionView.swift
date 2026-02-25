@@ -10,19 +10,17 @@ public struct SelectionView: View {
     }
 
     public var body: some View {
-        WithPerceptionTracking {
-            content
-                .toolbar {
-                    if store.isMultipleSelection {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button("完了") {
-                                didFinish = true
-                                store.send(.confirmTapped)
-                            }
+        content
+            .toolbar {
+                if store.isMultipleSelection {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("完了") {
+                            didFinish = true
+                            store.send(.confirmTapped)
                         }
                     }
                 }
-        }
+            }
     }
 
     private var content: some View {

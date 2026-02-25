@@ -6,42 +6,40 @@ struct TransSettingView: View {
     @Bindable var store: StoreOf<TransSettingReducer>
 
     var body: some View {
-        WithPerceptionTracking {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
 
-                    section(title: "表示") {
-                        ForEach(store.transes.filter { $0.isVisible }) { trans in
-                            formRow(trans)
-                        }
-                    }
-
-                    section(title: "非表示") {
-                        ForEach(store.transes.filter { !$0.isVisible }) { trans in
-                            formRow(trans)
-                        }
+                section(title: "表示") {
+                    ForEach(store.transes.filter { $0.isVisible }) { trans in
+                        formRow(trans)
                     }
                 }
-                .padding()
-            }
-            .navigationTitle("タグ一覧")
-            .navigationBarTitleDisplayMode(.inline)
-            .onAppear {
-                store.send(.onAppear)
-            }
-            .safeAreaInset(edge: .bottom) {
-                addButton {
-                    store.send(.addTransTapped)
+
+                section(title: "非表示") {
+                    ForEach(store.transes.filter { !$0.isVisible }) { trans in
+                        formRow(trans)
+                    }
                 }
             }
-            .navigationDestination(
-                store: store.scope(
-                    state: \.$detail,
-                    action: TransSettingReducer.Action.detail
-                )
-            ) { detailStore in
-                TransSettingDetailView(store: detailStore)
+            .padding()
+        }
+        .navigationTitle("タグ一覧")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            store.send(.onAppear)
+        }
+        .safeAreaInset(edge: .bottom) {
+            addButton {
+                store.send(.addTransTapped)
             }
+        }
+        .navigationDestination(
+            store: store.scope(
+                state: \.$detail,
+                action: \.detail
+            )
+        ) { detailStore in
+            TransSettingDetailView(store: detailStore)
         }
     }
 
