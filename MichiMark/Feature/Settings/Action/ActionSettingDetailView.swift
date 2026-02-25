@@ -1,46 +1,30 @@
 import SwiftUI
 import ComposableArchitecture
 
-private struct ViewState: Equatable {
-    let draft: ActionDraft
-    let isSaving: Bool
-
-    init(state: ActionSettingDetailReducer.State) {
-        self.draft = state.draft
-        self.isSaving = state.isSaving
-    }
-}
-
 struct ActionSettingDetailView: View {
 
-    let store: StoreOf<ActionSettingDetailReducer>
+    @Bindable var store: StoreOf<ActionSettingDetailReducer>
 
     var body: some View {
-        WithViewStore(store, observe: ViewState.init) { viewStore in
+        WithPerceptionTracking {
             ZStack {
                 VStack(spacing: 0) {
                     formRow(title: "行動名") {
 
                         TextField(
                             "入力",
-                            text: viewStore.binding(
-                                get: { $0.draft.actionName },
-                                send: ActionSettingDetailReducer.Action.actionNameChanged
-                            )
+                            text: $store.draft.actionName
                         )
 
                         Toggle(
                             "非表示",
-                            isOn: viewStore.binding(
-                                get: { !$0.draft.isVisible },
-                                send: { _ in .visibleToggled }
-                            )
+                            isOn: $store.draft.isHidden
                         )
                         .padding()
                     }
                 }
 
-                if viewStore.isSaving {
+                if store.isSaving {
                     Color.black.opacity(0.2)
                         .ignoresSafeArea()
 
@@ -50,15 +34,15 @@ struct ActionSettingDetailView: View {
                         .cornerRadius(12)
                 }
             }
-            .disabled(viewStore.isSaving)
+            .disabled(store.isSaving)
             .navigationTitle("行動詳細")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("保存") {
-                        viewStore.send(.saveTapped)
+                        store.send(.saveTapped)
                     }
-                    .disabled(viewStore.isSaving)
+                    .disabled(store.isSaving)
                 }
             }
         }

@@ -22,9 +22,8 @@ struct MemberSettingDetailReducer {
         }
     }
 
-    enum Action {
-        case memberNameChanged(String)
-        case visibleToggled
+    enum Action: BindableAction {
+        case binding(BindingAction<State>)
         
         case saveTapped
         case backTapped
@@ -43,11 +42,12 @@ struct MemberSettingDetailReducer {
     }
 
     var body: some ReducerOf<Self> {
+        BindingReducer()
         Reduce { state, action in
             switch action {
-            case let .memberNameChanged(text):
-                state.draft.memberName = text
-                
+            case .binding(\.draft.memberName):
+                let text = state.draft.memberName
+
                 // ★ Validation 判定
                 if text.trimmingCharacters(in: .whitespaces).isEmpty {
                     state.validationError = .empty
@@ -57,9 +57,11 @@ struct MemberSettingDetailReducer {
                 
                 return .send(.clearAlert)
 
-            case .visibleToggled:
-                state.draft.isVisible.toggle()
+            case .binding(\.draft.isHidden):
                 return .send(.clearAlert)
+
+            case .binding:
+                return .none
 
             case .saveTapped:
                 state.alert = nil

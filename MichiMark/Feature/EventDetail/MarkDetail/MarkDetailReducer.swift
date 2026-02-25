@@ -9,8 +9,6 @@ struct MarkDetailReducer {
         var markLinkID: MarkLinkID
         var projection: MarkLinkItemProjection
         var draft: MarkDetailDraft
-
-        @Presents var datePicker: DatePickerReducer.State?
     }
 
     enum Action {
@@ -20,7 +18,7 @@ struct MarkDetailReducer {
         case distanceValueChanged(String)
         case memoChanged(String)
         case dateTapped
-        case datePicker(PresentationAction<DatePickerReducer.Action>)
+        case dateSelected(Date)
         case membersTapped
         case actionsTapped
         case applySelection(useCase: SelectionUseCase, ids: [UUID], names: [UUID: String])
@@ -35,6 +33,7 @@ struct MarkDetailReducer {
 
         enum Delegate {
             case selectionRequested(useCase: SelectionUseCase)
+            case datePickerRequested
             case saved(MarkDetailDraft)
         }
     }
@@ -44,12 +43,10 @@ struct MarkDetailReducer {
             switch action {
 
             case .dateTapped:
-                state.datePicker = DatePickerReducer.State(date: state.draft.displayDateAsDate)
-                return .none
+                return .send(.delegate(.datePickerRequested))
 
-            case let .datePicker(.presented(.delegate(.selected(date)))):
+            case let .dateSelected(date):
                 state.draft.updateDisplayDate(date)
-                state.datePicker = nil
                 return .none
                 
             case .membersTapped:
@@ -130,9 +127,6 @@ struct MarkDetailReducer {
         }
         .ifLet(\.draft.fuelDetail, action: \.fuel) {
             FuelDetailReducer()
-        }
-        .ifLet(\.$datePicker, action: \.datePicker) {
-            DatePickerReducer()
         }
 
     }

@@ -185,11 +185,6 @@ struct LinkDetailView: View {
                 store.send(.reflectButtonTapped)
             }
         )
-        .sheet(
-            item: $store.scope(state: \.datePicker, action: \.datePicker)
-        ) { store in
-            DatePickerView(store: store)
-        }
 
     }
 

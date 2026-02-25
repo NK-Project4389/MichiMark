@@ -5,6 +5,10 @@ public struct TransDraft: Equatable, Sendable {
     var displayKmPerGas: String
     var displayMeterValue: String
     var isVisible: Bool
+    var isHidden: Bool {
+        get { !isVisible }
+        set { isVisible = !newValue }
+    }
 
     init(projection: TransItemProjection) {
         self.transName = projection.transName

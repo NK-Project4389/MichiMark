@@ -3,21 +3,21 @@ import ComposableArchitecture
 
 struct ActionSettingView: View {
 
-    let store: StoreOf<ActionSettingReducer>
+    @Bindable var store: StoreOf<ActionSettingReducer>
 
     var body: some View {
-        WithViewStore(store, observe: \.actions) { viewStore in
+        WithPerceptionTracking {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
 
                     section(title: "表示") {
-                        ForEach(viewStore.state.filter { $0.isVisible }) { action in
+                        ForEach(store.actions.filter { $0.isVisible }) { action in
                             actionRow(action)
                         }
                     }
 
                     section(title: "非表示") {
-                        ForEach(viewStore.state.filter { !$0.isVisible }) { action in
+                        ForEach(store.actions.filter { !$0.isVisible }) { action in
                             actionRow(action)
                         }
                     }

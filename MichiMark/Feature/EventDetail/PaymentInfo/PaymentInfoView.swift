@@ -3,14 +3,15 @@ import ComposableArchitecture
 
 struct PaymentInfoView: View {
 
-    let store: StoreOf<PaymentInfoReducer>
+    @Bindable var store: StoreOf<PaymentInfoReducer>
+//    @Bindable var store: StoreOf<PaymentInfoReducer>
 
     var body: some View {
-        WithViewStore(store, observe: { $0 }) { viewStore in
+        WithPerceptionTracking {
             ScrollView {
                 VStack(spacing: 12) {
 
-                    ForEach(viewStore.projection.items) { payment in
+                    ForEach(store.projection.items) { payment in
                         Button {
                             store.send(.paymentTapped(payment.id))
                         } label: {
@@ -23,7 +24,7 @@ struct PaymentInfoView: View {
             }
             .safeAreaInset(edge: .bottom) {
                 addButton {
-                    store.send(.addPaymentTapped)
+                    store.send(.plusButtonTapped)
                 }
             }
         }

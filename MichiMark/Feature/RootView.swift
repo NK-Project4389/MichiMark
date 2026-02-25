@@ -27,6 +27,8 @@ struct RootView: View {
             case let .markDetail(store):MarkDetailView(store: store)
             case let .linkDetail(store):LinkDetailView(store: store)
             case let .paymentDetail(store):PaymentDetailView(store: store)
+            case let .addSheet(store):AddSheetView(store: store)
+            case let .datePicker(store):DatePickerView(store: store)
             //Settings
             case let .settings(store):SettingsView(store: store)
             case let .transSetting(store):TransSettingView(store: store)

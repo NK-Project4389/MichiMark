@@ -66,4 +66,17 @@ extension EventDomain {
         updated.updatedAt = Date()
         return updated
     }
+
+    mutating func addPayment(_ payment: PaymentDomain) {
+        var updatedPayment = payment
+        let nextSeq = (payments?.map(\.paymentSeq).max() ?? 0) + 1
+        if updatedPayment.paymentSeq <= 0 {
+            updatedPayment.paymentSeq = nextSeq
+        }
+        if payments == nil {
+            payments = []
+        }
+        payments?.append(updatedPayment)
+        updatedAt = Date()
+    }
 }

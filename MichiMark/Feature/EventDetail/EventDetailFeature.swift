@@ -26,6 +26,7 @@ struct EventDetailReducer {
         case core(EventDetailCoreReducer.Action)
         // EventDetail 戻るボタン
         case dismissTapped
+        case paymentAdded(PaymentDraft)
         case delegate(Delegate)
     }
     
@@ -33,7 +34,9 @@ struct EventDetailReducer {
         // 子Feature表示
         case openMarkDetail(MarkLinkID)
         case openLinkDetail(MarkLinkID)
-        case openPaymentDetail(PaymentID)
+        case openPaymentDetail(PaymentDraft)
+        case openPaymentDetailByID(PaymentID)
+        case addMarkOrLinkRequested
         case addMarkOrLinkSelected(MarkOrLink)
         // MARK: 選択画面
         case selectionRequested(useCase: SelectionUseCase)
@@ -47,6 +50,9 @@ struct EventDetailReducer {
             // EventDetail 戻るボタン
             case .dismissTapped:
                 return .send(.delegate(.dismiss))
+
+            case let .paymentAdded(draft):
+                return .send(.core(.paymentAdded(draft)))
 
             // EventDetail Delegate
             case .core(.delegate(let delegate)):
@@ -88,6 +94,7 @@ struct EventDetailCoreReducer {
 
         //集約Projection
         var projection: EventDetailProjection
+        var event: EventDomain
         // UI派生State
         var selectedTab: EventDetailTab = .basicInfo
 
@@ -100,6 +107,10 @@ struct EventDetailCoreReducer {
         init(projection: EventDetailProjection){
             self.eventID = projection.eventId
             self.projection = projection
+            self.event = EventDomain(
+                id: projection.eventId,
+                eventName: projection.basicInfo.eventName
+            )
             
             self.basicInfo = .init(projection: projection.basicInfo, eventID: projection.eventId)
             self.michiInfo = .init(projection: projection.michiInfo, eventID: projection.eventId)
@@ -122,6 +133,8 @@ struct EventDetailCoreReducer {
         case paymentInfo(PaymentInfoReducer.Action)
         //Overview アクション全般
         case overview(OverviewReducer.Action)
+        // Payment追加
+        case paymentAdded(PaymentDraft)
         // ★ Root に通知するための Action
         case saveCompleted
         case delegate(EventDetailReducer.Delegate)
@@ -131,7 +144,7 @@ struct EventDetailCoreReducer {
         CombineReducers{
             Scope(state: \.basicInfo, action: \.basicInfo) { BasicInfoReducer() }
             Scope(state: \.michiInfo, action: \.michiInfo) { MichiInfoReducer() }
-//            Scope(state: \.paymentInfo, action: \.paymentInfo) { PaymentInfoReducer() }
+            Scope(state: \.paymentInfo, action: \.paymentInfo) { PaymentInfoReducer() }
 //            Scope(state: \.overview, action: \.overview) { OverviewReducer() }
             
             Reduce { state, action in
@@ -179,8 +192,45 @@ struct EventDetailCoreReducer {
                 case let .michiInfo(.delegate(.openLinkDetail(_, markLinkID))):
                     return .send(.delegate(.openLinkDetail(markLinkID)))
 
-                case let .michiInfo(.delegate(.addMarkOrLinkSelected(type))):
-                    return .send(.delegate(.addMarkOrLinkSelected(type)))
+                case .michiInfo(.delegate(.addMarkOrLinkRequested)):
+                    return .send(.delegate(.addMarkOrLinkRequested))
+
+                case let .paymentInfo(.delegate(.openPaymentDetail(draft))):
+                    return .send(.delegate(.openPaymentDetail(draft)))
+
+                case let .paymentAdded(draft):
+                    let paymentDomain = draft.toDomain()
+                    state.event.addPayment(paymentDomain)
+
+                    let memberAdapter = MemberProjectionAdapter()
+                    let paymentProjection = PaymentItemProjection(
+                        id: paymentDomain.id,
+                        displayAmount: "\(paymentDomain.paymentAmount) 円",
+                        payer: memberAdapter.adapt(paymentDomain.paymentMember),
+                        splitMembers: paymentDomain.splitMembers.map {
+                            memberAdapter.adapt($0)
+                        },
+                        memo: paymentDomain.paymentMemo
+                    )
+
+                    let updatedItems = state.paymentInfo.projection.items + [paymentProjection]
+                    let currentTotal = Int(
+                        state.paymentInfo.projection.displayTotalAmount.filter { $0.isNumber }
+                    ) ?? 0
+                    let updatedTotal = currentTotal + paymentDomain.paymentAmount
+                    let updatedPaymentInfo = PaymentInfoProjection(
+                        items: updatedItems,
+                        displayTotalAmount: "\(updatedTotal) 円"
+                    )
+                    state.paymentInfo.projection = updatedPaymentInfo
+                    state.projection = EventDetailProjection(
+                        eventId: state.projection.eventId,
+                        basicInfo: state.projection.basicInfo,
+                        michiInfo: state.projection.michiInfo,
+                        paymentInfo: updatedPaymentInfo,
+                        overview: state.projection.overview
+                    )
+                    return .none
 
                 // MARK: Other
                 case .michiInfo, .paymentInfo, .overview:

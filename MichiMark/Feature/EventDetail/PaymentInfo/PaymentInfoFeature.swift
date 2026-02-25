@@ -5,7 +5,7 @@ import Foundation
 struct PaymentInfoReducer {
 
     @ObservableState
-    struct State: Equatable {
+    struct State {
         var projection: PaymentInfoProjection
         var eventID: EventID
         
@@ -28,12 +28,32 @@ struct PaymentInfoReducer {
 
     enum Action {
         case paymentTapped(UUID)
-        case addPaymentTapped
+        case plusButtonTapped
+        case delegate(Delegate)
+    }
+
+    enum Delegate {
+        case openPaymentDetail(PaymentDraft)
     }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
-            .none
+            switch action {
+            case .plusButtonTapped:
+                return .send(
+                    .delegate(
+                        .openPaymentDetail(
+                            PaymentDraft.initial()
+                        )
+                    )
+                )
+
+            case .paymentTapped:
+                return .none
+
+            case .delegate:
+                return .none
+            }
         }
     }
 }

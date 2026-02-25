@@ -3,21 +3,21 @@ import ComposableArchitecture
 
 struct TransSettingView: View {
 
-    let store: StoreOf<TransSettingReducer>
+    @Bindable var store: StoreOf<TransSettingReducer>
 
     var body: some View {
-        WithViewStore(store, observe: \.transes) { viewStore in
+        WithPerceptionTracking {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
 
                     section(title: "表示") {
-                        ForEach(viewStore.state.filter { $0.isVisible }) { trans in
+                        ForEach(store.transes.filter { $0.isVisible }) { trans in
                             formRow(trans)
                         }
                     }
 
                     section(title: "非表示") {
-                        ForEach(viewStore.state.filter { !$0.isVisible }) { trans in
+                        ForEach(store.transes.filter { !$0.isVisible }) { trans in
                             formRow(trans)
                         }
                     }

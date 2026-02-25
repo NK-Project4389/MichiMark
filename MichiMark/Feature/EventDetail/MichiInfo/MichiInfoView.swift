@@ -31,11 +31,6 @@ struct MichiInfoView: View {
                 store.send(.addButtonTapped)
             }
         }
-        .sheet(
-            item: $store.scope(state: \.addSheet, action: \.addSheet)
-        ) { store in
-            AddSheetView(store: store)
-        }
     }
 }
 

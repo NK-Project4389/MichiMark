@@ -3,21 +3,21 @@ import ComposableArchitecture
 
 struct MemberSettingView: View {
 
-    let store: StoreOf<MemberSettingReducer>
+    @Bindable var store: StoreOf<MemberSettingReducer>
 
     var body: some View {
-        WithViewStore(store, observe: \.members) { viewStore in
+        WithPerceptionTracking {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
 
                     section(title: "表示") {
-                        ForEach(viewStore.state.filter { $0.isVisible }) { member in
+                        ForEach(store.members.filter { $0.isVisible }) { member in
                             formRow(member)
                         }
                     }
 
                     section(title: "非表示") {
-                        ForEach(viewStore.state.filter { !$0.isVisible }) { member in
+                        ForEach(store.members.filter { !$0.isVisible }) { member in
                             formRow(member)
                         }
                     }

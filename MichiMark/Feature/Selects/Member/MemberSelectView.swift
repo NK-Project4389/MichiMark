@@ -3,19 +3,19 @@ import ComposableArchitecture
 
 struct MemberSelectView: View {
 
-    let store: StoreOf<MemberSelectReducer>
+    @Bindable var store: StoreOf<MemberSelectReducer>
 
     var body: some View {
-        WithViewStore(store, observe: { $0 }) { viewStore in
+        WithPerceptionTracking {
             List {
-                ForEach(viewStore.items) { item in
+                ForEach(store.items) { item in
                     Button {
-                        viewStore.send(.toggle(item.id))
+                        store.send(.toggle(item.id))
                     } label: {
                         HStack {
                             Text(item.memberName)
                             Spacer()
-                            if viewStore.selectedIDs.contains(item.id) {
+                            if store.selectedIDs.contains(item.id) {
                                 Image(systemName: "checkmark")
                                     .foregroundColor(.accentColor)
                             }
@@ -27,13 +27,13 @@ struct MemberSelectView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("完了") {
-                        viewStore.send(.doneTapped)
+                        store.send(.doneTapped)
                     }
                 }
             }
             
             .onAppear {
-                viewStore.send(.appeared)
+                store.send(.appeared)
             }
 
         }

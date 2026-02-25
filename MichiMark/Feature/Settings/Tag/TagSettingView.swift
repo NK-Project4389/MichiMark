@@ -3,21 +3,21 @@ import ComposableArchitecture
 
 struct TagSettingView: View {
 
-    let store: StoreOf<TagSettingReducer>
+    @Bindable var store: StoreOf<TagSettingReducer>
 
     var body: some View {
-        WithViewStore(store, observe: \.tags) { viewStore in
+        WithPerceptionTracking {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
 
                     section(title: "表示") {
-                        ForEach(viewStore.state.filter { $0.isVisible }) { tag in
+                        ForEach(store.tags.filter { $0.isVisible }) { tag in
                             tagRow(tag)
                         }
                     }
 
                     section(title: "非表示") {
-                        ForEach(viewStore.state.filter { !$0.isVisible }) { tag in
+                        ForEach(store.tags.filter { !$0.isVisible }) { tag in
                             tagRow(tag)
                         }
                     }

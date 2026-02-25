@@ -43,12 +43,8 @@ struct BasicInfoReducer {
 
     }
 
-    enum Action {
-
-        // MARK: - Input
-        case eventNameChanged(String)
-        case kmPerGasChanged(String)
-        case pricePerGasChanged(String)
+    enum Action: BindableAction {
+        case binding(BindingAction<State>)
 
         // MARK: Tap（遷移トリガ）
         case transTapped
@@ -72,19 +68,11 @@ struct BasicInfoReducer {
     }
 
     var body: some ReducerOf<Self> {
+        BindingReducer()
         Reduce { state, action in
             switch action {
 
-            case let .eventNameChanged(text):
-                state.draft.eventName = text
-                return .none
-
-            case let .kmPerGasChanged(text):
-                state.draft.kmPerGas = text
-                return .none
-
-            case let .pricePerGasChanged(text):
-                state.draft.pricePerGas = text
+            case .binding:
                 return .none
 
             case .membersTapped:

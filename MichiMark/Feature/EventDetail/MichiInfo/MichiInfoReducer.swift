@@ -10,7 +10,6 @@ struct MichiInfoReducer {
         var eventID: EventID
         var markDrafts: IdentifiedArrayOf<MarkDetailDraft>
         var linkDrafts: IdentifiedArrayOf<LinkDetailDraft>
-        @Presents var addSheet: AddSheetReducer.State?
         
         init(
             projection: MichiInfoListProjection,
@@ -20,7 +19,6 @@ struct MichiInfoReducer {
             self.eventID = eventID
             self.markDrafts = []
             self.linkDrafts = []
-            self.addSheet = nil
         }
     }
 
@@ -29,14 +27,13 @@ struct MichiInfoReducer {
         case markTapped(MarkLinkID)
         case linkTapped(MarkLinkID)
         case addButtonTapped
-        case addSheet(PresentationAction<AddSheetReducer.Action>)
         
         case delegate(Delegate)
 
         enum Delegate {
             case openMarkDetail(EventID, MarkLinkID)
             case openLinkDetail(EventID, MarkLinkID)
-            case addMarkOrLinkSelected(MarkOrLink)
+            case addMarkOrLinkRequested
         }
     }
 
@@ -54,27 +51,11 @@ struct MichiInfoReducer {
                 return .send(.delegate(.openLinkDetail(state.eventID, id)))
 
             case .addButtonTapped:
-                state.addSheet = AddSheetReducer.State()
-                return .none
-
-            case let .addSheet(.presented(.delegate(.selected(type)))):
-                state.addSheet = nil
-                return .send(.delegate(.addMarkOrLinkSelected(type)))
-                
-            case .addSheet(.presented(.delegate(.dismiss))),
-                 .addSheet(.dismiss):
-                state.addSheet = nil
-                return .none
-                
-            case .addSheet:
-                return .none
+                return .send(.delegate(.addMarkOrLinkRequested))
 
             case .delegate:
                 return .none
             }
-        }
-        .ifLet(\.$addSheet, action: \.addSheet) {
-            AddSheetReducer()
         }
     }
 }

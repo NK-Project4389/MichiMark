@@ -9,8 +9,8 @@ struct DatePickerReducer {
         var title: String = "日付を選択"
     }
 
-    enum Action: Equatable {
-        case dateChanged(Date)
+    enum Action: BindableAction, Equatable {
+        case binding(BindingAction<State>)
         case doneTapped
         case cancelTapped
         case delegate(Delegate)
@@ -22,10 +22,10 @@ struct DatePickerReducer {
     }
 
     var body: some ReducerOf<Self> {
+        BindingReducer()
         Reduce { state, action in
             switch action {
-            case let .dateChanged(date):
-                state.date = date
+            case .binding:
                 return .none
 
             case .doneTapped:
@@ -41,32 +41,27 @@ struct DatePickerReducer {
 }
 
 struct DatePickerView: View {
-    let store: StoreOf<DatePickerReducer>
+    @Bindable var store: StoreOf<DatePickerReducer>
 
     var body: some View {
-        WithViewStore(store, observe: { $0 }) { viewStore in
-            NavigationStack {
-                DatePicker(
-                    "",
-                    selection: viewStore.binding(
-                        get: \.date,
-                        send: DatePickerReducer.Action.dateChanged
-                    ),
-                    displayedComponents: [.date]
-                )
-                .datePickerStyle(.graphical)
-                .labelsHidden()
-                .navigationTitle(viewStore.title)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("キャンセル") { viewStore.send(.cancelTapped) }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("完了") { viewStore.send(.doneTapped) }
-                    }
+        WithPerceptionTracking {
+            DatePicker(
+                "",
+                selection: $store.date,
+                displayedComponents: [.date]
+            )
+            .datePickerStyle(.graphical)
+            .labelsHidden()
+            .navigationTitle(store.title)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("キャンセル") { store.send(.cancelTapped) }
                 }
-                .padding()
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("完了") { store.send(.doneTapped) }
+                }
             }
+            .padding()
         }
     }
 }

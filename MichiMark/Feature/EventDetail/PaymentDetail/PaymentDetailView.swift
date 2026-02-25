@@ -3,27 +3,27 @@ import ComposableArchitecture
 
 struct PaymentDetailView: View {
 
-    let store: StoreOf<PaymentDetailReducer>
+    @Bindable var store: StoreOf<PaymentDetailReducer>
 
     var body: some View {
-        WithViewStore(store, observe: { $0 }) { viewStore in
+        WithPerceptionTracking {
             ZStack(alignment: .bottomTrailing) {
 
                 ScrollView {
                     VStack(spacing: 0) {
                         row(icon: "yensign.circle", title: "金額", trailing: "円")
                         row(icon: "creditcard", title: "支払者", chevron: true) {
-                            viewStore.send(.paymentMemberEditTapped)
+                            store.send(.paymentMemberEditTapped)
                         }
                         row(icon: "person.2", title: "割り勘メンバー", chevron: true) {
-                            viewStore.send(.splitMemberEditTapped)
+                            store.send(.splitMemberEditTapped)
                         }
                         row(icon: "note.text", title: "メモ")
                     }
                 }
 
-                Button("保存") {
-                    viewStore.send(.saveTapped)
+                Button("反映") {
+                    store.send(.applyButtonTapped)
                 }
                 .padding()
                 .background(Color(.systemGray4))

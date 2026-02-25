@@ -22,10 +22,9 @@ struct TagSettingDetailReducer {
         }
     }
 
-    enum Action {
-        case tagNameChanged(String)
+    enum Action: BindableAction {
+        case binding(BindingAction<State>)
 
-        case visibleToggled
         case saveTapped
         case backTapped
         
@@ -43,10 +42,11 @@ struct TagSettingDetailReducer {
     }
 
     var body: some ReducerOf<Self> {
+        BindingReducer()
         Reduce { state, action in
             switch action {
-            case let .tagNameChanged(text):
-                state.draft.tagName = text
+            case .binding(\.draft.tagName):
+                let text = state.draft.tagName
                 // ★ Validation 判定
                 if text.trimmingCharacters(in: .whitespaces).isEmpty {
                     state.validationError = .empty
@@ -56,9 +56,11 @@ struct TagSettingDetailReducer {
                 
                 return .send(.clearAlert)
 
-            case .visibleToggled:
-                state.draft.isVisible.toggle()
+            case .binding(\.draft.isHidden):
                 return .send(.clearAlert)
+
+            case .binding:
+                return .none
 
             case .saveTapped:
                 state.alert = nil

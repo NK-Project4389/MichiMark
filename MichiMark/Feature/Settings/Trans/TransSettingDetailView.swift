@@ -1,49 +1,33 @@
 import SwiftUI
 import ComposableArchitecture
 
-private struct ViewState: Equatable {
-    let draft: TransDraft
-    let isSaving: Bool
-
-    init(state: TransSettingDetailReducer.State) {
-        self.draft = state.draft
-        self.isSaving = state.isSaving
-    }
-}
-
 struct TransSettingDetailView: View {
 
-    let store: StoreOf<TransSettingDetailReducer>
+    @Bindable var store: StoreOf<TransSettingDetailReducer>
 
     var body: some View {
-        WithViewStore(store, observe: ViewState.init) { viewStore in
+        WithPerceptionTracking {
             ZStack {
                 VStack(spacing: 0) {
                     formRow(title: "交通手段名") {
                         TextField(
                             "入力",
-                            text: viewStore.binding(
-                                get: { $0.draft.transName },
-                                send: TransSettingDetailReducer.Action.transNameChanged
-                            )
+                            text: $store.draft.transName
                         )
                     }
                     
                     formRow(title: "燃費", trailing: "km/ℓ") {
-                        TextField("入力", text: viewStore.binding(
-                            get: {$0.draft.displayKmPerGas},
-                            send: TransSettingDetailReducer.Action.kmPerGasChanged
-                        ))
+                        TextField(
+                            "入力",
+                            text: $store.draft.displayKmPerGas
+                        )
                         .keyboardType(.decimalPad)
                     }
                     
                     formRow(title: "メーター", trailing: "km") {
                         TextField(
                             "入力",
-                            text: viewStore.binding(
-                                get: { formatComma($0.draft.displayMeterValue) },
-                                send: TransSettingDetailReducer.Action.meterValueChanged
-                            )
+                            text: $store.draft.displayMeterValue
                         )
                         .keyboardType(.numberPad)
 
@@ -51,15 +35,12 @@ struct TransSettingDetailView: View {
 
                     Toggle(
                         "非表示",
-                        isOn: viewStore.binding(
-                            get: { !$0.draft.isVisible },
-                            send: { _ in .visibleToggled }
-                        )
+                        isOn: $store.draft.isHidden
                     )
                     .padding()
                 }
 
-                if viewStore.isSaving {
+                if store.isSaving {
                     Color.black.opacity(0.2)
                         .ignoresSafeArea()
 
@@ -69,15 +50,15 @@ struct TransSettingDetailView: View {
                         .cornerRadius(12)
                 }
             }
-            .disabled(viewStore.isSaving)
+            .disabled(store.isSaving)
             .navigationTitle("タグ詳細")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("保存") {
-                        viewStore.send(.saveTapped)
+                        store.send(.saveTapped)
                     }
-                    .disabled(viewStore.isSaving)
+                    .disabled(store.isSaving)
                 }
             }
         }
@@ -110,13 +91,4 @@ struct TransSettingDetailView: View {
         .overlay(Divider(), alignment: .bottom)
     }
     
-    private func formatComma(_ text: String) -> String {
-        let raw = text.replacingOccurrences(of: ",", with: "")
-        guard let value = Int(raw) else { return text }
-
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter.string(from: NSNumber(value: value)) ?? text
-    }
-
 }

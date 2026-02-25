@@ -6,12 +6,12 @@ struct PaymentDetailReducer {
 
     @ObservableState
     struct State: Equatable {
-        var projection: PaymentItemProjection
+        var projection: PaymentItemProjection?
         var draft: PaymentDraft
         
         // 外部依存
-        var eventID: EventID
-        var paymentID: PaymentID
+        var eventID: EventID?
+        var paymentID: PaymentID?
 
         //@PresentationState var destination: Destination.State?
         
@@ -25,6 +25,13 @@ struct PaymentDetailReducer {
             self.eventID = eventID
             self.paymentID = paymentID
         }
+
+        init(draft: PaymentDraft) {
+            self.projection = nil
+            self.draft = draft
+            self.eventID = nil
+            self.paymentID = nil
+        }
     }
 
     enum Action {
@@ -36,29 +43,28 @@ struct PaymentDetailReducer {
 
         case applySelection(useCase: SelectionUseCase, ids: [UUID], names: [UUID: String])
 
-        case saveTapped
+        case applyButtonTapped
         case backTapped
 
-        case destination(PresentationAction<Destination.Action>)
         case delegate(Delegate)
     }
 
     enum Delegate {
         case selectionRequested(useCase: SelectionUseCase)
-    }
-
-    @Reducer
-    struct Destination {
-        enum State: Equatable {
-            case paymentMemberSelection
-            case splitMemberSelection
-        }
-        enum Action {}
+        case applied(PaymentDraft)
     }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case let .paymentAmountChanged(text):
+                state.draft.paymentAmount = text
+                return .none
+
+            case let .paymentMemoChanged(text):
+                state.draft.paymentMemo = text
+                return .none
+
             case .paymentMemberEditTapped:
                 return .send(.delegate(.selectionRequested(useCase: .payMember)))
 
@@ -80,10 +86,12 @@ struct PaymentDetailReducer {
                 }
                 return .none
 
+            case .applyButtonTapped:
+                return .send(.delegate(.applied(state.draft)))
+
             default:
                 return .none
             }
         }
-        //.ifLet(\.$destination, action: \.destination)
     }
 }

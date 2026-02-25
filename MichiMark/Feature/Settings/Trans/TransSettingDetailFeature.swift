@@ -22,12 +22,9 @@ struct TransSettingDetailReducer {
         }
     }
 
-    enum Action {
-        case transNameChanged(String)
-        case kmPerGasChanged(String)
-        case meterValueChanged(String)
+    enum Action: BindableAction {
+        case binding(BindingAction<State>)
 
-        case visibleToggled
         case saveTapped
         case backTapped
         
@@ -45,10 +42,11 @@ struct TransSettingDetailReducer {
     }
 
     var body: some ReducerOf<Self> {
+        BindingReducer()
         Reduce { state, action in
             switch action {
-            case let .transNameChanged(text):
-                state.draft.transName = text
+            case .binding(\.draft.transName):
+                let text = state.draft.transName
                 // ★ Validation 判定
                 if text.trimmingCharacters(in: .whitespaces).isEmpty {
                     state.validationError = .empty
@@ -58,19 +56,18 @@ struct TransSettingDetailReducer {
                 
                 return .send(.clearAlert)
                 
-            case let .kmPerGasChanged(text):
-                state.draft.displayKmPerGas = text
-                
+            case .binding(\.draft.displayKmPerGas):
                 return .send(.clearAlert)
                 
-            case let .meterValueChanged(text):
-                state.draft.displayMeterValue = text
-                
+            case .binding(\.draft.displayMeterValue):
+                state.draft.displayMeterValue = formatComma(state.draft.displayMeterValue)
                 return .send(.clearAlert)
                 
-            case .visibleToggled:
-                state.draft.isVisible.toggle()
+            case .binding(\.draft.isHidden):
                 return .send(.clearAlert)
+
+            case .binding:
+                return .none
                 
             case .saveTapped:
                 state.alert = nil
@@ -147,6 +144,15 @@ struct TransSettingDetailReducer {
         }
 
         return errors
+    }
+
+    private func formatComma(_ text: String) -> String {
+        let raw = text.replacingOccurrences(of: ",", with: "")
+        guard let value = Int(raw) else { return text }
+
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter.string(from: NSNumber(value: value)) ?? text
     }
 
 }

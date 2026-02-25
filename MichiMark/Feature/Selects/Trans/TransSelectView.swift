@@ -3,19 +3,19 @@ import ComposableArchitecture
 
 struct TransSelectView: View {
 
-    let store: StoreOf<TransSelectReducer>
+    @Bindable var store: StoreOf<TransSelectReducer>
 
     var body: some View {
-        WithViewStore(store, observe: { $0 }) { viewStore in
+        WithPerceptionTracking {
             List {
-                ForEach(viewStore.items) { item in
+                ForEach(store.items) { item in
                     Button {
-                        viewStore.send(.select(item.id))
+                        store.send(.select(item.id))
                     } label: {
                         HStack {
                             Text(item.transName)
                             Spacer()
-                            if viewStore.selectedID == item.id {
+                            if store.selectedID == item.id {
                                 Image(systemName: "checkmark")
                                     .foregroundColor(.accentColor)
                             }
@@ -27,13 +27,13 @@ struct TransSelectView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("完了") {
-                        viewStore.send(.doneTapped)
+                        store.send(.doneTapped)
                     }
                 }
             }
             
             .onAppear {
-                viewStore.send(.appeared)
+                store.send(.appeared)
             }
 
         }

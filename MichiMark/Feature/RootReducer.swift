@@ -22,6 +22,11 @@ struct RootReducer {
         case paymentDetail(StackElementID)
     }
 
+    enum DatePickerSource: Equatable {
+        case markDetail(StackElementID)
+        case linkDetail(StackElementID)
+    }
+
     struct PendingSelection: Equatable {
         let useCase: SelectionUseCase
         let source: SelectionSource
@@ -42,6 +47,11 @@ struct RootReducer {
         // SelectionFeature の中継用
         var selectionSource: SelectionSource?
         var pendingSelection: PendingSelection?
+        var addSheetSource: StackElementID?
+        var addSheetElementID: StackElementID?
+        var datePickerSource: DatePickerSource?
+        var datePickerElementID: StackElementID?
+        var paymentDetailSourceByElementID: [StackElementID: StackElementID] = [:]
 
         // EventDetail から開いた Mark/Link の追跡
         var markDetailSourceByElementID: [StackElementID: StackElementID] = [:]
@@ -89,6 +99,8 @@ struct RootReducer {
         case markDetail(MarkDetailReducer)
         case linkDetail(LinkDetailReducer)
         case paymentDetail(PaymentDetailReducer)
+        case addSheet(AddSheetReducer)
+        case datePicker(DatePickerReducer)
         //選択
         case selection(SelectionFeature)
     }
@@ -442,6 +454,14 @@ struct RootReducer {
                     state.linkDetailSourceByElementID[newID] = elementID
                 }
                 return .none
+
+            case let .path(
+                .element(id: elementID, action: .eventDetail(.delegate(.addMarkOrLinkRequested)))
+            ):
+                state.addSheetSource = elementID
+                state.path.append(.addSheet(AddSheetReducer.State()))
+                state.addSheetElementID = state.path.ids.last
+                return .none
                 
             case let .path(
                 .element(id: elementID, action: .eventDetail(.delegate(.addMarkOrLinkSelected(type))))
@@ -485,7 +505,46 @@ struct RootReducer {
                 return .none
 
             case let .path(
-                .element(id: elementID, action: .eventDetail(.delegate(.openPaymentDetail(paymentID))))
+                .element(id: elementID, action: .addSheet(.delegate(.selected(type))))
+            ):
+                guard let sourceID = state.addSheetSource else { return .none }
+                state.addSheetSource = nil
+                state.addSheetElementID = nil
+                state.path.pop(from: elementID)
+                return .send(
+                    .path(
+                        .element(
+                            id: sourceID,
+                            action: .eventDetail(.delegate(.addMarkOrLinkSelected(type)))
+                        )
+                    )
+                )
+
+            case let .path(
+                .element(id: elementID, action: .addSheet(.delegate(.dismiss)))
+            ):
+                state.addSheetSource = nil
+                state.addSheetElementID = nil
+                state.path.pop(from: elementID)
+                return .none
+
+            case let .path(
+                .element(id: elementID, action: .eventDetail(.delegate(.openPaymentDetail(draft))))
+            ):
+                state.path.append(
+                    .paymentDetail(
+                        PaymentDetailReducer.State(
+                            draft: draft
+                        )
+                    )
+                )
+                if let newID = state.path.ids.last {
+                    state.paymentDetailSourceByElementID[newID] = elementID
+                }
+                return .none
+
+            case let .path(
+                .element(id: elementID, action: .eventDetail(.delegate(.openPaymentDetailByID(paymentID))))
             ):
                 guard case let .eventDetail(eventDetailState)? = state.path[id: elementID] else { return .none }
                 guard let paymentProjection = eventDetailState.core.projection.paymentInfo.items
@@ -500,6 +559,9 @@ struct RootReducer {
                         )
                     )
                 )
+                if let newID = state.path.ids.last {
+                    state.paymentDetailSourceByElementID[newID] = elementID
+                }
                 return .none
 
             case let .path(
@@ -521,6 +583,21 @@ struct RootReducer {
                 state.path.pop(from: elementID)
                 syncMichiInfoDrafts(for: eventDetailID, state: &state)
                 return .none
+
+            case let .path(
+                .element(id: elementID, action: .paymentDetail(.delegate(.applied(draft))))
+            ):
+                guard let eventDetailID = state.paymentDetailSourceByElementID[elementID] else { return .none }
+                state.paymentDetailSourceByElementID[elementID] = nil
+                state.path.pop(from: elementID)
+                return .send(
+                    .path(
+                        .element(
+                            id: eventDetailID,
+                            action: .eventDetail(.paymentAdded(draft))
+                        )
+                    )
+                )
 
             case let .path(
                 .element(id: elementID, action: .paymentDetail(.delegate(.selectionRequested(useCase))))
@@ -549,9 +626,84 @@ struct RootReducer {
                     state: &state
                 )
 
+            case let .path(
+                .element(id: elementID, action: .markDetail(.delegate(.datePickerRequested)))
+            ):
+                guard case let .markDetail(markDetailState)? = state.path[id: elementID] else { return .none }
+                state.datePickerSource = .markDetail(elementID)
+                state.path.append(
+                    .datePicker(
+                        DatePickerReducer.State(
+                            date: markDetailState.draft.displayDateAsDate
+                        )
+                    )
+                )
+                state.datePickerElementID = state.path.ids.last
+                return .none
+
+            case let .path(
+                .element(id: elementID, action: .linkDetail(.delegate(.datePickerRequested)))
+            ):
+                guard case let .linkDetail(linkDetailState)? = state.path[id: elementID] else { return .none }
+                state.datePickerSource = .linkDetail(elementID)
+                state.path.append(
+                    .datePicker(
+                        DatePickerReducer.State(
+                            date: linkDetailState.draft.displayDateAsDate
+                        )
+                    )
+                )
+                state.datePickerElementID = state.path.ids.last
+                return .none
+
+            case let .path(
+                .element(id: elementID, action: .datePicker(.delegate(.selected(date))))
+            ):
+                guard let source = state.datePickerSource else { return .none }
+                state.datePickerSource = nil
+                state.datePickerElementID = nil
+                state.path.pop(from: elementID)
+                switch source {
+                case let .markDetail(targetID):
+                    return .send(
+                        .path(
+                            .element(
+                                id: targetID,
+                                action: .markDetail(.dateSelected(date))
+                            )
+                        )
+                    )
+                case let .linkDetail(targetID):
+                    return .send(
+                        .path(
+                            .element(
+                                id: targetID,
+                                action: .linkDetail(.dateSelected(date))
+                            )
+                        )
+                    )
+                }
+
+            case let .path(
+                .element(id: elementID, action: .datePicker(.delegate(.cancelled)))
+            ):
+                state.datePickerSource = nil
+                state.datePickerElementID = nil
+                state.path.pop(from: elementID)
+                return .none
+
             case let .path(.popFrom(id: elementID)):
                 state.markDetailSourceByElementID[elementID] = nil
                 state.linkDetailSourceByElementID[elementID] = nil
+                state.paymentDetailSourceByElementID[elementID] = nil
+                if state.addSheetElementID == elementID {
+                    state.addSheetElementID = nil
+                    state.addSheetSource = nil
+                }
+                if state.datePickerElementID == elementID {
+                    state.datePickerElementID = nil
+                    state.datePickerSource = nil
+                }
                 if let pending = state.pendingSelection,
                    pending.settingsElementID == elementID {
                     state.pendingSelection = nil
