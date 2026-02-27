@@ -198,6 +198,9 @@ struct EventDetailCoreReducer {
                 case let .paymentInfo(.delegate(.openPaymentDetail(draft))):
                     return .send(.delegate(.openPaymentDetail(draft)))
 
+                case let .paymentInfo(.delegate(.openPaymentDetailByID(paymentID))):
+                    return .send(.delegate(.openPaymentDetailByID(paymentID)))
+
                 case let .paymentAdded(draft):
                     let paymentDomain = draft.toDomain()
                     state.event.addPayment(paymentDomain)

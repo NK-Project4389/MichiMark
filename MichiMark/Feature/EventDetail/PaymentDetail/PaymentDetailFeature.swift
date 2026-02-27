@@ -38,10 +38,15 @@ struct PaymentDetailReducer {
         case paymentAmountChanged(String)
         case paymentMemoChanged(String)
 
-        case paymentMemberEditTapped
-        case splitMemberEditTapped
+        case payMemberTapped
+        case payMemberSelectionRequested
+        case payMemberSelectionResultReceived(MemberID?)
 
-        case applySelection(useCase: SelectionUseCase, ids: [UUID], names: [UUID: String])
+        case splitMembersTapped
+        case splitMembersSelectionRequested
+        case splitMembersSelectionResultReceived(Set<MemberID>)
+
+        case selectionNamesReceived([MemberID: String])
 
         case applyButtonTapped
         case backTapped
@@ -58,31 +63,66 @@ struct PaymentDetailReducer {
         Reduce { state, action in
             switch action {
             case let .paymentAmountChanged(text):
-                state.draft.paymentAmount = text
+                // 変更理由: 数値以外は拒否し、空文字は nil に変換して Draft へ即時反映するため
+                let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+                if trimmed.isEmpty {
+                    state.draft.paymentAmount = nil
+                    return .none
+                }
+                guard trimmed.allSatisfy({ $0.isNumber }) else {
+                    return .none
+                }
+                guard let parsed = Int(trimmed) else {
+                    return .none
+                }
+                state.draft.paymentAmount = parsed
                 return .none
 
             case let .paymentMemoChanged(text):
                 state.draft.paymentMemo = text
                 return .none
 
-            case .paymentMemberEditTapped:
+            case .payMemberTapped:
+                return .send(.payMemberSelectionRequested)
+
+            case .payMemberSelectionRequested:
                 return .send(.delegate(.selectionRequested(useCase: .payMember)))
 
-            case .splitMemberEditTapped:
+            case let .payMemberSelectionResultReceived(memberID):
+                let previousID = state.draft.payMemberID
+                state.draft.payMemberID = memberID
+                if previousID != memberID {
+                    state.draft.payMemberName = nil
+                }
+                return .none
+
+            case .splitMembersTapped:
+                return .send(.splitMembersSelectionRequested)
+
+            case .splitMembersSelectionRequested:
                 return .send(.delegate(.selectionRequested(useCase: .splitMembers)))
 
-            case let .applySelection(useCase, ids, names):
-                switch useCase {
-                case .payMember:
-                    state.draft.payMemberID = ids.first
-                    state.draft.payMemberName = ids.first.flatMap { names[$0] }
+            case let .splitMembersSelectionResultReceived(memberIDs):
+                state.draft.splitMemberIDs = memberIDs
+                // 変更理由: 選択結果に合わせて表示用の名前リストを安全に整理するため
+                state.draft.splitMemberNames = state.draft.splitMemberNames.filter { memberIDs.contains($0.key) }
+                return .none
 
-                case .splitMembers:
-                    state.draft.splitMemberIDs = Set(ids)
-                    state.draft.splitMemberNames = names
+            case let .selectionNamesReceived(names):
+                if let payMemberID = state.draft.payMemberID {
+                    state.draft.payMemberName = names[payMemberID] ?? state.draft.payMemberName
+                } else {
+                    state.draft.payMemberName = nil
+                }
 
-                default:
-                    break
+                if !state.draft.splitMemberIDs.isEmpty {
+                    var updatedNames: [MemberID: String] = [:]
+                    for memberID in state.draft.splitMemberIDs {
+                        if let name = names[memberID] ?? state.draft.splitMemberNames[memberID] {
+                            updatedNames[memberID] = name
+                        }
+                    }
+                    state.draft.splitMemberNames = updatedNames
                 }
                 return .none
 

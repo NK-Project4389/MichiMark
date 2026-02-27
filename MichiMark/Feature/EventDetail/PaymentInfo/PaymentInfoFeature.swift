@@ -27,13 +27,14 @@ struct PaymentInfoReducer {
     }
 
     enum Action {
-        case paymentTapped(UUID)
+        case paymentTapped(PaymentID)
         case plusButtonTapped
         case delegate(Delegate)
     }
 
     enum Delegate {
         case openPaymentDetail(PaymentDraft)
+        case openPaymentDetailByID(PaymentID)
     }
 
     var body: some ReducerOf<Self> {
@@ -48,8 +49,8 @@ struct PaymentInfoReducer {
                     )
                 )
 
-            case .paymentTapped:
-                return .none
+            case let .paymentTapped(paymentID):
+                return .send(.delegate(.openPaymentDetailByID(paymentID)))
 
             case .delegate:
                 return .none

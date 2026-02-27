@@ -284,20 +284,62 @@ struct RootReducer {
                     )
 
                 case let .paymentDetail(targetID):
-                    return .send(
-                        .path(
-                            .element(
-                                id: targetID,
-                                action: .paymentDetail(
-                                    .applySelection(
-                                        useCase: useCase,
-                                        ids: ids,
-                                        names: names
+                    switch useCase {
+                    case .payMember:
+                        let selectedID = ids.first
+                        // 変更理由: ID 更新後に名前を反映する順序を保証するため
+                        return .run { send in
+                            await send(
+                                .path(
+                                    .element(
+                                        id: targetID,
+                                        action: .paymentDetail(
+                                            .payMemberSelectionResultReceived(selectedID)
+                                        )
                                     )
                                 )
                             )
-                        )
-                    )
+                            await send(
+                                .path(
+                                    .element(
+                                        id: targetID,
+                                        action: .paymentDetail(
+                                            .selectionNamesReceived(names)
+                                        )
+                                    )
+                                )
+                            )
+                        }
+
+                    case .splitMembers:
+                        let selectedIDs = Set(ids)
+                        // 変更理由: ID 更新後に名前を反映する順序を保証するため
+                        return .run { send in
+                            await send(
+                                .path(
+                                    .element(
+                                        id: targetID,
+                                        action: .paymentDetail(
+                                            .splitMembersSelectionResultReceived(selectedIDs)
+                                        )
+                                    )
+                                )
+                            )
+                            await send(
+                                .path(
+                                    .element(
+                                        id: targetID,
+                                        action: .paymentDetail(
+                                            .selectionNamesReceived(names)
+                                        )
+                                    )
+                                )
+                            )
+                        }
+
+                    default:
+                        return .none
+                    }
                 }
 
             case let .path(

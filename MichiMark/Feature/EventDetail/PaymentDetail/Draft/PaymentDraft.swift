@@ -5,7 +5,7 @@ struct PaymentDraft: Equatable {
     var payMemberName: String?
     var splitMemberIDs: Set<MemberID>
     var splitMemberNames: [MemberID: String]
-    var paymentAmount: String
+    var paymentAmount: Int?
     var paymentMemo: String
 }
 
@@ -17,9 +17,9 @@ extension PaymentDraft {
         self.splitMemberNames = Dictionary(
             uniqueKeysWithValues: projection.splitMembers.map { ($0.id, $0.memberName) }
         )
-        self.paymentAmount = String(
-            projection.displayAmount.filter { $0.isNumber }
-        )
+        // 変更理由: 表示用の金額文字列から数値入力用の Int? に変換するため
+        let digits = projection.displayAmount.filter { $0.isNumber }
+        self.paymentAmount = digits.isEmpty ? nil : Int(digits)
         self.paymentMemo = projection.memo ?? ""
     }
 }
@@ -31,7 +31,7 @@ extension PaymentDraft {
             payMemberName: nil,
             splitMemberIDs: [],
             splitMemberNames: [:],
-            paymentAmount: "",
+            paymentAmount: nil,
             paymentMemo: ""
         )
     }
@@ -41,7 +41,8 @@ extension PaymentDraft {
         paymentSeq: Int = 0,
         now: Date = Date()
     ) -> PaymentDomain {
-        let amount = Int(paymentAmount) ?? 0
+        // 変更理由: 空入力は nil を許容し、保存時に 0 へ安全変換するため
+        let amount = paymentAmount ?? 0
         let memo = paymentMemo.isEmpty ? nil : paymentMemo
         let payMember = MemberDomain(
             id: payMemberID ?? MemberID(),
