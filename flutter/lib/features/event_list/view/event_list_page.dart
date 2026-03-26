@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../bloc/event_list_bloc.dart';
 import '../bloc/event_list_event.dart';
 import '../bloc/event_list_state.dart';
@@ -49,8 +50,14 @@ class EventListPage extends StatelessWidget {
   }
 
   void _handleDelegate(BuildContext context, EventListDelegate delegate) {
-    // ナビゲーションはRootが管理するため、ここではDelegateを受け取るのみ。
-    // go_routerによる遷移はRootのBlocListenerで処理する。
+    switch (delegate) {
+      case OpenEventDetailDelegate(:final eventId):
+        context.go('/event/$eventId');
+      case OpenAddEventDelegate():
+        context.go('/event/new');
+      case OpenSettingsDelegate():
+        context.go('/settings');
+    }
   }
 }
 

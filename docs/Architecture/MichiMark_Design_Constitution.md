@@ -215,12 +215,31 @@ class FeatureState {
 
 # 9. Navigationルール
 
-NavigationはRootのみが管理する。
-
 - `go_router` を使用する
-- Feature内から直接 `Navigator` / `context.go()` を呼び出すことは禁止
-- FeatureはDelegateで遷移意図を通知する
-- Rootがlistenerを通じてDelegateを受け取り、go_routerで遷移する
+- BlocはNavigationを直接操作しない（`context.go()` の呼び出しはBlocに書かない）
+- BlocはDelegateをStateに乗せることで遷移意図を通知する
+- PageのBlocListener がDelegateを受け取り、`context.go()` で画面遷移する
+
+```dart
+// 正しいパターン
+BlocConsumer<FeatureBloc, FeatureState>(
+  listener: (context, state) {
+    // Delegateの種類に応じてgo_routerで遷移
+    switch (state.delegate) {
+      case OpenDetailDelegate(:final id):
+        context.go('/detail/$id');
+    }
+  },
+  builder: (context, state) {
+    // UIの描画のみ
+  },
+)
+```
+
+### 禁止事項
+
+- Bloc内で `context.go()` を呼び出すこと
+- Widget内で `Navigator.of(context).push()` を呼び出すこと（go_routerに統一）
 
 ---
 

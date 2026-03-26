@@ -62,10 +62,12 @@ Event  → Bloc → State
 
 ---
 
-## Root責務
+## Navigationルール
 
-- Rootはナビゲーション管理のみを担当する
-- Draft編集・Domain変更・Repository呼び出しは禁止
+- `go_router` を使用する
+- BlocはDelegateをStateに乗せて遷移意図を通知する
+- PageのBlocListenerがDelegateを受け取り `context.go()` で遷移する
+- Bloc内・Widget内で `Navigator.of(context).push()` を呼び出すことは禁止
 
 ---
 
