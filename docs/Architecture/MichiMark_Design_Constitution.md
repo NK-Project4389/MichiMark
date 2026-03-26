@@ -82,7 +82,8 @@ Repository
 ## Repository
 
 - 永続化層（drift / ローカルDB）
-- Featureから直接呼び出しは禁止
+- **WidgetからRepositoryを直接呼び出すことは禁止**
+- BlocはDI（get_it）経由でRepositoryをコンストラクタ注入して呼び出してよい
 - インターフェース（abstract class）で定義し、実装を差し替え可能にする
 
 ---
@@ -103,8 +104,9 @@ Event → Bloc → State
 
 ## Bloc
 
-- Draft更新・Adapter呼び出し・Delegate通知のみを行う
-- Repository直接呼び出しは禁止
+- Draft更新・Adapter呼び出し・Delegate通知・Repository呼び出しを行う
+- RepositoryはDI（get_it）経由でコンストラクタ注入して使用する
+- **WidgetからRepositoryを直接呼び出すことは禁止**
 - Navigation操作は禁止（Delegateで意図を伝える）
 
 ## State

@@ -76,7 +76,7 @@ Event  → Bloc → State
 - `BuildContext` を async gap をまたいで使用（mounted チェック必須）
 - Widget の `build()` 内にビジネスロジックを記述
 - Domain からUI（Widget）を参照
-- Repository をFeatureから直接呼び出し
+- Widget から Repository を直接呼び出し（BlocはDI経由で呼び出し可）
 - `switch` の `default` によるコンパイル回避
 
 ---
@@ -125,7 +125,7 @@ reviewer（再レビュー）← 再度自動交代
 - `dynamic` 型・`!` null assertionの使用
 - `BuildContext` の async gap をまたいだ使用
 - `build()` 内のビジネスロジック
-- FeatureからRepositoryへの直接呼び出し
+- WidgetからRepositoryへの直接呼び出し（BlocはDI経由で呼び出し可）
 - `switch` の `default` によるコンパイル回避
 - Domain からWidget / Projectionへの参照
 - RootによるDraft編集・Domain操作
