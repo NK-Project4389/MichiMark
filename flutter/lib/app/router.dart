@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 import '../features/event_list/bloc/event_list_bloc.dart';
 import '../features/event_list/bloc/event_list_event.dart';
 import '../features/event_list/view/event_list_page.dart';
+import '../features/event_detail/bloc/event_detail_bloc.dart';
+import '../features/event_detail/bloc/event_detail_event.dart';
+import '../features/event_detail/view/event_detail_page.dart';
 import '../repository/event_repository.dart';
 
 final router = GoRouter(
@@ -17,6 +20,18 @@ final router = GoRouter(
         child: const EventListPage(),
       ),
     ),
-    // TODO: event_detail, settings など Feature実装後に追加
+    GoRoute(
+      path: '/event/:id',
+      builder: (context, state) {
+        final eventId = state.pathParameters['id'] ?? '';
+        return BlocProvider(
+          create: (_) => EventDetailBloc(
+            eventRepository: context.read<EventRepository>(),
+          )..add(EventDetailStarted(eventId)),
+          child: const EventDetailPage(),
+        );
+      },
+    ),
+    // TODO: mark_detail, link_detail, payment_detail, settings など実装後に追加
   ],
 );

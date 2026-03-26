@@ -1,0 +1,173 @@
+import 'package:intl/intl.dart';
+import '../domain/transaction/event/event_domain.dart';
+import '../domain/master/member/member_domain.dart';
+import '../domain/master/trans/trans_domain.dart';
+import '../domain/master/tag/tag_domain.dart';
+import '../domain/master/action/action_domain.dart';
+import '../domain/transaction/mark_link/mark_link_domain.dart';
+import '../domain/transaction/payment/payment_domain.dart';
+import '../features/event_detail/projection/event_detail_projection.dart';
+import '../features/event_detail/projection/basic_info_projection.dart';
+import '../features/event_detail/projection/michi_info_list_projection.dart';
+import '../features/event_detail/projection/payment_info_projection.dart';
+import '../features/shared/projection/member_item_projection.dart';
+import '../features/shared/projection/trans_item_projection.dart';
+import '../features/shared/projection/tag_item_projection.dart';
+import '../features/shared/projection/action_item_projection.dart';
+import '../features/shared/projection/mark_link_item_projection.dart';
+import '../features/shared/projection/payment_item_projection.dart';
+
+/// EventDomain → EventDetailProjection の変換
+class EventDetailAdapter {
+  EventDetailAdapter._();
+
+  static final _dateFormat = DateFormat('yyyy/MM/dd');
+  static final _numberFormat = NumberFormat('#,###');
+
+  static EventDetailProjection toProjection(EventDomain event) {
+    return EventDetailProjection(
+      eventId: event.id,
+      basicInfo: _toBasicInfo(event),
+      michiInfo: _toMichiInfo(event),
+      paymentInfo: _toPaymentInfo(event),
+    );
+  }
+
+  // ── BasicInfo ──────────────────────────────────────────────
+
+  static BasicInfoProjection _toBasicInfo(EventDomain event) {
+    return BasicInfoProjection(
+      eventId: event.id,
+      eventName: event.eventName,
+      trans: event.trans != null ? _toTransItem(event.trans!) : null,
+      tags: event.tags
+          .where((t) => !t.isDeleted && t.isVisible)
+          .map(_toTagItem)
+          .toList(),
+      members: event.members
+          .where((m) => !m.isDeleted && m.isVisible)
+          .map(_toMemberItem)
+          .toList(),
+      kmPerGas: event.kmPerGas,
+      displayKmPerGas: _formatKmPerGas(event.kmPerGas),
+      pricePerGas: event.pricePerGas,
+      displayPricePerGas: _formatPricePerGas(event.pricePerGas),
+      payMember: event.payMember != null ? _toMemberItem(event.payMember!) : null,
+    );
+  }
+
+  // ── MichiInfo ─────────────────────────────────────────────
+
+  static MichiInfoListProjection _toMichiInfo(EventDomain event) {
+    final items = event.markLinks
+        .where((ml) => !ml.isDeleted)
+        .toList()
+      ..sort((a, b) => a.markLinkSeq.compareTo(b.markLinkSeq));
+
+    return MichiInfoListProjection(
+      items: items.map(_toMarkLinkItem).toList(),
+    );
+  }
+
+  // ── PaymentInfo ───────────────────────────────────────────
+
+  static PaymentInfoProjection _toPaymentInfo(EventDomain event) {
+    final valid = event.payments
+        .where((p) => !p.isDeleted)
+        .toList()
+      ..sort((a, b) => a.paymentSeq.compareTo(b.paymentSeq));
+
+    final total = valid.fold(0, (sum, p) => sum + p.paymentAmount);
+
+    return PaymentInfoProjection(
+      items: valid.map(_toPaymentItem).toList(),
+      displayTotalAmount: '${_numberFormat.format(total)} 円',
+    );
+  }
+
+  // ── Item converters ───────────────────────────────────────
+
+  static MemberItemProjection _toMemberItem(MemberDomain d) =>
+      MemberItemProjection(
+        id: d.id,
+        memberName: d.memberName,
+        mailAddress: d.mailAddress,
+        isVisible: d.isVisible,
+      );
+
+  static TransItemProjection _toTransItem(TransDomain d) => TransItemProjection(
+        id: d.id,
+        transName: d.transName,
+        displayKmPerGas: _formatKmPerGas(d.kmPerGas),
+        displayMeterValue: d.meterValue != null
+            ? '${_numberFormat.format(d.meterValue)} km'
+            : '未設定',
+        isVisible: d.isVisible,
+      );
+
+  static TagItemProjection _toTagItem(TagDomain d) => TagItemProjection(
+        id: d.id,
+        tagName: d.tagName,
+        isVisible: d.isVisible,
+      );
+
+  static ActionItemProjection _toActionItem(ActionDomain d) =>
+      ActionItemProjection(
+        id: d.id,
+        actionName: d.actionName,
+        isVisible: d.isVisible,
+      );
+
+  static MarkLinkItemProjection _toMarkLinkItem(MarkLinkDomain d) {
+    final gasQuantity =
+        d.gasQuantity != null ? d.gasQuantity! / 10.0 : null;
+
+    return MarkLinkItemProjection(
+      id: d.id,
+      markLinkSeq: d.markLinkSeq,
+      markLinkType: d.markLinkType,
+      displayDate: _dateFormat.format(d.markLinkDate),
+      markLinkName: d.markLinkName ?? '',
+      members: d.members
+          .where((m) => !m.isDeleted)
+          .map(_toMemberItem)
+          .toList(),
+      displayMeterValue: d.meterValue != null
+          ? '${_numberFormat.format(d.meterValue)} km'
+          : null,
+      displayDistanceValue: d.distanceValue != null
+          ? '${_numberFormat.format(d.distanceValue)} km'
+          : null,
+      actions: d.actions
+          .where((a) => !a.isDeleted)
+          .map(_toActionItem)
+          .toList(),
+      isFuel: d.isFuel,
+      pricePerGas: d.pricePerGas,
+      gasQuantity: gasQuantity,
+      gasPrice: d.gasPrice,
+      memo: d.memo,
+    );
+  }
+
+  static PaymentItemProjection _toPaymentItem(PaymentDomain d) =>
+      PaymentItemProjection(
+        id: d.id,
+        displayAmount: '${_numberFormat.format(d.paymentAmount)} 円',
+        payer: _toMemberItem(d.paymentMember),
+        splitMembers: d.splitMembers.map(_toMemberItem).toList(),
+        memo: d.paymentMemo,
+      );
+
+  // ── Formatters ────────────────────────────────────────────
+
+  static String _formatKmPerGas(int? value) {
+    if (value == null) return '未設定';
+    return '${(value / 10.0).toStringAsFixed(1)} km/L';
+  }
+
+  static String _formatPricePerGas(int? value) {
+    if (value == null) return '未設定';
+    return '$value 円/L';
+  }
+}
