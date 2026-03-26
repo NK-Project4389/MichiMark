@@ -228,20 +228,22 @@ lib/
   │       ├── tag_setting/
   │       └── action_setting/
   ├── domain/
-  │   ├── event/
-  │   │   └── event_domain.dart
-  │   ├── mark_link/
-  │   │   └── mark_link_domain.dart
-  │   ├── payment/
-  │   │   └── payment_domain.dart
-  │   ├── member/
-  │   │   └── member_domain.dart
-  │   ├── trans/
-  │   │   └── trans_domain.dart
-  │   ├── tag/
-  │   │   └── tag_domain.dart
-  │   └── action/
-  │       └── action_domain.dart
+  │   ├── transaction/               # イベント単位で生成・削除されるデータ
+  │   │   ├── event/
+  │   │   │   └── event_domain.dart
+  │   │   ├── mark_link/
+  │   │   │   └── mark_link_domain.dart
+  │   │   └── payment/
+  │   │       └── payment_domain.dart
+  │   └── master/                    # Settings画面で管理する長期存在データ
+  │       ├── member/
+  │       │   └── member_domain.dart
+  │       ├── trans/
+  │       │   └── trans_domain.dart
+  │       ├── tag/
+  │       │   └── tag_domain.dart
+  │       └── action/
+  │           └── action_domain.dart
   ├── adapter/
   │   ├── event_adapter.dart
   │   ├── mark_link_adapter.dart
