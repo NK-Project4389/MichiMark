@@ -17,3 +17,4 @@
 |---|---|
 | [2026-03-24_initial_setup.md](./2026-03-24_initial_setup.md) | リポジトリClone・CLAUDE.md整備・進捗記録ディレクトリ作成 |
 | [2026-03-26_flutter_setup.md](./2026-03-26_flutter_setup.md) | Flutterプロジェクト初期セットアップ・フォルダ構造作成 |
+| [2026-03-27_basic_info_feature.md](./2026-03-27_basic_info_feature.md) | basic_info Feature実装・EventDetail全タブ一括保存仕様の記録 |
