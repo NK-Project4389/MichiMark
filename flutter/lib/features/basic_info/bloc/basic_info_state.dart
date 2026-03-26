@@ -1,0 +1,79 @@
+import 'package:equatable/equatable.dart';
+import '../draft/basic_info_draft.dart';
+
+/// BasicInfoのDelegate（画面遷移・操作意図の通知）
+sealed class BasicInfoDelegate extends Equatable {
+  const BasicInfoDelegate();
+}
+
+class BasicInfoOpenTransSelectionDelegate extends BasicInfoDelegate {
+  const BasicInfoOpenTransSelectionDelegate();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class BasicInfoOpenMembersSelectionDelegate extends BasicInfoDelegate {
+  const BasicInfoOpenMembersSelectionDelegate();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class BasicInfoOpenTagsSelectionDelegate extends BasicInfoDelegate {
+  const BasicInfoOpenTagsSelectionDelegate();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class BasicInfoOpenPayMemberSelectionDelegate extends BasicInfoDelegate {
+  const BasicInfoOpenPayMemberSelectionDelegate();
+
+  @override
+  List<Object?> get props => [];
+}
+
+// ---------------------------------------------------------------------------
+
+sealed class BasicInfoState extends Equatable {
+  const BasicInfoState();
+}
+
+class BasicInfoLoading extends BasicInfoState {
+  const BasicInfoLoading();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class BasicInfoLoaded extends BasicInfoState {
+  final BasicInfoDraft draft;
+  final BasicInfoDelegate? delegate;
+
+  const BasicInfoLoaded({
+    required this.draft,
+    this.delegate,
+  });
+
+  BasicInfoLoaded copyWith({
+    BasicInfoDraft? draft,
+    BasicInfoDelegate? delegate,
+  }) {
+    return BasicInfoLoaded(
+      draft: draft ?? this.draft,
+      delegate: delegate,
+    );
+  }
+
+  @override
+  List<Object?> get props => [draft, delegate];
+}
+
+class BasicInfoError extends BasicInfoState {
+  final String message;
+  const BasicInfoError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

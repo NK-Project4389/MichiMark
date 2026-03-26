@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../repository/event_repository.dart';
+import '../../basic_info/bloc/basic_info_bloc.dart';
+import '../../basic_info/bloc/basic_info_event.dart';
+import '../../basic_info/view/basic_info_view.dart';
 import '../bloc/event_detail_bloc.dart';
 import '../bloc/event_detail_event.dart';
 import '../bloc/event_detail_state.dart';
@@ -60,39 +64,40 @@ class _EventDetailScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () => context
-              .read<EventDetailBloc>()
-              .add(const EventDetailDismissPressed()),
+    return BlocProvider(
+      create: (_) => BasicInfoBloc(
+        eventRepository: context.read<EventRepository>(),
+      )..add(BasicInfoStarted(projection.basicInfo.eventId)),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed: () => context
+                .read<EventDetailBloc>()
+                .add(const EventDetailDismissPressed()),
+          ),
+          title: Text(projection.basicInfo.eventName.isEmpty
+              ? 'イベント詳細'
+              : projection.basicInfo.eventName),
+          centerTitle: true,
         ),
-        title: Text(projection.basicInfo.eventName.isEmpty
-            ? 'イベント詳細'
-            : projection.basicInfo.eventName),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          Expanded(child: _tabContent(context, projection, draft)),
-          const Divider(height: 1),
-          _TabBar(selectedTab: draft.selectedTab),
-        ],
+        body: Column(
+          children: [
+            Expanded(child: _tabContent(draft)),
+            const Divider(height: 1),
+            _TabBar(selectedTab: draft.selectedTab),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _tabContent(
-    BuildContext context,
-    EventDetailProjection projection,
-    EventDetailDraft draft,
-  ) {
+  Widget _tabContent(EventDetailDraft draft) {
     return switch (draft.selectedTab) {
-      EventDetailTab.basicInfo => _BasicInfoTabView(projection: projection),
+      EventDetailTab.basicInfo => const BasicInfoView(),
       EventDetailTab.michiInfo => _MichiInfoTabView(projection: projection),
       EventDetailTab.paymentInfo => _PaymentInfoTabView(projection: projection),
-      EventDetailTab.overview => _OverviewTabView(),
+      EventDetailTab.overview => const _OverviewTabView(),
     };
   }
 }
@@ -150,35 +155,7 @@ class _TabButton extends StatelessWidget {
   }
 }
 
-// ── Tab contents（各Featureで置き換え予定のプレースホルダー）──────────────
-
-class _BasicInfoTabView extends StatelessWidget {
-  final EventDetailProjection projection;
-
-  const _BasicInfoTabView({required this.projection});
-
-  @override
-  Widget build(BuildContext context) {
-    final info = projection.basicInfo;
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        _InfoRow(label: 'イベント名', value: info.eventName),
-        _InfoRow(label: '交通手段', value: info.trans?.transName ?? '未設定'),
-        _InfoRow(label: '燃費', value: info.displayKmPerGas),
-        _InfoRow(label: 'ガソリン単価', value: info.displayPricePerGas),
-        _InfoRow(
-          label: 'メンバー',
-          value: info.members.map((m) => m.memberName).join('、'),
-        ),
-        _InfoRow(
-          label: 'タグ',
-          value: info.tags.map((t) => t.tagName).join('、'),
-        ),
-      ],
-    );
-  }
-}
+// ── Tab contents（BasicInfo以外のプレースホルダー）──────────────
 
 class _MichiInfoTabView extends StatelessWidget {
   final EventDetailProjection projection;
@@ -261,36 +238,3 @@ class _OverviewTabView extends StatelessWidget {
   }
 }
 
-class _InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _InfoRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value.isEmpty ? '未設定' : value,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

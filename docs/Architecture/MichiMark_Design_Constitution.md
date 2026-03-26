@@ -388,7 +388,26 @@ SwiftUI版から移植する際に以下を改善する。
 
 ---
 
-# 17. 絶対原則
+# 17. EventDetail保存仕様
+
+EventDetailの保存は **全タブ一括保存** とする。
+
+## 仕様
+
+- EventDetailはBasicInfo・MichiInfo・PaymentInfo・（Overview）のタブを持つ
+- 保存操作はいずれかのタブから行われた場合でも、**すべてのタブのDraftを対象**にEventDomainを更新する
+- タブ単独での保存（部分保存）は行わない
+
+## 実装方針（未実装）
+
+- 保存Eventは `EventDetailSaveRequested` として EventDetailBloc に持たせる
+- EventDetailBlocは保存時に BasicInfoDraft・MichiInfoDraft・PaymentInfoDraft を参照してEventDomainを更新する
+- 各子Blocから最新Draftを取得する方法は実装時に設計する（EventDetailBlocがDraftを内包するか、各子BlocのStateを参照するか）
+- 現時点では保存機能は未実装。各タブBlocは編集Draftのみを管理し、Repositoryへの書き込みは行わない
+
+---
+
+# 19. 絶対原則
 
 以下は変更不可の設計原則とする。
 
