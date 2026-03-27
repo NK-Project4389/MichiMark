@@ -1,12 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../features/event_list/bloc/event_list_bloc.dart';
-import '../features/event_list/bloc/event_list_event.dart';
-import '../features/event_list/view/event_list_page.dart';
 import '../features/event_detail/bloc/event_detail_bloc.dart';
 import '../features/event_detail/bloc/event_detail_event.dart';
 import '../features/event_detail/view/event_detail_page.dart';
+import '../features/event_list/bloc/event_list_bloc.dart';
+import '../features/event_list/bloc/event_list_event.dart';
+import '../features/event_list/view/event_list_page.dart';
+import '../features/selection/bloc/selection_bloc.dart';
+import '../features/selection/bloc/selection_event.dart';
+import '../features/selection/selection_args.dart';
+import '../features/selection/view/selection_page.dart';
+import '../repository/action_repository.dart';
 import '../repository/event_repository.dart';
+import '../repository/member_repository.dart';
+import '../repository/tag_repository.dart';
+import '../repository/trans_repository.dart';
 
 final router = GoRouter(
   initialLocation: '/',
@@ -29,6 +37,23 @@ final router = GoRouter(
             eventRepository: context.read<EventRepository>(),
           )..add(EventDetailStarted(eventId)),
           child: const EventDetailPage(),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/selection',
+      builder: (context, state) {
+        final args = state.extra as SelectionArgs;
+        return BlocProvider(
+          create: (_) => SelectionBloc(
+            type: args.type,
+            selectedIds: args.selectedIds,
+            transRepository: context.read<TransRepository>(),
+            memberRepository: context.read<MemberRepository>(),
+            tagRepository: context.read<TagRepository>(),
+            actionRepository: context.read<ActionRepository>(),
+          )..add(const SelectionStarted()),
+          child: const SelectionPage(),
         );
       },
     ),

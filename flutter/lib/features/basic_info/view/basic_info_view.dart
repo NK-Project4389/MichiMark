@@ -1,24 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../../../features/selection/selection_args.dart';
+import '../../../features/selection/selection_result.dart';
 import '../bloc/basic_info_bloc.dart';
 import '../bloc/basic_info_event.dart';
 import '../bloc/basic_info_state.dart';
 import '../draft/basic_info_draft.dart';
 
-class BasicInfoView extends StatelessWidget {
+/// BasicInfo タブの編集View。
+/// await context.push を使うため StatefulWidget とする（mounted チェック必須）。
+class BasicInfoView extends StatefulWidget {
   const BasicInfoView({super.key});
 
   @override
+  State<BasicInfoView> createState() => _BasicInfoViewState();
+}
+
+class _BasicInfoViewState extends State<BasicInfoView> {
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<BasicInfoBloc, BasicInfoState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is BasicInfoLoaded && state.delegate != null) {
-          _handleDelegate(context, state.delegate!);
+          await _handleDelegate(state.delegate!, state.draft);
         }
       },
       builder: (context, state) {
         return switch (state) {
-          BasicInfoLoading() => const Center(child: CircularProgressIndicator()),
+          BasicInfoLoading() =>
+            const Center(child: CircularProgressIndicator()),
           BasicInfoError(:final message) => Center(child: Text(message)),
           BasicInfoLoaded(:final draft) => _BasicInfoForm(draft: draft),
         };
@@ -26,20 +37,73 @@ class BasicInfoView extends StatelessWidget {
     );
   }
 
-  void _handleDelegate(BuildContext context, BasicInfoDelegate delegate) {
+  Future<void> _handleDelegate(
+    BasicInfoDelegate delegate,
+    BasicInfoDraft draft,
+  ) async {
     switch (delegate) {
       case BasicInfoOpenTransSelectionDelegate():
-        // TODO: context.go('/selection/trans') — 交通手段選択画面（未実装）
-        break;
+        final result = await context.push<SelectionResult>(
+          '/selection',
+          extra: SelectionArgs(
+            type: SelectionType.eventTrans,
+            selectedIds:
+                draft.selectedTrans != null ? {draft.selectedTrans!.id} : {},
+          ),
+        );
+        if (!mounted) return;
+        if (result case TransSelectionResult(:final selected)) {
+          context
+              .read<BasicInfoBloc>()
+              .add(BasicInfoTransSelected(selected));
+        }
+
       case BasicInfoOpenMembersSelectionDelegate():
-        // TODO: context.go('/selection/members') — メンバー選択画面（未実装）
-        break;
+        final result = await context.push<SelectionResult>(
+          '/selection',
+          extra: SelectionArgs(
+            type: SelectionType.eventMembers,
+            selectedIds: draft.selectedMembers.map((m) => m.id).toSet(),
+          ),
+        );
+        if (!mounted) return;
+        if (result case MembersSelectionResult(:final selected)) {
+          context
+              .read<BasicInfoBloc>()
+              .add(BasicInfoMembersSelected(selected));
+        }
+
       case BasicInfoOpenTagsSelectionDelegate():
-        // TODO: context.go('/selection/tags') — タグ選択画面（未実装）
-        break;
+        final result = await context.push<SelectionResult>(
+          '/selection',
+          extra: SelectionArgs(
+            type: SelectionType.eventTags,
+            selectedIds: draft.selectedTags.map((t) => t.id).toSet(),
+          ),
+        );
+        if (!mounted) return;
+        if (result case TagsSelectionResult(:final selected)) {
+          context
+              .read<BasicInfoBloc>()
+              .add(BasicInfoTagsSelected(selected));
+        }
+
       case BasicInfoOpenPayMemberSelectionDelegate():
-        // TODO: context.go('/selection/pay-member') — 支払メンバー選択画面（未実装）
-        break;
+        final result = await context.push<SelectionResult>(
+          '/selection',
+          extra: SelectionArgs(
+            type: SelectionType.gasPayMember,
+            selectedIds: draft.selectedPayMember != null
+                ? {draft.selectedPayMember!.id}
+                : {},
+          ),
+        );
+        if (!mounted) return;
+        if (result case MembersSelectionResult(:final selected)) {
+          context
+              .read<BasicInfoBloc>()
+              .add(BasicInfoPayMemberSelected(selected.firstOrNull));
+        }
     }
   }
 }

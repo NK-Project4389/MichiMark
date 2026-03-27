@@ -236,9 +236,20 @@ BlocConsumer<FeatureBloc, FeatureState>(
 )
 ```
 
+## go と push の使い分け
+
+- `context.go()` ── 画面スタックを置き換える一方向遷移に使用する
+  - 例: 一覧 → 詳細、詳細 → 編集画面
+- `context.push()` ── 結果を受け取ることが目的のモーダル遷移に使用する
+  - 例: 詳細 → 選択画面（選択結果を受け取って戻る）
+  - `await context.push<ResultType>('/path', extra: args)` で結果を待つ
+  - 選択画面側は `context.pop(result)` で結果を返す
+  - `await` 後に `context` を使う場合は `mounted` チェック必須
+  - `context.push` を `await` する Widget は `StatefulWidget` とする
+
 ### 禁止事項
 
-- Bloc内で `context.go()` を呼び出すこと
+- Bloc内で `context.go()` / `context.push()` を呼び出すこと
 - Widget内で `Navigator.of(context).push()` を呼び出すこと（go_routerに統一）
 
 ---
