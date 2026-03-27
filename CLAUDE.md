@@ -90,16 +90,51 @@ Event  → Bloc → State
 
 ---
 
+## Spec駆動開発ルール
+
+### 基本方針
+
+全Featureの実装は必ず **Specを先に用意してから** 行う。
+
+- Spec格納場所: `docs/Spec/Features/`
+- `architect` がSpecを作成・更新する
+- `flutter-dev` はSpecを参照して実装する
+
+### architectの責務（Spec作成）
+
+- 実装着手前に対象FeatureのSpec MDを作成する
+- Specに記載すべき内容:
+  - Purpose（Feature目的）
+  - Draft / Projection / Domain フィールド定義
+  - BlocEvent一覧
+  - Delegate Contract
+  - Architecture Rules（禁止事項）
+  - Data Flow
+- SpecはFlutter/Dart/BLoC用語で記述する（TCA/SwiftUI用語は禁止）
+  - `XxxReducer.Action` → `XxxEvent`（sealed class）
+  - `appeared` → `Started`
+  - `delegate`（Action） → `XxxDelegate`（Stateのフィールド）
+
+### flutter-devのSpec参照ルール
+
+- 実装前に対象Featureの Spec MDを必ず参照すること
+- 以下の場合は実装を停止し、`architect` に差し戻しを要求すること:
+  - 対象FeatureのSpecが存在しない
+  - Specのフィールド・Event・Delegateに曖昧・矛盾・欠落がある
+  - 実装中にSpec未定義の挙動が必要になった
+- 差し戻し要求はユーザーへ報告し、architectがSpecを修正してから再開する
+
+---
+
 ## 実装・レビューサイクルルール
 
-### 自動レビューの義務
-
-`flutter-dev` による実装が完了したら、ユーザーの指示を待たずに必ず `reviewer` として設計憲章レビューを実施すること。
-
-### サイクルフロー
+### 全体フロー
 
 ```
-flutter-dev（実装）
+architect（Spec作成）
+  ↓ Spec完成
+flutter-dev（実装）← Specを必ず参照すること
+  ↓ Spec不足・曖昧 → architect へ差し戻し（自動）
   ↓ 実装完了
 reviewer（レビュー）← 自動で役割交代・ユーザー指示不要
   ↓ 違反なし → 完了
@@ -110,27 +145,39 @@ reviewer（再レビュー）← 再度自動交代
   ↓ 違反なし → 完了
 ```
 
-違反がなくなるまでこのサイクルを繰り返す。
+違反がなくなるまでレビューサイクルを繰り返す。
 
 ### 役割の侵食禁止
 
 | 役割 | 許可 | 禁止 |
 |---|---|---|
-| `flutter-dev` | コード生成・修正 | レビュー・違反判定 |
-| `reviewer` | 違反指摘・差し戻し指示 | コード生成・修正 |
+| `architect` | Spec作成・更新、差し戻し対応 | 実装・コード生成・レビュー |
+| `flutter-dev` | Specに基づくコード生成・修正 | Spec作成・レビュー・違反判定 |
+| `reviewer` | 違反指摘・差し戻し指示 | Spec作成・コード生成・修正 |
 
 ### reviewerのレビュー観点
 
 以下をすべてチェックすること。
 
+**アーキテクチャ違反**
 - レイヤー依存方向の違反（逆方向参照）
-- `dynamic` 型・`!` null assertionの使用
-- `BuildContext` の async gap をまたいだ使用
-- `build()` 内のビジネスロジック
-- WidgetからRepositoryへの直接呼び出し（BlocはDI経由で呼び出し可）
-- `switch` の `default` によるコンパイル回避
-- Domain からWidget / Projectionへの参照
+- DomainからWidget / Projectionへの参照
 - RootによるDraft編集・Domain操作
+- WidgetからRepositoryへの直接呼び出し（BlocはDI経由で呼び出し可）
+
+**型安全・Null安全**
+- `dynamic` 型の使用
+- `!`（null assertion）の乱用
+- `switch` の `default` によるコンパイル回避
+
+**非同期・ビジネスロジック**
+- `BuildContext` の async gap をまたいだ使用（`mounted` チェックなし）
+- `build()` 内のビジネスロジック
+
+**Spec整合性**
+- Specに定義されていないフィールド・Event・Delegateが実装に含まれていないか
+- Specのフィールド名・型・Delegate構造と実装が一致しているか
+- NavigationルールへのBlocによる直接呼び出し（`context.go()` / `context.push()` のBloc内使用）
 
 ---
 
@@ -148,10 +195,10 @@ AIは回答の冒頭に、どの役割として回答しているかを以下の
 
 | 役割名 | 担当 |
 |---|---|
-| `architect` | アーキテクチャ設計・Feature構成の設計。実装は行わない |
+| `architect` | Feature Spec作成・アーキテクチャ設計。実装・レビューは行わない |
 | `charter-reviewer` | 設計憲章・アーキテクチャドキュメントのレビューと改善提案 |
-| `flutter-dev` | Flutter/Dart実装。設計憲章に従いBLocパターンでコードを生成 |
-| `reviewer` | 生成コードが設計憲章に従っているかレビュー。違反・アンチパターンを検出 |
+| `flutter-dev` | Specに基づくFlutter/Dart実装。Spec不足・曖昧な場合はarchitectに差し戻す |
+| `reviewer` | 生成コードが設計憲章・Specに従っているかレビュー。違反・アンチパターンを検出 |
 | `orchestrator` | 上記に該当しない作業（環境構築・ツール操作・進捗管理・会話の調整など） |
 
 ---
@@ -202,4 +249,5 @@ AIはセッション開始時に必ず `docs/Progress/README.md` を確認し、
 | `docs/Architecture/MichiMark_Design_Constitution.md` | 設計憲章 |
 | `docs/Architecture/MichiMark_Architecture_Diagram.md` | アーキテクチャ図 |
 | `docs/Templates/Feature_Spec_Template.md` | Feature仕様テンプレート |
+| `docs/Spec/Features/` | Feature Spec格納ディレクトリ（architect作成） |
 | `docs/Progress/README.md` | 進捗記録一覧 |
