@@ -5,6 +5,9 @@ import '../../../repository/event_repository.dart';
 import '../../basic_info/bloc/basic_info_bloc.dart';
 import '../../basic_info/bloc/basic_info_event.dart';
 import '../../basic_info/view/basic_info_view.dart';
+import '../../michi_info/bloc/michi_info_bloc.dart';
+import '../../michi_info/bloc/michi_info_event.dart';
+import '../../michi_info/view/michi_info_view.dart';
 import '../bloc/event_detail_bloc.dart';
 import '../bloc/event_detail_event.dart';
 import '../bloc/event_detail_state.dart';
@@ -64,10 +67,20 @@ class _EventDetailScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => BasicInfoBloc(
-        eventRepository: context.read<EventRepository>(),
-      )..add(BasicInfoStarted(projection.basicInfo.eventId)),
+    final eventId = projection.basicInfo.eventId;
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => BasicInfoBloc(
+            eventRepository: context.read<EventRepository>(),
+          )..add(BasicInfoStarted(eventId)),
+        ),
+        BlocProvider(
+          create: (_) => MichiInfoBloc(
+            eventRepository: context.read<EventRepository>(),
+          )..add(MichiInfoStarted(eventId)),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -95,7 +108,7 @@ class _EventDetailScaffold extends StatelessWidget {
   Widget _tabContent(EventDetailDraft draft) {
     return switch (draft.selectedTab) {
       EventDetailTab.basicInfo => const BasicInfoView(),
-      EventDetailTab.michiInfo => _MichiInfoTabView(projection: projection),
+      EventDetailTab.michiInfo => const MichiInfoView(),
       EventDetailTab.paymentInfo => _PaymentInfoTabView(projection: projection),
       EventDetailTab.overview => const _OverviewTabView(),
     };
@@ -155,41 +168,7 @@ class _TabButton extends StatelessWidget {
   }
 }
 
-// ── Tab contents（BasicInfo以外のプレースホルダー）──────────────
-
-class _MichiInfoTabView extends StatelessWidget {
-  final EventDetailProjection projection;
-
-  const _MichiInfoTabView({required this.projection});
-
-  @override
-  Widget build(BuildContext context) {
-    final items = projection.michiInfo.items;
-    if (items.isEmpty) {
-      return const Center(child: Text('マーク/リンクがありません'));
-    }
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        return ListTile(
-          leading: Icon(item.markLinkType.name == 'mark'
-              ? Icons.place
-              : Icons.route),
-          title: Text(item.markLinkName),
-          subtitle: Text(item.displayDate),
-          onTap: () {
-            final event = item.markLinkType.name == 'mark'
-                ? EventDetailOpenMarkRequested(item.id)
-                : EventDetailOpenLinkRequested(item.id);
-            context.read<EventDetailBloc>().add(event);
-          },
-        );
-      },
-    );
-  }
-}
+// ── Tab contents（PaymentInfo / Overview プレースホルダー）──────────────
 
 class _PaymentInfoTabView extends StatelessWidget {
   final EventDetailProjection projection;
