@@ -17,11 +17,13 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
   }
 
   final EventRepository _eventRepository;
+  String _eventId = '';
 
   Future<void> _onStarted(
     MichiInfoStarted event,
     Emitter<MichiInfoState> emit,
   ) async {
+    _eventId = event.eventId;
     emit(const MichiInfoLoading());
     try {
       final domain = await _eventRepository.fetch(event.eventId);
@@ -42,8 +44,14 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     if (state is MichiInfoLoaded) {
       final current = state as MichiInfoLoaded;
       final delegate = switch (event.type) {
-        MarkOrLink.mark => MichiInfoOpenMarkDelegate(event.markLinkId),
-        MarkOrLink.link => MichiInfoOpenLinkDelegate(event.markLinkId),
+        MarkOrLink.mark => MichiInfoOpenMarkDelegate(
+            eventId: _eventId,
+            markLinkId: event.markLinkId,
+          ),
+        MarkOrLink.link => MichiInfoOpenLinkDelegate(
+            eventId: _eventId,
+            markLinkId: event.markLinkId,
+          ),
       };
       emit(current.copyWith(delegate: delegate));
     }
@@ -55,7 +63,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
   ) async {
     if (state is MichiInfoLoaded) {
       final current = state as MichiInfoLoaded;
-      emit(current.copyWith(delegate: const MichiInfoAddMarkDelegate()));
+      emit(current.copyWith(delegate: MichiInfoAddMarkDelegate(_eventId)));
     }
   }
 
@@ -65,7 +73,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
   ) async {
     if (state is MichiInfoLoaded) {
       final current = state as MichiInfoLoaded;
-      emit(current.copyWith(delegate: const MichiInfoAddLinkDelegate()));
+      emit(current.copyWith(delegate: MichiInfoAddLinkDelegate(_eventId)));
     }
   }
 }

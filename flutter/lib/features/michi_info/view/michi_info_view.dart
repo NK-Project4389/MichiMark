@@ -33,15 +33,15 @@ class MichiInfoView extends StatelessWidget {
 
   void _handleDelegate(BuildContext context, MichiInfoDelegate delegate) {
     switch (delegate) {
-      case MichiInfoOpenMarkDelegate(:final markLinkId):
-        context.go('/event/mark/$markLinkId');
-      case MichiInfoOpenLinkDelegate(:final markLinkId):
-        context.go('/event/link/$markLinkId');
+      case MichiInfoOpenMarkDelegate(:final eventId, :final markLinkId):
+        context.go('/event/mark/$markLinkId', extra: eventId);
+      case MichiInfoOpenLinkDelegate(:final eventId, :final markLinkId):
+        context.go('/event/link/$markLinkId', extra: eventId);
       case MichiInfoAddMarkDelegate():
-        // TODO: /event/mark/new — mark_detail Feature 実装後に有効化
+        // TODO: context.go('/event/mark/new', extra: eventId) — mark_detail 実装後に有効化
         break;
       case MichiInfoAddLinkDelegate():
-        // TODO: /event/link/new — link_detail Feature 実装後に有効化
+        // TODO: context.go('/event/link/new', extra: eventId) — link_detail 実装後に有効化
         break;
     }
   }

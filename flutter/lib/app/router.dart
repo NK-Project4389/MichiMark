@@ -9,6 +9,9 @@ import '../features/event_list/view/event_list_page.dart';
 import '../features/selection/bloc/selection_bloc.dart';
 import '../features/selection/bloc/selection_event.dart';
 import '../features/selection/selection_args.dart';
+import '../features/mark_detail/bloc/mark_detail_bloc.dart';
+import '../features/mark_detail/bloc/mark_detail_event.dart';
+import '../features/mark_detail/view/mark_detail_page.dart';
 import '../features/selection/view/selection_page.dart';
 import '../repository/action_repository.dart';
 import '../repository/event_repository.dart';
@@ -57,6 +60,19 @@ final router = GoRouter(
         );
       },
     ),
-    // TODO: mark_detail, link_detail, payment_detail, settings など実装後に追加
+    GoRoute(
+      path: '/event/mark/:markId',
+      builder: (context, state) {
+        final markId = state.pathParameters['markId']!;
+        final eventId = state.extra as String;
+        return BlocProvider(
+          create: (_) => MarkDetailBloc(
+            eventRepository: context.read<EventRepository>(),
+          )..add(MarkDetailStarted(eventId: eventId, markLinkId: markId)),
+          child: const MarkDetailPage(),
+        );
+      },
+    ),
+    // TODO: link_detail, payment_detail, settings など実装後に追加
   ],
 );

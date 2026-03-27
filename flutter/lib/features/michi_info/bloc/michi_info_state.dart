@@ -9,36 +9,40 @@ sealed class MichiInfoDelegate extends Equatable {
 
 /// マーク詳細へ遷移
 class MichiInfoOpenMarkDelegate extends MichiInfoDelegate {
+  final String eventId;
   final String markLinkId;
-  const MichiInfoOpenMarkDelegate(this.markLinkId);
+  const MichiInfoOpenMarkDelegate({required this.eventId, required this.markLinkId});
 
   @override
-  List<Object?> get props => [markLinkId];
+  List<Object?> get props => [eventId, markLinkId];
 }
 
 /// リンク詳細へ遷移
 class MichiInfoOpenLinkDelegate extends MichiInfoDelegate {
+  final String eventId;
   final String markLinkId;
-  const MichiInfoOpenLinkDelegate(this.markLinkId);
+  const MichiInfoOpenLinkDelegate({required this.eventId, required this.markLinkId});
 
   @override
-  List<Object?> get props => [markLinkId];
+  List<Object?> get props => [eventId, markLinkId];
 }
 
 /// 新規マーク追加画面へ遷移
 class MichiInfoAddMarkDelegate extends MichiInfoDelegate {
-  const MichiInfoAddMarkDelegate();
+  final String eventId;
+  const MichiInfoAddMarkDelegate(this.eventId);
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [eventId];
 }
 
 /// 新規リンク追加画面へ遷移
 class MichiInfoAddLinkDelegate extends MichiInfoDelegate {
-  const MichiInfoAddLinkDelegate();
+  final String eventId;
+  const MichiInfoAddLinkDelegate(this.eventId);
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [eventId];
 }
 
 // ---------------------------------------------------------------------------
