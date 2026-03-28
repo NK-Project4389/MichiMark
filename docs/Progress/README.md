@@ -21,3 +21,4 @@
 | [2026-03-27_selection_feature.md](./2026-03-27_selection_feature.md) | selection Feature実装・InMemoryスタブ・go vs push 憲章追記 |
 | [2026-03-27_mark_detail_feature.md](./2026-03-27_mark_detail_feature.md) | mark_detail Feature実装・michi_info eventId対応・router追加 |
 | [2026-03-28_spec_and_role_rules.md](./2026-03-28_spec_and_role_rules.md) | SwiftUI Spec確認・TCA→Flutter用語課題整理・CLAUDE.md役割ルール更新 |
+| [2026-03-29_link_detail_feature.md](./2026-03-29_link_detail_feature.md) | link_detail Feature実装・router追加 |

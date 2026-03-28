@@ -1,0 +1,86 @@
+import 'package:equatable/equatable.dart';
+import '../../../domain/master/action/action_domain.dart';
+import '../../../domain/master/member/member_domain.dart';
+
+sealed class LinkDetailEvent extends Equatable {
+  const LinkDetailEvent();
+}
+
+/// 画面が表示されたとき
+class LinkDetailStarted extends LinkDetailEvent {
+  final String eventId;
+  final String markLinkId;
+  const LinkDetailStarted({required this.eventId, required this.markLinkId});
+
+  @override
+  List<Object?> get props => [eventId, markLinkId];
+}
+
+/// 戻るボタンが押されたとき
+class LinkDetailDismissPressed extends LinkDetailEvent {
+  const LinkDetailDismissPressed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 名称が変更されたとき
+class LinkDetailNameChanged extends LinkDetailEvent {
+  final String name;
+  const LinkDetailNameChanged(this.name);
+
+  @override
+  List<Object?> get props => [name];
+}
+
+/// 走行距離入力が変更されたとき
+class LinkDetailDistanceChanged extends LinkDetailEvent {
+  final String input;
+  const LinkDetailDistanceChanged(this.input);
+
+  @override
+  List<Object?> get props => [input];
+}
+
+/// メンバー編集ボタンが押されたとき
+class LinkDetailEditMembersPressed extends LinkDetailEvent {
+  const LinkDetailEditMembersPressed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 選択画面からメンバーが返却されたとき
+class LinkDetailMembersSelected extends LinkDetailEvent {
+  final List<MemberDomain> members;
+  const LinkDetailMembersSelected(this.members);
+
+  @override
+  List<Object?> get props => [members];
+}
+
+/// アクション編集ボタンが押されたとき
+class LinkDetailEditActionsPressed extends LinkDetailEvent {
+  const LinkDetailEditActionsPressed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 選択画面からアクションが返却されたとき
+class LinkDetailActionsSelected extends LinkDetailEvent {
+  final List<ActionDomain> actions;
+  const LinkDetailActionsSelected(this.actions);
+
+  @override
+  List<Object?> get props => [actions];
+}
+
+/// メモが変更されたとき
+class LinkDetailMemoChanged extends LinkDetailEvent {
+  final String memo;
+  const LinkDetailMemoChanged(this.memo);
+
+  @override
+  List<Object?> get props => [memo];
+}
