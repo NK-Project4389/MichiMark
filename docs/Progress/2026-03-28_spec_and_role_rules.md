@@ -51,12 +51,21 @@
 
 ## 未完了の作業 / 次回やること
 
-### Spec修正（architect担当）
+### Spec修正（architect担当）✅ 完了
 
-1. 全SpecのTCA用語 → Flutter BLoC用語へ書き換え
-2. EventDetail Spec の `CoreReducer` → Flutter設計方針確定・記述更新
-3. EventDetail Spec の `OverviewFeature` → スコープ判断・記述調整
-4. PaymentInfo Spec の Swift文字列補完を Dart記法に修正
+1. 全SpecのTCA用語 → Flutter BLoC用語へ書き換え ✅
+   - `XxxReducer` → `XxxBloc`
+   - `XxxReducer.Action` → `XxxEvent（sealed class）`
+   - `XxxReducer.State` → `XxxState`
+   - `XxxReducer.Delegate` → `XxxDelegate（sealed class）`
+   - `appeared` → `Started`
+   - `delegate`（Action） → Stateのフィールドとして説明
+   - `IdentifiedArrayOf<T>` → `List<T>`
+2. EventDetail Spec の `CoreReducer` → `EventDetailBloc` に統一 ✅
+3. EventDetail Spec の `OverviewFeature` → 将来拡張・現実装スコープ外と明記 ✅
+4. PaymentInfo Spec の Swift文字列補完 → Dart記法に修正 ✅
+5. BasicInfo Spec の `binding` → 各フィールドの変更Eventに分割 ✅
+6. Settings Spec の Repository利用ルール → Bloc経由・DI注入を明記 ✅
 
 ### 実装タスク（優先順・flutter-dev担当）
 

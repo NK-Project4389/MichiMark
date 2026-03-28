@@ -1,7 +1,7 @@
 # PaymentInfo Feature Specification
 
 Feature
-PaymentInfoFeature (PaymentInfoReducer)
+PaymentInfoFeature (PaymentInfoBloc)
 
 Parent Feature
 EventDetailFeature
@@ -34,13 +34,16 @@ PaymentInfoFeatureは禁止
 
 # State Structure
 
-PaymentInfoReducer.State
+PaymentInfoState
 
 projection: PaymentInfoProjection
 - 表示専用投影モデル（Domain→ProjectionAdapterで生成し、親から注入される）
 
 eventID: EventID
 - 親へ通知するための識別子（現状、delegateのpayloadにはeventIDは含めない設計）
+
+delegate: PaymentInfoDelegate?
+- 遷移意図の通知（BlocListenerが受け取りNavigation処理）
 
 ---
 
@@ -76,7 +79,7 @@ Behavior
 - paymentSeq 昇順でソート
 - 各要素を PaymentItemProjection へ変換
 - 合計金額 total = sum(paymentAmount)
-- displayTotalAmount を "\\(total) 円" として返す
+- displayTotalAmount を `'$total 円'` として返す
 
 Notes
 - 現状 empty は "0円"、adapter は "円" 形式になっているため、
@@ -84,30 +87,36 @@ Notes
 
 ---
 
-# Actions
+# BLoC Events
 
-PaymentInfoReducer.Action
+PaymentInfoEvent（sealed class）
 
-paymentTapped(PaymentID)
+Started
+- 画面表示・初期データ読み込み
+
+PaymentTapped(String paymentId)
 - 一覧の支払タップ（既存編集）
 
-plusButtonTapped
+PlusButtonTapped
 - 追加ボタン押下（新規作成）
 
-delegate(Delegate)
-- 親へ意図を通知
+---
+
+> **Note:** Delegateは `PaymentInfoState` のフィールドとして保持する（Eventではない）。
+
+---
 
 ---
 
 # Delegate Contract
 
-PaymentInfoReducer.Delegate
+PaymentInfoDelegate（sealed class）→ Stateのフィールドとして保持
 
-openPaymentDetail(PaymentDraft)
+OpenPaymentDetail(PaymentDraft draft)
 - 新規作成のPaymentDetailを開く要求
-- 現実装: plusButtonTapped で PaymentDraft.initial() を生成して渡す
+- PlusButtonTapped で PaymentDraft.initial() を生成して渡す
 
-openPaymentDetailByID(PaymentID)
+OpenPaymentDetailById(String paymentId)
 - 既存Paymentを開く要求（PaymentID指定）
 
 Notes

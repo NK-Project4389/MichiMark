@@ -1,7 +1,7 @@
 # Settings Feature Specification
 
 Feature
-SettingsFeature (SettingsReducer)
+SettingsFeature (SettingsBloc)
 
 Category
 System Feature
@@ -41,10 +41,10 @@ SettingsFeatureは複数のマスタFeatureを管理する。
 
 ```
 SettingsFeature
- ├ TransSettingFeature
- ├ TagSettingFeature
- ├ MemberSettingFeature
- └ ActionSettingFeature
+ ├ TransSettingFeature（TransSettingBloc）
+ ├ TagSettingFeature（TagSettingBloc）
+ ├ MemberSettingFeature（MemberSettingBloc）
+ └ ActionSettingFeature（ActionSettingBloc）
 ```
 
 ---
@@ -148,15 +148,15 @@ Responsibilities
 
 ---
 
-# Reducer Structure
+# Bloc Structure
 
 ```
-SettingsReducer
+SettingsBloc
  │
- ├ TransSettingReducer
- ├ TagSettingReducer
- ├ MemberSettingReducer
- └ ActionSettingReducer
+ ├ TransSettingBloc
+ ├ TagSettingBloc
+ ├ MemberSettingBloc
+ └ ActionSettingBloc
 ```
 
 ---
@@ -226,7 +226,9 @@ Edit
 ```
 User
  ↓
-Reducer
+SettingsBloc（Event）
+ ↓
+Repository（DI経由）
  ↓
 Domain更新
 ```
@@ -255,15 +257,18 @@ SelectionFeatureはマスタの選択UIを提供する。
 
 SettingsFeatureは禁止
 
-Navigation管理  
-Repository直接操作  
+Navigation管理（go_routerはBlocListener経由）
+WidgetからのRepository直接呼び出し
 
 SettingsFeatureは
 
-UI状態管理  
-Domain更新  
+UI状態管理
+Domain更新（Bloc経由・DI注入されたRepositoryを使用）
 
 のみ担当する。
+
+> **Note:** SettingsBlocはマスタデータ管理のためRepositoryを呼び出す。
+> RepositoryはDI（get_it）経由でコンストラクタ注入して使用すること。
 
 ---
 

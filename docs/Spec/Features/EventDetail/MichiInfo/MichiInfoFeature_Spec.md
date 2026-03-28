@@ -1,7 +1,7 @@
 # MichiInfo Feature Specification
 
 Feature
-MichiInfoFeature (MichiInfoReducer)
+MichiInfoFeature (MichiInfoBloc)
 
 Parent Feature
 EventDetailFeature
@@ -37,7 +37,7 @@ MichiInfoFeatureは禁止
 
 # State Structure
 
-MichiInfoReducer.State
+MichiInfoState
 
 projection: MichiInfoListProjection
 - 表示用の投影モデル（Domain→Projectionで作られ、親から注入される想定）
@@ -45,9 +45,12 @@ projection: MichiInfoListProjection
 eventID: EventID
 - Delegateで親へ通知するために保持
 
-markDrafts: IdentifiedArrayOf<MarkDetailDraft>
-linkDrafts: IdentifiedArrayOf<LinkDetailDraft>
+markDrafts: List\<MarkDetailDraft\>
+linkDrafts: List\<LinkDetailDraft\>
 - 編集途中のDraftから表示用リストを合成するための保持（displayItemsで利用）
+
+delegate: MichiInfoDelegate?
+- 遷移意図の通知（BlocListenerが受け取りNavigation処理）
 
 ---
 
@@ -167,38 +170,39 @@ Notes
 
 ---
 
-# Reducer Actions
+# BLoC Events
 
-MichiInfoReducer.Action
+MichiInfoEvent（sealed class）
 
-appeared
-- 画面表示イベント（現状は副作用なし）
+Started
+- 画面表示・初期データ読み込み
 
-markTapped(MarkLinkID)
+MarkTapped(MarkLinkID id)
 - Mark item tap
 
-linkTapped(MarkLinkID)
+LinkTapped(MarkLinkID id)
 - Link item tap
 
-addButtonTapped
+AddButtonTapped
 - 追加ボタン
 
-delegate(Delegate)
-- 親へ意図を通知
+---
+
+> **Note:** Delegateは `MichiInfoState` のフィールドとして保持する（Eventではない）。
 
 ---
 
 # Delegate Contract
 
-MichiInfoReducer.Action.Delegate
+MichiInfoDelegate（sealed class）→ Stateのフィールドとして保持
 
-openMarkDetail(EventID, MarkLinkID)
-- Mark詳細を開く要求（Navigationは親/Rootが実施）
+OpenMarkDetail(EventID eventId, MarkLinkID markLinkId)
+- Mark詳細を開く要求（NavigationはBlocListenerが処理）
 
-openLinkDetail(EventID, MarkLinkID)
+OpenLinkDetail(EventID eventId, MarkLinkID markLinkId)
 - Link詳細を開く要求
 
-addMarkOrLinkRequested
+AddMarkOrLinkRequested
 - Mark/Linkの追加導線を開始する要求
   （例: 種別選択 → Draft生成 → Detailへ遷移、などは上位で決める）
 

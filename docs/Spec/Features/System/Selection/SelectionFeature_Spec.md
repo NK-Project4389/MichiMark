@@ -1,7 +1,7 @@
 # Selection Feature Specification
 
 Feature
-SelectionFeature (SelectionReducer)
+SelectionFeature (SelectionBloc)
 
 Category
 System Feature
@@ -93,37 +93,22 @@ Tag
 
 # State Structure
 
-SelectionReducer.State
+SelectionState
 
-useCase
+useCase: SelectionUseCase
+- 選択対象の定義
 
-SelectionUseCase
+projection: SelectionListProjection
+- 表示モデル
 
-選択対象の定義
+selectedIDs: Set\<String\>
+- 現在の選択状態
 
----
+mode: SelectionMode
+- single / multiple
 
-projection
-
-SelectionListProjection
-
-表示モデル
-
----
-
-selectedIDs
-
-Set<SelectionID>
-
-現在の選択状態
-
----
-
-mode
-
-SelectionMode
-
-single / multiple
+delegate: SelectionDelegate?
+- 遷移意図の通知（BlocListenerが受け取り処理）
 
 ---
 
@@ -241,35 +226,34 @@ delegate.selectionCompleted
 
 ---
 
-# Reducer Actions
+# BLoC Events
 
-SelectionReducer.Action
+SelectionEvent（sealed class）
 
-appeared
+Started
+- 画面表示・初期データ読み込み
 
-itemTapped
+ItemTapped(String id)
 
-confirmTapped
+ConfirmTapped
 
-cancelTapped
+CancelTapped
 
-delegate
+---
+
+> **Note:** Delegateは `SelectionState` のフィールドとして保持する（Eventではない）。
 
 ---
 
 # Delegate Contract
 
-SelectionFeature → Parent Feature
+SelectionDelegate（sealed class）→ Stateのフィールドとして保持
 
-selectionCompleted
+SelectionCompleted(Set\<String\> selectedIds)
+- 選択完了通知（BlocListenerが受け取りDraft更新）
 
-selectedIDs
-
----
-
-cancel
-
-選択キャンセル
+Cancel
+- 選択キャンセル
 
 ---
 
@@ -292,13 +276,13 @@ Selection
 ```
 User
  ↓
-SelectionReducer
+SelectionBloc
  ↓
-selectedIDs更新
+SelectionState.selectedIDs更新
  ↓
-Delegate
+SelectionState.delegate
  ↓
-Parent Feature
+BlocListener（Parent）
 ```
 
 ---

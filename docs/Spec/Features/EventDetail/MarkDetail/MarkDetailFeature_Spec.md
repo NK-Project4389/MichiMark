@@ -1,7 +1,7 @@
 # MarkDetail Feature Specification
 
 Feature
-MarkDetailFeature (MarkDetailReducer)
+MarkDetailFeature (MarkDetailBloc)
 
 Parent Feature
 MichiInfoFeature
@@ -220,43 +220,47 @@ EventDetailFeature
 ```
 ---
 
-# Reducer Actions
+# BLoC Events
 
-MarkDetailReducer.Action
+MarkDetailEvent（sealed class）
 
-appeared
+Started
+- 画面表示・初期データ読み込み
 
-nameChanged
+NameChanged(String value)
 
-meterChanged
+MeterChanged(String value)
 
-actionAdded
+ActionAdded(String actionId)
 
-actionRemoved
+ActionRemoved(String actionId)
 
-fuelChanged
+FuelChanged(bool isFuel, String? pricePerGas, String? gasQuantity, String? gasPrice)
 
-memoChanged
+MemoChanged(String value)
 
-saveTapped
+SaveTapped
 
-cancelTapped
+CancelTapped
 
-delegate
+---
+
+> **Note:** Delegateは `MarkDetailState` のフィールドとして保持する（Eventではない）。
 
 ---
 
 # Delegate Contract
 
-MarkDetailFeature → Parent
+MarkDetailDelegate（sealed class）→ Stateのフィールドとして保持
 
-saveDraft(MarkDetailDraft)
+SaveDraft(MarkDetailDraft draft)
+- Mark編集完了通知
 
-dismiss
+Dismiss
+- 画面を閉じる要求
 
 Purpose
-
-Mark更新通知
+Mark更新通知（BlocListenerがDelegateを受け取りNavigation処理）
 
 ---
 

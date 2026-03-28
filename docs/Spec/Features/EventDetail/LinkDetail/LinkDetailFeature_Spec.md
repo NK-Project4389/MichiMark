@@ -1,7 +1,7 @@
 # LinkDetail Feature Specification
 
 Feature
-LinkDetailFeature (LinkDetailReducer)
+LinkDetailFeature (LinkDetailBloc)
 
 Parent Feature
 MichiInfoFeature
@@ -231,42 +231,47 @@ EventDetailFeature
 
 ---
 
-# Reducer Actions
+# BLoC Events
 
-LinkDetailReducer.Action
+LinkDetailEvent（sealed class）
 
-appeared
+Started
+- 画面表示・初期データ読み込み
 
-nameChanged
+NameChanged(String value)
 
-distanceChanged
+DistanceChanged(String value)
 
-membersChanged
+MembersChanged(List<String> memberIds)
 
-actionAdded
+ActionAdded(String actionId)
 
-actionRemoved
+ActionRemoved(String actionId)
 
-memoChanged
+MemoChanged(String value)
 
-saveTapped
+SaveTapped
 
-cancelTapped
+CancelTapped
 
-delegate
+---
+
+> **Note:** Delegateは `LinkDetailState` のフィールドとして保持する（Eventではない）。
 
 ---
 
 # Delegate Contract
 
-LinkDetailFeature → Parent
+LinkDetailDelegate（sealed class）→ Stateのフィールドとして保持
 
-saveDraft(LinkDetailDraft)
+SaveDraft(LinkDetailDraft draft)
+- Link編集完了通知
 
-dismiss
+Dismiss
+- 画面を閉じる要求
 
 Purpose
-Link更新通知
+Link更新通知（BlocListenerがDelegateを受け取りNavigation処理）
 
 ---
 

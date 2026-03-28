@@ -1,7 +1,7 @@
 # PaymentDetail Feature Specification
 
 Feature
-PaymentDetailFeature (PaymentDetailReducer)
+PaymentDetailFeature (PaymentDetailBloc)
 
 Parent Feature
 PaymentInfoFeature
@@ -192,41 +192,44 @@ EventDetailFeature
 
 ---
 
-# Reducer Actions
+# BLoC Events
 
-PaymentDetailReducer.Action
+PaymentDetailEvent（sealed class）
 
-appeared
+Started
+- 画面表示・初期データ読み込み
 
-nameChanged
+NameChanged(String value)
 
-amountChanged
+AmountChanged(String value)
 
-payerChanged
+PayerChanged(String memberId)
 
-relatedMarkLinkChanged
+MemoChanged(String value)
 
-memoChanged
+SaveTapped
 
-saveTapped
+CancelTapped
 
-cancelTapped
+---
 
-delegate
+> **Note:** `relatedMarkLinkChanged` はSpec Patchにより削除済み。
+> Delegateは `PaymentDetailState` のフィールドとして保持する（Eventではない）。
 
 ---
 
 # Delegate Contract
 
-PaymentDetailFeature → Parent
+PaymentDetailDelegate（sealed class）→ Stateのフィールドとして保持
 
-saveDraft(PaymentDetailDraft)
+SaveDraft(PaymentDetailDraft draft)
+- Payment編集完了通知
 
-dismiss
+Dismiss
+- 画面を閉じる要求
 
 Purpose
-
-Payment更新通知
+Payment更新通知（BlocListenerがDelegateを受け取りNavigation処理）
 
 ---
 

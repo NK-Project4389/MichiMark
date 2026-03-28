@@ -43,27 +43,22 @@ BasicInfoFeatureはDomainを直接変更しない。
 
 # State Structure
 
-BasicInfoReducer.State
+BasicInfoState
 
-projection
+projection: BasicInfoProjection
+- 保存済み表示データ
 
-BasicInfoProjection  
-保存済み表示データ
+draft: BasicInfoDraft
+- 入力途中データ
 
-draft
+visibleFields: Set\<EventFieldID\>
+- イベントパターンに応じた表示制御
 
-BasicInfoDraft  
-入力途中データ
+eventID: EventID
+- 外部参照
 
-visibleFields
-
-Set<EventFieldID>  
-イベントパターンに応じた表示制御
-
-eventID
-
-EventID  
-外部参照
+delegate: BasicInfoDelegate?
+- 遷移意図の通知（BlocListenerが受け取り処理）
 
 ---
 
@@ -134,9 +129,9 @@ Draftは未確定データとして扱う。
 
 ---
 
-# Projection Initialization
+# Draft Initialization
 
-BasicInfoReducer初期化時
+BasicInfoBloc初期化時
 
 ProjectionからDraftを生成する。
 
@@ -144,49 +139,49 @@ Flow
 
 Projection
  ↓
-BasicInfoReducer.init
+BasicInfoBloc.constructor（Started Event処理）
  ↓
 BasicInfoDraft生成
 
 ---
 
-# Actions
+# BLoC Events
 
-BasicInfoReducer.Action
+BasicInfoEvent（sealed class）
 
-binding
+Started
+- 画面表示・Projectionから初期Draft生成
 
-SwiftUI Binding
+NameChanged(String value)
+- イベント名入力
+
+KmPerGasChanged(String value)
+- 燃費入力
+
+PricePerGasChanged(String value)
+- ガソリン単価入力
+
+TransTapped
+- 交通手段選択画面を開く要求（Delegateで通知）
+
+MembersTapped
+- メンバー選択画面を開く要求
+
+TagsTapped
+- タグ選択画面を開く要求
+
+PayMemberTapped
+- 支払者選択画面を開く要求
+
+SelectionApplied(SelectionResult result)
+- 選択画面からの結果を受け取り Draft更新
+
+SaveTapped
+- 保存（Delegateで親へsaveDraft通知）
 
 ---
 
-Tap Actions
-
-transTapped
-
-membersTapped
-
-tagsTapped
-
-payMemberTapped
-
----
-
-Save
-
-saveTapped
-
----
-
-Selection
-
-applySelection
-
----
-
-Delegate
-
-delegate
+> **Note:** Delegateは `BasicInfoState` のフィールドとして保持する（Eventではない）。
 
 ---
 
@@ -222,23 +217,15 @@ EventDraft更新
 
 ---
 
-# Delegate
+# Delegate Contract
 
-BasicInfoFeature → EventDetailFeature
+BasicInfoDelegate（sealed class）→ Stateのフィールドとして保持
 
-saveDraft(EventID, BasicInfoDraft)
+SaveDraft(EventID eventId, BasicInfoDraft draft)
+- EventDraft更新要求（BlocListenerがEventDetailBlocへ転送）
 
-Purpose
-
-EventDraft更新
-
----
-
-selectionRequested(SelectionUseCase)
-
-Purpose
-
-Selection画面表示要求
+SelectionRequested(SelectionUseCase useCase)
+- Selection画面表示要求（BlocListenerがcontext.push()で遷移）
 
 ---
 
@@ -262,9 +249,9 @@ User Input
  ↓
 Draft
  ↓
-Delegate
+BasicInfoDelegate（State）
  ↓
-EventDetailCoreReducer
+BlocListener → EventDetailBloc
  ↓
 EventDomain更新
 

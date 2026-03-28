@@ -26,22 +26,24 @@ EventDetailFeatureは以下を担当する。
 
 EventDetailは **Aggregate Feature** として振る舞う。
 
+EventDetailBlocがSubFeature（BasicInfo / MichiInfo / PaymentInfo）からのDraftを集約し、EventDomainを更新する。
+
 ---
 
 # Feature Structure
 
 EventDetailFeature
 
-EventDetailReducer
+EventDetailBloc
  ↓
-EventDetailCoreReducer
- ↓
-SubFeatures
+SubFeatures（各Bloc独立）
 
-BasicInfoFeature  
-MichiInfoFeature  
-PaymentInfoFeature  
-OverviewFeature
+BasicInfoBloc
+MichiInfoBloc
+PaymentInfoBloc
+OverviewFeature（将来拡張・現実装スコープ外）
+
+> **Note:** TCA版の `EventDetailCoreReducer` に相当する責務（Domain更新・Repository保存・Projection更新・Delegate通知）は `EventDetailBloc` が担う。
 
 ---
 
@@ -147,9 +149,9 @@ Overviewのみ表示中心Feature
 
 ---
 
-# CoreReducer
+# EventDetailBloc の責務
 
-EventDetailCoreReducer
+EventDetailBloc
 
 Purpose
 
@@ -157,12 +159,14 @@ EventDetailのUseCase処理を担当する。
 
 Responsibilities
 
-EventDomain更新  
-Repository保存  
-Projection更新  
-Delegate通知  
+EventDomain更新
+Repository保存（DI経由）
+Projection更新
+Delegate通知
+SubFeatureからのDraft集約（保存時）
 
-CoreReducerはUIを持たない。
+EventDetailBlocはUIを持たない。
+RepositoryはDI（get_it）経由でコンストラクタ注入して使用する。
 
 ---
 
@@ -250,9 +254,9 @@ saveEvent
 loadEvent  
 deleteEvent  
 
-EventDetailFeatureはRepositoryを直接呼び出さない。
+EventDetailBlocはRepositoryをDI（get_it）経由で呼び出す。
 
-CoreReducerを経由する。
+WidgetからRepositoryを直接呼び出すことは禁止。
 
 ---
 
