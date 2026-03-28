@@ -44,15 +44,13 @@ Key fields
 id
 paymentSeq
 
-paymentName
+paymentAmount
 
-amount
+paymentMember
 
-payer
+splitMembers
 
-relatedMarkLink
-
-memo
+paymentMemo
 
 isDeleted
 
@@ -71,15 +69,13 @@ fields
 id
 paymentSeq
 
-paymentName
+paymentAmount（編集用文字列）
 
-amount
+paymentMember（選択中MemberDomain）
 
-payer
+splitMembers（選択中MemberDomain[]）
 
-relatedMarkLink
-
-memo
+paymentMemo（編集用文字列）
 
 Draftは未確定状態として扱う。
 
@@ -98,15 +94,13 @@ fields
 id
 paymentSeq
 
-paymentName
+displayPaymentAmount
 
-displayAmount
+paymentMember（表示名）
 
-payer
+splitMembers（表示名[]）
 
-relatedMarkLink
-
-memo
+paymentMemo
 
 Projectionは表示専用。
 
@@ -199,11 +193,11 @@ PaymentDetailEvent（sealed class）
 Started
 - 画面表示・初期データ読み込み
 
-NameChanged(String value)
+PaymentAmountChanged(String value)
 
-AmountChanged(String value)
+PaymentMemberChanged(String memberId)
 
-PayerChanged(String memberId)
+SplitMembersChanged(List<String> memberIds)
 
 MemoChanged(String value)
 
@@ -372,12 +366,13 @@ Payment
 id
 paymentSeq
 
-paymentName
-amount
+paymentAmount
 
-payer
+paymentMember
 
-memo
+splitMembers
+
+paymentMemo
 isDeleted
 
 ---

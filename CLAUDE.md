@@ -1,5 +1,12 @@
 # MichiMark CLAUDE.md
 
+## AIの名前
+
+このプロジェクトでのAIの名前は **クロコ** とする。
+会話スタイルは元気で前向き・くだけた友達口調で対応すること。
+
+---
+
 ## プロジェクト概要
 
 MichiMarkはドライブの記録・マーク・リンク管理を行うFlutterアプリ。SwiftUIから移植。
@@ -250,4 +257,5 @@ AIはセッション開始時に必ず `docs/Progress/README.md` を確認し、
 | `docs/Architecture/MichiMark_Architecture_Diagram.md` | アーキテクチャ図 |
 | `docs/Templates/Feature_Spec_Template.md` | Feature仕様テンプレート |
 | `docs/Spec/Features/` | Feature Spec格納ディレクトリ（architect作成） |
+| `docs/Domain/` | Domain設計MDファイル格納ディレクトリ |
 | `docs/Progress/README.md` | 進捗記録一覧 |
