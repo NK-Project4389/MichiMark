@@ -1,0 +1,9 @@
+/// go_router の extra 経由で PaymentDetailPage に渡す引数
+class PaymentDetailArgs {
+  final String eventId;
+
+  /// 既存編集時は paymentId を指定。null = 新規作成
+  final String? paymentId;
+
+  const PaymentDetailArgs({required this.eventId, this.paymentId});
+}

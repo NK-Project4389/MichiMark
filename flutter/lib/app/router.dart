@@ -15,6 +15,10 @@ import '../features/link_detail/view/link_detail_page.dart';
 import '../features/mark_detail/bloc/mark_detail_bloc.dart';
 import '../features/mark_detail/bloc/mark_detail_event.dart';
 import '../features/mark_detail/view/mark_detail_page.dart';
+import '../features/payment_detail/bloc/payment_detail_bloc.dart';
+import '../features/payment_detail/bloc/payment_detail_event.dart';
+import '../features/payment_detail/payment_detail_args.dart';
+import '../features/payment_detail/view/payment_detail_page.dart';
 import '../features/selection/view/selection_page.dart';
 import '../repository/action_repository.dart';
 import '../repository/event_repository.dart';
@@ -89,6 +93,21 @@ final router = GoRouter(
         );
       },
     ),
-    // TODO: payment_detail, settings など実装後に追加
+    GoRoute(
+      path: '/event/payment',
+      builder: (context, state) {
+        final args = state.extra as PaymentDetailArgs;
+        return BlocProvider(
+          create: (_) => PaymentDetailBloc(
+            eventRepository: context.read<EventRepository>(),
+          )..add(PaymentDetailStarted(
+              eventId: args.eventId,
+              paymentId: args.paymentId,
+            )),
+          child: const PaymentDetailPage(),
+        );
+      },
+    ),
+    // TODO: payment_info, settings など実装後に追加
   ],
 );
