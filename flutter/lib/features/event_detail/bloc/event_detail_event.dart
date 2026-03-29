@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../basic_info/draft/basic_info_draft.dart';
 import '../draft/event_detail_draft.dart';
 
 sealed class EventDetailEvent extends Equatable {
@@ -64,4 +65,17 @@ class EventDetailAddMarkLinkRequested extends EventDetailEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+/// 保存ボタンが押されたとき（全タブ一括保存）
+class EventDetailSaveRequested extends EventDetailEvent {
+  final String eventId;
+  final BasicInfoDraft basicInfoDraft;
+  const EventDetailSaveRequested({
+    required this.eventId,
+    required this.basicInfoDraft,
+  });
+
+  @override
+  List<Object?> get props => [eventId, basicInfoDraft];
 }

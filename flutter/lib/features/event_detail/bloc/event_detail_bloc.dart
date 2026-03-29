@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../adapter/event_detail_adapter.dart';
+import '../../../domain/transaction/event/event_domain.dart';
 import '../../../repository/event_repository.dart';
 import '../draft/event_detail_draft.dart';
 import 'event_detail_event.dart';
@@ -16,6 +17,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     on<EventDetailOpenLinkRequested>(_onOpenLinkRequested);
     on<EventDetailOpenPaymentRequested>(_onOpenPaymentRequested);
     on<EventDetailAddMarkLinkRequested>(_onAddMarkLinkRequested);
+    on<EventDetailSaveRequested>(_onSaveRequested);
   }
 
   final EventRepository _eventRepository;
@@ -103,6 +105,62 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
       final current = state as EventDetailLoaded;
       emit(current.copyWith(
         delegate: const EventDetailAddMarkLinkDelegate(),
+      ));
+    }
+  }
+
+  Future<void> _onSaveRequested(
+    EventDetailSaveRequested event,
+    Emitter<EventDetailState> emit,
+  ) async {
+    if (state is! EventDetailLoaded) return;
+    final current = state as EventDetailLoaded;
+
+    emit(current.copyWith(isSaving: true));
+
+    try {
+      final existing = await _eventRepository.fetch(event.eventId);
+      final draft = event.basicInfoDraft;
+
+      final kmPerGas = draft.kmPerGasInput.isEmpty
+          ? null
+          : (double.tryParse(draft.kmPerGasInput) != null
+              ? (double.parse(draft.kmPerGasInput) * 10).round()
+              : null);
+
+      final pricePerGas = draft.pricePerGasInput.isEmpty
+          ? null
+          : int.tryParse(draft.pricePerGasInput);
+
+      final updated = EventDomain(
+        id: existing.id,
+        eventName: draft.eventName,
+        trans: draft.selectedTrans,
+        members: draft.selectedMembers,
+        tags: draft.selectedTags,
+        kmPerGas: kmPerGas,
+        pricePerGas: pricePerGas,
+        payMember: draft.selectedPayMember,
+        markLinks: existing.markLinks,
+        payments: existing.payments,
+        isDeleted: existing.isDeleted,
+        createdAt: existing.createdAt,
+        updatedAt: DateTime.now(),
+      );
+
+      await _eventRepository.save(updated);
+
+      final projection = EventDetailAdapter.toProjection(updated);
+      emit(EventDetailLoaded(
+        projection: projection,
+        draft: current.draft,
+        delegate: const EventDetailSavedDelegate(),
+        isSaving: false,
+      ));
+    } on Exception catch (e) {
+      emit(current.copyWith(
+        isSaving: false,
+        saveErrorMessage: e.toString(),
       ));
     }
   }

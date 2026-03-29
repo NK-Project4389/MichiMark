@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../repository/event_repository.dart';
 import '../../basic_info/bloc/basic_info_bloc.dart';
 import '../../basic_info/bloc/basic_info_event.dart';
+import '../../basic_info/bloc/basic_info_state.dart';
 import '../../basic_info/view/basic_info_view.dart';
 import '../../michi_info/bloc/michi_info_bloc.dart';
 import '../../michi_info/bloc/michi_info_event.dart';
@@ -24,8 +25,15 @@ class EventDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<EventDetailBloc, EventDetailState>(
       listener: (context, state) {
-        if (state is EventDetailLoaded && state.delegate != null) {
-          _handleDelegate(context, state.delegate!);
+        if (state is EventDetailLoaded) {
+          if (state.delegate != null) {
+            _handleDelegate(context, state.delegate!);
+          }
+          if (state.saveErrorMessage != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.saveErrorMessage!)),
+            );
+          }
         }
       },
       builder: (context, state) {
@@ -36,8 +44,12 @@ class EventDetailPage extends StatelessWidget {
           EventDetailError(:final message) => Scaffold(
               body: Center(child: Text(message)),
             ),
-          EventDetailLoaded(:final projection, :final draft) =>
-            _EventDetailScaffold(projection: projection, draft: draft),
+          EventDetailLoaded(:final projection, :final draft, :final isSaving) =>
+            _EventDetailScaffold(
+              projection: projection,
+              draft: draft,
+              isSaving: isSaving,
+            ),
         };
       },
     );
@@ -55,6 +67,10 @@ class EventDetailPage extends StatelessWidget {
         context.go('/event/payment/$paymentId');
       case EventDetailAddMarkLinkDelegate():
         context.go('/event/mark-link/add');
+      case EventDetailSavedDelegate():
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('保存しました')),
+        );
     }
   }
 }
@@ -62,10 +78,12 @@ class EventDetailPage extends StatelessWidget {
 class _EventDetailScaffold extends StatelessWidget {
   final EventDetailProjection projection;
   final EventDetailDraft draft;
+  final bool isSaving;
 
   const _EventDetailScaffold({
     required this.projection,
     required this.draft,
+    required this.isSaving,
   });
 
   @override
@@ -103,6 +121,33 @@ class _EventDetailScaffold extends StatelessWidget {
               ? 'イベント詳細'
               : projection.basicInfo.eventName),
           centerTitle: true,
+          actions: [
+            if (isSaving)
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              )
+            else
+              BlocBuilder<BasicInfoBloc, BasicInfoState>(
+                builder: (context, basicInfoState) {
+                  return IconButton(
+                    icon: const Icon(Icons.check),
+                    onPressed: basicInfoState is BasicInfoLoaded
+                        ? () => context.read<EventDetailBloc>().add(
+                              EventDetailSaveRequested(
+                                eventId: eventId,
+                                basicInfoDraft: basicInfoState.draft,
+                              ),
+                            )
+                        : null,
+                  );
+                },
+              ),
+          ],
         ),
         body: Column(
           children: [
