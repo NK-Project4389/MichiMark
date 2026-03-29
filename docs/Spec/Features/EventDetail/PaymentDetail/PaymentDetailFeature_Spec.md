@@ -391,4 +391,109 @@ PaymentLinkDomain
 
 現時点ではSpecから削除する。
 
+# ===============================
+# Patch : PaymentDetail Selection Delegate追加
+# ===============================
+
+## 修正理由
+
+支払者・割り勘メンバーの選択はSelection画面経由で行う。
+LinkDetailFeatureと同様のパターン（EditPressed → Delegate → Selected）を採用する。
+
+---
+
+## BLoC Events 変更
+
+### 削除
+
+```
+PaymentMemberChanged(String memberId)
+SplitMembersChanged(List<String> memberIds)
+```
+
+### 追加
+
+```
+EditMemberPressed
+- 支払者選択ボタン押下 → OpenMemberSelectionDelegate を発火
+
+MemberSelected(MemberDomain member)
+- 選択画面から支払者が返却されたとき → Draft更新
+
+EditSplitMembersPressed
+- 割り勘メンバー選択ボタン押下 → OpenSplitMembersSelectionDelegate を発火
+
+SplitMembersSelected(List<MemberDomain> members)
+- 選択画面から割り勘メンバーが返却されたとき → Draft更新
+```
+
+---
+
+## Delegate Contract 変更
+
+### 追加（既存のSaveDraft・Dismissに追記）
+
+```
+OpenMemberSelection
+- 支払者選択画面を開く要求（シングル選択）
+- EditMemberPressed で発火
+
+OpenSplitMembersSelection
+- 割り勘メンバー選択画面を開く要求（マルチ選択）
+- EditSplitMembersPressed で発火
+```
+
+---
+
+## 修正後のBLoC Events全体
+
+```
+PaymentDetailEvent（sealed class）
+
+Started
+- 画面表示・初期データ読み込み
+
+PaymentAmountChanged(String value)
+
+EditMemberPressed
+- 支払者選択ボタン押下
+
+MemberSelected(MemberDomain member)
+- 選択画面から支払者返却
+
+EditSplitMembersPressed
+- 割り勘メンバー選択ボタン押下
+
+SplitMembersSelected(List<MemberDomain> members)
+- 選択画面から割り勘メンバー返却
+
+MemoChanged(String value)
+
+SaveTapped
+
+CancelTapped
+```
+
+---
+
+## 修正後のDelegate Contract全体
+
+```
+PaymentDetailDelegate（sealed class）→ Stateのフィールドとして保持
+
+SaveDraft(PaymentDetailDraft draft)
+- Payment編集完了通知
+
+Dismiss
+- 画面を閉じる要求
+
+OpenMemberSelection
+- 支払者選択画面を開く要求（シングル選択）
+
+OpenSplitMembersSelection
+- 割り勘メンバー選択画面を開く要求（マルチ選択）
+```
+
+---
+
 # End of PaymentDetail Feature Spec
