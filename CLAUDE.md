@@ -133,12 +133,37 @@ Event  → Bloc → State
 
 ---
 
+## 要件定義ルール
+
+### product-managerの責務
+
+- 追加要件が発生した場合に要件書を作成する
+- 要件書格納場所: `docs/Requirements/`
+- 要件書に記載すべき内容:
+  - 背景・目的
+  - ユーザーストーリー
+  - 機能要件（画面・操作・計算・バリデーション）
+  - 非機能要件（パフォーマンス・UXなど）
+  - スコープ外（対象外事項）
+  - 受け入れ条件
+- Flutter移行フェーズの作業（既存機能の移植）については、都度ユーザーと相談して要件書の要否を決める
+
+### architect との連携
+
+- architectはproduct-managerが作成した要件書をもとにFeature Specを作成する
+- 要件書が存在しない場合、architectはSpecを作成せずproduct-managerに差し戻す
+  - ただしFlutter移行タスクはこの限りではない（都度判断）
+
+---
+
 ## 実装・レビューサイクルルール
 
-### 全体フロー
+### 全体フロー（追加要件）
 
 ```
-architect（Spec作成）
+product-manager（要件書作成）
+  ↓ 要件書完成
+architect（Spec作成）← 要件書を必ず参照すること
   ↓ Spec完成
 flutter-dev（実装）← Specを必ず参照すること
   ↓ Spec不足・曖昧 → architect へ差し戻し（自動）
@@ -152,15 +177,29 @@ reviewer（再レビュー）← 再度自動交代
   ↓ 違反なし → 完了
 ```
 
+### 全体フロー（Flutter移行タスク）
+
+```
+architect（Spec作成）← SwiftUIソース・既存設計を参照
+  ↓ Spec完成
+flutter-dev（実装）
+  ↓ 実装完了
+reviewer（レビュー）
+  ↓ 違反なし → 完了
+```
+
+※ Flutter移行タスクで要件書が必要かどうかはユーザーと都度相談する。
+
 違反がなくなるまでレビューサイクルを繰り返す。
 
 ### 役割の侵食禁止
 
 | 役割 | 許可 | 禁止 |
 |---|---|---|
-| `architect` | Spec作成・更新、差し戻し対応 | 実装・コード生成・レビュー |
-| `flutter-dev` | Specに基づくコード生成・修正 | Spec作成・レビュー・違反判定 |
-| `reviewer` | 違反指摘・差し戻し指示 | Spec作成・コード生成・修正 |
+| `product-manager` | 要件書作成・更新 | Spec作成・実装・レビュー |
+| `architect` | Spec作成・更新、差し戻し対応 | 要件書作成・実装・コード生成・レビュー |
+| `flutter-dev` | Specに基づくコード生成・修正 | 要件書作成・Spec作成・レビュー・違反判定 |
+| `reviewer` | 違反指摘・差し戻し指示 | 要件書作成・Spec作成・コード生成・修正 |
 
 ### reviewerのレビュー観点
 
@@ -202,6 +241,7 @@ AIは回答の冒頭に、どの役割として回答しているかを以下の
 
 | 役割名 | 担当 |
 |---|---|
+| `product-manager` | 追加要件の要件書作成・ユーザーストーリー定義・スコープ決定 |
 | `architect` | Feature Spec作成・アーキテクチャ設計。実装・レビューは行わない |
 | `charter-reviewer` | 設計憲章・アーキテクチャドキュメントのレビューと改善提案 |
 | `flutter-dev` | Specに基づくFlutter/Dart実装。Spec不足・曖昧な場合はarchitectに差し戻す |
