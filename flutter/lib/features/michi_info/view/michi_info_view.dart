@@ -37,12 +37,10 @@ class MichiInfoView extends StatelessWidget {
         context.go('/event/mark/$markLinkId', extra: eventId);
       case MichiInfoOpenLinkDelegate(:final eventId, :final markLinkId):
         context.go('/event/link/$markLinkId', extra: eventId);
-      case MichiInfoAddMarkDelegate():
-        // TODO: context.go('/event/mark/new', extra: eventId) — mark_detail 実装後に有効化
-        break;
-      case MichiInfoAddLinkDelegate():
-        // TODO: context.go('/event/link/new', extra: eventId) — link_detail 実装後に有効化
-        break;
+      case MichiInfoAddMarkDelegate(:final eventId):
+        context.go('/event/mark/new', extra: eventId);
+      case MichiInfoAddLinkDelegate(:final eventId):
+        context.go('/event/link/new', extra: eventId);
     }
   }
 }

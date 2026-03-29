@@ -29,6 +29,13 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
   ) async {
     emit(const LinkDetailLoading());
     try {
+      if (event.markLinkId == null) {
+        // 新規作成: 初期Draftを生成
+        final draft = LinkDetailDraft(markLinkDate: DateTime.now());
+        emit(LinkDetailLoaded(draft: draft));
+        return;
+      }
+      // 既存編集: Repositoryからデータ取得
       final domain = await _eventRepository.fetch(event.eventId);
       final markLink = domain.markLinks
           .where((ml) => ml.id == event.markLinkId && !ml.isDeleted)

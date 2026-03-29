@@ -7,10 +7,12 @@ sealed class MarkDetailEvent extends Equatable {
 }
 
 /// 画面が表示されたとき
+///
+/// [markLinkId] が null の場合は新規作成モード
 class MarkDetailStarted extends MarkDetailEvent {
   final String eventId;
-  final String markLinkId;
-  const MarkDetailStarted({required this.eventId, required this.markLinkId});
+  final String? markLinkId;
+  const MarkDetailStarted({required this.eventId, this.markLinkId});
 
   @override
   List<Object?> get props => [eventId, markLinkId];

@@ -68,6 +68,18 @@ final router = GoRouter(
       },
     ),
     GoRoute(
+      path: '/event/mark/new',
+      builder: (context, state) {
+        final eventId = state.extra as String;
+        return BlocProvider(
+          create: (_) => MarkDetailBloc(
+            eventRepository: context.read<EventRepository>(),
+          )..add(MarkDetailStarted(eventId: eventId)),
+          child: const MarkDetailPage(),
+        );
+      },
+    ),
+    GoRoute(
       path: '/event/mark/:markId',
       builder: (context, state) {
         final markId = state.pathParameters['markId']!;
@@ -77,6 +89,18 @@ final router = GoRouter(
             eventRepository: context.read<EventRepository>(),
           )..add(MarkDetailStarted(eventId: eventId, markLinkId: markId)),
           child: const MarkDetailPage(),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/event/link/new',
+      builder: (context, state) {
+        final eventId = state.extra as String;
+        return BlocProvider(
+          create: (_) => LinkDetailBloc(
+            eventRepository: context.read<EventRepository>(),
+          )..add(LinkDetailStarted(eventId: eventId)),
+          child: const LinkDetailPage(),
         );
       },
     ),
