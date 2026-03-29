@@ -20,6 +20,31 @@ import '../features/payment_detail/bloc/payment_detail_event.dart';
 import '../features/payment_detail/payment_detail_args.dart';
 import '../features/payment_detail/view/payment_detail_page.dart';
 import '../features/selection/view/selection_page.dart';
+import '../features/settings/view/settings_page.dart';
+import '../features/settings/trans_setting/bloc/trans_setting_bloc.dart';
+import '../features/settings/trans_setting/bloc/trans_setting_event.dart';
+import '../features/settings/trans_setting/bloc/trans_setting_detail_bloc.dart';
+import '../features/settings/trans_setting/bloc/trans_setting_detail_event.dart';
+import '../features/settings/trans_setting/view/trans_setting_page.dart';
+import '../features/settings/trans_setting/view/trans_setting_detail_page.dart';
+import '../features/settings/member_setting/bloc/member_setting_bloc.dart';
+import '../features/settings/member_setting/bloc/member_setting_event.dart';
+import '../features/settings/member_setting/bloc/member_setting_detail_bloc.dart';
+import '../features/settings/member_setting/bloc/member_setting_detail_event.dart';
+import '../features/settings/member_setting/view/member_setting_page.dart';
+import '../features/settings/member_setting/view/member_setting_detail_page.dart';
+import '../features/settings/tag_setting/bloc/tag_setting_bloc.dart';
+import '../features/settings/tag_setting/bloc/tag_setting_event.dart';
+import '../features/settings/tag_setting/bloc/tag_setting_detail_bloc.dart';
+import '../features/settings/tag_setting/bloc/tag_setting_detail_event.dart';
+import '../features/settings/tag_setting/view/tag_setting_page.dart';
+import '../features/settings/tag_setting/view/tag_setting_detail_page.dart';
+import '../features/settings/action_setting/bloc/action_setting_bloc.dart';
+import '../features/settings/action_setting/bloc/action_setting_event.dart';
+import '../features/settings/action_setting/bloc/action_setting_detail_bloc.dart';
+import '../features/settings/action_setting/bloc/action_setting_detail_event.dart';
+import '../features/settings/action_setting/view/action_setting_page.dart';
+import '../features/settings/action_setting/view/action_setting_detail_page.dart';
 import '../repository/action_repository.dart';
 import '../repository/event_repository.dart';
 import '../repository/member_repository.dart';
@@ -132,6 +157,134 @@ final router = GoRouter(
         );
       },
     ),
-    // TODO: payment_info, settings など実装後に追加
+    // Settings
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsPage(),
+    ),
+    // Trans Setting
+    GoRoute(
+      path: '/settings/trans',
+      builder: (context, state) => BlocProvider(
+        create: (_) => TransSettingBloc(
+          transRepository: context.read<TransRepository>(),
+        )..add(const TransSettingStarted()),
+        child: const TransSettingPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/settings/trans/new',
+      builder: (context, state) => BlocProvider(
+        create: (_) => TransSettingDetailBloc(
+          transRepository: context.read<TransRepository>(),
+        )..add(const TransSettingDetailStarted()),
+        child: const TransSettingDetailPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/settings/trans/:transId',
+      builder: (context, state) {
+        final transId = state.pathParameters['transId']!;
+        return BlocProvider(
+          create: (_) => TransSettingDetailBloc(
+            transRepository: context.read<TransRepository>(),
+          )..add(TransSettingDetailStarted(transId: transId)),
+          child: const TransSettingDetailPage(),
+        );
+      },
+    ),
+    // Member Setting
+    GoRoute(
+      path: '/settings/member',
+      builder: (context, state) => BlocProvider(
+        create: (_) => MemberSettingBloc(
+          memberRepository: context.read<MemberRepository>(),
+        )..add(const MemberSettingStarted()),
+        child: const MemberSettingPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/settings/member/new',
+      builder: (context, state) => BlocProvider(
+        create: (_) => MemberSettingDetailBloc(
+          memberRepository: context.read<MemberRepository>(),
+        )..add(const MemberSettingDetailStarted()),
+        child: const MemberSettingDetailPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/settings/member/:memberId',
+      builder: (context, state) {
+        final memberId = state.pathParameters['memberId']!;
+        return BlocProvider(
+          create: (_) => MemberSettingDetailBloc(
+            memberRepository: context.read<MemberRepository>(),
+          )..add(MemberSettingDetailStarted(memberId: memberId)),
+          child: const MemberSettingDetailPage(),
+        );
+      },
+    ),
+    // Tag Setting
+    GoRoute(
+      path: '/settings/tag',
+      builder: (context, state) => BlocProvider(
+        create: (_) => TagSettingBloc(
+          tagRepository: context.read<TagRepository>(),
+        )..add(const TagSettingStarted()),
+        child: const TagSettingPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/settings/tag/new',
+      builder: (context, state) => BlocProvider(
+        create: (_) => TagSettingDetailBloc(
+          tagRepository: context.read<TagRepository>(),
+        )..add(const TagSettingDetailStarted()),
+        child: const TagSettingDetailPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/settings/tag/:tagId',
+      builder: (context, state) {
+        final tagId = state.pathParameters['tagId']!;
+        return BlocProvider(
+          create: (_) => TagSettingDetailBloc(
+            tagRepository: context.read<TagRepository>(),
+          )..add(TagSettingDetailStarted(tagId: tagId)),
+          child: const TagSettingDetailPage(),
+        );
+      },
+    ),
+    // Action Setting
+    GoRoute(
+      path: '/settings/action',
+      builder: (context, state) => BlocProvider(
+        create: (_) => ActionSettingBloc(
+          actionRepository: context.read<ActionRepository>(),
+        )..add(const ActionSettingStarted()),
+        child: const ActionSettingPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/settings/action/new',
+      builder: (context, state) => BlocProvider(
+        create: (_) => ActionSettingDetailBloc(
+          actionRepository: context.read<ActionRepository>(),
+        )..add(const ActionSettingDetailStarted()),
+        child: const ActionSettingDetailPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/settings/action/:actionId',
+      builder: (context, state) {
+        final actionId = state.pathParameters['actionId']!;
+        return BlocProvider(
+          create: (_) => ActionSettingDetailBloc(
+            actionRepository: context.read<ActionRepository>(),
+          )..add(ActionSettingDetailStarted(actionId: actionId)),
+          child: const ActionSettingDetailPage(),
+        );
+      },
+    ),
   ],
 );
