@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import '../../../features/fuel_detail/bloc/fuel_detail_bloc.dart';
+import '../../../features/fuel_detail/bloc/fuel_detail_event.dart';
+import '../../../features/fuel_detail/bloc/fuel_detail_state.dart';
+import '../../../features/fuel_detail/view/fuel_detail_widget.dart';
 import '../../../features/selection/selection_args.dart';
 import '../../../features/selection/selection_result.dart';
 import '../bloc/mark_detail_bloc.dart';
@@ -150,7 +154,12 @@ class _MarkDetailForm extends StatelessWidget {
         const SizedBox(height: 16),
         _MemoField(value: draft.memo),
         const SizedBox(height: 16),
-        _FuelRow(isFuel: draft.isFuel),
+        _FuelRow(
+          isFuel: draft.isFuel,
+          pricePerGasInput: draft.pricePerGasInput,
+          gasQuantityInput: draft.gasQuantityInput,
+          gasPriceInput: draft.gasPriceInput,
+        ),
       ],
     );
   }
@@ -360,8 +369,16 @@ class _SelectionRow extends StatelessWidget {
 
 class _FuelRow extends StatelessWidget {
   final bool isFuel;
+  final String pricePerGasInput;
+  final String gasQuantityInput;
+  final String gasPriceInput;
 
-  const _FuelRow({required this.isFuel});
+  const _FuelRow({
+    required this.isFuel,
+    required this.pricePerGasInput,
+    required this.gasQuantityInput,
+    required this.gasPriceInput,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -376,13 +393,26 @@ class _FuelRow extends StatelessWidget {
               context.read<MarkDetailBloc>().add(const MarkDetailIsFuelToggled()),
         ),
         if (isFuel)
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 4),
-            child: Text(
-              '給油詳細（未実装）',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+          BlocProvider(
+            create: (_) => FuelDetailBloc()
+              ..add(FuelDetailStarted(
+                pricePerGas: pricePerGasInput,
+                gasQuantity: gasQuantityInput,
+                gasPrice: gasPriceInput,
+              )),
+            child: BlocListener<FuelDetailBloc, FuelDetailState>(
+              listener: (context, state) {
+                if (state.delegate case FuelDetailDraftChanged(:final draft)) {
+                  context.read<MarkDetailBloc>().add(
+                        MarkDetailFuelFieldsChanged(
+                          pricePerGas: draft.pricePerGas,
+                          gasQuantity: draft.gasQuantity,
+                          gasPrice: draft.gasPrice,
+                        ),
+                      );
+                }
+              },
+              child: const FuelDetailWidget(),
             ),
           ),
       ],

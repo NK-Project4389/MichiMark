@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../features/fuel_detail/bloc/fuel_detail_bloc.dart';
+import '../../../features/fuel_detail/bloc/fuel_detail_event.dart';
+import '../../../features/fuel_detail/bloc/fuel_detail_state.dart';
+import '../../../features/fuel_detail/view/fuel_detail_widget.dart';
 import '../../../features/selection/selection_args.dart';
 import '../../../features/selection/selection_result.dart';
 import '../bloc/link_detail_bloc.dart';
@@ -140,6 +144,13 @@ class _LinkDetailForm extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         _MemoField(value: draft.memo),
+        const SizedBox(height: 16),
+        _FuelRow(
+          isFuel: draft.isFuel,
+          pricePerGasInput: draft.pricePerGasInput,
+          gasQuantityInput: draft.gasQuantityInput,
+          gasPriceInput: draft.gasPriceInput,
+        ),
       ],
     );
   }
@@ -256,6 +267,60 @@ class _MemoFieldState extends State<_MemoField> {
       maxLines: 3,
       onChanged: (v) =>
           context.read<LinkDetailBloc>().add(LinkDetailMemoChanged(v)),
+    );
+  }
+}
+
+class _FuelRow extends StatelessWidget {
+  final bool isFuel;
+  final String pricePerGasInput;
+  final String gasQuantityInput;
+  final String gasPriceInput;
+
+  const _FuelRow({
+    required this.isFuel,
+    required this.pricePerGasInput,
+    required this.gasQuantityInput,
+    required this.gasPriceInput,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: const Text('給油'),
+          value: isFuel,
+          onChanged: (_) => context
+              .read<LinkDetailBloc>()
+              .add(const LinkDetailIsFuelToggled()),
+        ),
+        if (isFuel)
+          BlocProvider(
+            create: (_) => FuelDetailBloc()
+              ..add(FuelDetailStarted(
+                pricePerGas: pricePerGasInput,
+                gasQuantity: gasQuantityInput,
+                gasPrice: gasPriceInput,
+              )),
+            child: BlocListener<FuelDetailBloc, FuelDetailState>(
+              listener: (context, state) {
+                if (state.delegate case FuelDetailDraftChanged(:final draft)) {
+                  context.read<LinkDetailBloc>().add(
+                        LinkDetailFuelFieldsChanged(
+                          pricePerGas: draft.pricePerGas,
+                          gasQuantity: draft.gasQuantity,
+                          gasPrice: draft.gasPrice,
+                        ),
+                      );
+                }
+              },
+              child: const FuelDetailWidget(),
+            ),
+          ),
+      ],
     );
   }
 }
