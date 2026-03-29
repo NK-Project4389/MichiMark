@@ -26,7 +26,8 @@ LinkDetailFeatureは以下を担当する。
 2 走行距離（DistanceValue）編集
 3 メンバー設定
 4 行動（Action）管理
-5 メモ編集
+5 Fuel入力（FuelDetailBlocと連携）
+6 メモ編集
 
 LinkDetailFeatureは禁止
 
@@ -58,6 +59,13 @@ actions
 
 memo
 
+fuel関連
+
+isFuel
+pricePerGas
+gasQuantity
+gasPrice
+
 ---
 
 # Draft Model
@@ -82,6 +90,11 @@ members
 actions
 
 memo
+
+isFuel
+pricePerGas
+gasQuantity
+gasPrice
 
 Draftは未確定データとして扱う。
 
@@ -108,6 +121,8 @@ members
 
 actions
 
+displayFuelInfo
+
 memo
 
 Projectionは表示専用。
@@ -129,6 +144,8 @@ distance表示フォーマット
 member表示生成
 
 action表示生成
+
+fuel表示整形
 
 ---
 
@@ -248,6 +265,13 @@ ActionAdded(String actionId)
 
 ActionRemoved(String actionId)
 
+IsFuelToggled(bool isFuel)
+- 給油フラグのON/OFF切り替え
+
+FuelFieldsChanged(String pricePerGas, String gasQuantity, String gasPrice)
+- FuelDetailBlocのDelegateを受けてDraftを同期する
+- FuelDetailWidgetのBlocListenerがFuelDraftChangedを検知したときに発火する
+
 MemoChanged(String value)
 
 SaveTapped
@@ -327,6 +351,43 @@ EventDomain更新
 MarkLinkはmarkLinkSeqで並ぶ。
 
 LinkDetailFeatureは順序変更を行わない。
+
+---
+
+# FuelDetail Integration Note
+
+LinkDetailFeatureはFuelDetailBlocをインライン埋め込みで使用する。
+
+```
+FuelDetailWidget（BlocListener）
+  ↓ FuelDraftChanged(draft) Delegate検知
+LinkDetailBloc.add(FuelFieldsChanged(pricePerGas, gasQuantity, gasPrice))
+  ↓
+LinkDetailDraft更新
+```
+
+- `isFuel == true` のときのみFuelDetailWidgetを表示する
+- FuelDetailBlocへの初期値は `Started(pricePerGas, gasQuantity, gasPrice)` で渡す
+- FuelDetailBlocはLinkDetailBlocを直接参照しない
+
+---
+
+# Fuel Model
+
+Fuel入力はLinkに紐づく。
+
+fields
+
+isFuel
+
+pricePerGas
+単価（円/L）
+
+gasQuantity
+給油量（0.1L単位。Draft/UI: double。例: 30.0。Domain永続: int×10。例: 300）
+
+gasPrice
+給油金額（円）
 
 ---
 

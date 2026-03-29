@@ -235,7 +235,12 @@ ActionAdded(String actionId)
 
 ActionRemoved(String actionId)
 
-FuelChanged(bool isFuel, String? pricePerGas, String? gasQuantity, String? gasPrice)
+IsFuelToggled(bool isFuel)
+- 給油フラグのON/OFF切り替え
+
+FuelFieldsChanged(String pricePerGas, String gasQuantity, String gasPrice)
+- FuelDetailBlocのDelegateを受けてDraftを同期する
+- FuelDetailWidgetのBlocListenerがFuelDraftChangedを検知したときに発火する
 
 MemoChanged(String value)
 
@@ -322,6 +327,24 @@ MarkDetailFeatureは順序変更を行わない。
 
 ---
 
+# FuelDetail Integration Note
+
+MarkDetailFeatureはFuelDetailBlocをインライン埋め込みで使用する。
+
+```
+FuelDetailWidget（BlocListener）
+  ↓ FuelDraftChanged(draft) Delegate検知
+MarkDetailBloc.add(FuelFieldsChanged(pricePerGas, gasQuantity, gasPrice))
+  ↓
+MarkDetailDraft更新
+```
+
+- `isFuel == true` のときのみFuelDetailWidgetを表示する
+- FuelDetailBlocへの初期値は `Started(pricePerGas, gasQuantity, gasPrice)` で渡す
+- FuelDetailBlocはMarkDetailBlocを直接参照しない
+
+---
+
 # Future Extensions
 
 以下の拡張を想定
@@ -331,8 +354,6 @@ MarkDetailFeatureは順序変更を行わない。
 Action詳細属性
 
 Segment生成
-
-Fuel自動計算
 
 ---
 
