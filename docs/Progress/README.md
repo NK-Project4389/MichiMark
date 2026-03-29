@@ -24,3 +24,4 @@
 | [2026-03-29_link_detail_feature.md](./2026-03-29_link_detail_feature.md) | link_detail Feature実装・router追加 |
 | [2026-03-29_fuel_detail_feature.md](./2026-03-29_fuel_detail_feature.md) | fuel_detail Feature実装・product-managerロール追加・MarkDetail/LinkDetail更新 |
 | [2026-03-29_payment_detail_feature.md](./2026-03-29_payment_detail_feature.md) | payment_detail Feature実装・Spec Delegate追加・router更新 |
+| [2026-03-29_payment_info_feature.md](./2026-03-29_payment_info_feature.md) | payment_info Feature実装・EventDetailPage組み込み |
