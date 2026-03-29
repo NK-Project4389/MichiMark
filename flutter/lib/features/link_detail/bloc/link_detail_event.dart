@@ -84,3 +84,27 @@ class LinkDetailMemoChanged extends LinkDetailEvent {
   @override
   List<Object?> get props => [memo];
 }
+
+/// 給油フラグがトグルされたとき
+class LinkDetailIsFuelToggled extends LinkDetailEvent {
+  const LinkDetailIsFuelToggled();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき
+class LinkDetailFuelFieldsChanged extends LinkDetailEvent {
+  final String pricePerGas;
+  final String gasQuantity;
+  final String gasPrice;
+
+  const LinkDetailFuelFieldsChanged({
+    required this.pricePerGas,
+    required this.gasQuantity,
+    required this.gasPrice,
+  });
+
+  @override
+  List<Object?> get props => [pricePerGas, gasQuantity, gasPrice];
+}

@@ -19,6 +19,7 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
     on<MarkDetailActionsSelected>(_onActionsSelected);
     on<MarkDetailMemoChanged>(_onMemoChanged);
     on<MarkDetailIsFuelToggled>(_onIsFuelToggled);
+    on<MarkDetailFuelFieldsChanged>(_onFuelFieldsChanged);
   }
 
   final EventRepository _eventRepository;
@@ -45,6 +46,11 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
         selectedActions: markLink.actions,
         memo: markLink.memo ?? '',
         isFuel: markLink.isFuel,
+        pricePerGasInput: markLink.pricePerGas?.toString() ?? '',
+        gasQuantityInput: markLink.gasQuantity != null
+            ? (markLink.gasQuantity! / 10).toStringAsFixed(1)
+            : '',
+        gasPriceInput: markLink.gasPrice?.toString() ?? '',
       );
       emit(MarkDetailLoaded(draft: draft));
     } on Exception catch (e) {
@@ -166,6 +172,22 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
       final current = state as MarkDetailLoaded;
       emit(current.copyWith(
         draft: current.draft.copyWith(isFuel: !current.draft.isFuel),
+      ));
+    }
+  }
+
+  Future<void> _onFuelFieldsChanged(
+    MarkDetailFuelFieldsChanged event,
+    Emitter<MarkDetailState> emit,
+  ) async {
+    if (state is MarkDetailLoaded) {
+      final current = state as MarkDetailLoaded;
+      emit(current.copyWith(
+        draft: current.draft.copyWith(
+          pricePerGasInput: event.pricePerGas,
+          gasQuantityInput: event.gasQuantity,
+          gasPriceInput: event.gasPrice,
+        ),
       ));
     }
   }

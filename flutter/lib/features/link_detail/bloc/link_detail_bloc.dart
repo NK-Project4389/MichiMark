@@ -17,6 +17,8 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
     on<LinkDetailEditActionsPressed>(_onEditActionsPressed);
     on<LinkDetailActionsSelected>(_onActionsSelected);
     on<LinkDetailMemoChanged>(_onMemoChanged);
+    on<LinkDetailIsFuelToggled>(_onIsFuelToggled);
+    on<LinkDetailFuelFieldsChanged>(_onFuelFieldsChanged);
   }
 
   final EventRepository _eventRepository;
@@ -42,6 +44,12 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
         selectedMembers: markLink.members,
         selectedActions: markLink.actions,
         memo: markLink.memo ?? '',
+        isFuel: markLink.isFuel,
+        pricePerGasInput: markLink.pricePerGas?.toString() ?? '',
+        gasQuantityInput: markLink.gasQuantity != null
+            ? (markLink.gasQuantity! / 10).toStringAsFixed(1)
+            : '',
+        gasPriceInput: markLink.gasPrice?.toString() ?? '',
       );
       emit(LinkDetailLoaded(draft: draft));
     } on Exception catch (e) {
@@ -139,6 +147,34 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
       final current = state as LinkDetailLoaded;
       emit(current.copyWith(
         draft: current.draft.copyWith(memo: event.memo),
+      ));
+    }
+  }
+
+  Future<void> _onIsFuelToggled(
+    LinkDetailIsFuelToggled event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is LinkDetailLoaded) {
+      final current = state as LinkDetailLoaded;
+      emit(current.copyWith(
+        draft: current.draft.copyWith(isFuel: !current.draft.isFuel),
+      ));
+    }
+  }
+
+  Future<void> _onFuelFieldsChanged(
+    LinkDetailFuelFieldsChanged event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is LinkDetailLoaded) {
+      final current = state as LinkDetailLoaded;
+      emit(current.copyWith(
+        draft: current.draft.copyWith(
+          pricePerGasInput: event.pricePerGas,
+          gasQuantityInput: event.gasQuantity,
+          gasPriceInput: event.gasPrice,
+        ),
       ));
     }
   }

@@ -101,3 +101,19 @@ class MarkDetailIsFuelToggled extends MarkDetailEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき
+class MarkDetailFuelFieldsChanged extends MarkDetailEvent {
+  final String pricePerGas;
+  final String gasQuantity;
+  final String gasPrice;
+
+  const MarkDetailFuelFieldsChanged({
+    required this.pricePerGas,
+    required this.gasQuantity,
+    required this.gasPrice,
+  });
+
+  @override
+  List<Object?> get props => [pricePerGas, gasQuantity, gasPrice];
+}

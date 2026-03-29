@@ -21,6 +21,18 @@ class LinkDetailDraft extends Equatable {
   /// メモ（任意）
   final String memo;
 
+  /// 給油フラグ
+  final bool isFuel;
+
+  /// ガソリン単価入力文字列（例: "150"。未入力時は空文字）
+  final String pricePerGasInput;
+
+  /// 給油量入力文字列（例: "30.0"。未入力時は空文字）
+  final String gasQuantityInput;
+
+  /// 合計金額入力文字列（例: "4500"。未入力時は空文字）
+  final String gasPriceInput;
+
   const LinkDetailDraft({
     this.markLinkName = '',
     required this.markLinkDate,
@@ -28,6 +40,10 @@ class LinkDetailDraft extends Equatable {
     this.selectedMembers = const [],
     this.selectedActions = const [],
     this.memo = '',
+    this.isFuel = false,
+    this.pricePerGasInput = '',
+    this.gasQuantityInput = '',
+    this.gasPriceInput = '',
   });
 
   LinkDetailDraft copyWith({
@@ -37,6 +53,10 @@ class LinkDetailDraft extends Equatable {
     List<MemberDomain>? selectedMembers,
     List<ActionDomain>? selectedActions,
     String? memo,
+    bool? isFuel,
+    String? pricePerGasInput,
+    String? gasQuantityInput,
+    String? gasPriceInput,
   }) {
     return LinkDetailDraft(
       markLinkName: markLinkName ?? this.markLinkName,
@@ -45,6 +65,10 @@ class LinkDetailDraft extends Equatable {
       selectedMembers: selectedMembers ?? this.selectedMembers,
       selectedActions: selectedActions ?? this.selectedActions,
       memo: memo ?? this.memo,
+      isFuel: isFuel ?? this.isFuel,
+      pricePerGasInput: pricePerGasInput ?? this.pricePerGasInput,
+      gasQuantityInput: gasQuantityInput ?? this.gasQuantityInput,
+      gasPriceInput: gasPriceInput ?? this.gasPriceInput,
     );
   }
 
@@ -56,5 +80,9 @@ class LinkDetailDraft extends Equatable {
         selectedMembers,
         selectedActions,
         memo,
+        isFuel,
+        pricePerGasInput,
+        gasQuantityInput,
+        gasPriceInput,
       ];
 }
