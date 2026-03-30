@@ -220,12 +220,35 @@ EventDetailFeature
 ```
 ---
 
+# New Mark Creation Flow
+
+`Started(eventId, markLinkId)` を受けたとき、EventDomain.markLinks に該当 id が存在しない場合は
+新規作成モードとして扱い、空の MarkDetailDraft を初期値として画面をロードする。
+
+```
+MarkDetailDraft(
+  id: markLinkId,   // router から渡された UUID
+  markLinkSeq: 次のseq（EventDomain.markLinks.length を参考に決定）
+  markLinkType: MarkOrLink.mark,
+  // 他は空・null
+)
+```
+
+> **UUID生成タイミング:** MichiInfo の BlocListener で `Uuid().v4()` を生成し、
+> `/event/mark/{uuid}` へ遷移する。MarkDetailBloc は UUID を生成しない。
+>
+> **ルート統合:** `/event/mark/new` ルートは廃止。新規・編集ともに `/event/mark/:markId` に統合。
+
+---
+
 # BLoC Events
 
 MarkDetailEvent（sealed class）
 
-Started
+Started(String eventId, String markLinkId)
 - 画面表示・初期データ読み込み
+- markLinkId が EventDomain.markLinks に存在しない → 新規作成モード
+- markLinkId が存在する → 編集モード
 
 NameChanged(String value)
 

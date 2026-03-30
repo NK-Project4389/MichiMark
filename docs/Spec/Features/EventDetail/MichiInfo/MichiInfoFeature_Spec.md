@@ -202,12 +202,17 @@ OpenMarkDetail(EventID eventId, MarkLinkID markLinkId)
 OpenLinkDetail(EventID eventId, MarkLinkID markLinkId)
 - Link詳細を開く要求
 
-AddMarkOrLinkRequested
-- Mark/Linkの追加導線を開始する要求
-  （例: 種別選択 → Draft生成 → Detailへ遷移、などは上位で決める）
+AddMarkRequested(String eventId)
+- 新規Mark追加の要求
+
+AddLinkRequested(String eventId)
+- 新規Link追加の要求
 
 Notes
 - Delegateは意図のみ運び、Domain/Draftを直接変更しない。
+- UUID生成は MichiInfoView の BlocListener が行う。
+  `Uuid().v4()` を生成して `/event/mark/{uuid}` または `/event/link/{uuid}` へ遷移する。
+- BLoC は UUID を生成しない。
 
 ---
 

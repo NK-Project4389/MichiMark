@@ -28,4 +28,5 @@
 | [2026-03-29_new_mark_link_routes.md](./2026-03-29_new_mark_link_routes.md) | マーク/リンク新規作成ルート追加・MichiInfoView TODO解消 |
 | [2026-03-29_settings_features.md](./2026-03-29_settings_features.md) | 設定系Feature（Trans/Member/Tag/Action）Spec作成・実装・router追加 |
 | [2026-03-30_event_detail_save.md](./2026-03-30_event_detail_save.md) | EventDetail全タブ一括保存（§17）実装 |
+| [2026-03-30_uuid_new_entity_spec.md](./2026-03-30_uuid_new_entity_spec.md) | UUID化・新規エンティティ作成フロー Spec設計（方針A採用） |
 | [2026-03-29_roadmap_planning.md](./2026-03-29_roadmap_planning.md) | ロードマップ策定・マネタイズ戦略・法人対応設計考慮事項 |
