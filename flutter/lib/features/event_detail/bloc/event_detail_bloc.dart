@@ -63,8 +63,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     EventDetailTabSelected event,
     Emitter<EventDetailState> emit,
   ) async {
-    if (state is EventDetailLoaded) {
-      final current = state as EventDetailLoaded;
+    if (state case final EventDetailLoaded current) {
       emit(current.copyWith(
         draft: current.draft.copyWith(selectedTab: event.tab),
       ));
@@ -75,8 +74,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     EventDetailDismissPressed event,
     Emitter<EventDetailState> emit,
   ) async {
-    if (state is EventDetailLoaded) {
-      final current = state as EventDetailLoaded;
+    if (state case final EventDetailLoaded current) {
       emit(current.copyWith(delegate: const EventDetailDismissDelegate()));
     }
   }
@@ -85,8 +83,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     EventDetailOpenMarkRequested event,
     Emitter<EventDetailState> emit,
   ) async {
-    if (state is EventDetailLoaded) {
-      final current = state as EventDetailLoaded;
+    if (state case final EventDetailLoaded current) {
       emit(current.copyWith(
         delegate: EventDetailOpenMarkDelegate(event.markLinkId),
       ));
@@ -97,8 +94,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     EventDetailOpenLinkRequested event,
     Emitter<EventDetailState> emit,
   ) async {
-    if (state is EventDetailLoaded) {
-      final current = state as EventDetailLoaded;
+    if (state case final EventDetailLoaded current) {
       emit(current.copyWith(
         delegate: EventDetailOpenLinkDelegate(event.markLinkId),
       ));
@@ -109,8 +105,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     EventDetailOpenPaymentRequested event,
     Emitter<EventDetailState> emit,
   ) async {
-    if (state is EventDetailLoaded) {
-      final current = state as EventDetailLoaded;
+    if (state case final EventDetailLoaded current) {
       emit(current.copyWith(
         delegate: EventDetailOpenPaymentDelegate(event.paymentId),
       ));
@@ -121,8 +116,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     EventDetailAddMarkLinkRequested event,
     Emitter<EventDetailState> emit,
   ) async {
-    if (state is EventDetailLoaded) {
-      final current = state as EventDetailLoaded;
+    if (state case final EventDetailLoaded current) {
       emit(current.copyWith(
         delegate: const EventDetailAddMarkLinkDelegate(),
       ));

@@ -30,15 +30,8 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
     emit(const LinkDetailLoading());
     try {
       final domain = await _eventRepository.fetch(event.eventId);
-      final markLinkId = event.markLinkId;
-      if (markLinkId == null) {
-        // markLinkId未指定: 新規作成モード
-        final draft = LinkDetailDraft(markLinkDate: DateTime.now());
-        emit(LinkDetailLoaded(draft: draft));
-        return;
-      }
       final markLink = domain.markLinks
-          .where((ml) => ml.id == markLinkId && !ml.isDeleted)
+          .where((ml) => ml.id == event.markLinkId && !ml.isDeleted)
           .firstOrNull;
       if (markLink == null) {
         // markLinksに存在しない: 新規作成モード（UUIDはrouterから渡された値）
