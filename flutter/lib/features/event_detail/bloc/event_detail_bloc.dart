@@ -128,7 +128,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     Emitter<EventDetailState> emit,
   ) async {
     if (state is! EventDetailLoaded) return;
-    final current = state as EventDetailLoaded;
+    final EventDetailLoaded current = state;
 
     emit(current.copyWith(isSaving: true));
 
