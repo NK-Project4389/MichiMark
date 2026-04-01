@@ -442,4 +442,56 @@ meter差分 > distanceValue
 
 ---
 
+# Implementation Notes (Applied)
+
+## SaveTapped / CancelTapped の実装対応
+
+### SaveTapped → SaveDraftDelegate → context.pop(draft)
+
+```
+「反映」ボタンタップ
+ → LinkDetailSaveTapped Event
+ → Bloc: SaveDraftDelegate(draft) をセット
+ → Page BlocListener 検知
+ → context.pop(draft) で呼び出し元に Draft を返す
+```
+
+- AppBar 右上に「反映」ボタンを配置（TextButton）
+- 永続化は行わない。Draft を呼び出し元（MichiInfoView）に返すのみ
+
+### CancelTapped（= DismissPressed）→ DismissDelegate → context.pop()
+
+```
+「←」ボタンタップ
+ → LinkDetailDismissPressed Event（実装名）
+ → Bloc: DismissDelegate をセット
+ → Page BlocListener 検知
+ → context.pop()（draft なし）
+```
+
+- Spec上の CancelTapped は実装では LinkDetailDismissPressed として実装
+- Draft を返さずに画面を閉じる（キャンセル）
+
+---
+
+## NotFound（新規作成）フロー
+
+`Started(eventId, markLinkId)` を受けて EventRepository.fetch を行い、
+markLinks に該当 id が存在しない場合（新規追加）は空の Draft で画面をロードする。
+
+```
+_onStarted:
+  domain = await _eventRepository.fetch(eventId)
+  markLink = domain.markLinks.where(id == markLinkId).firstOrNull
+  if markLink == null:
+    → 新規作成モード: 空 LinkDetailDraft を生成して emit
+  else:
+    → 編集モード: domain から Draft を生成して emit
+```
+
+- NotFoundError（EventDomain 自体が存在しない）は Exception として扱い、LinkDetailError を emit する
+- LinkDetailDomain は UUID 生成しない。UUID は MichiInfoView の BlocListener で生成済み
+
+---
+
 # End of LinkDetail Feature Spec

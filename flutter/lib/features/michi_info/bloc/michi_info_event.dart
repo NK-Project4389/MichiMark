@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
+import '../../../features/mark_detail/draft/mark_detail_draft.dart';
+import '../../../features/link_detail/draft/link_detail_draft.dart';
 
 sealed class MichiInfoEvent extends Equatable {
   const MichiInfoEvent();
@@ -38,4 +40,24 @@ class MichiInfoAddLinkPressed extends MichiInfoEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+/// MarkDetail画面からDraftが反映されて戻ってきたとき
+class MichiInfoMarkDraftApplied extends MichiInfoEvent {
+  final String markLinkId;
+  final MarkDetailDraft draft;
+  const MichiInfoMarkDraftApplied({required this.markLinkId, required this.draft});
+
+  @override
+  List<Object?> get props => [markLinkId, draft];
+}
+
+/// LinkDetail画面からDraftが反映されて戻ってきたとき
+class MichiInfoLinkDraftApplied extends MichiInfoEvent {
+  final String markLinkId;
+  final LinkDetailDraft draft;
+  const MichiInfoLinkDraftApplied({required this.markLinkId, required this.draft});
+
+  @override
+  List<Object?> get props => [markLinkId, draft];
 }

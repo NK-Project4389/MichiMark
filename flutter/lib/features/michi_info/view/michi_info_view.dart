@@ -4,20 +4,27 @@ import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../features/event_detail/projection/michi_info_list_projection.dart';
+import '../../../features/link_detail/draft/link_detail_draft.dart';
+import '../../../features/mark_detail/draft/mark_detail_draft.dart';
 import '../../../features/shared/projection/mark_link_item_projection.dart';
 import '../bloc/michi_info_bloc.dart';
 import '../bloc/michi_info_event.dart';
 import '../bloc/michi_info_state.dart';
 
-class MichiInfoView extends StatelessWidget {
+class MichiInfoView extends StatefulWidget {
   const MichiInfoView({super.key});
 
   @override
+  State<MichiInfoView> createState() => _MichiInfoViewState();
+}
+
+class _MichiInfoViewState extends State<MichiInfoView> {
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<MichiInfoBloc, MichiInfoState>(
-      listener: (context, state) {
+      listener: (_, state) async {
         if (state is MichiInfoLoaded && state.delegate != null) {
-          _handleDelegate(context, state.delegate!);
+          await _handleDelegate(state.delegate!);
         }
       },
       builder: (context, state) {
@@ -32,18 +39,57 @@ class MichiInfoView extends StatelessWidget {
     );
   }
 
-  void _handleDelegate(BuildContext context, MichiInfoDelegate delegate) {
+  Future<void> _handleDelegate(MichiInfoDelegate delegate) async {
     switch (delegate) {
       case MichiInfoOpenMarkDelegate(:final eventId, :final markLinkId):
-        context.go('/event/mark/$markLinkId', extra: eventId);
+        final result = await context.push<MarkDetailDraft>(
+          '/event/mark/$markLinkId',
+          extra: eventId,
+        );
+        if (!mounted) return;
+        if (result != null) {
+          context.read<MichiInfoBloc>().add(
+                MichiInfoMarkDraftApplied(markLinkId: markLinkId, draft: result),
+              );
+        }
+
       case MichiInfoOpenLinkDelegate(:final eventId, :final markLinkId):
-        context.go('/event/link/$markLinkId', extra: eventId);
+        final result = await context.push<LinkDetailDraft>(
+          '/event/link/$markLinkId',
+          extra: eventId,
+        );
+        if (!mounted) return;
+        if (result != null) {
+          context.read<MichiInfoBloc>().add(
+                MichiInfoLinkDraftApplied(markLinkId: markLinkId, draft: result),
+              );
+        }
+
       case MichiInfoAddMarkDelegate(:final eventId):
         final markId = const Uuid().v4();
-        context.go('/event/mark/$markId', extra: eventId);
+        final result = await context.push<MarkDetailDraft>(
+          '/event/mark/$markId',
+          extra: eventId,
+        );
+        if (!mounted) return;
+        if (result != null) {
+          context.read<MichiInfoBloc>().add(
+                MichiInfoMarkDraftApplied(markLinkId: markId, draft: result),
+              );
+        }
+
       case MichiInfoAddLinkDelegate(:final eventId):
         final linkId = const Uuid().v4();
-        context.go('/event/link/$linkId', extra: eventId);
+        final result = await context.push<LinkDetailDraft>(
+          '/event/link/$linkId',
+          extra: eventId,
+        );
+        if (!mounted) return;
+        if (result != null) {
+          context.read<MichiInfoBloc>().add(
+                MichiInfoLinkDraftApplied(markLinkId: linkId, draft: result),
+              );
+        }
     }
   }
 }
