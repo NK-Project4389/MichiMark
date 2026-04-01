@@ -30,21 +30,24 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
   ) async {
     emit(const MarkDetailLoading());
     try {
-      if (event.markLinkId == null) {
-        // 新規作成: 初期Draftを生成
+      final domain = await _eventRepository.fetch(event.eventId);
+      final markLinkId = event.markLinkId;
+      if (markLinkId == null) {
+        // markLinkId未指定: 新規作成モード
         final draft = MarkDetailDraft(markLinkDate: DateTime.now());
         emit(MarkDetailLoaded(draft: draft));
         return;
       }
-      // 既存編集: Repositoryからデータ取得
-      final domain = await _eventRepository.fetch(event.eventId);
       final markLink = domain.markLinks
-          .where((ml) => ml.id == event.markLinkId && !ml.isDeleted)
+          .where((ml) => ml.id == markLinkId && !ml.isDeleted)
           .firstOrNull;
       if (markLink == null) {
-        emit(const MarkDetailError(message: 'マークが見つかりません'));
+        // markLinksに存在しない: 新規作成モード（UUIDはrouterから渡された値）
+        final draft = MarkDetailDraft(markLinkDate: DateTime.now());
+        emit(MarkDetailLoaded(draft: draft));
         return;
       }
+      // 既存編集モード
       final draft = MarkDetailDraft(
         markLinkName: markLink.markLinkName ?? '',
         markLinkDate: markLink.markLinkDate,

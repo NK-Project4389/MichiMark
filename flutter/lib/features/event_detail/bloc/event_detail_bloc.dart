@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../adapter/event_detail_adapter.dart';
 import '../../../domain/transaction/event/event_domain.dart';
 import '../../../repository/event_repository.dart';
+import '../../../repository/repository_error.dart';
 import '../draft/event_detail_draft.dart';
 import 'event_detail_event.dart';
 import 'event_detail_state.dart';
@@ -28,7 +29,26 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
   ) async {
     emit(const EventDetailLoading());
     try {
-      final domain = await _eventRepository.fetch(event.eventId);
+      final EventDomain domain;
+      try {
+        domain = await _eventRepository.fetch(event.eventId);
+      } on NotFoundError {
+        // 新規作成モード: 空ドメインを生成してRepositoryに保存
+        final now = DateTime.now();
+        final newDomain = EventDomain(
+          id: event.eventId,
+          eventName: '',
+          createdAt: now,
+          updatedAt: now,
+        );
+        await _eventRepository.save(newDomain);
+        final projection = EventDetailAdapter.toProjection(newDomain);
+        emit(EventDetailLoaded(
+          projection: projection,
+          draft: const EventDetailDraft(),
+        ));
+        return;
+      }
       final projection = EventDetailAdapter.toProjection(domain);
       emit(EventDetailLoaded(
         projection: projection,

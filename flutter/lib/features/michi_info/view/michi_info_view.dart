@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../features/event_detail/projection/michi_info_list_projection.dart';
 import '../../../features/shared/projection/mark_link_item_projection.dart';
@@ -38,9 +39,11 @@ class MichiInfoView extends StatelessWidget {
       case MichiInfoOpenLinkDelegate(:final eventId, :final markLinkId):
         context.go('/event/link/$markLinkId', extra: eventId);
       case MichiInfoAddMarkDelegate(:final eventId):
-        context.go('/event/mark/new', extra: eventId);
+        final markId = const Uuid().v4();
+        context.go('/event/mark/$markId', extra: eventId);
       case MichiInfoAddLinkDelegate(:final eventId):
-        context.go('/event/link/new', extra: eventId);
+        final linkId = const Uuid().v4();
+        context.go('/event/link/$linkId', extra: eventId);
     }
   }
 }

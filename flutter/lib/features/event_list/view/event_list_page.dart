@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 import '../bloc/event_list_bloc.dart';
 import '../bloc/event_list_event.dart';
 import '../bloc/event_list_state.dart';
@@ -54,7 +55,7 @@ class EventListPage extends StatelessWidget {
       case OpenEventDetailDelegate(:final eventId):
         context.go('/event/$eventId');
       case OpenAddEventDelegate():
-        context.go('/event/new');
+        context.go('/event/${const Uuid().v4()}');
       case OpenSettingsDelegate():
         context.go('/settings');
     }
