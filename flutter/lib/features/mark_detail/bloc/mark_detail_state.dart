@@ -27,6 +27,14 @@ class MarkDetailOpenActionsSelectionDelegate extends MarkDetailDelegate {
   List<Object?> get props => [];
 }
 
+class MarkDetailSaveDraftDelegate extends MarkDetailDelegate {
+  final MarkDetailDraft draft;
+  const MarkDetailSaveDraftDelegate(this.draft);
+
+  @override
+  List<Object?> get props => [draft];
+}
+
 // ---------------------------------------------------------------------------
 
 sealed class MarkDetailState extends Equatable {

@@ -93,6 +93,14 @@ class LinkDetailIsFuelToggled extends LinkDetailEvent {
   List<Object?> get props => [];
 }
 
+/// 保存ボタンが押されたとき
+class LinkDetailSaveTapped extends LinkDetailEvent {
+  const LinkDetailSaveTapped();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき
 class LinkDetailFuelFieldsChanged extends LinkDetailEvent {
   final String pricePerGas;

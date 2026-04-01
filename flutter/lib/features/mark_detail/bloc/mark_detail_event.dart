@@ -102,6 +102,14 @@ class MarkDetailIsFuelToggled extends MarkDetailEvent {
   List<Object?> get props => [];
 }
 
+/// 保存ボタンが押されたとき
+class MarkDetailSaveTapped extends MarkDetailEvent {
+  const MarkDetailSaveTapped();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき
 class MarkDetailFuelFieldsChanged extends MarkDetailEvent {
   final String pricePerGas;

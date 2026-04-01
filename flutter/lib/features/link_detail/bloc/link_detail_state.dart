@@ -27,6 +27,14 @@ class LinkDetailOpenActionsSelectionDelegate extends LinkDetailDelegate {
   List<Object?> get props => [];
 }
 
+class LinkDetailSaveDraftDelegate extends LinkDetailDelegate {
+  final LinkDetailDraft draft;
+  const LinkDetailSaveDraftDelegate(this.draft);
+
+  @override
+  List<Object?> get props => [draft];
+}
+
 // ---------------------------------------------------------------------------
 
 sealed class LinkDetailState extends Equatable {

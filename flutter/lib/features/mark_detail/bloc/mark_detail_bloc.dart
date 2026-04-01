@@ -18,6 +18,7 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
     on<MarkDetailEditActionsPressed>(_onEditActionsPressed);
     on<MarkDetailActionsSelected>(_onActionsSelected);
     on<MarkDetailMemoChanged>(_onMemoChanged);
+    on<MarkDetailSaveTapped>(_onSaveTapped);
     on<MarkDetailIsFuelToggled>(_onIsFuelToggled);
     on<MarkDetailFuelFieldsChanged>(_onFuelFieldsChanged);
   }
@@ -163,6 +164,17 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
       final current = state as MarkDetailLoaded;
       emit(current.copyWith(
         draft: current.draft.copyWith(memo: event.memo),
+      ));
+    }
+  }
+
+  Future<void> _onSaveTapped(
+    MarkDetailSaveTapped event,
+    Emitter<MarkDetailState> emit,
+  ) async {
+    if (state case MarkDetailLoaded current) {
+      emit(current.copyWith(
+        delegate: MarkDetailSaveDraftDelegate(current.draft),
       ));
     }
   }

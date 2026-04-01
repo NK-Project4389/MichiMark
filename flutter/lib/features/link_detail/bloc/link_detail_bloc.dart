@@ -17,6 +17,7 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
     on<LinkDetailEditActionsPressed>(_onEditActionsPressed);
     on<LinkDetailActionsSelected>(_onActionsSelected);
     on<LinkDetailMemoChanged>(_onMemoChanged);
+    on<LinkDetailSaveTapped>(_onSaveTapped);
     on<LinkDetailIsFuelToggled>(_onIsFuelToggled);
     on<LinkDetailFuelFieldsChanged>(_onFuelFieldsChanged);
   }
@@ -150,6 +151,17 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
       final current = state as LinkDetailLoaded;
       emit(current.copyWith(
         draft: current.draft.copyWith(memo: event.memo),
+      ));
+    }
+  }
+
+  Future<void> _onSaveTapped(
+    LinkDetailSaveTapped event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state case LinkDetailLoaded current) {
+      emit(current.copyWith(
+        delegate: LinkDetailSaveDraftDelegate(current.draft),
       ));
     }
   }

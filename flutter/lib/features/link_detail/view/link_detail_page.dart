@@ -80,6 +80,10 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
               .read<LinkDetailBloc>()
               .add(LinkDetailActionsSelected(selected));
         }
+
+      case LinkDetailSaveDraftDelegate(:final draft):
+        if (!mounted) return;
+        context.pop(draft);
     }
   }
 }
@@ -103,6 +107,14 @@ class _LinkDetailScaffold extends StatelessWidget {
           draft.markLinkName.isEmpty ? 'リンク詳細' : draft.markLinkName,
         ),
         centerTitle: true,
+        actions: [
+          TextButton(
+            onPressed: () => context
+                .read<LinkDetailBloc>()
+                .add(const LinkDetailSaveTapped()),
+            child: const Text('反映'),
+          ),
+        ],
       ),
       body: _LinkDetailForm(draft: draft),
     );

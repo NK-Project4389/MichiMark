@@ -82,6 +82,10 @@ class _MarkDetailPageState extends State<MarkDetailPage> {
         if (result case ActionsSelectionResult(:final selected)) {
           context.read<MarkDetailBloc>().add(MarkDetailActionsSelected(selected));
         }
+
+      case MarkDetailSaveDraftDelegate(:final draft):
+        if (!mounted) return;
+        context.pop(draft);
     }
   }
 }
@@ -109,6 +113,14 @@ class _MarkDetailScaffold extends StatelessWidget {
           draft.markLinkName.isEmpty ? 'マーク詳細' : draft.markLinkName,
         ),
         centerTitle: true,
+        actions: [
+          TextButton(
+            onPressed: () => context
+                .read<MarkDetailBloc>()
+                .add(const MarkDetailSaveTapped()),
+            child: const Text('反映'),
+          ),
+        ],
       ),
       body: _MarkDetailForm(draft: draft, dateFormat: dateFormat),
     );
