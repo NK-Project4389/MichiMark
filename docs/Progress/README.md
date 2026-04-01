@@ -30,3 +30,4 @@
 | [2026-03-30_event_detail_save.md](./2026-03-30_event_detail_save.md) | EventDetail全タブ一括保存（§17）実装 |
 | [2026-03-30_uuid_new_entity_spec.md](./2026-03-30_uuid_new_entity_spec.md) | UUID化・新規エンティティ作成フロー Spec設計（方針A採用） |
 | [2026-03-29_roadmap_planning.md](./2026-03-29_roadmap_planning.md) | ロードマップ策定・マネタイズ戦略・法人対応設計考慮事項 |
+| [2026-03-31_react_discussion_uuid_check.md](./2026-03-31_react_discussion_uuid_check.md) | React換装検討（Flutter継続決定）・UUID実装確認（未完了確認） |
