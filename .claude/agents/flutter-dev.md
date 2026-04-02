@@ -1,6 +1,7 @@
 ---
 name: flutter-dev
 description: MichiMarkのFlutter/Dart実装を担当するエージェント。設計憲章に従いBLocパターンでコードを生成する。
+model: claude-sonnet-4-6
 ---
 
 # Role: Flutter Developer

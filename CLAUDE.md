@@ -115,6 +115,7 @@ architect（Spec）→ flutter-dev（実装）→ reviewer（レビュー）
 - `IN_PROGRESS` のタスクには別セッションは手を出さない
 - タスクに着手するとき → `status` を `IN_PROGRESS`、`locked_by` に `YYYY-MM-DD_[作業内容]` を記入して保存
 - タスク完了時 → `status` を `DONE`、`locked_by` を空欄に戻す
+- **作業完了時にタスクボードの `DONE` 更新を忘れないこと**（コミットと同タイミングで更新する）
 - 依存タスクが未完了の場合は `BLOCKED` のまま待つ
 - タスクボードを更新した後は即座にコミット・プッシュして他セッションに共有する
 

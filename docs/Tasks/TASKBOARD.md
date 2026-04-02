@@ -23,18 +23,18 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-001 | drift Repository 実装（テーブル定義・DAO・Repository impl） | flutter-dev | `TODO` | | Spec: `docs/Spec/Features/DriftRepository_Spec.md` |
-| T-002 | drift Repository レビュー | reviewer | `BLOCKED` | | T-001完了後に着手 |
-| T-003 | get_it DI セットアップ（InMemory → drift 切り替え） | flutter-dev | `BLOCKED` | | T-001完了後に着手 |
-| T-004 | get_it DI レビュー | reviewer | `BLOCKED` | | T-003完了後に着手 |
+| T-001 | drift Repository 実装（テーブル定義・DAO・Repository impl） | flutter-dev | `DONE` | | Spec: `docs/Spec/Features/DriftRepository_Spec.md` |
+| T-002 | drift Repository レビュー | reviewer | `DONE` | | レビュー指摘修正済み |
+| T-003 | get_it DI セットアップ（InMemory → drift 切り替え） | flutter-dev | `DONE` | | |
+| T-004 | get_it DI レビュー | reviewer | `DONE` | | レビュー指摘修正済み |
 
 ## Phase 2: 動作確認
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-010 | `flutter run` で全Feature動作確認（イベント一覧・詳細・マーク・リンク・支払） | flutter-dev | `BLOCKED` | | T-003完了後に着手 |
-| T-011 | 設定Feature動作確認（Trans/Member/Tag/Action） | flutter-dev | `BLOCKED` | | T-010と同時可 |
-| T-012 | drift データ保存・再起動後の永続化確認 | flutter-dev | `BLOCKED` | | T-010と同時可 |
+| T-010 | `flutter run` で全Feature動作確認（イベント一覧・詳細・マーク・リンク・支払） | flutter-dev | `TODO` | | Phase 1完了・着手可能 |
+| T-011 | 設定Feature動作確認（Trans/Member/Tag/Action） | flutter-dev | `TODO` | | T-010と同時可 |
+| T-012 | drift データ保存・再起動後の永続化確認 | flutter-dev | `TODO` | | T-010と同時可 |
 
 ## Phase 3: 機能追加・仕上げ
 

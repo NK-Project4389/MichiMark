@@ -1,6 +1,8 @@
 ---
 name: reviewer
 description: 生成されたFlutterコードがMichiMarkの設計憲章に従っているかレビューするエージェント。アーキテクチャ違反・アンチパターンを検出する。
+model: claude-haiku-4-5-20251001
+tools: Read,Grep,Glob
 ---
 
 # Role: Code Reviewer
