@@ -107,6 +107,19 @@ architect（Spec）→ flutter-dev（実装）→ reviewer（レビュー）
 
 ---
 
+## タスクボード運用ルール
+
+複数セッションが並行して作業する際の競合を防ぐため、タスクボードで着手状況を共有する。
+
+- **セッション開始時に `docs/Tasks/TASKBOARD.md` を必ず読む**
+- `IN_PROGRESS` のタスクには別セッションは手を出さない
+- タスクに着手するとき → `status` を `IN_PROGRESS`、`locked_by` に `YYYY-MM-DD_[作業内容]` を記入して保存
+- タスク完了時 → `status` を `DONE`、`locked_by` を空欄に戻す
+- 依存タスクが未完了の場合は `BLOCKED` のまま待つ
+- タスクボードを更新した後は即座にコミット・プッシュして他セッションに共有する
+
+---
+
 ## ドキュメント参照
 
 | ドキュメント | 用途 |
@@ -118,3 +131,4 @@ architect（Spec）→ flutter-dev（実装）→ reviewer（レビュー）
 | `docs/Requirements/` | 要件書格納ディレクトリ |
 | `docs/Domain/` | Domain設計MDファイル格納ディレクトリ |
 | `docs/Progress/README.md` | 進捗記録一覧 |
+| `docs/Tasks/TASKBOARD.md` | セッション間共有タスクボード |
