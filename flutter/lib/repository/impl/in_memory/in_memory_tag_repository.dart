@@ -3,7 +3,10 @@ import '../../tag_repository.dart';
 
 /// TagRepository の InMemory 実装（drift 実装前の仮実装）
 class InMemoryTagRepository implements TagRepository {
-  final List<TagDomain> _items = [];
+  final List<TagDomain> _items;
+
+  InMemoryTagRepository({List<TagDomain> initialItems = const []})
+      : _items = List.of(initialItems);
 
   @override
   Future<List<TagDomain>> fetchAll() async =>

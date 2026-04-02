@@ -3,7 +3,10 @@ import '../../member_repository.dart';
 
 /// MemberRepository の InMemory 実装（drift 実装前の仮実装）
 class InMemoryMemberRepository implements MemberRepository {
-  final List<MemberDomain> _items = [];
+  final List<MemberDomain> _items;
+
+  InMemoryMemberRepository({List<MemberDomain> initialItems = const []})
+      : _items = List.of(initialItems);
 
   @override
   Future<List<MemberDomain>> fetchAll() async =>

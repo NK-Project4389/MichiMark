@@ -3,7 +3,10 @@ import '../../trans_repository.dart';
 
 /// TransRepository の InMemory 実装（drift 実装前の仮実装）
 class InMemoryTransRepository implements TransRepository {
-  final List<TransDomain> _items = [];
+  final List<TransDomain> _items;
+
+  InMemoryTransRepository({List<TransDomain> initialItems = const []})
+      : _items = List.of(initialItems);
 
   @override
   Future<List<TransDomain>> fetchAll() async =>

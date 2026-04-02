@@ -4,7 +4,10 @@ import '../../repository_error.dart';
 
 /// EventRepository の InMemory 実装（drift 実装前の仮実装）
 class InMemoryEventRepository implements EventRepository {
-  final List<EventDomain> _items = [];
+  final List<EventDomain> _items;
+
+  InMemoryEventRepository({List<EventDomain> initialItems = const []})
+      : _items = List.of(initialItems);
 
   @override
   Future<List<EventDomain>> fetchAll() async =>

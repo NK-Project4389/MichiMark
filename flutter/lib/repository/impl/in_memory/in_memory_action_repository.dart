@@ -3,7 +3,10 @@ import '../../action_repository.dart';
 
 /// ActionRepository の InMemory 実装（drift 実装前の仮実装）
 class InMemoryActionRepository implements ActionRepository {
-  final List<ActionDomain> _items = [];
+  final List<ActionDomain> _items;
+
+  InMemoryActionRepository({List<ActionDomain> initialItems = const []})
+      : _items = List.of(initialItems);
 
   @override
   Future<List<ActionDomain>> fetchAll() async =>
