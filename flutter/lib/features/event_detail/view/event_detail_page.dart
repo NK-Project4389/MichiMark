@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/di.dart';
 import '../../../repository/event_repository.dart';
 import '../../basic_info/bloc/basic_info_bloc.dart';
 import '../../basic_info/bloc/basic_info_event.dart';
@@ -93,12 +94,12 @@ class _EventDetailScaffold extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (_) => BasicInfoBloc(
-            eventRepository: context.read<EventRepository>(),
+            eventRepository: getIt<EventRepository>(),
           )..add(BasicInfoStarted(eventId)),
         ),
         BlocProvider(
           create: (_) => MichiInfoBloc(
-            eventRepository: context.read<EventRepository>(),
+            eventRepository: getIt<EventRepository>(),
           )..add(MichiInfoStarted(eventId)),
         ),
         BlocProvider(

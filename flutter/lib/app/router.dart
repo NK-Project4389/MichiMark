@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'di.dart';
 import '../features/event_detail/bloc/event_detail_bloc.dart';
 import '../features/event_detail/bloc/event_detail_event.dart';
 import '../features/event_detail/view/event_detail_page.dart';
@@ -58,7 +59,7 @@ final router = GoRouter(
       path: '/',
       builder: (context, state) => BlocProvider(
         create: (_) => EventListBloc(
-          eventRepository: context.read<EventRepository>(),
+          eventRepository: getIt<EventRepository>(),
         )..add(const EventListStarted()),
         child: const EventListPage(),
       ),
@@ -69,7 +70,7 @@ final router = GoRouter(
         final eventId = state.pathParameters['id'] ?? '';
         return BlocProvider(
           create: (_) => EventDetailBloc(
-            eventRepository: context.read<EventRepository>(),
+            eventRepository: getIt<EventRepository>(),
           )..add(EventDetailStarted(eventId)),
           child: const EventDetailPage(),
         );
@@ -83,10 +84,10 @@ final router = GoRouter(
           create: (_) => SelectionBloc(
             type: args.type,
             selectedIds: args.selectedIds,
-            transRepository: context.read<TransRepository>(),
-            memberRepository: context.read<MemberRepository>(),
-            tagRepository: context.read<TagRepository>(),
-            actionRepository: context.read<ActionRepository>(),
+            transRepository: getIt<TransRepository>(),
+            memberRepository: getIt<MemberRepository>(),
+            tagRepository: getIt<TagRepository>(),
+            actionRepository: getIt<ActionRepository>(),
           )..add(const SelectionStarted()),
           child: const SelectionPage(),
         );
@@ -99,7 +100,7 @@ final router = GoRouter(
         final eventId = state.extra as String;
         return BlocProvider(
           create: (_) => MarkDetailBloc(
-            eventRepository: context.read<EventRepository>(),
+            eventRepository: getIt<EventRepository>(),
           )..add(MarkDetailStarted(eventId: eventId, markLinkId: markId)),
           child: const MarkDetailPage(),
         );
@@ -112,7 +113,7 @@ final router = GoRouter(
         final eventId = state.extra as String;
         return BlocProvider(
           create: (_) => LinkDetailBloc(
-            eventRepository: context.read<EventRepository>(),
+            eventRepository: getIt<EventRepository>(),
           )..add(LinkDetailStarted(eventId: eventId, markLinkId: linkId)),
           child: const LinkDetailPage(),
         );
@@ -124,7 +125,7 @@ final router = GoRouter(
         final args = state.extra as PaymentDetailArgs;
         return BlocProvider(
           create: (_) => PaymentDetailBloc(
-            eventRepository: context.read<EventRepository>(),
+            eventRepository: getIt<EventRepository>(),
           )..add(PaymentDetailStarted(
               eventId: args.eventId,
               paymentId: args.paymentId,
@@ -143,7 +144,7 @@ final router = GoRouter(
       path: '/settings/trans',
       builder: (context, state) => BlocProvider(
         create: (_) => TransSettingBloc(
-          transRepository: context.read<TransRepository>(),
+          transRepository: getIt<TransRepository>(),
         )..add(const TransSettingStarted()),
         child: const TransSettingPage(),
       ),
@@ -152,7 +153,7 @@ final router = GoRouter(
       path: '/settings/trans/new',
       builder: (context, state) => BlocProvider(
         create: (_) => TransSettingDetailBloc(
-          transRepository: context.read<TransRepository>(),
+          transRepository: getIt<TransRepository>(),
         )..add(const TransSettingDetailStarted()),
         child: const TransSettingDetailPage(),
       ),
@@ -163,7 +164,7 @@ final router = GoRouter(
         final transId = state.pathParameters['transId']!;
         return BlocProvider(
           create: (_) => TransSettingDetailBloc(
-            transRepository: context.read<TransRepository>(),
+            transRepository: getIt<TransRepository>(),
           )..add(TransSettingDetailStarted(transId: transId)),
           child: const TransSettingDetailPage(),
         );
@@ -174,7 +175,7 @@ final router = GoRouter(
       path: '/settings/member',
       builder: (context, state) => BlocProvider(
         create: (_) => MemberSettingBloc(
-          memberRepository: context.read<MemberRepository>(),
+          memberRepository: getIt<MemberRepository>(),
         )..add(const MemberSettingStarted()),
         child: const MemberSettingPage(),
       ),
@@ -183,7 +184,7 @@ final router = GoRouter(
       path: '/settings/member/new',
       builder: (context, state) => BlocProvider(
         create: (_) => MemberSettingDetailBloc(
-          memberRepository: context.read<MemberRepository>(),
+          memberRepository: getIt<MemberRepository>(),
         )..add(const MemberSettingDetailStarted()),
         child: const MemberSettingDetailPage(),
       ),
@@ -194,7 +195,7 @@ final router = GoRouter(
         final memberId = state.pathParameters['memberId']!;
         return BlocProvider(
           create: (_) => MemberSettingDetailBloc(
-            memberRepository: context.read<MemberRepository>(),
+            memberRepository: getIt<MemberRepository>(),
           )..add(MemberSettingDetailStarted(memberId: memberId)),
           child: const MemberSettingDetailPage(),
         );
@@ -205,7 +206,7 @@ final router = GoRouter(
       path: '/settings/tag',
       builder: (context, state) => BlocProvider(
         create: (_) => TagSettingBloc(
-          tagRepository: context.read<TagRepository>(),
+          tagRepository: getIt<TagRepository>(),
         )..add(const TagSettingStarted()),
         child: const TagSettingPage(),
       ),
@@ -214,7 +215,7 @@ final router = GoRouter(
       path: '/settings/tag/new',
       builder: (context, state) => BlocProvider(
         create: (_) => TagSettingDetailBloc(
-          tagRepository: context.read<TagRepository>(),
+          tagRepository: getIt<TagRepository>(),
         )..add(const TagSettingDetailStarted()),
         child: const TagSettingDetailPage(),
       ),
@@ -225,7 +226,7 @@ final router = GoRouter(
         final tagId = state.pathParameters['tagId']!;
         return BlocProvider(
           create: (_) => TagSettingDetailBloc(
-            tagRepository: context.read<TagRepository>(),
+            tagRepository: getIt<TagRepository>(),
           )..add(TagSettingDetailStarted(tagId: tagId)),
           child: const TagSettingDetailPage(),
         );
@@ -236,7 +237,7 @@ final router = GoRouter(
       path: '/settings/action',
       builder: (context, state) => BlocProvider(
         create: (_) => ActionSettingBloc(
-          actionRepository: context.read<ActionRepository>(),
+          actionRepository: getIt<ActionRepository>(),
         )..add(const ActionSettingStarted()),
         child: const ActionSettingPage(),
       ),
@@ -245,7 +246,7 @@ final router = GoRouter(
       path: '/settings/action/new',
       builder: (context, state) => BlocProvider(
         create: (_) => ActionSettingDetailBloc(
-          actionRepository: context.read<ActionRepository>(),
+          actionRepository: getIt<ActionRepository>(),
         )..add(const ActionSettingDetailStarted()),
         child: const ActionSettingDetailPage(),
       ),
@@ -256,7 +257,7 @@ final router = GoRouter(
         final actionId = state.pathParameters['actionId']!;
         return BlocProvider(
           create: (_) => ActionSettingDetailBloc(
-            actionRepository: context.read<ActionRepository>(),
+            actionRepository: getIt<ActionRepository>(),
           )..add(ActionSettingDetailStarted(actionId: actionId)),
           child: const ActionSettingDetailPage(),
         );
