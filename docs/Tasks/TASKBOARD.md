@@ -32,9 +32,9 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-010 | `flutter run` で全Feature動作確認（イベント一覧・詳細・マーク・リンク・支払） | flutter-dev | `TODO` | | Phase 1完了・着手可能 |
-| T-011 | 設定Feature動作確認（Trans/Member/Tag/Action） | flutter-dev | `TODO` | | T-010と同時可 |
-| T-012 | drift データ保存・再起動後の永続化確認 | flutter-dev | `TODO` | | T-010と同時可 |
+| T-010 | `flutter run` で全Feature動作確認（イベント一覧・詳細・マーク・リンク・支払） | flutter-dev | `IN_PROGRESS` | 2026-04-03_phase2_verification | |
+| T-011 | 設定Feature動作確認（Trans/Member/Tag/Action） | flutter-dev | `IN_PROGRESS` | 2026-04-03_phase2_verification | T-010と同時着手 |
+| T-012 | drift データ保存・再起動後の永続化確認 | flutter-dev | `IN_PROGRESS` | 2026-04-03_phase2_verification | T-010と同時着手 |
 
 ## Phase 3: 機能追加・仕上げ
 
