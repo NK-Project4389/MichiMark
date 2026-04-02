@@ -64,35 +64,7 @@ final router = GoRouter(
         child: const EventListPage(),
       ),
     ),
-    GoRoute(
-      path: '/event/:id',
-      builder: (context, state) {
-        final eventId = state.pathParameters['id'] ?? '';
-        return BlocProvider(
-          create: (_) => EventDetailBloc(
-            eventRepository: getIt<EventRepository>(),
-          )..add(EventDetailStarted(eventId)),
-          child: const EventDetailPage(),
-        );
-      },
-    ),
-    GoRoute(
-      path: '/selection',
-      builder: (context, state) {
-        final args = state.extra as SelectionArgs;
-        return BlocProvider(
-          create: (_) => SelectionBloc(
-            type: args.type,
-            selectedIds: args.selectedIds,
-            transRepository: getIt<TransRepository>(),
-            memberRepository: getIt<MemberRepository>(),
-            tagRepository: getIt<TagRepository>(),
-            actionRepository: getIt<ActionRepository>(),
-          )..add(const SelectionStarted()),
-          child: const SelectionPage(),
-        );
-      },
-    ),
+    // 固定パスを先に定義（/event/:id より前に置かないとマッチしない）
     GoRoute(
       path: '/event/mark/:markId',
       builder: (context, state) {
@@ -131,6 +103,36 @@ final router = GoRouter(
               paymentId: args.paymentId,
             )),
           child: const PaymentDetailPage(),
+        );
+      },
+    ),
+    // パラメータ付きルートは固定パスの後に定義
+    GoRoute(
+      path: '/event/:id',
+      builder: (context, state) {
+        final eventId = state.pathParameters['id'] ?? '';
+        return BlocProvider(
+          create: (_) => EventDetailBloc(
+            eventRepository: getIt<EventRepository>(),
+          )..add(EventDetailStarted(eventId)),
+          child: const EventDetailPage(),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/selection',
+      builder: (context, state) {
+        final args = state.extra as SelectionArgs;
+        return BlocProvider(
+          create: (_) => SelectionBloc(
+            type: args.type,
+            selectedIds: args.selectedIds,
+            transRepository: getIt<TransRepository>(),
+            memberRepository: getIt<MemberRepository>(),
+            tagRepository: getIt<TagRepository>(),
+            actionRepository: getIt<ActionRepository>(),
+          )..add(const SelectionStarted()),
+          child: const SelectionPage(),
         );
       },
     ),
