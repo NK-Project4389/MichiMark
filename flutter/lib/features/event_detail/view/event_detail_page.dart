@@ -27,12 +27,14 @@ class EventDetailPage extends StatelessWidget {
     return BlocConsumer<EventDetailBloc, EventDetailState>(
       listener: (context, state) {
         if (state is EventDetailLoaded) {
-          if (state.delegate != null) {
-            _handleDelegate(context, state.delegate!);
+          final delegate = state.delegate;
+          if (delegate != null) {
+            _handleDelegate(context, delegate);
           }
-          if (state.saveErrorMessage != null) {
+          final errorMessage = state.saveErrorMessage;
+          if (errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.saveErrorMessage!)),
+              SnackBar(content: Text(errorMessage)),
             );
           }
         }

@@ -185,18 +185,20 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
   Future<EventDomain> _buildEventDomain(Event row) async {
     // Trans
     TransDomain? transDomain;
-    if (row.transId != null) {
+    final transId = row.transId;
+    if (transId != null) {
       final transRow = await (select(transports)
-            ..where((t) => t.id.equals(row.transId!)))
+            ..where((t) => t.id.equals(transId)))
           .getSingleOrNull();
       if (transRow != null) transDomain = _toTransDomain(transRow);
     }
 
     // PayMember
     MemberDomain? payMemberDomain;
-    if (row.payMemberId != null) {
+    final payMemberId = row.payMemberId;
+    if (payMemberId != null) {
       final payRow = await (select(members)
-            ..where((t) => t.id.equals(row.payMemberId!)))
+            ..where((t) => t.id.equals(payMemberId)))
           .getSingleOrNull();
       if (payRow != null) payMemberDomain = _toMemberDomain(payRow);
     }
@@ -311,10 +313,10 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
   }
 
   Future<PaymentDomain> _buildPaymentDomain(Payment row) async {
-    // PaymentMember
+    // PaymentMember（paymentMemberId は NOT NULL のため必ず存在する想定）
     final payMemberRow = await (select(members)
           ..where((t) => t.id.equals(row.paymentMemberId)))
-        .getSingle();
+        .getSingleOrNull();
 
     // SplitMembers
     final splitJoins = await (select(paymentSplitMembers)
@@ -328,11 +330,21 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
       if (m != null) splitList.add(_toMemberDomain(m));
     }
 
+    // paymentMember が見つからない場合はフォールバック
+    final paymentMember = payMemberRow != null
+        ? _toMemberDomain(payMemberRow)
+        : MemberDomain(
+            id: row.paymentMemberId,
+            memberName: '',
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+          );
+
     return PaymentDomain(
       id: row.id,
       paymentSeq: row.paymentSeq,
       paymentAmount: row.paymentAmount,
-      paymentMember: _toMemberDomain(payMemberRow),
+      paymentMember: paymentMember,
       splitMembers: splitList,
       paymentMemo: row.paymentMemo,
       isDeleted: row.isDeleted,

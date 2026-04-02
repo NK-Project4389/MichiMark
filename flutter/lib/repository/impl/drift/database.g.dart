@@ -3940,7 +3940,7 @@ class $EventMembersTable extends EventMembers
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES events (id)',
+      'REFERENCES events (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _memberIdMeta = const VerificationMeta(
@@ -4163,7 +4163,7 @@ class $EventTagsTable extends EventTags
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES events (id)',
+      'REFERENCES events (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
@@ -4379,7 +4379,7 @@ class $MarkLinkMembersTable extends MarkLinkMembers
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES mark_links (id)',
+      'REFERENCES mark_links (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _memberIdMeta = const VerificationMeta(
@@ -4608,7 +4608,7 @@ class $MarkLinkActionsTable extends MarkLinkActions
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES mark_links (id)',
+      'REFERENCES mark_links (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _actionIdMeta = const VerificationMeta(
@@ -4837,7 +4837,7 @@ class $PaymentSplitMembersTable extends PaymentSplitMembers
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES payments (id)',
+      'REFERENCES payments (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _memberIdMeta = const VerificationMeta(
@@ -5085,6 +5085,44 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     markLinkActions,
     paymentSplitMembers,
   ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'events',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('event_members', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'events',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('event_tags', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'mark_links',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('mark_link_members', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'mark_links',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('mark_link_actions', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'payments',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('payment_split_members', kind: UpdateKind.delete)],
+    ),
+  ]);
 }
 
 typedef $$ActionsTableCreateCompanionBuilder =

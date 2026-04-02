@@ -96,8 +96,8 @@ final router = GoRouter(
     GoRoute(
       path: '/event/mark/:markId',
       builder: (context, state) {
-        final markId = state.pathParameters['markId']!;
-        final eventId = state.extra as String;
+        final markId = state.pathParameters['markId'] ?? '';
+        final eventId = state.extra as String? ?? '';
         return BlocProvider(
           create: (_) => MarkDetailBloc(
             eventRepository: getIt<EventRepository>(),
@@ -109,8 +109,8 @@ final router = GoRouter(
     GoRoute(
       path: '/event/link/:linkId',
       builder: (context, state) {
-        final linkId = state.pathParameters['linkId']!;
-        final eventId = state.extra as String;
+        final linkId = state.pathParameters['linkId'] ?? '';
+        final eventId = state.extra as String? ?? '';
         return BlocProvider(
           create: (_) => LinkDetailBloc(
             eventRepository: getIt<EventRepository>(),
@@ -161,7 +161,7 @@ final router = GoRouter(
     GoRoute(
       path: '/settings/trans/:transId',
       builder: (context, state) {
-        final transId = state.pathParameters['transId']!;
+        final transId = state.pathParameters['transId'] ?? '';
         return BlocProvider(
           create: (_) => TransSettingDetailBloc(
             transRepository: getIt<TransRepository>(),
@@ -192,7 +192,7 @@ final router = GoRouter(
     GoRoute(
       path: '/settings/member/:memberId',
       builder: (context, state) {
-        final memberId = state.pathParameters['memberId']!;
+        final memberId = state.pathParameters['memberId'] ?? '';
         return BlocProvider(
           create: (_) => MemberSettingDetailBloc(
             memberRepository: getIt<MemberRepository>(),
@@ -223,7 +223,7 @@ final router = GoRouter(
     GoRoute(
       path: '/settings/tag/:tagId',
       builder: (context, state) {
-        final tagId = state.pathParameters['tagId']!;
+        final tagId = state.pathParameters['tagId'] ?? '';
         return BlocProvider(
           create: (_) => TagSettingDetailBloc(
             tagRepository: getIt<TagRepository>(),
@@ -254,7 +254,7 @@ final router = GoRouter(
     GoRoute(
       path: '/settings/action/:actionId',
       builder: (context, state) {
-        final actionId = state.pathParameters['actionId']!;
+        final actionId = state.pathParameters['actionId'] ?? '';
         return BlocProvider(
           create: (_) => ActionSettingDetailBloc(
             actionRepository: getIt<ActionRepository>(),
