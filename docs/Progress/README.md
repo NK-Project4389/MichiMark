@@ -33,3 +33,4 @@
 | [2026-03-31_react_discussion_uuid_check.md](./2026-03-31_react_discussion_uuid_check.md) | React換装検討（Flutter継続決定）・UUID実装確認（未完了確認） |
 | [2026-04-01_uuid_implementation.md](./2026-04-01_uuid_implementation.md) | UUID化・新規エンティティ作成フロー実装・レビュー修正完了 |
 | [2026-04-02_mark_link_draft_apply.md](./2026-04-02_mark_link_draft_apply.md) | MarkDetail/LinkDetail Draft反映フロー・MichiInfoView接続・MarkLinkDraftAdapter |
+| [2026-04-03_phase1_completion.md](./2026-04-03_phase1_completion.md) | Phase 1完了：InMemory seed data・drift Repository・get_it DI |
