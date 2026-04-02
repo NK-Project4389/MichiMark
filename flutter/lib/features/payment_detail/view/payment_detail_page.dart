@@ -113,7 +113,7 @@ class _PaymentDetailScaffold extends StatelessWidget {
             onPressed: () => context
                 .read<PaymentDetailBloc>()
                 .add(const PaymentDetailSaveTapped()),
-            child: const Text('保存'),
+            child: const Text('反映'),
           ),
         ],
       ),
