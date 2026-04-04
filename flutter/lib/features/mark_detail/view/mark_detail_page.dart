@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import '../../../domain/topic/topic_config.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_bloc.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_event.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_state.dart';
@@ -39,8 +40,10 @@ class _MarkDetailPageState extends State<MarkDetailPage> {
           MarkDetailError(:final message) => Scaffold(
               body: Center(child: Text(message)),
             ),
-          MarkDetailLoaded(:final draft) => _MarkDetailScaffold(
+          MarkDetailLoaded(:final draft, :final topicConfig) =>
+            _MarkDetailScaffold(
               draft: draft,
+              topicConfig: topicConfig,
               dateFormat: _dateFormat,
             ),
         };
@@ -92,10 +95,12 @@ class _MarkDetailPageState extends State<MarkDetailPage> {
 
 class _MarkDetailScaffold extends StatelessWidget {
   final MarkDetailDraft draft;
+  final TopicConfig topicConfig;
   final DateFormat dateFormat;
 
   const _MarkDetailScaffold({
     required this.draft,
+    required this.topicConfig,
     required this.dateFormat,
   });
 
@@ -122,16 +127,25 @@ class _MarkDetailScaffold extends StatelessWidget {
           ),
         ],
       ),
-      body: _MarkDetailForm(draft: draft, dateFormat: dateFormat),
+      body: _MarkDetailForm(
+        draft: draft,
+        topicConfig: topicConfig,
+        dateFormat: dateFormat,
+      ),
     );
   }
 }
 
 class _MarkDetailForm extends StatelessWidget {
   final MarkDetailDraft draft;
+  final TopicConfig topicConfig;
   final DateFormat dateFormat;
 
-  const _MarkDetailForm({required this.draft, required this.dateFormat});
+  const _MarkDetailForm({
+    required this.draft,
+    required this.topicConfig,
+    required this.dateFormat,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -151,8 +165,10 @@ class _MarkDetailForm extends StatelessWidget {
               .read<MarkDetailBloc>()
               .add(const MarkDetailEditMembersPressed()),
         ),
-        const SizedBox(height: 16),
-        _MeterValueField(value: draft.meterValueInput),
+        if (topicConfig.showMeterValue) ...[
+          const SizedBox(height: 16),
+          _MeterValueField(value: draft.meterValueInput),
+        ],
         const SizedBox(height: 16),
         _SelectionRow(
           label: 'アクション',
@@ -165,13 +181,15 @@ class _MarkDetailForm extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         _MemoField(value: draft.memo),
-        const SizedBox(height: 16),
-        _FuelRow(
-          isFuel: draft.isFuel,
-          pricePerGasInput: draft.pricePerGasInput,
-          gasQuantityInput: draft.gasQuantityInput,
-          gasPriceInput: draft.gasPriceInput,
-        ),
+        if (topicConfig.showFuelDetail) ...[
+          const SizedBox(height: 16),
+          _FuelRow(
+            isFuel: draft.isFuel,
+            pricePerGasInput: draft.pricePerGasInput,
+            gasQuantityInput: draft.gasQuantityInput,
+            gasPriceInput: draft.gasPriceInput,
+          ),
+        ],
       ],
     );
   }

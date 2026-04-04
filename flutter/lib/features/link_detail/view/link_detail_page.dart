@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../domain/topic/topic_config.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_bloc.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_event.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_state.dart';
@@ -36,7 +37,8 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
           LinkDetailError(:final message) => Scaffold(
               body: Center(child: Text(message)),
             ),
-          LinkDetailLoaded(:final draft) => _LinkDetailScaffold(draft: draft),
+          LinkDetailLoaded(:final draft, :final topicConfig) =>
+            _LinkDetailScaffold(draft: draft, topicConfig: topicConfig),
         };
       },
     );
@@ -90,8 +92,12 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
 
 class _LinkDetailScaffold extends StatelessWidget {
   final LinkDetailDraft draft;
+  final TopicConfig topicConfig;
 
-  const _LinkDetailScaffold({required this.draft});
+  const _LinkDetailScaffold({
+    required this.draft,
+    required this.topicConfig,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -116,15 +122,16 @@ class _LinkDetailScaffold extends StatelessWidget {
           ),
         ],
       ),
-      body: _LinkDetailForm(draft: draft),
+      body: _LinkDetailForm(draft: draft, topicConfig: topicConfig),
     );
   }
 }
 
 class _LinkDetailForm extends StatelessWidget {
   final LinkDetailDraft draft;
+  final TopicConfig topicConfig;
 
-  const _LinkDetailForm({required this.draft});
+  const _LinkDetailForm({required this.draft, required this.topicConfig});
 
   @override
   Widget build(BuildContext context) {
@@ -132,8 +139,10 @@ class _LinkDetailForm extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       children: [
         _NameField(value: draft.markLinkName),
-        const SizedBox(height: 16),
-        _DistanceField(value: draft.distanceValueInput),
+        if (topicConfig.showLinkDistance) ...[
+          const SizedBox(height: 16),
+          _DistanceField(value: draft.distanceValueInput),
+        ],
         const SizedBox(height: 16),
         _SelectionRow(
           label: 'メンバー',
@@ -156,13 +165,15 @@ class _LinkDetailForm extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         _MemoField(value: draft.memo),
-        const SizedBox(height: 16),
-        _FuelRow(
-          isFuel: draft.isFuel,
-          pricePerGasInput: draft.pricePerGasInput,
-          gasQuantityInput: draft.gasQuantityInput,
-          gasPriceInput: draft.gasPriceInput,
-        ),
+        if (topicConfig.showFuelDetail) ...[
+          const SizedBox(height: 16),
+          _FuelRow(
+            isFuel: draft.isFuel,
+            pricePerGasInput: draft.pricePerGasInput,
+            gasQuantityInput: draft.gasQuantityInput,
+            gasPriceInput: draft.gasPriceInput,
+          ),
+        ],
       ],
     );
   }

@@ -24,6 +24,7 @@ enum SelectionType {
   linkActions,
   payMember,
   splitMembers,
+  eventTopic,
 }
 
 enum SelectionMode { single, multiple }
@@ -33,6 +34,7 @@ extension SelectionTypeExt on SelectionType {
         SelectionType.eventTrans => SelectionMode.single,
         SelectionType.gasPayMember => SelectionMode.single,
         SelectionType.payMember => SelectionMode.single,
+        SelectionType.eventTopic => SelectionMode.single,
         _ => SelectionMode.multiple,
       };
 
@@ -47,5 +49,6 @@ extension SelectionTypeExt on SelectionType {
         SelectionType.linkActions => 'アクションを選択',
         SelectionType.payMember => '支払者を選択',
         SelectionType.splitMembers => '割り勘メンバーを選択',
+        SelectionType.eventTopic => 'トピックを選択',
       };
 }

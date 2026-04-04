@@ -22,6 +22,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     on<MichiInfoAddLinkPressed>(_onAddLinkPressed);
     on<MichiInfoMarkDraftApplied>(_onMarkDraftApplied);
     on<MichiInfoLinkDraftApplied>(_onLinkDraftApplied);
+    on<MichiInfoTopicConfigUpdated>(_onTopicConfigUpdated);
   }
 
   final EventRepository _eventRepository;
@@ -159,6 +160,16 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     }
     items.sort((a, b) => a.markLinkSeq.compareTo(b.markLinkSeq));
     return MichiInfoListProjection(items: _recalcMeterDiff(items));
+  }
+
+  Future<void> _onTopicConfigUpdated(
+    MichiInfoTopicConfigUpdated event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (state is MichiInfoLoaded) {
+      final current = state as MichiInfoLoaded;
+      emit(current.copyWith(topicConfig: event.config));
+    }
   }
 
   /// ソート済み items を走査して displayMeterDiff を再計算する

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/master/action/action_domain.dart';
 import '../../../domain/master/member/member_domain.dart';
+import '../../../domain/topic/topic_config.dart';
 
 sealed class LinkDetailEvent extends Equatable {
   const LinkDetailEvent();
@@ -99,6 +100,15 @@ class LinkDetailSaveTapped extends LinkDetailEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+/// EventDetailBlocからTopicConfigが更新されたとき
+class LinkDetailTopicConfigUpdated extends LinkDetailEvent {
+  final TopicConfig config;
+  const LinkDetailTopicConfigUpdated(this.config);
+
+  @override
+  List<Object?> get props => [config];
 }
 
 /// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき

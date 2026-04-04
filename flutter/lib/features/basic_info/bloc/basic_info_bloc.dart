@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../domain/topic/topic_config.dart';
 import '../../../repository/event_repository.dart';
 import '../draft/basic_info_draft.dart';
 import 'basic_info_event.dart';
@@ -20,6 +21,9 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
     on<BasicInfoPayMemberSelected>(_onPayMemberSelected);
     on<BasicInfoKmPerGasChanged>(_onKmPerGasChanged);
     on<BasicInfoPricePerGasChanged>(_onPricePerGasChanged);
+    on<BasicInfoEditTopicPressed>(_onEditTopicPressed);
+    on<BasicInfoTopicSelected>(_onTopicSelected);
+    on<BasicInfoAvailableTopicsReceived>(_onAvailableTopicsReceived);
   }
 
   final EventRepository _eventRepository;
@@ -41,8 +45,10 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
             ? (domain.kmPerGas! / 10.0).toString()
             : '',
         pricePerGasInput: domain.pricePerGas?.toString() ?? '',
+        selectedTopic: domain.topic,
       );
-      emit(BasicInfoLoaded(draft: draft));
+      final topicConfig = TopicConfig.fromTopicType(domain.topic?.topicType);
+      emit(BasicInfoLoaded(draft: draft, topicConfig: topicConfig));
     } on Exception catch (e) {
       emit(BasicInfoError(message: e.toString()));
     }
@@ -176,6 +182,50 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
       final current = state as BasicInfoLoaded;
       emit(current.copyWith(
         draft: current.draft.copyWith(pricePerGasInput: event.input),
+      ));
+    }
+  }
+
+  Future<void> _onEditTopicPressed(
+    BasicInfoEditTopicPressed event,
+    Emitter<BasicInfoState> emit,
+  ) async {
+    if (state is BasicInfoLoaded) {
+      final current = state as BasicInfoLoaded;
+      emit(current.copyWith(
+        delegate: const BasicInfoOpenTopicSelectionDelegate(),
+      ));
+    }
+  }
+
+  Future<void> _onTopicSelected(
+    BasicInfoTopicSelected event,
+    Emitter<BasicInfoState> emit,
+  ) async {
+    if (state is BasicInfoLoaded) {
+      final current = state as BasicInfoLoaded;
+      final newTopic = event.topic;
+      final topicConfig = TopicConfig.fromTopicType(newTopic?.topicType);
+      final newDraft = newTopic != null
+          ? current.draft.copyWith(selectedTopic: newTopic)
+          : current.draft.copyWith(clearSelectedTopic: true);
+      emit(current.copyWith(
+        draft: newDraft,
+        topicConfig: topicConfig,
+        // TopicChangedDelegateを通知してEventDetailBlocへ伝播
+        delegate: BasicInfoTopicChangedDelegate(newTopic),
+      ));
+    }
+  }
+
+  Future<void> _onAvailableTopicsReceived(
+    BasicInfoAvailableTopicsReceived event,
+    Emitter<BasicInfoState> emit,
+  ) async {
+    if (state is BasicInfoLoaded) {
+      final current = state as BasicInfoLoaded;
+      emit(current.copyWith(
+        draft: current.draft.copyWith(availableTopics: event.topics),
       ));
     }
   }

@@ -1,6 +1,7 @@
 # 2026-04-05 要件書・Feature Spec作成：Topic / ActionTime / Aggregation
 
 ## 完了した作業
+- docs: 進捗ファイルの末尾ゴミ行を除去 (daa5c56)
 - fix(hooks): push時の進捗追記を完了した作業セクション直下に挿入するよう修正 (09e0593)
 
 ### Topic_Requirements.md 作成・詳細化
@@ -65,13 +66,79 @@
 
 ---
 
+---
+
+### Topic / ActionTime / Aggregation / EventDetailOverview Feature 実装
+
+**新規ファイル（Flutter実装）**
+
+- `domain/topic/topic_domain.dart` — TopicDomain + TopicType enum
+- `domain/topic/topic_config.dart` — TopicConfig 値オブジェクト
+- `domain/action_time/action_state.dart` — ActionState enum
+- `domain/action_time/action_time_log.dart` — ActionTimeLog domain entity
+- `domain/aggregation/aggregation_result.dart` — AggregationResult
+- `domain/aggregation/aggregation_filter.dart` — AggregationFilter + sealed AggregationDateRange
+- `repository/topic_repository.dart` — TopicRepository interface
+- `repository/impl/in_memory/in_memory_topic_repository.dart` — InMemory実装
+- `adapter/selection_adapter.dart` — fromTopics追加
+- `adapter/aggregation_service.dart` — AggregationService
+- `adapter/event_detail_overview_adapter.dart` — MovingCostOverviewAdapter
+- `adapter/travel_expense_overview_adapter.dart` — TravelExpenseOverviewAdapter
+- `adapter/aggregation_adapter.dart` — AggregationAdapter
+- `adapter/action_time_adapter.dart` — ActionTimeAdapter
+- `features/overview/` — EventDetailOverview Feature（BLoC/View/Projection全体）
+- `features/action_time/` — ActionTime Feature（BLoC/View全体）
+- `features/aggregation/` — Aggregation Feature（BLoC/View全体）
+
+**変更ファイル（既存拡張）**
+
+- `domain/transaction/event/event_domain.dart` — topic/actionTimeLogs フィールド追加
+- `domain/master/action/action_domain.dart` — fromState/toState/isToggle/togglePairId 追加
+- `repository/event_repository.dart` — ActionTimeLog CRUD + 集計クエリ追加
+- `repository/impl/in_memory/in_memory_event_repository.dart` — 新メソッド実装
+- `repository/impl/in_memory/seed_data.dart` — seedTopics (movingCost/travelExpense) 追加
+- `repository/impl/drift/repository/drift_event_repository.dart` — 新メソッドスタブ追加（TODO）
+- `features/basic_info/` — Topic選択UI・topicConfig表示制御を追加（draft/state/event/bloc/view 全体）
+- `features/mark_detail/` — topicConfig受け取り・showMeterValue/showFuelDetailで表示制御
+- `features/link_detail/` — topicConfig受け取り・showLinkDistance/showFuelDetailで表示制御
+- `features/michi_info/` — topicConfig受け取り・allowLinkAddでLink追加ボタン制御
+- `features/event_detail/` — TopicRepository注入・topicConfig管理・子Bloc伝播・OverviewBloc統合
+- `features/selection/` — eventTopic type追加・TopicRepository注入
+- `app/di.dart` — TopicRepository・AggregationService 登録
+- `app/router.dart` — EventDetailBloc/SelectionBlocにTopicRepository追加・/aggregation route追加
+
+**アーキテクチャ上の設計判断**
+
+- BasicInfoTopicChangedDelegate → _EventDetailScaffoldInner のBlocListenerが受け取り EventDetailTopicChanged を EventDetailBloc に送信
+- EventDetailAvailableTopicsDelegate → 同BlocListenerが BasicInfoBloc に BasicInfoAvailableTopicsReceived を送信
+- EventDetailTopicConfigPropagateDelegate → MichiInfoBloc に MichiInfoTopicConfigUpdated を送信（MarkDetail/LinkDetailは別ルート生成のため未対応・TODO）
+- OverviewBlocはEventDetailPage内のMultiBlocProviderで生成（EventDetailOverviewPageが直接利用）
+- MarkDetail/LinkDetailへのtopicConfig伝播は別ルート生成のためEventDetailからの直接送信不可（別セッションで対応）
+
+### OverviewBloc OverviewStarted 発火問題の解決
+
+- `EventDetailLoaded`に`cachedEvent: EventDomain?`フィールドを追加
+- `EventDetailBloc._onStarted`・`_onSaveRequested`でキャッシュをセット
+- `_EventDetailScaffoldInner`に第3のBlocListenerを追加:
+  - タブ選択でoverview選択時 → `OverviewStarted(event, topicConfig)`を発火
+  - `EventDetailTopicConfigPropagateDelegate`時 → `OverviewTopicConfigUpdated(config, event)`も同時発火
+
+### Warning修正
+
+- `action_time_bloc.dart:94` - 未使用ローカル変数`targetActionState`を除去（コメントに統合）
+- `overview_bloc.dart` - 未使用import `topic_domain.dart`を除去
+- `event_detail_overview_page.dart` - 未使用import 3つを除去
+
 ## 未完了
 
-- T-010〜T-012（Phase 2動作確認）は引き続きIN_PROGRESS
+- MarkDetail/LinkDetailBloc へのtopicConfig伝播（別ルートのため現セッション未対応）
+- Drift スキーマ移行（schemaVersion 2: topics表・events.topic_id・action_time_logs表・actionsカラム追加）
+- ActionSetting拡張（fromState/toState/isToggle UI）
 
 ---
 
 ## 次回セッションで最初にやること
 
-1. **reviewer に3つのSpecをレビューさせる**（Topic_Spec / ActionTime_Spec / Aggregation_Spec）
-2. **Phase 2動作確認（T-010〜T-012）の継続**
+1. **動作確認・E2Eテスト**（Topic選択→表示制御・Overview集計が正しく機能するか）
+2. **MarkDetail/LinkDetailへのtopicConfig伝播**（別ルートのBlocへの伝播設計）
+3. **Drift スキーマ移行**（schemaVersion 2）

@@ -10,6 +10,9 @@ import '../../basic_info/view/basic_info_view.dart';
 import '../../michi_info/bloc/michi_info_bloc.dart';
 import '../../michi_info/bloc/michi_info_event.dart';
 import '../../michi_info/view/michi_info_view.dart';
+import '../../overview/bloc/overview_bloc.dart';
+import '../../overview/bloc/overview_event.dart';
+import '../../overview/view/event_detail_overview_page.dart';
 import '../../payment_info/bloc/payment_info_bloc.dart';
 import '../../payment_info/bloc/payment_info_event.dart';
 import '../../payment_info/view/payment_info_view.dart';
@@ -29,7 +32,7 @@ class EventDetailPage extends StatelessWidget {
         if (state is EventDetailLoaded) {
           final delegate = state.delegate;
           if (delegate != null) {
-            _handleDelegate(context, delegate);
+            _handleDelegate(context, delegate, state);
           }
           final errorMessage = state.saveErrorMessage;
           if (errorMessage != null) {
@@ -58,7 +61,11 @@ class EventDetailPage extends StatelessWidget {
     );
   }
 
-  void _handleDelegate(BuildContext context, EventDetailDelegate delegate) {
+  void _handleDelegate(
+    BuildContext context,
+    EventDetailDelegate delegate,
+    EventDetailLoaded state,
+  ) {
     switch (delegate) {
       case EventDetailDismissDelegate():
         context.pop();
@@ -74,6 +81,15 @@ class EventDetailPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('保存しました')),
         );
+      case EventDetailAvailableTopicsDelegate():
+        // BasicInfoBlocはEventDetailScaffoldのMultiBlocProvider内で生成されるため
+        // このスコープからは直接アクセスできない。_EventDetailScaffoldInnerのBlocListenerで処理する。
+        break;
+      case EventDetailTopicConfigPropagateDelegate():
+        // 子BlocへTopicConfigを伝播する。
+        // 子BlocはEventDetailScaffoldのMultiBlocProvider内にある。
+        // EventDetailScaffoldのBlocListenerで処理する。
+        break;
     }
   }
 }
@@ -111,6 +127,108 @@ class _EventDetailScaffold extends StatelessWidget {
               projection: projection.paymentInfo,
             )),
         ),
+        BlocProvider(
+          create: (_) => EventDetailOverviewBloc(
+            aggregationService: getIt(),
+          ),
+        ),
+      ],
+      child: _EventDetailScaffoldInner(
+        projection: projection,
+        draft: draft,
+        isSaving: isSaving,
+      ),
+    );
+  }
+}
+
+/// 子Blocが利用可能になったスコープ内でEventDetailBlocのDelegateを処理する。
+class _EventDetailScaffoldInner extends StatelessWidget {
+  final EventDetailProjection projection;
+  final EventDetailDraft draft;
+  final bool isSaving;
+
+  const _EventDetailScaffoldInner({
+    required this.projection,
+    required this.draft,
+    required this.isSaving,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // BasicInfoBlocのDelegateを監視し、TopicChanged → EventDetailTopicChanged を送信する
+    // EventDetailBlocのDelegateを監視し、子BlocへTopicConfig伝播を行う
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<BasicInfoBloc, BasicInfoState>(
+          listenWhen: (prev, curr) =>
+              curr is BasicInfoLoaded &&
+              curr.delegate is BasicInfoTopicChangedDelegate,
+          listener: (context, state) {
+            if (state case BasicInfoLoaded(
+              delegate: BasicInfoTopicChangedDelegate(:final topic),
+            )) {
+              context.read<EventDetailBloc>().add(EventDetailTopicChanged(topic));
+            }
+          },
+        ),
+        BlocListener<EventDetailBloc, EventDetailState>(
+          listenWhen: (prev, curr) =>
+              curr is EventDetailLoaded && curr.delegate != null,
+          listener: (context, state) {
+            if (state is! EventDetailLoaded) return;
+            final delegate = state.delegate;
+            if (delegate == null) return;
+
+            switch (delegate) {
+              case EventDetailAvailableTopicsDelegate(:final topics):
+                context
+                    .read<BasicInfoBloc>()
+                    .add(BasicInfoAvailableTopicsReceived(topics));
+
+              case EventDetailTopicConfigPropagateDelegate(:final topicConfig):
+                context
+                    .read<MichiInfoBloc>()
+                    .add(MichiInfoTopicConfigUpdated(topicConfig));
+                // OverviewBlocへもTopicConfig変更を伝播する
+                final cachedEvent = state.cachedEvent;
+                if (cachedEvent != null) {
+                  context.read<EventDetailOverviewBloc>().add(
+                        OverviewTopicConfigUpdated(
+                          config: topicConfig,
+                          event: cachedEvent,
+                        ),
+                      );
+                }
+                // MarkDetailBloc / LinkDetailBloc はルートレベルにあるため
+                // このスコープからは参照不可。EventDetailで管理しているBlocのみ伝播する。
+                // NOTE: MarkDetailBloc / LinkDetailBloc は別ルートで生成されるため、
+                // topicConfig の伝播は現状のアーキテクチャでは未対応（別ルート起動時に初期値を使用）。
+
+              default:
+                break;
+            }
+          },
+        ),
+        // Overviewタブ選択時にOverviewStartedを発火する
+        BlocListener<EventDetailBloc, EventDetailState>(
+          listenWhen: (prev, curr) {
+            if (prev is! EventDetailLoaded || curr is! EventDetailLoaded) {
+              return false;
+            }
+            return prev.draft.selectedTab != EventDetailTab.overview &&
+                curr.draft.selectedTab == EventDetailTab.overview;
+          },
+          listener: (context, state) {
+            if (state is! EventDetailLoaded) return;
+            final cachedEvent = state.cachedEvent;
+            if (cachedEvent == null) return;
+            context.read<EventDetailOverviewBloc>().add(OverviewStarted(
+                  event: cachedEvent,
+                  topicConfig: state.topicConfig,
+                ));
+          },
+        ),
       ],
       child: Scaffold(
         appBar: AppBar(
@@ -142,7 +260,7 @@ class _EventDetailScaffold extends StatelessWidget {
                     onPressed: basicInfoState is BasicInfoLoaded
                         ? () => context.read<EventDetailBloc>().add(
                               EventDetailSaveRequested(
-                                eventId: eventId,
+                                eventId: projection.basicInfo.eventId,
                                 basicInfoDraft: basicInfoState.draft,
                               ),
                             )
@@ -154,7 +272,7 @@ class _EventDetailScaffold extends StatelessWidget {
         ),
         body: Column(
           children: [
-            Expanded(child: _tabContent(draft)),
+            Expanded(child: _tabContent(context, draft, projection)),
             const Divider(height: 1),
             _TabBar(selectedTab: draft.selectedTab),
           ],
@@ -163,12 +281,16 @@ class _EventDetailScaffold extends StatelessWidget {
     );
   }
 
-  Widget _tabContent(EventDetailDraft draft) {
+  Widget _tabContent(
+    BuildContext context,
+    EventDetailDraft draft,
+    EventDetailProjection projection,
+  ) {
     return switch (draft.selectedTab) {
       EventDetailTab.basicInfo => const BasicInfoView(),
       EventDetailTab.michiInfo => const MichiInfoView(),
       EventDetailTab.paymentInfo => const PaymentInfoView(),
-      EventDetailTab.overview => const _OverviewTabView(),
+      EventDetailTab.overview => const EventDetailOverviewPage(),
     };
   }
 }
@@ -225,15 +347,3 @@ class _TabButton extends StatelessWidget {
     );
   }
 }
-
-// ── Tab contents（Overview プレースホルダー）─────────────────────────────
-
-class _OverviewTabView extends StatelessWidget {
-  const _OverviewTabView();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('振り返り（未実装）'));
-  }
-}
-

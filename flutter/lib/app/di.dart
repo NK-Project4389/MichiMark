@@ -1,15 +1,18 @@
 import 'package:get_it/get_it.dart';
 
+import '../adapter/aggregation_service.dart';
 import '../repository/action_repository.dart';
 import '../repository/event_repository.dart';
 import '../repository/impl/in_memory/in_memory_action_repository.dart';
 import '../repository/impl/in_memory/in_memory_event_repository.dart';
 import '../repository/impl/in_memory/in_memory_member_repository.dart';
 import '../repository/impl/in_memory/in_memory_tag_repository.dart';
+import '../repository/impl/in_memory/in_memory_topic_repository.dart';
 import '../repository/impl/in_memory/in_memory_trans_repository.dart';
 import '../repository/impl/in_memory/seed_data.dart';
 import '../repository/member_repository.dart';
 import '../repository/tag_repository.dart';
+import '../repository/topic_repository.dart';
 import '../repository/trans_repository.dart';
 
 final getIt = GetIt.instance;
@@ -31,6 +34,12 @@ void setupDi() {
   getIt.registerSingleton<ActionRepository>(
     InMemoryActionRepository(initialItems: seedActions),
   );
+  getIt.registerSingleton<TopicRepository>(
+    InMemoryTopicRepository(initialItems: seedTopics),
+  );
+  getIt.registerSingleton<AggregationService>(
+    AggregationService(actionRepository: getIt<ActionRepository>()),
+  );
 
   // --- drift 実装に切り替える場合 ---
   // final db = AppDatabase();
@@ -39,4 +48,5 @@ void setupDi() {
   // getIt.registerSingleton<MemberRepository>(DriftMemberRepository(db.masterDao));
   // getIt.registerSingleton<TagRepository>(DriftTagRepository(db.masterDao));
   // getIt.registerSingleton<ActionRepository>(DriftActionRepository(db.masterDao));
+  // getIt.registerSingleton<TopicRepository>(DriftTopicRepository(db.topicDao));
 }

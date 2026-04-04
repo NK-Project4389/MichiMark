@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/topic/topic_config.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../features/mark_detail/draft/mark_detail_draft.dart';
 import '../../../features/link_detail/draft/link_detail_draft.dart';
@@ -50,6 +51,15 @@ class MichiInfoMarkDraftApplied extends MichiInfoEvent {
 
   @override
   List<Object?> get props => [markLinkId, draft];
+}
+
+/// EventDetailBlocからTopicConfigが更新されたとき
+class MichiInfoTopicConfigUpdated extends MichiInfoEvent {
+  final TopicConfig config;
+  const MichiInfoTopicConfigUpdated(this.config);
+
+  @override
+  List<Object?> get props => [config];
 }
 
 /// LinkDetail画面からDraftが反映されて戻ってきたとき

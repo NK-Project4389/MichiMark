@@ -2,6 +2,7 @@ import '../../../domain/master/action/action_domain.dart';
 import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/master/tag/tag_domain.dart';
 import '../../../domain/master/trans/trans_domain.dart';
+import '../../../domain/topic/topic_domain.dart';
 import '../../../domain/transaction/event/event_domain.dart';
 import '../../../domain/transaction/mark_link/mark_link_domain.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
@@ -13,6 +14,28 @@ import '../../../domain/transaction/payment/payment_domain.dart';
 
 DateTime _d(int year, int month, int day, [int hour = 0, int minute = 0]) =>
     DateTime(year, month, day, hour, minute);
+
+// --- Topics ---
+final seedTopics = [
+  TopicDomain(
+    id: 'topic-001',
+    topicName: '移動コスト可視化',
+    topicType: TopicType.movingCost,
+    isVisible: true,
+    isDeleted: false,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  TopicDomain(
+    id: 'topic-002',
+    topicName: '旅費可視化',
+    topicType: TopicType.travelExpense,
+    isVisible: true,
+    isDeleted: false,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+];
 
 // --- Actions ---
 final seedActions = [

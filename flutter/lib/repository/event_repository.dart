@@ -1,3 +1,5 @@
+import '../domain/aggregation/aggregation_filter.dart';
+import '../domain/action_time/action_time_log.dart';
 import '../domain/transaction/event/event_domain.dart';
 
 /// イベントの永続化インターフェース
@@ -18,4 +20,27 @@ abstract interface class EventRepository {
 
   /// イベントを論理削除する
   Future<void> delete(String id);
+
+  // ---------------------------------------------------------------------------
+  // ActionTimeLog CRUD
+  // ---------------------------------------------------------------------------
+
+  /// ActionTimeLog を保存（upsert）
+  Future<void> saveActionTimeLog(ActionTimeLog log);
+
+  /// ActionTimeLog を論理削除する
+  Future<void> deleteActionTimeLog(String id);
+
+  /// 指定イベントの ActionTimeLog を timestamp ASC で取得
+  Future<List<ActionTimeLog>> fetchActionTimeLogs(String eventId);
+
+  // ---------------------------------------------------------------------------
+  // Aggregation用クエリ
+  // ---------------------------------------------------------------------------
+
+  /// 指定期間内（createdAtがstart〜end）のEventを取得する
+  Future<List<EventDomain>> fetchByDateRange(DateTime start, DateTime end);
+
+  /// AggregationFilterの全条件でフィルタしたEventを取得する
+  Future<List<EventDomain>> fetchByFilter(AggregationFilter filter);
 }

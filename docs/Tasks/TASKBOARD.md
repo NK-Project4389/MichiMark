@@ -36,6 +36,17 @@
 | T-011 | 設定Feature動作確認（Trans/Member/Tag/Action） | flutter-dev | `IN_PROGRESS` | 2026-04-03_phase2_verification | T-010と同時着手 |
 | T-012 | drift データ保存・再起動後の永続化確認 | flutter-dev | `IN_PROGRESS` | 2026-04-03_phase2_verification | T-010と同時着手 |
 
+## Phase 4: Topic / ActionTime / Aggregation / EventDetailOverview 実装
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-040 | Topic Feature 実装 | flutter-dev | `DONE` | | Spec: `docs/Spec/Features/Topic_Spec.md` |
+| T-041 | ActionTime Feature 実装 | flutter-dev | `DONE` | | Spec: `docs/Spec/Features/ActionTime_Spec.md` |
+| T-042 | Aggregation Feature 実装 | flutter-dev | `DONE` | | Spec: `docs/Spec/Features/Aggregation_Spec.md` |
+| T-043 | EventDetailOverview Feature 実装 | flutter-dev | `DONE` | | Spec: `docs/Spec/Features/EventDetailOverview_Spec.md` |
+| T-044 | Topic / ActionTime / Aggregation / EventDetailOverview レビュー | reviewer | `TODO` | | T-040〜T-043完了後 |
+| T-045 | OverviewBloc OverviewStarted 発火問題解決 | flutter-dev | `IN_PROGRESS` | 2026-04-05_overview_started_fix | EventDetailStateにEventDomainを持たせ、EventDetailPageからOverviewStartedを発火する |
+
 ## Phase 3: 機能追加・仕上げ
 
 | ID | タスク | 役割 | status | locked_by | notes |

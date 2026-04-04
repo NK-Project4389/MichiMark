@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/master/tag/tag_domain.dart';
 import '../../../domain/master/trans/trans_domain.dart';
+import '../../../domain/topic/topic_domain.dart';
 
 /// BasicInfo タブの編集状態を保持するDraft。
 /// マスター系は選択済みDomainオブジェクトをそのまま保持する（SelectedXXXパターン）。
@@ -27,6 +28,12 @@ class BasicInfoDraft extends Equatable {
   /// ガソリン単価の入力文字列（例: "170"。未入力時は空文字）
   final String pricePerGasInput;
 
+  /// 選択中のTopic（null = 未設定）
+  final TopicDomain? selectedTopic;
+
+  /// 選択可能なTopic一覧（EventDetailBlocから渡される）
+  final List<TopicDomain> availableTopics;
+
   const BasicInfoDraft({
     this.eventName = '',
     this.selectedTrans,
@@ -35,6 +42,8 @@ class BasicInfoDraft extends Equatable {
     this.selectedPayMember,
     this.kmPerGasInput = '',
     this.pricePerGasInput = '',
+    this.selectedTopic,
+    this.availableTopics = const [],
   });
 
   BasicInfoDraft copyWith({
@@ -45,6 +54,9 @@ class BasicInfoDraft extends Equatable {
     MemberDomain? selectedPayMember,
     String? kmPerGasInput,
     String? pricePerGasInput,
+    TopicDomain? selectedTopic,
+    List<TopicDomain>? availableTopics,
+    bool clearSelectedTopic = false,
   }) {
     return BasicInfoDraft(
       eventName: eventName ?? this.eventName,
@@ -54,6 +66,8 @@ class BasicInfoDraft extends Equatable {
       selectedPayMember: selectedPayMember ?? this.selectedPayMember,
       kmPerGasInput: kmPerGasInput ?? this.kmPerGasInput,
       pricePerGasInput: pricePerGasInput ?? this.pricePerGasInput,
+      selectedTopic: clearSelectedTopic ? null : (selectedTopic ?? this.selectedTopic),
+      availableTopics: availableTopics ?? this.availableTopics,
     );
   }
 
@@ -66,5 +80,7 @@ class BasicInfoDraft extends Equatable {
         selectedPayMember,
         kmPerGasInput,
         pricePerGasInput,
+        selectedTopic,
+        availableTopics,
       ];
 }

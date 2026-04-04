@@ -1,4 +1,7 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/topic/topic_config.dart';
+import '../../../domain/topic/topic_domain.dart';
+import '../../../domain/transaction/event/event_domain.dart';
 import '../draft/event_detail_draft.dart';
 import '../projection/event_detail_projection.dart';
 
@@ -52,6 +55,24 @@ class EventDetailSavedDelegate extends EventDetailDelegate {
   List<Object?> get props => [];
 }
 
+/// TopicConfig変更を子Blocへ伝播するようPageに通知する
+class EventDetailTopicConfigPropagateDelegate extends EventDetailDelegate {
+  final TopicConfig topicConfig;
+  const EventDetailTopicConfigPropagateDelegate(this.topicConfig);
+
+  @override
+  List<Object?> get props => [topicConfig];
+}
+
+/// 利用可能なTopic一覧をBasicInfoBlocへ渡すようPageに通知する
+class EventDetailAvailableTopicsDelegate extends EventDetailDelegate {
+  final List<TopicDomain> topics;
+  const EventDetailAvailableTopicsDelegate(this.topics);
+
+  @override
+  List<Object?> get props => [topics];
+}
+
 // ---------------------------------------------------------------------------
 
 sealed class EventDetailState extends Equatable {
@@ -71,6 +92,9 @@ class EventDetailLoaded extends EventDetailState {
   final EventDetailDelegate? delegate;
   final bool isSaving;
   final String? saveErrorMessage;
+  final TopicConfig topicConfig;
+  /// OverviewBlocにEventDomainを渡すためにキャッシュする
+  final EventDomain? cachedEvent;
 
   const EventDetailLoaded({
     required this.projection,
@@ -78,7 +102,18 @@ class EventDetailLoaded extends EventDetailState {
     this.delegate,
     this.isSaving = false,
     this.saveErrorMessage,
-  });
+    TopicConfig? topicConfig,
+    this.cachedEvent,
+  }) : topicConfig = topicConfig ?? const TopicConfig(
+          showMeterValue: true,
+          showFuelDetail: true,
+          allowLinkAdd: true,
+          showLinkDistance: true,
+          showKmPerGas: true,
+          showPricePerGas: true,
+          showPayMember: true,
+          showPaymentInfoTab: true,
+        );
 
   EventDetailLoaded copyWith({
     EventDetailProjection? projection,
@@ -86,6 +121,8 @@ class EventDetailLoaded extends EventDetailState {
     EventDetailDelegate? delegate,
     bool? isSaving,
     String? saveErrorMessage,
+    TopicConfig? topicConfig,
+    EventDomain? cachedEvent,
   }) {
     return EventDetailLoaded(
       projection: projection ?? this.projection,
@@ -93,11 +130,13 @@ class EventDetailLoaded extends EventDetailState {
       delegate: delegate,
       isSaving: isSaving ?? this.isSaving,
       saveErrorMessage: saveErrorMessage,
+      topicConfig: topicConfig ?? this.topicConfig,
+      cachedEvent: cachedEvent ?? this.cachedEvent,
     );
   }
 
   @override
-  List<Object?> get props => [projection, draft, delegate, isSaving, saveErrorMessage];
+  List<Object?> get props => [projection, draft, delegate, isSaving, saveErrorMessage, topicConfig, cachedEvent];
 }
 
 class EventDetailError extends EventDetailState {

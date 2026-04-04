@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/topic/topic_config.dart';
 import '../../../features/event_detail/projection/michi_info_list_projection.dart';
 import '../draft/michi_info_draft.dart';
 
@@ -62,27 +63,40 @@ class MichiInfoLoaded extends MichiInfoState {
   final MichiInfoListProjection projection;
   final MichiInfoDraft draft;
   final MichiInfoDelegate? delegate;
+  final TopicConfig topicConfig;
 
   const MichiInfoLoaded({
     required this.projection,
     required this.draft,
     this.delegate,
-  });
+    TopicConfig? topicConfig,
+  }) : topicConfig = topicConfig ?? const TopicConfig(
+          showMeterValue: true,
+          showFuelDetail: true,
+          allowLinkAdd: true,
+          showLinkDistance: true,
+          showKmPerGas: true,
+          showPricePerGas: true,
+          showPayMember: true,
+          showPaymentInfoTab: true,
+        );
 
   MichiInfoLoaded copyWith({
     MichiInfoListProjection? projection,
     MichiInfoDraft? draft,
     MichiInfoDelegate? delegate,
+    TopicConfig? topicConfig,
   }) {
     return MichiInfoLoaded(
       projection: projection ?? this.projection,
       draft: draft ?? this.draft,
       delegate: delegate,
+      topicConfig: topicConfig ?? this.topicConfig,
     );
   }
 
   @override
-  List<Object?> get props => [projection, draft, delegate];
+  List<Object?> get props => [projection, draft, delegate, topicConfig];
 }
 
 class MichiInfoError extends MichiInfoState {

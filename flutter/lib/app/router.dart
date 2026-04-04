@@ -46,10 +46,15 @@ import '../features/settings/action_setting/bloc/action_setting_detail_bloc.dart
 import '../features/settings/action_setting/bloc/action_setting_detail_event.dart';
 import '../features/settings/action_setting/view/action_setting_page.dart';
 import '../features/settings/action_setting/view/action_setting_detail_page.dart';
+import '../adapter/aggregation_service.dart';
+import '../features/aggregation/bloc/aggregation_bloc.dart';
+import '../features/aggregation/bloc/aggregation_event.dart';
+import '../features/aggregation/view/aggregation_page.dart';
 import '../repository/action_repository.dart';
 import '../repository/event_repository.dart';
 import '../repository/member_repository.dart';
 import '../repository/tag_repository.dart';
+import '../repository/topic_repository.dart';
 import '../repository/trans_repository.dart';
 
 final router = GoRouter(
@@ -114,6 +119,7 @@ final router = GoRouter(
         return BlocProvider(
           create: (_) => EventDetailBloc(
             eventRepository: getIt<EventRepository>(),
+            topicRepository: getIt<TopicRepository>(),
           )..add(EventDetailStarted(eventId)),
           child: const EventDetailPage(),
         );
@@ -131,10 +137,26 @@ final router = GoRouter(
             memberRepository: getIt<MemberRepository>(),
             tagRepository: getIt<TagRepository>(),
             actionRepository: getIt<ActionRepository>(),
+            topicRepository: getIt<TopicRepository>(),
           )..add(const SelectionStarted()),
           child: const SelectionPage(),
         );
       },
+    ),
+    // Aggregation
+    GoRoute(
+      path: '/aggregation',
+      builder: (context, state) => BlocProvider(
+        create: (_) => AggregationBloc(
+          eventRepository: getIt<EventRepository>(),
+          aggregationService: getIt<AggregationService>(),
+          tagRepository: getIt<TagRepository>(),
+          memberRepository: getIt<MemberRepository>(),
+          transRepository: getIt<TransRepository>(),
+          topicRepository: getIt<TopicRepository>(),
+        )..add(const AggregationStarted()),
+        child: const AggregationPage(),
+      ),
     ),
     // Settings
     GoRoute(

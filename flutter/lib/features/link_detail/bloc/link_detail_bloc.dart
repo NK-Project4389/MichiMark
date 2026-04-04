@@ -20,6 +20,7 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
     on<LinkDetailSaveTapped>(_onSaveTapped);
     on<LinkDetailIsFuelToggled>(_onIsFuelToggled);
     on<LinkDetailFuelFieldsChanged>(_onFuelFieldsChanged);
+    on<LinkDetailTopicConfigUpdated>(_onTopicConfigUpdated);
   }
 
   final EventRepository _eventRepository;
@@ -191,6 +192,16 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
           gasPriceInput: event.gasPrice,
         ),
       ));
+    }
+  }
+
+  Future<void> _onTopicConfigUpdated(
+    LinkDetailTopicConfigUpdated event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is LinkDetailLoaded) {
+      final current = state as LinkDetailLoaded;
+      emit(current.copyWith(topicConfig: event.config));
     }
   }
 }

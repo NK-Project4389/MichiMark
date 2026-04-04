@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/master/action/action_domain.dart';
 import '../../../domain/master/member/member_domain.dart';
+import '../../../domain/topic/topic_config.dart';
 
 sealed class MarkDetailEvent extends Equatable {
   const MarkDetailEvent();
@@ -108,6 +109,15 @@ class MarkDetailSaveTapped extends MarkDetailEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+/// EventDetailBlocからTopicConfigが更新されたとき
+class MarkDetailTopicConfigUpdated extends MarkDetailEvent {
+  final TopicConfig config;
+  const MarkDetailTopicConfigUpdated(this.config);
+
+  @override
+  List<Object?> get props => [config];
 }
 
 /// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき

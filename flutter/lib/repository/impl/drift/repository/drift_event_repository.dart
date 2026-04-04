@@ -1,3 +1,5 @@
+import '../../../../domain/action_time/action_time_log.dart';
+import '../../../../domain/aggregation/aggregation_filter.dart';
 import '../../../../domain/transaction/event/event_domain.dart';
 import '../../../event_repository.dart';
 import '../../../repository_error.dart';
@@ -35,4 +37,28 @@ class DriftEventRepository implements EventRepository {
       throw SaveFailedError(e);
     }
   }
+
+  // TODO: Implement when Drift schema migration is applied (schemaVersion 2)
+  @override
+  Future<void> saveActionTimeLog(ActionTimeLog log) async =>
+      throw UnimplementedError('saveActionTimeLog not yet implemented in Drift');
+
+  @override
+  Future<void> deleteActionTimeLog(String logId) async =>
+      throw UnimplementedError('deleteActionTimeLog not yet implemented in Drift');
+
+  @override
+  Future<List<ActionTimeLog>> fetchActionTimeLogs(String eventId) async =>
+      throw UnimplementedError('fetchActionTimeLogs not yet implemented in Drift');
+
+  @override
+  Future<List<EventDomain>> fetchByDateRange(
+    DateTime start,
+    DateTime end,
+  ) async =>
+      throw UnimplementedError('fetchByDateRange not yet implemented in Drift');
+
+  @override
+  Future<List<EventDomain>> fetchByFilter(AggregationFilter filter) async =>
+      throw UnimplementedError('fetchByFilter not yet implemented in Drift');
 }

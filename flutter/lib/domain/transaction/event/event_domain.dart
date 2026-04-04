@@ -4,6 +4,8 @@ import '../../master/trans/trans_domain.dart';
 import '../../master/tag/tag_domain.dart';
 import '../mark_link/mark_link_domain.dart';
 import '../payment/payment_domain.dart';
+import '../../topic/topic_domain.dart';
+import '../../action_time/action_time_log.dart';
 
 class EventDomain extends Equatable {
   final String id;
@@ -35,6 +37,12 @@ class EventDomain extends Equatable {
   /// 支払情報一覧
   final List<PaymentDomain> payments;
 
+  /// 設定されたTopic。null = movingCost相当にフォールバック
+  final TopicDomain? topic;
+
+  /// イベントに紐づくActionTimeLogの一覧（timestamp ASC順）
+  final List<ActionTimeLog> actionTimeLogs;
+
   /// 論理削除フラグ
   final bool isDeleted;
 
@@ -55,6 +63,8 @@ class EventDomain extends Equatable {
     this.payMember,
     this.markLinks = const [],
     this.payments = const [],
+    this.topic,
+    this.actionTimeLogs = const [],
     this.isDeleted = false,
     required this.createdAt,
     required this.updatedAt,
@@ -71,9 +81,12 @@ class EventDomain extends Equatable {
     MemberDomain? payMember,
     List<MarkLinkDomain>? markLinks,
     List<PaymentDomain>? payments,
+    TopicDomain? topic,
+    List<ActionTimeLog>? actionTimeLogs,
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
+    bool clearTopic = false,
   }) {
     return EventDomain(
       id: id ?? this.id,
@@ -86,6 +99,8 @@ class EventDomain extends Equatable {
       payMember: payMember ?? this.payMember,
       markLinks: markLinks ?? this.markLinks,
       payments: payments ?? this.payments,
+      topic: clearTopic ? null : (topic ?? this.topic),
+      actionTimeLogs: actionTimeLogs ?? this.actionTimeLogs,
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -104,6 +119,8 @@ class EventDomain extends Equatable {
         payMember,
         markLinks,
         payments,
+        topic,
+        actionTimeLogs,
         isDeleted,
         createdAt,
         updatedAt,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../domain/topic/topic_config.dart';
 import '../../../features/selection/selection_args.dart';
 import '../../../features/selection/selection_result.dart';
 import '../bloc/basic_info_bloc.dart';
@@ -31,7 +32,8 @@ class _BasicInfoViewState extends State<BasicInfoView> {
           BasicInfoLoading() =>
             const Center(child: CircularProgressIndicator()),
           BasicInfoError(:final message) => Center(child: Text(message)),
-          BasicInfoLoaded(:final draft) => _BasicInfoForm(draft: draft),
+          BasicInfoLoaded(:final draft, :final topicConfig) =>
+            _BasicInfoForm(draft: draft, topicConfig: topicConfig),
         };
       },
     );
@@ -104,14 +106,36 @@ class _BasicInfoViewState extends State<BasicInfoView> {
               .read<BasicInfoBloc>()
               .add(BasicInfoPayMemberSelected(selected.firstOrNull));
         }
+
+      case BasicInfoOpenTopicSelectionDelegate():
+        final result = await context.push<SelectionResult>(
+          '/selection',
+          extra: SelectionArgs(
+            type: SelectionType.eventTopic,
+            selectedIds:
+                draft.selectedTopic != null ? {draft.selectedTopic!.id} : {},
+          ),
+        );
+        if (!mounted) return;
+        if (result case TopicSelectionResult(:final selected)) {
+          context
+              .read<BasicInfoBloc>()
+              .add(BasicInfoTopicSelected(selected));
+        }
+
+      case BasicInfoTopicChangedDelegate():
+        // EventDetailBloc への通知はEventDetailPageのBlocListenerが担う。
+        // BasicInfoView 側では何もしない。
+        break;
     }
   }
 }
 
 class _BasicInfoForm extends StatelessWidget {
   final BasicInfoDraft draft;
+  final TopicConfig topicConfig;
 
-  const _BasicInfoForm({required this.draft});
+  const _BasicInfoForm({required this.draft, required this.topicConfig});
 
   @override
   Widget build(BuildContext context) {
@@ -121,28 +145,40 @@ class _BasicInfoForm extends StatelessWidget {
         _EventNameField(value: draft.eventName),
         const SizedBox(height: 16),
         _SelectionRow(
+          label: 'トピック',
+          value: draft.selectedTopic?.topicName ?? '未選択',
+          onEditPressed: () => context
+              .read<BasicInfoBloc>()
+              .add(const BasicInfoEditTopicPressed()),
+        ),
+        const SizedBox(height: 16),
+        _SelectionRow(
           label: '交通手段',
           value: draft.selectedTrans?.transName ?? '未選択',
           onEditPressed: () => context
               .read<BasicInfoBloc>()
               .add(const BasicInfoEditTransPressed()),
         ),
-        const SizedBox(height: 16),
-        _NumberInputField(
-          label: '燃費 (km/L)',
-          value: draft.kmPerGasInput,
-          onChanged: (input) => context
-              .read<BasicInfoBloc>()
-              .add(BasicInfoKmPerGasChanged(input)),
-        ),
-        const SizedBox(height: 16),
-        _NumberInputField(
-          label: 'ガソリン単価 (円/L)',
-          value: draft.pricePerGasInput,
-          onChanged: (input) => context
-              .read<BasicInfoBloc>()
-              .add(BasicInfoPricePerGasChanged(input)),
-        ),
+        if (topicConfig.showKmPerGas) ...[
+          const SizedBox(height: 16),
+          _NumberInputField(
+            label: '燃費 (km/L)',
+            value: draft.kmPerGasInput,
+            onChanged: (input) => context
+                .read<BasicInfoBloc>()
+                .add(BasicInfoKmPerGasChanged(input)),
+          ),
+        ],
+        if (topicConfig.showPricePerGas) ...[
+          const SizedBox(height: 16),
+          _NumberInputField(
+            label: 'ガソリン単価 (円/L)',
+            value: draft.pricePerGasInput,
+            onChanged: (input) => context
+                .read<BasicInfoBloc>()
+                .add(BasicInfoPricePerGasChanged(input)),
+          ),
+        ],
         const SizedBox(height: 16),
         _SelectionRow(
           label: 'メンバー',
@@ -163,14 +199,16 @@ class _BasicInfoForm extends StatelessWidget {
               .read<BasicInfoBloc>()
               .add(const BasicInfoEditTagsPressed()),
         ),
-        const SizedBox(height: 16),
-        _SelectionRow(
-          label: 'ガソリン支払者',
-          value: draft.selectedPayMember?.memberName ?? '未選択',
-          onEditPressed: () => context
-              .read<BasicInfoBloc>()
-              .add(const BasicInfoEditPayMemberPressed()),
-        ),
+        if (topicConfig.showPayMember) ...[
+          const SizedBox(height: 16),
+          _SelectionRow(
+            label: 'ガソリン支払者',
+            value: draft.selectedPayMember?.memberName ?? '未選択',
+            onEditPressed: () => context
+                .read<BasicInfoBloc>()
+                .add(const BasicInfoEditPayMemberPressed()),
+          ),
+        ],
       ],
     );
   }

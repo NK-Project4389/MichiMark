@@ -3,6 +3,7 @@ import '../../../adapter/selection_adapter.dart';
 import '../../../repository/action_repository.dart';
 import '../../../repository/member_repository.dart';
 import '../../../repository/tag_repository.dart';
+import '../../../repository/topic_repository.dart';
 import '../../../repository/trans_repository.dart';
 import '../draft/selection_draft.dart';
 import '../selection_args.dart';
@@ -18,12 +19,14 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
     required MemberRepository memberRepository,
     required TagRepository tagRepository,
     required ActionRepository actionRepository,
+    required TopicRepository topicRepository,
   })  : _type = type,
         _selectedIds = selectedIds,
         _transRepository = transRepository,
         _memberRepository = memberRepository,
         _tagRepository = tagRepository,
         _actionRepository = actionRepository,
+        _topicRepository = topicRepository,
         super(const SelectionLoading()) {
     on<SelectionStarted>(_onStarted);
     on<SelectionItemToggled>(_onItemToggled);
@@ -37,6 +40,7 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
   final MemberRepository _memberRepository;
   final TagRepository _tagRepository;
   final ActionRepository _actionRepository;
+  final TopicRepository _topicRepository;
 
   Future<void> _onStarted(
     SelectionStarted event,
@@ -102,6 +106,19 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
             projection: projection,
             draft: draft,
             cachedActions: items,
+          ));
+
+        case SelectionType.eventTopic:
+          final items = await _topicRepository.fetchAll();
+          final projection = SelectionAdapter.fromTopics(
+            type: _type,
+            items: items,
+            selectedIds: _selectedIds,
+          );
+          emit(SelectionLoaded(
+            projection: projection,
+            draft: draft,
+            cachedTopics: items,
           ));
       }
     } on Exception catch (e) {
@@ -185,6 +202,13 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
             .where((a) => state.draft.selectedIds.contains(a.id))
             .toList();
         return ActionsSelectionResult(selected);
+
+      case SelectionType.eventTopic:
+        final id = state.draft.selectedIds.firstOrNull;
+        final selected = id != null
+            ? state.cachedTopics.where((t) => t.id == id).firstOrNull
+            : null;
+        return TopicSelectionResult(selected);
     }
   }
 }

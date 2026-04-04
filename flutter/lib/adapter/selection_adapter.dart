@@ -2,6 +2,7 @@ import '../domain/master/action/action_domain.dart';
 import '../domain/master/member/member_domain.dart';
 import '../domain/master/tag/tag_domain.dart';
 import '../domain/master/trans/trans_domain.dart';
+import '../domain/topic/topic_domain.dart';
 import '../features/selection/projection/selection_projection.dart';
 import '../features/selection/selection_args.dart';
 
@@ -75,6 +76,24 @@ class SelectionAdapter {
                 id: a.id,
                 label: a.actionName,
                 isSelected: selectedIds.contains(a.id),
+              ))
+          .toList(),
+    );
+  }
+
+  static SelectionProjection fromTopics({
+    required SelectionType type,
+    required List<TopicDomain> items,
+    required Set<String> selectedIds,
+  }) {
+    return SelectionProjection(
+      title: type.title,
+      mode: type.mode,
+      items: items
+          .map((t) => SelectionItemProjection(
+                id: t.id,
+                label: t.topicName,
+                isSelected: selectedIds.contains(t.id),
               ))
           .toList(),
     );

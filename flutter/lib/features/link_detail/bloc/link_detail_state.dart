@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/topic/topic_config.dart';
 import '../draft/link_detail_draft.dart';
 
 /// LinkDetailのDelegate（画面遷移・操作意図の通知）
@@ -51,24 +52,37 @@ class LinkDetailLoading extends LinkDetailState {
 class LinkDetailLoaded extends LinkDetailState {
   final LinkDetailDraft draft;
   final LinkDetailDelegate? delegate;
+  final TopicConfig topicConfig;
 
   const LinkDetailLoaded({
     required this.draft,
     this.delegate,
-  });
+    TopicConfig? topicConfig,
+  }) : topicConfig = topicConfig ?? const TopicConfig(
+          showMeterValue: true,
+          showFuelDetail: true,
+          allowLinkAdd: true,
+          showLinkDistance: true,
+          showKmPerGas: true,
+          showPricePerGas: true,
+          showPayMember: true,
+          showPaymentInfoTab: true,
+        );
 
   LinkDetailLoaded copyWith({
     LinkDetailDraft? draft,
     LinkDetailDelegate? delegate,
+    TopicConfig? topicConfig,
   }) {
     return LinkDetailLoaded(
       draft: draft ?? this.draft,
       delegate: delegate,
+      topicConfig: topicConfig ?? this.topicConfig,
     );
   }
 
   @override
-  List<Object?> get props => [draft, delegate];
+  List<Object?> get props => [draft, delegate, topicConfig];
 }
 
 class LinkDetailError extends LinkDetailState {

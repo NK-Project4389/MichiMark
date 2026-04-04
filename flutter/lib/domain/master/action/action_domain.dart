@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../action_time/action_state.dart';
 
 class ActionDomain extends Equatable {
   final String id;
@@ -18,6 +19,18 @@ class ActionDomain extends Equatable {
   /// 更新日（保存時更新）
   final DateTime updatedAt;
 
+  /// 遷移前の状態。nullは任意状態から遷移可を意味する
+  final ActionState? fromState;
+
+  /// 遷移後の状態。nullは状態変化なしのActionを意味する
+  final ActionState? toState;
+
+  /// トグル型Action（休憩開始/終了など）かどうか
+  final bool isToggle;
+
+  /// 対になるActionのid（例: 休憩開始 ↔ 休憩終了）
+  final String? togglePairId;
+
   const ActionDomain({
     required this.id,
     required this.actionName,
@@ -25,6 +38,10 @@ class ActionDomain extends Equatable {
     this.isDeleted = false,
     required this.createdAt,
     required this.updatedAt,
+    this.fromState,
+    this.toState,
+    this.isToggle = false,
+    this.togglePairId,
   });
 
   ActionDomain copyWith({
@@ -34,6 +51,13 @@ class ActionDomain extends Equatable {
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
+    ActionState? fromState,
+    ActionState? toState,
+    bool? isToggle,
+    String? togglePairId,
+    bool clearFromState = false,
+    bool clearToState = false,
+    bool clearTogglePairId = false,
   }) {
     return ActionDomain(
       id: id ?? this.id,
@@ -42,6 +66,10 @@ class ActionDomain extends Equatable {
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      fromState: clearFromState ? null : (fromState ?? this.fromState),
+      toState: clearToState ? null : (toState ?? this.toState),
+      isToggle: isToggle ?? this.isToggle,
+      togglePairId: clearTogglePairId ? null : (togglePairId ?? this.togglePairId),
     );
   }
 
@@ -53,5 +81,9 @@ class ActionDomain extends Equatable {
         isDeleted,
         createdAt,
         updatedAt,
+        fromState,
+        toState,
+        isToggle,
+        togglePairId,
       ];
 }

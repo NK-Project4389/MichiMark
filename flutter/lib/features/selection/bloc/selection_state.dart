@@ -3,6 +3,7 @@ import '../../../domain/master/action/action_domain.dart';
 import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/master/tag/tag_domain.dart';
 import '../../../domain/master/trans/trans_domain.dart';
+import '../../../domain/topic/topic_domain.dart';
 import '../draft/selection_draft.dart';
 import '../projection/selection_projection.dart';
 import '../selection_result.dart';
@@ -50,6 +51,7 @@ class SelectionLoaded extends SelectionState {
   final List<MemberDomain> cachedMembers;
   final List<TagDomain> cachedTags;
   final List<ActionDomain> cachedActions;
+  final List<TopicDomain> cachedTopics;
 
   const SelectionLoaded({
     required this.projection,
@@ -59,6 +61,7 @@ class SelectionLoaded extends SelectionState {
     this.cachedMembers = const [],
     this.cachedTags = const [],
     this.cachedActions = const [],
+    this.cachedTopics = const [],
   });
 
   SelectionLoaded copyWith({
@@ -74,6 +77,7 @@ class SelectionLoaded extends SelectionState {
       cachedMembers: cachedMembers,
       cachedTags: cachedTags,
       cachedActions: cachedActions,
+      cachedTopics: cachedTopics,
     );
   }
 

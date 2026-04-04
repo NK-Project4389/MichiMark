@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
+import '../../../domain/topic/topic_config.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../features/event_detail/projection/michi_info_list_projection.dart';
 import '../../../features/link_detail/draft/link_detail_draft.dart';
@@ -32,8 +33,11 @@ class _MichiInfoViewState extends State<MichiInfoView> {
           MichiInfoLoading() =>
             const Center(child: CircularProgressIndicator()),
           MichiInfoError(:final message) => Center(child: Text(message)),
-          MichiInfoLoaded(:final projection) =>
-            _MichiInfoList(projection: projection),
+          MichiInfoLoaded(:final projection, :final topicConfig) =>
+            _MichiInfoList(
+              projection: projection,
+              topicConfig: topicConfig,
+            ),
         };
       },
     );
@@ -154,8 +158,12 @@ List<_GroupData> _buildGroups(List<MarkLinkItemProjection> items) {
 
 class _MichiInfoList extends StatelessWidget {
   final MichiInfoListProjection projection;
+  final TopicConfig topicConfig;
 
-  const _MichiInfoList({required this.projection});
+  const _MichiInfoList({
+    required this.projection,
+    required this.topicConfig,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -218,16 +226,17 @@ class _MichiInfoList extends StatelessWidget {
                     .add(const MichiInfoAddMarkPressed());
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.route),
-              title: const Text('リンクを追加'),
-              onTap: () {
-                Navigator.of(context).pop();
-                context
-                    .read<MichiInfoBloc>()
-                    .add(const MichiInfoAddLinkPressed());
-              },
-            ),
+            if (topicConfig.allowLinkAdd)
+              ListTile(
+                leading: const Icon(Icons.route),
+                title: const Text('リンクを追加'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  context
+                      .read<MichiInfoBloc>()
+                      .add(const MichiInfoAddLinkPressed());
+                },
+              ),
           ],
         ),
       ),

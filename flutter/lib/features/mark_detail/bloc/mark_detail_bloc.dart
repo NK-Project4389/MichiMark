@@ -21,6 +21,7 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
     on<MarkDetailSaveTapped>(_onSaveTapped);
     on<MarkDetailIsFuelToggled>(_onIsFuelToggled);
     on<MarkDetailFuelFieldsChanged>(_onFuelFieldsChanged);
+    on<MarkDetailTopicConfigUpdated>(_onTopicConfigUpdated);
   }
 
   final EventRepository _eventRepository;
@@ -204,6 +205,16 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
           gasPriceInput: event.gasPrice,
         ),
       ));
+    }
+  }
+
+  Future<void> _onTopicConfigUpdated(
+    MarkDetailTopicConfigUpdated event,
+    Emitter<MarkDetailState> emit,
+  ) async {
+    if (state is MarkDetailLoaded) {
+      final current = state as MarkDetailLoaded;
+      emit(current.copyWith(topicConfig: event.config));
     }
   }
 }
