@@ -52,6 +52,18 @@
 
 ---
 
+### iOS アプリアイコン設定
+
+- SwiftUI プロジェクト（`MichiMark/Assets.xcassets`）のアイコン画像を Flutter iOS 側に反映
+- 不足サイズ（20x20@1x・76x76・83.5x83.5）は sips で 1024px 元画像から生成
+
+### バグ修正：イベント詳細から一覧に戻れない
+
+- `event_list_page.dart` の `context.go()` → `context.push()` に変更
+- `go` はスタックを置き換えるため `pop()` できなかった
+
+---
+
 ## 未完了
 
 - T-010〜T-012（Phase 2動作確認）は引き続きIN_PROGRESS
