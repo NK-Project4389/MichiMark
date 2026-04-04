@@ -1,3 +1,16 @@
 {
-  "model": "sonnet"
+  "model": "sonnet",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/.claude/hooks/on_push.sh"
+          }
+        ]
+      }
+    ]
+  }
 }
