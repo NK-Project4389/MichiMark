@@ -38,3 +38,4 @@
 - [2026-04-04_chore](./2026-04-04_chore__要件vsバグ判断ルール_push時自動進捗登録.md) | CLAUDE.mdルール追加・push時自動進捗hook
 - [2026-04-04_michi_info_layout](./2026-04-04_michi_info_layout.md) | MichiInfoタイムライン型レイアウト実装完了
 | [2026-04-05_requirements_topic_actiontime_aggregation.md](./2026-04-05_requirements_topic_actiontime_aggregation.md) | 要件書作成：Topic / ActionTime / Aggregation |
+| [2026-04-05_topic_actiontime_aggregation_impl.md](./2026-04-05_topic_actiontime_aggregation_impl.md) | Topic / ActionTime / Aggregation / EventDetailOverview 実装・レビュー完了 |
