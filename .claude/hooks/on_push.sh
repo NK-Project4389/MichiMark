@@ -46,6 +46,27 @@ EOF
         echo "- [${DATE}](./${FILENAME})" >> "$PROGRESS_DIR/README.md"
     fi
 else
-    # 既存ファイルに追記
-    echo "- ${LATEST_COMMIT} (${COMMIT_HASH})" >> "$EXISTING"
+    # 「## 完了した作業」セクションの直後に追記
+    python3 - "$EXISTING" "$LATEST_COMMIT" "$COMMIT_HASH" << 'PYEOF'
+import sys
+
+filepath = sys.argv[1]
+commit_msg = sys.argv[2]
+commit_hash = sys.argv[3]
+
+with open(filepath, 'r') as f:
+    lines = f.readlines()
+
+insert_idx = None
+for i, line in enumerate(lines):
+    if line.strip() == '## 完了した作業':
+        insert_idx = i + 1
+        break
+
+if insert_idx is not None:
+    new_line = f'- {commit_msg} ({commit_hash})\n'
+    lines.insert(insert_idx, new_line)
+    with open(filepath, 'w') as f:
+        f.writelines(lines)
+PYEOF
 fi
