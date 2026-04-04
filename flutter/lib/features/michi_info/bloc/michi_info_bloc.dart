@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import '../../../adapter/event_detail_adapter.dart';
 import '../../../adapter/mark_link_draft_adapter.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
@@ -133,7 +134,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       items.add(newItem);
     }
     items.sort((a, b) => a.markLinkSeq.compareTo(b.markLinkSeq));
-    return MichiInfoListProjection(items: items);
+    return MichiInfoListProjection(items: _recalcMeterDiff(items));
   }
 
   MichiInfoListProjection _applyLinkDraft(
@@ -157,6 +158,40 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       items.add(newItem);
     }
     items.sort((a, b) => a.markLinkSeq.compareTo(b.markLinkSeq));
-    return MichiInfoListProjection(items: items);
+    return MichiInfoListProjection(items: _recalcMeterDiff(items));
+  }
+
+  /// ソート済み items を走査して displayMeterDiff を再計算する
+  List<MarkLinkItemProjection> _recalcMeterDiff(
+    List<MarkLinkItemProjection> items,
+  ) {
+    final numberFormat = NumberFormat('#,###');
+    int? prevMeterValue;
+    return items.map((item) {
+      if (item.markLinkType != MarkOrLink.mark) return item;
+
+      final rawMeter = item.displayMeterValue;
+      if (rawMeter == null) {
+        prevMeterValue = null;
+        return item.copyWithMeterDiff(null);
+      }
+      final parsed = int.tryParse(
+        rawMeter.replaceAll(',', '').replaceAll(' km', ''),
+      );
+      if (parsed == null) {
+        prevMeterValue = null;
+        return item.copyWithMeterDiff(null);
+      }
+
+      final prev = prevMeterValue;
+      prevMeterValue = parsed;
+
+      if (prev == null) return item.copyWithMeterDiff(null);
+
+      final diff = parsed - prev;
+      final sign = diff >= 0 ? '+' : '-';
+      final absStr = numberFormat.format(diff.abs());
+      return item.copyWithMeterDiff('$sign$absStr km');
+    }).toList();
   }
 }

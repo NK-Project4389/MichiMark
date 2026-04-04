@@ -24,6 +24,9 @@ class MarkLinkItemProjection extends Equatable {
   /// 累積メーターの表示文字列（例: "1,234 km"）。Mark用
   final String? displayMeterValue;
 
+  /// 前の Mark との累積メーター差分の表示文字列（例: "+1,234 km"）。Mark用
+  final String? displayMeterDiff;
+
   /// 区間距離の表示文字列（例: "10.6 km"）。Link用
   final String? displayDistanceValue;
 
@@ -51,6 +54,7 @@ class MarkLinkItemProjection extends Equatable {
     required this.markLinkName,
     required this.members,
     this.displayMeterValue,
+    this.displayMeterDiff,
     this.displayDistanceValue,
     required this.actions,
     required this.isFuel,
@@ -59,6 +63,26 @@ class MarkLinkItemProjection extends Equatable {
     this.gasPrice,
     this.memo,
   });
+
+  MarkLinkItemProjection copyWithMeterDiff(String? newMeterDiff) {
+    return MarkLinkItemProjection(
+      id: id,
+      markLinkSeq: markLinkSeq,
+      markLinkType: markLinkType,
+      displayDate: displayDate,
+      markLinkName: markLinkName,
+      members: members,
+      displayMeterValue: displayMeterValue,
+      displayMeterDiff: newMeterDiff,
+      displayDistanceValue: displayDistanceValue,
+      actions: actions,
+      isFuel: isFuel,
+      pricePerGas: pricePerGas,
+      gasQuantity: gasQuantity,
+      gasPrice: gasPrice,
+      memo: memo,
+    );
+  }
 
   @override
   List<Object?> get props => [
@@ -69,6 +93,7 @@ class MarkLinkItemProjection extends Equatable {
         markLinkName,
         members,
         displayMeterValue,
+        displayMeterDiff,
         displayDistanceValue,
         actions,
         isFuel,

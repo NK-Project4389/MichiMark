@@ -44,6 +44,9 @@
 | T-021 | イベント新規作成フロー実装（EventDetail 新規作成） | architect / flutter-dev / reviewer | `TODO` | | T-020完了後推奨 |
 | T-022 | マスターデータ初期投入（Trans/Member/Tag/Action のデフォルトデータ） | flutter-dev | `TODO` | | |
 | T-023 | app_id / Bundle ID / アイコン等の設定 | orchestrator | `TODO` | | ストア公開準備 |
+| T-030 | MichiInfo レイアウト変更 Spec作成 | architect | `DONE` | | 要件書: docs/Requirements/REQ-michi_info_layout.md |
+| T-031 | MichiInfo レイアウト変更 実装 | flutter-dev | `DONE` | | T-030完了後 |
+| T-032 | MichiInfo レイアウト変更 レビュー | reviewer | `TODO` | | T-031完了後 |
 
 ---
 
