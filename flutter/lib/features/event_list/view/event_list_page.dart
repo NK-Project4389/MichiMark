@@ -53,9 +53,9 @@ class EventListPage extends StatelessWidget {
   void _handleDelegate(BuildContext context, EventListDelegate delegate) {
     switch (delegate) {
       case OpenEventDetailDelegate(:final eventId):
-        context.go('/event/$eventId');
+        context.push('/event/$eventId');
       case OpenAddEventDelegate():
-        context.go('/event/${const Uuid().v4()}');
+        context.push('/event/${const Uuid().v4()}');
       case OpenSettingsDelegate():
         context.go('/settings');
     }
