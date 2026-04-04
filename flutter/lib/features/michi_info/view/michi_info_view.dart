@@ -95,48 +95,57 @@ class _MichiInfoViewState extends State<MichiInfoView> {
 }
 
 // ────────────────────────────────────────────────────────
-// 太線区間フラグ計算ヘルパー
+// グループデータ
 // ────────────────────────────────────────────────────────
 
-/// items リストを走査して各インデックスの太線フラグを計算する
-List<({bool isUpperThick, bool isLowerThick})> _calcThickFlags(
-  List<MarkLinkItemProjection> items,
-) {
-  final flags = List.generate(
-    items.length,
-    (_) => (isUpperThick: false, isLowerThick: false),
-  );
+class _GroupData {
+  final MarkLinkItemProjection mark;
+  final List<MarkLinkItemProjection> links;
 
-  for (int i = 0; i < items.length; i++) {
-    if (items[i].markLinkType != MarkOrLink.mark) continue;
+  /// 次の Mark との累積メーター差分（次の Mark の displayMeterDiff）
+  final String? meterDiff;
 
-    // この Mark の直後に Link が1つ以上続き、その後に Mark が存在するか確認
+  const _GroupData({
+    required this.mark,
+    required this.links,
+    required this.meterDiff,
+  });
+}
+
+/// items をスキャンして各 Mark とその後続 Links をグループ化する
+List<_GroupData> _buildGroups(List<MarkLinkItemProjection> items) {
+  final groups = <_GroupData>[];
+
+  int i = 0;
+  while (i < items.length) {
+    if (items[i].markLinkType != MarkOrLink.mark) {
+      // Mark 以外で始まるケースは Skip（通常発生しないが安全策）
+      i++;
+      continue;
+    }
+
+    final mark = items[i];
+    final links = <MarkLinkItemProjection>[];
+
     int j = i + 1;
-    bool hasLink = false;
     while (j < items.length && items[j].markLinkType == MarkOrLink.link) {
-      hasLink = true;
+      links.add(items[j]);
       j++;
     }
-    final nextMarkIndex = (j < items.length && items[j].markLinkType == MarkOrLink.mark) ? j : -1;
 
-    if (!hasLink || nextMarkIndex < 0) continue;
-
-    // 当該 Mark の下半分を太線に
-    flags[i] = (isUpperThick: flags[i].isUpperThick, isLowerThick: true);
-
-    // 中間の Link を全太線に
-    for (int k = i + 1; k < nextMarkIndex; k++) {
-      flags[k] = (isUpperThick: true, isLowerThick: true);
+    // 次の Mark の displayMeterDiff を meterDiff として使用
+    final String? meterDiff;
+    if (j < items.length && items[j].markLinkType == MarkOrLink.mark) {
+      meterDiff = items[j].displayMeterDiff;
+    } else {
+      meterDiff = null;
     }
 
-    // 次の Mark の上半分を太線に
-    flags[nextMarkIndex] = (
-      isUpperThick: true,
-      isLowerThick: flags[nextMarkIndex].isLowerThick,
-    );
+    groups.add(_GroupData(mark: mark, links: links, meterDiff: meterDiff));
+    i = j;
   }
 
-  return flags;
+  return groups;
 }
 
 // ────────────────────────────────────────────────────────
@@ -160,24 +169,23 @@ class _MichiInfoList extends StatelessWidget {
       );
     }
 
-    final items = projection.items;
-    final flags = _calcThickFlags(items);
+    final groups = _buildGroups(projection.items);
 
     return Scaffold(
       body: Stack(
         children: [
-          ListView.builder(
-            padding: const EdgeInsets.only(top: 8, bottom: 80),
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              return _TimelineItem(
-                item: items[index],
-                isUpperThick: flags[index].isUpperThick,
-                isLowerThick: flags[index].isLowerThick,
-                isFirst: index == 0,
-                isLast: index == items.length - 1,
-              );
-            },
+          SingleChildScrollView(
+            padding: const EdgeInsets.only(top: 48, bottom: 80),
+            child: Column(
+              children: [
+                for (int i = 0; i < groups.length; i++)
+                  _MarkGroup(
+                    group: groups[i],
+                    isFirst: i == 0,
+                    isLast: i == groups.length - 1,
+                  ),
+              ],
+            ),
           ),
           const Positioned(
             top: 8,
@@ -228,33 +236,23 @@ class _MichiInfoList extends StatelessWidget {
 }
 
 // ────────────────────────────────────────────────────────
-// _TimelineItem
+// _MarkGroup
 // ────────────────────────────────────────────────────────
 
-class _TimelineItem extends StatelessWidget {
-  final MarkLinkItemProjection item;
-  final bool isUpperThick;
-  final bool isLowerThick;
+class _MarkGroup extends StatelessWidget {
+  final _GroupData group;
   final bool isFirst;
   final bool isLast;
 
-  const _TimelineItem({
-    required this.item,
-    required this.isUpperThick,
-    required this.isLowerThick,
+  const _MarkGroup({
+    required this.group,
     required this.isFirst,
     required this.isLast,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isMark = item.markLinkType == MarkOrLink.mark;
-    void onTap() => context.read<MichiInfoBloc>().add(
-          MichiInfoItemTapped(
-            markLinkId: item.id,
-            type: item.markLinkType,
-          ),
-        );
+    final hasLinks = group.links.isNotEmpty;
 
     return IntrinsicHeight(
       child: Row(
@@ -262,30 +260,52 @@ class _TimelineItem extends StatelessWidget {
         children: [
           SizedBox(
             width: 40,
-            child: _TimelineConnector(
-              showDot: isMark,
-              isUpperThick: isUpperThick,
-              isLowerThick: isLowerThick,
+            child: _TimelineGroupConnector(
               isFirst: isFirst,
               isLast: isLast,
+              hasLinks: hasLinks,
             ),
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-              child: isMark
-                  ? _MarkCard(item: item, onTap: onTap)
-                  : _LinkCard(item: item, onTap: onTap),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: _MarkCard(
+                      item: group.mark,
+                      onTap: () => context.read<MichiInfoBloc>().add(
+                            MichiInfoItemTapped(
+                              markLinkId: group.mark.id,
+                              type: group.mark.markLinkType,
+                            ),
+                          ),
+                    ),
+                  ),
+                  for (final link in group.links)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: _LinkCard(
+                        item: link,
+                        onTap: () => context.read<MichiInfoBloc>().add(
+                              MichiInfoItemTapped(
+                                markLinkId: link.id,
+                                type: link.markLinkType,
+                              ),
+                            ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
           SizedBox(
             width: 72,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-              child: _DistanceColumn(
-                displayMeterDiff: item.displayMeterDiff,
-                displayDistanceValue: item.displayDistanceValue,
-              ),
+            child: _GroupDistanceArrows(
+              meterDiff: group.meterDiff,
+              links: group.links,
             ),
           ),
         ],
@@ -295,126 +315,273 @@ class _TimelineItem extends StatelessWidget {
 }
 
 // ────────────────────────────────────────────────────────
-// _TimelineConnector (CustomPaint)
+// _TimelineGroupConnector (CustomPaint)
 // ────────────────────────────────────────────────────────
 
-class _TimelineConnector extends StatelessWidget {
-  final bool showDot;
-  final bool isUpperThick;
-  final bool isLowerThick;
+class _TimelineGroupConnector extends StatelessWidget {
   final bool isFirst;
   final bool isLast;
+  final bool hasLinks;
 
-  const _TimelineConnector({
-    required this.showDot,
-    required this.isUpperThick,
-    required this.isLowerThick,
+  const _TimelineGroupConnector({
     required this.isFirst,
     required this.isLast,
+    required this.hasLinks,
   });
 
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.onSurface;
     return CustomPaint(
-      painter: _TimelineConnectorPainter(
-        showDot: showDot,
-        isUpperThick: isUpperThick,
-        isLowerThick: isLowerThick,
+      painter: _TimelineGroupConnectorPainter(
         isFirst: isFirst,
         isLast: isLast,
+        hasLinks: hasLinks,
         color: color,
       ),
     );
   }
 }
 
-class _TimelineConnectorPainter extends CustomPainter {
-  static const double _normalWidth = 2.0;
-  static const double _thickWidth = 4.0;
+class _TimelineGroupConnectorPainter extends CustomPainter {
+  static const double _normalWidth = 1.5;
+  static const double _thickWidth = 6.0;
   static const double _dotRadius = 6.0;
 
-  final bool showDot;
-  final bool isUpperThick;
-  final bool isLowerThick;
+  /// Mark カード1行の標準高さ（padding 6 + card ~44 + padding 6 = ~56）
+  static const double _markRowHeight = 56.0;
+
   final bool isFirst;
   final bool isLast;
+  final bool hasLinks;
   final Color color;
 
-  const _TimelineConnectorPainter({
-    required this.showDot,
-    required this.isUpperThick,
-    required this.isLowerThick,
+  const _TimelineGroupConnectorPainter({
     required this.isFirst,
     required this.isLast,
+    required this.hasLinks,
     required this.color,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final cx = size.width / 2;
-    final cy = size.height / 2;
 
-    final upperPaint = Paint()
+    // Mark のドット中心 Y は Mark 行の中央（padding 6 + card高さの半分）
+    // IntrinsicHeight を使っているので Mark 行の高さを推定する
+    final dotY = _markRowHeight / 2;
+
+    final normalPaint = Paint()
       ..color = color
-      ..strokeWidth = isUpperThick ? _thickWidth : _normalWidth
+      ..strokeWidth = _normalWidth
       ..strokeCap = StrokeCap.butt;
 
-    final lowerPaint = Paint()
+    final thickPaint = Paint()
       ..color = color
-      ..strokeWidth = isLowerThick ? _thickWidth : _normalWidth
+      ..strokeWidth = _thickWidth
       ..strokeCap = StrokeCap.butt;
 
-    // 上半分の線（先頭行は描画しない）
+    // 上半分の線（先頭グループは省略）
     if (!isFirst) {
       canvas.drawLine(
         Offset(cx, 0),
-        Offset(cx, cy - _dotRadius),
-        upperPaint,
+        Offset(cx, dotY - _dotRadius),
+        normalPaint,
       );
     }
 
-    // 下半分の線（末尾行は描画しない）
+    // ドット
+    final dotPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(cx, dotY), _dotRadius, dotPaint);
+
+    // ドット下〜グループ下端の線
     if (!isLast) {
+      final linePaint = hasLinks ? thickPaint : normalPaint;
       canvas.drawLine(
-        Offset(cx, cy + _dotRadius),
+        Offset(cx, dotY + _dotRadius),
         Offset(cx, size.height),
-        lowerPaint,
-      );
-    }
-
-    // ドット（Mark の場合）
-    if (showDot) {
-      final dotPaint = Paint()
-        ..color = color
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(Offset(cx, cy), _dotRadius, dotPaint);
-    } else {
-      // Link の場合は細い線のみ（ドットなし）。上下をつなぐ中央部分
-      final linePaint = Paint()
-        ..color = color
-        ..strokeWidth = isUpperThick ? _thickWidth : _normalWidth
-        ..strokeCap = StrokeCap.butt;
-      canvas.drawLine(
-        Offset(cx, cy - _dotRadius),
-        Offset(cx, cy + _dotRadius),
         linePaint,
       );
     }
   }
 
   @override
-  bool shouldRepaint(_TimelineConnectorPainter old) =>
-      showDot != old.showDot ||
-      isUpperThick != old.isUpperThick ||
-      isLowerThick != old.isLowerThick ||
+  bool shouldRepaint(_TimelineGroupConnectorPainter old) =>
       isFirst != old.isFirst ||
       isLast != old.isLast ||
+      hasLinks != old.hasLinks ||
       color != old.color;
 }
 
 // ────────────────────────────────────────────────────────
-// _MarkCard (CustomPaint)
+// _GroupDistanceArrows (距離矢印表示)
+// ────────────────────────────────────────────────────────
+
+class _GroupDistanceArrows extends StatelessWidget {
+  final String? meterDiff;
+  final List<MarkLinkItemProjection> links;
+
+  const _GroupDistanceArrows({
+    required this.meterDiff,
+    required this.links,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hasMeterDiff = meterDiff != null;
+    final linkDistances = links
+        .where((l) => l.displayDistanceValue != null)
+        .toList();
+    final hasLinkDist = linkDistances.isNotEmpty;
+
+    if (!hasMeterDiff && !hasLinkDist) {
+      return const SizedBox.shrink();
+    }
+
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final outline = Theme.of(context).colorScheme.outline;
+
+    // 重複ありの場合: 2列（meterDiff 左寄せ、link距離 右寄せ）
+    if (hasMeterDiff && hasLinkDist) {
+      return Row(
+        children: [
+          Expanded(
+            child: _ArrowWithText(
+              text: meterDiff!,
+              color: onSurface,
+              isBold: true,
+            ),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (final link in linkDistances)
+                  Expanded(
+                    child: _ArrowWithText(
+                      text: link.displayDistanceValue!,
+                      color: outline,
+                      isBold: false,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    // meterDiff のみ
+    if (hasMeterDiff) {
+      return _ArrowWithText(
+        text: meterDiff!,
+        color: onSurface,
+        isBold: true,
+      );
+    }
+
+    // link距離のみ
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (final link in linkDistances)
+          Expanded(
+            child: _ArrowWithText(
+              text: link.displayDistanceValue!,
+              color: outline,
+              isBold: false,
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// 縦矢印（↕）とテキストを縦に並べたウィジェット
+class _ArrowWithText extends StatelessWidget {
+  final String text;
+  final Color color;
+  final bool isBold;
+
+  const _ArrowWithText({
+    required this.text,
+    required this.color,
+    required this.isBold,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CustomPaint(
+          size: const Size(16, 24),
+          painter: _VerticalArrowPainter(color: color),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          text,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontSize: 11,
+                color: color,
+                fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              ),
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+}
+
+/// 縦の両方向矢印を描画する CustomPainter
+class _VerticalArrowPainter extends CustomPainter {
+  final Color color;
+
+  const _VerticalArrowPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.5
+      ..strokeCap = StrokeCap.round;
+
+    final cx = size.width / 2;
+    const arrowSize = 5.0;
+
+    // 縦線
+    canvas.drawLine(
+      Offset(cx, arrowSize),
+      Offset(cx, size.height - arrowSize),
+      paint,
+    );
+
+    // 上向き矢印
+    canvas.drawLine(Offset(cx, 0), Offset(cx - arrowSize / 2, arrowSize), paint);
+    canvas.drawLine(Offset(cx, 0), Offset(cx + arrowSize / 2, arrowSize), paint);
+
+    // 下向き矢印
+    canvas.drawLine(
+      Offset(cx, size.height),
+      Offset(cx - arrowSize / 2, size.height - arrowSize),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(cx, size.height),
+      Offset(cx + arrowSize / 2, size.height - arrowSize),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_VerticalArrowPainter old) => color != old.color;
+}
+
+// ────────────────────────────────────────────────────────
+// _MarkCard (CustomPaint バブルカード)
 // ────────────────────────────────────────────────────────
 
 class _MarkCard extends StatelessWidget {
@@ -436,7 +603,7 @@ class _MarkCard extends StatelessWidget {
         painter: _BubbleCardPainter(bgColor: bgColor),
         child: Padding(
           // 左側に三角ポインター分のスペースを確保
-          padding: const EdgeInsets.only(left: 12, right: 8, top: 8, bottom: 8),
+          padding: const EdgeInsets.only(left: 28, right: 8, top: 8, bottom: 8),
           child: Row(
             children: [
               Expanded(
@@ -476,8 +643,11 @@ class _MarkCard extends StatelessWidget {
 }
 
 class _BubbleCardPainter extends CustomPainter {
-  static const double _pointerWidth = 8.0;
-  static const double _pointerHeight = 10.0;
+  /// 三角ポインターの幅（先端からボディ左端まで）
+  static const double _pointerWidth = 20.0;
+
+  /// 三角ポインターの高さ（上下幅）
+  static const double _pointerHeight = 14.0;
   static const double _cornerRadius = 8.0;
 
   final Color bgColor;
@@ -580,58 +750,6 @@ class _LinkCard extends StatelessWidget {
 }
 
 // ────────────────────────────────────────────────────────
-// _DistanceColumn
-// ────────────────────────────────────────────────────────
-
-class _DistanceColumn extends StatelessWidget {
-  final String? displayMeterDiff;
-  final String? displayDistanceValue;
-
-  const _DistanceColumn({
-    required this.displayMeterDiff,
-    required this.displayDistanceValue,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (displayMeterDiff == null && displayDistanceValue == null) {
-      return const SizedBox.shrink();
-    }
-
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    final outline = Theme.of(context).colorScheme.outline;
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        if (displayMeterDiff != null)
-          Text(
-            displayMeterDiff!,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: onSurface,
-                ),
-            textAlign: TextAlign.right,
-          ),
-        if (displayDistanceValue != null) ...[
-          const Icon(Icons.unfold_more, size: 14),
-          Text(
-            displayDistanceValue!,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: 12,
-                  color: outline,
-                ),
-            textAlign: TextAlign.right,
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-// ────────────────────────────────────────────────────────
 // _DistanceLegend
 // ────────────────────────────────────────────────────────
 
@@ -645,61 +763,32 @@ class _DistanceLegend extends StatelessWidget {
     final outline = Theme.of(context).colorScheme.outline;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: surface.withValues(alpha: 0.9),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(6),
         border: Border.all(
           color: outline.withValues(alpha: 0.3),
           width: 0.5,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
+          Text(
+            'メーター差分',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: 10,
                   color: onSurface,
-                  shape: BoxShape.circle,
                 ),
-              ),
-              const SizedBox(width: 4),
-              Text(
-                'メーター差分',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 10,
-                      color: onSurface,
-                    ),
-              ),
-            ],
           ),
-          const SizedBox(height: 2),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
+          const SizedBox(width: 8),
+          Text(
+            '区間距離',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: 10,
                   color: outline,
-                  shape: BoxShape.circle,
                 ),
-              ),
-              const SizedBox(width: 4),
-              Text(
-                '区間距離',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 10,
-                      color: outline,
-                    ),
-              ),
-            ],
           ),
         ],
       ),
