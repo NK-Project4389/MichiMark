@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../domain/action_time/action_state.dart';
 import '../bloc/action_setting_detail_bloc.dart';
 import '../bloc/action_setting_detail_event.dart';
 import '../bloc/action_setting_detail_state.dart';
@@ -113,6 +114,40 @@ class _ActionSettingDetailForm extends StatelessWidget {
               .read<ActionSettingDetailBloc>()
               .add(ActionSettingDetailIsVisibleChanged(v)),
         ),
+        const Divider(),
+        const SizedBox(height: 8),
+        const Text(
+          '状態遷移設定',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        _ActionStateDropdown(
+          label: '遷移前の状態',
+          hint: '任意状態（未設定）',
+          value: draft.fromState,
+          onChanged: (v) => context
+              .read<ActionSettingDetailBloc>()
+              .add(ActionSettingDetailFromStateChanged(v)),
+        ),
+        const SizedBox(height: 8),
+        _ActionStateDropdown(
+          label: '遷移後の状態',
+          hint: '状態変化なし（未設定）',
+          value: draft.toState,
+          onChanged: (v) => context
+              .read<ActionSettingDetailBloc>()
+              .add(ActionSettingDetailToStateChanged(v)),
+        ),
+        const SizedBox(height: 8),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: const Text('トグル型Action'),
+          subtitle: const Text('休憩開始/終了のようなペアのAction'),
+          value: draft.isToggle,
+          onChanged: (v) => context
+              .read<ActionSettingDetailBloc>()
+              .add(ActionSettingDetailIsToggleChanged(v)),
+        ),
         if (state.saveErrorMessage != null) ...[
           const SizedBox(height: 16),
           Text(
@@ -123,6 +158,46 @@ class _ActionSettingDetailForm extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+/// ActionState を選択するドロップダウン
+class _ActionStateDropdown extends StatelessWidget {
+  final String label;
+  final String hint;
+  final ActionState? value;
+  final ValueChanged<ActionState?> onChanged;
+
+  const _ActionStateDropdown({
+    required this.label,
+    required this.hint,
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<ActionState?>(
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+      hint: Text(hint),
+      value: value,
+      items: [
+        DropdownMenuItem<ActionState?>(
+          value: null,
+          child: Text(hint),
+        ),
+        ...ActionState.values.map(
+          (s) => DropdownMenuItem<ActionState?>(
+            value: s,
+            child: Text(s.label),
+          ),
+        ),
+      ],
+      onChanged: onChanged,
     );
   }
 }

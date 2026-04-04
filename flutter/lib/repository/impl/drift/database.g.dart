@@ -80,6 +80,54 @@ class $ActionsTable extends Actions with TableInfo<$ActionsTable, Action> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _fromStateMeta = const VerificationMeta(
+    'fromState',
+  );
+  @override
+  late final GeneratedColumn<String> fromState = GeneratedColumn<String>(
+    'from_state',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _toStateMeta = const VerificationMeta(
+    'toState',
+  );
+  @override
+  late final GeneratedColumn<String> toState = GeneratedColumn<String>(
+    'to_state',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isToggleMeta = const VerificationMeta(
+    'isToggle',
+  );
+  @override
+  late final GeneratedColumn<bool> isToggle = GeneratedColumn<bool>(
+    'is_toggle',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_toggle" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _togglePairIdMeta = const VerificationMeta(
+    'togglePairId',
+  );
+  @override
+  late final GeneratedColumn<String> togglePairId = GeneratedColumn<String>(
+    'toggle_pair_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -88,6 +136,10 @@ class $ActionsTable extends Actions with TableInfo<$ActionsTable, Action> {
     isDeleted,
     createdAt,
     updatedAt,
+    fromState,
+    toState,
+    isToggle,
+    togglePairId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -142,6 +194,33 @@ class $ActionsTable extends Actions with TableInfo<$ActionsTable, Action> {
     } else if (isInserting) {
       context.missing(_updatedAtMeta);
     }
+    if (data.containsKey('from_state')) {
+      context.handle(
+        _fromStateMeta,
+        fromState.isAcceptableOrUnknown(data['from_state']!, _fromStateMeta),
+      );
+    }
+    if (data.containsKey('to_state')) {
+      context.handle(
+        _toStateMeta,
+        toState.isAcceptableOrUnknown(data['to_state']!, _toStateMeta),
+      );
+    }
+    if (data.containsKey('is_toggle')) {
+      context.handle(
+        _isToggleMeta,
+        isToggle.isAcceptableOrUnknown(data['is_toggle']!, _isToggleMeta),
+      );
+    }
+    if (data.containsKey('toggle_pair_id')) {
+      context.handle(
+        _togglePairIdMeta,
+        togglePairId.isAcceptableOrUnknown(
+          data['toggle_pair_id']!,
+          _togglePairIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -175,6 +254,22 @@ class $ActionsTable extends Actions with TableInfo<$ActionsTable, Action> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
+      fromState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}from_state'],
+      ),
+      toState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}to_state'],
+      ),
+      isToggle: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_toggle'],
+      )!,
+      togglePairId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}toggle_pair_id'],
+      ),
     );
   }
 
@@ -191,6 +286,18 @@ class Action extends DataClass implements Insertable<Action> {
   final bool isDeleted;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  /// 遷移前の状態（enumの文字列値。nullは任意状態から遷移可）
+  final String? fromState;
+
+  /// 遷移後の状態（enumの文字列値。nullは状態変化なし）
+  final String? toState;
+
+  /// トグル型Actionかどうか
+  final bool isToggle;
+
+  /// 対になるActionのid
+  final String? togglePairId;
   const Action({
     required this.id,
     required this.actionName,
@@ -198,6 +305,10 @@ class Action extends DataClass implements Insertable<Action> {
     required this.isDeleted,
     required this.createdAt,
     required this.updatedAt,
+    this.fromState,
+    this.toState,
+    required this.isToggle,
+    this.togglePairId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -208,6 +319,16 @@ class Action extends DataClass implements Insertable<Action> {
     map['is_deleted'] = Variable<bool>(isDeleted);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || fromState != null) {
+      map['from_state'] = Variable<String>(fromState);
+    }
+    if (!nullToAbsent || toState != null) {
+      map['to_state'] = Variable<String>(toState);
+    }
+    map['is_toggle'] = Variable<bool>(isToggle);
+    if (!nullToAbsent || togglePairId != null) {
+      map['toggle_pair_id'] = Variable<String>(togglePairId);
+    }
     return map;
   }
 
@@ -219,6 +340,16 @@ class Action extends DataClass implements Insertable<Action> {
       isDeleted: Value(isDeleted),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
+      fromState: fromState == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fromState),
+      toState: toState == null && nullToAbsent
+          ? const Value.absent()
+          : Value(toState),
+      isToggle: Value(isToggle),
+      togglePairId: togglePairId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(togglePairId),
     );
   }
 
@@ -234,6 +365,10 @@ class Action extends DataClass implements Insertable<Action> {
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      fromState: serializer.fromJson<String?>(json['fromState']),
+      toState: serializer.fromJson<String?>(json['toState']),
+      isToggle: serializer.fromJson<bool>(json['isToggle']),
+      togglePairId: serializer.fromJson<String?>(json['togglePairId']),
     );
   }
   @override
@@ -246,6 +381,10 @@ class Action extends DataClass implements Insertable<Action> {
       'isDeleted': serializer.toJson<bool>(isDeleted),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'fromState': serializer.toJson<String?>(fromState),
+      'toState': serializer.toJson<String?>(toState),
+      'isToggle': serializer.toJson<bool>(isToggle),
+      'togglePairId': serializer.toJson<String?>(togglePairId),
     };
   }
 
@@ -256,6 +395,10 @@ class Action extends DataClass implements Insertable<Action> {
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
+    Value<String?> fromState = const Value.absent(),
+    Value<String?> toState = const Value.absent(),
+    bool? isToggle,
+    Value<String?> togglePairId = const Value.absent(),
   }) => Action(
     id: id ?? this.id,
     actionName: actionName ?? this.actionName,
@@ -263,6 +406,10 @@ class Action extends DataClass implements Insertable<Action> {
     isDeleted: isDeleted ?? this.isDeleted,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    fromState: fromState.present ? fromState.value : this.fromState,
+    toState: toState.present ? toState.value : this.toState,
+    isToggle: isToggle ?? this.isToggle,
+    togglePairId: togglePairId.present ? togglePairId.value : this.togglePairId,
   );
   Action copyWithCompanion(ActionsCompanion data) {
     return Action(
@@ -274,6 +421,12 @@ class Action extends DataClass implements Insertable<Action> {
       isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      fromState: data.fromState.present ? data.fromState.value : this.fromState,
+      toState: data.toState.present ? data.toState.value : this.toState,
+      isToggle: data.isToggle.present ? data.isToggle.value : this.isToggle,
+      togglePairId: data.togglePairId.present
+          ? data.togglePairId.value
+          : this.togglePairId,
     );
   }
 
@@ -285,14 +438,28 @@ class Action extends DataClass implements Insertable<Action> {
           ..write('isVisible: $isVisible, ')
           ..write('isDeleted: $isDeleted, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('fromState: $fromState, ')
+          ..write('toState: $toState, ')
+          ..write('isToggle: $isToggle, ')
+          ..write('togglePairId: $togglePairId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, actionName, isVisible, isDeleted, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+    id,
+    actionName,
+    isVisible,
+    isDeleted,
+    createdAt,
+    updatedAt,
+    fromState,
+    toState,
+    isToggle,
+    togglePairId,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -302,7 +469,11 @@ class Action extends DataClass implements Insertable<Action> {
           other.isVisible == this.isVisible &&
           other.isDeleted == this.isDeleted &&
           other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
+          other.updatedAt == this.updatedAt &&
+          other.fromState == this.fromState &&
+          other.toState == this.toState &&
+          other.isToggle == this.isToggle &&
+          other.togglePairId == this.togglePairId);
 }
 
 class ActionsCompanion extends UpdateCompanion<Action> {
@@ -312,6 +483,10 @@ class ActionsCompanion extends UpdateCompanion<Action> {
   final Value<bool> isDeleted;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
+  final Value<String?> fromState;
+  final Value<String?> toState;
+  final Value<bool> isToggle;
+  final Value<String?> togglePairId;
   final Value<int> rowid;
   const ActionsCompanion({
     this.id = const Value.absent(),
@@ -320,6 +495,10 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     this.isDeleted = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.fromState = const Value.absent(),
+    this.toState = const Value.absent(),
+    this.isToggle = const Value.absent(),
+    this.togglePairId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ActionsCompanion.insert({
@@ -329,6 +508,10 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     this.isDeleted = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
+    this.fromState = const Value.absent(),
+    this.toState = const Value.absent(),
+    this.isToggle = const Value.absent(),
+    this.togglePairId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        actionName = Value(actionName),
@@ -341,6 +524,10 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     Expression<bool>? isDeleted,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
+    Expression<String>? fromState,
+    Expression<String>? toState,
+    Expression<bool>? isToggle,
+    Expression<String>? togglePairId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -350,6 +537,10 @@ class ActionsCompanion extends UpdateCompanion<Action> {
       if (isDeleted != null) 'is_deleted': isDeleted,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
+      if (fromState != null) 'from_state': fromState,
+      if (toState != null) 'to_state': toState,
+      if (isToggle != null) 'is_toggle': isToggle,
+      if (togglePairId != null) 'toggle_pair_id': togglePairId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -361,6 +552,10 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     Value<bool>? isDeleted,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
+    Value<String?>? fromState,
+    Value<String?>? toState,
+    Value<bool>? isToggle,
+    Value<String?>? togglePairId,
     Value<int>? rowid,
   }) {
     return ActionsCompanion(
@@ -370,6 +565,10 @@ class ActionsCompanion extends UpdateCompanion<Action> {
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      fromState: fromState ?? this.fromState,
+      toState: toState ?? this.toState,
+      isToggle: isToggle ?? this.isToggle,
+      togglePairId: togglePairId ?? this.togglePairId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -395,6 +594,18 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
+    if (fromState.present) {
+      map['from_state'] = Variable<String>(fromState.value);
+    }
+    if (toState.present) {
+      map['to_state'] = Variable<String>(toState.value);
+    }
+    if (isToggle.present) {
+      map['is_toggle'] = Variable<bool>(isToggle.value);
+    }
+    if (togglePairId.present) {
+      map['toggle_pair_id'] = Variable<String>(togglePairId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -410,6 +621,10 @@ class ActionsCompanion extends UpdateCompanion<Action> {
           ..write('isDeleted: $isDeleted, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write('fromState: $fromState, ')
+          ..write('toState: $toState, ')
+          ..write('isToggle: $isToggle, ')
+          ..write('togglePairId: $togglePairId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3923,6 +4138,477 @@ class PaymentsCompanion extends UpdateCompanion<Payment> {
   }
 }
 
+class $ActionTimeLogsTable extends ActionTimeLogs
+    with TableInfo<$ActionTimeLogsTable, ActionTimeLog> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ActionTimeLogsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _eventIdMeta = const VerificationMeta(
+    'eventId',
+  );
+  @override
+  late final GeneratedColumn<String> eventId = GeneratedColumn<String>(
+    'event_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES events (id)',
+    ),
+  );
+  static const VerificationMeta _actionIdMeta = const VerificationMeta(
+    'actionId',
+  );
+  @override
+  late final GeneratedColumn<String> actionId = GeneratedColumn<String>(
+    'action_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES actions (id)',
+    ),
+  );
+  static const VerificationMeta _timestampMeta = const VerificationMeta(
+    'timestamp',
+  );
+  @override
+  late final GeneratedColumn<DateTime> timestamp = GeneratedColumn<DateTime>(
+    'timestamp',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isDeletedMeta = const VerificationMeta(
+    'isDeleted',
+  );
+  @override
+  late final GeneratedColumn<bool> isDeleted = GeneratedColumn<bool>(
+    'is_deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_deleted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    eventId,
+    actionId,
+    timestamp,
+    isDeleted,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'action_time_logs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ActionTimeLog> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('event_id')) {
+      context.handle(
+        _eventIdMeta,
+        eventId.isAcceptableOrUnknown(data['event_id']!, _eventIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_eventIdMeta);
+    }
+    if (data.containsKey('action_id')) {
+      context.handle(
+        _actionIdMeta,
+        actionId.isAcceptableOrUnknown(data['action_id']!, _actionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_actionIdMeta);
+    }
+    if (data.containsKey('timestamp')) {
+      context.handle(
+        _timestampMeta,
+        timestamp.isAcceptableOrUnknown(data['timestamp']!, _timestampMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timestampMeta);
+    }
+    if (data.containsKey('is_deleted')) {
+      context.handle(
+        _isDeletedMeta,
+        isDeleted.isAcceptableOrUnknown(data['is_deleted']!, _isDeletedMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ActionTimeLog map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ActionTimeLog(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      eventId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}event_id'],
+      )!,
+      actionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}action_id'],
+      )!,
+      timestamp: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}timestamp'],
+      )!,
+      isDeleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_deleted'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ActionTimeLogsTable createAlias(String alias) {
+    return $ActionTimeLogsTable(attachedDatabase, alias);
+  }
+}
+
+class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
+  final String id;
+  final String eventId;
+  final String actionId;
+  final DateTime timestamp;
+  final bool isDeleted;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ActionTimeLog({
+    required this.id,
+    required this.eventId,
+    required this.actionId,
+    required this.timestamp,
+    required this.isDeleted,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['event_id'] = Variable<String>(eventId);
+    map['action_id'] = Variable<String>(actionId);
+    map['timestamp'] = Variable<DateTime>(timestamp);
+    map['is_deleted'] = Variable<bool>(isDeleted);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ActionTimeLogsCompanion toCompanion(bool nullToAbsent) {
+    return ActionTimeLogsCompanion(
+      id: Value(id),
+      eventId: Value(eventId),
+      actionId: Value(actionId),
+      timestamp: Value(timestamp),
+      isDeleted: Value(isDeleted),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ActionTimeLog.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ActionTimeLog(
+      id: serializer.fromJson<String>(json['id']),
+      eventId: serializer.fromJson<String>(json['eventId']),
+      actionId: serializer.fromJson<String>(json['actionId']),
+      timestamp: serializer.fromJson<DateTime>(json['timestamp']),
+      isDeleted: serializer.fromJson<bool>(json['isDeleted']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'eventId': serializer.toJson<String>(eventId),
+      'actionId': serializer.toJson<String>(actionId),
+      'timestamp': serializer.toJson<DateTime>(timestamp),
+      'isDeleted': serializer.toJson<bool>(isDeleted),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ActionTimeLog copyWith({
+    String? id,
+    String? eventId,
+    String? actionId,
+    DateTime? timestamp,
+    bool? isDeleted,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ActionTimeLog(
+    id: id ?? this.id,
+    eventId: eventId ?? this.eventId,
+    actionId: actionId ?? this.actionId,
+    timestamp: timestamp ?? this.timestamp,
+    isDeleted: isDeleted ?? this.isDeleted,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ActionTimeLog copyWithCompanion(ActionTimeLogsCompanion data) {
+    return ActionTimeLog(
+      id: data.id.present ? data.id.value : this.id,
+      eventId: data.eventId.present ? data.eventId.value : this.eventId,
+      actionId: data.actionId.present ? data.actionId.value : this.actionId,
+      timestamp: data.timestamp.present ? data.timestamp.value : this.timestamp,
+      isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ActionTimeLog(')
+          ..write('id: $id, ')
+          ..write('eventId: $eventId, ')
+          ..write('actionId: $actionId, ')
+          ..write('timestamp: $timestamp, ')
+          ..write('isDeleted: $isDeleted, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    eventId,
+    actionId,
+    timestamp,
+    isDeleted,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ActionTimeLog &&
+          other.id == this.id &&
+          other.eventId == this.eventId &&
+          other.actionId == this.actionId &&
+          other.timestamp == this.timestamp &&
+          other.isDeleted == this.isDeleted &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
+  final Value<String> id;
+  final Value<String> eventId;
+  final Value<String> actionId;
+  final Value<DateTime> timestamp;
+  final Value<bool> isDeleted;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const ActionTimeLogsCompanion({
+    this.id = const Value.absent(),
+    this.eventId = const Value.absent(),
+    this.actionId = const Value.absent(),
+    this.timestamp = const Value.absent(),
+    this.isDeleted = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ActionTimeLogsCompanion.insert({
+    required String id,
+    required String eventId,
+    required String actionId,
+    required DateTime timestamp,
+    this.isDeleted = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       eventId = Value(eventId),
+       actionId = Value(actionId),
+       timestamp = Value(timestamp),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ActionTimeLog> custom({
+    Expression<String>? id,
+    Expression<String>? eventId,
+    Expression<String>? actionId,
+    Expression<DateTime>? timestamp,
+    Expression<bool>? isDeleted,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (eventId != null) 'event_id': eventId,
+      if (actionId != null) 'action_id': actionId,
+      if (timestamp != null) 'timestamp': timestamp,
+      if (isDeleted != null) 'is_deleted': isDeleted,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ActionTimeLogsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? eventId,
+    Value<String>? actionId,
+    Value<DateTime>? timestamp,
+    Value<bool>? isDeleted,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return ActionTimeLogsCompanion(
+      id: id ?? this.id,
+      eventId: eventId ?? this.eventId,
+      actionId: actionId ?? this.actionId,
+      timestamp: timestamp ?? this.timestamp,
+      isDeleted: isDeleted ?? this.isDeleted,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (eventId.present) {
+      map['event_id'] = Variable<String>(eventId.value);
+    }
+    if (actionId.present) {
+      map['action_id'] = Variable<String>(actionId.value);
+    }
+    if (timestamp.present) {
+      map['timestamp'] = Variable<DateTime>(timestamp.value);
+    }
+    if (isDeleted.present) {
+      map['is_deleted'] = Variable<bool>(isDeleted.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ActionTimeLogsCompanion(')
+          ..write('id: $id, ')
+          ..write('eventId: $eventId, ')
+          ..write('actionId: $actionId, ')
+          ..write('timestamp: $timestamp, ')
+          ..write('isDeleted: $isDeleted, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $EventMembersTable extends EventMembers
     with TableInfo<$EventMembersTable, EventMember> {
   @override
@@ -5055,6 +5741,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $EventsTable events = $EventsTable(this);
   late final $MarkLinksTable markLinks = $MarkLinksTable(this);
   late final $PaymentsTable payments = $PaymentsTable(this);
+  late final $ActionTimeLogsTable actionTimeLogs = $ActionTimeLogsTable(this);
   late final $EventMembersTable eventMembers = $EventMembersTable(this);
   late final $EventTagsTable eventTags = $EventTagsTable(this);
   late final $MarkLinkMembersTable markLinkMembers = $MarkLinkMembersTable(
@@ -5079,6 +5766,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     events,
     markLinks,
     payments,
+    actionTimeLogs,
     eventMembers,
     eventTags,
     markLinkMembers,
@@ -5133,6 +5821,10 @@ typedef $$ActionsTableCreateCompanionBuilder =
       Value<bool> isDeleted,
       required DateTime createdAt,
       required DateTime updatedAt,
+      Value<String?> fromState,
+      Value<String?> toState,
+      Value<bool> isToggle,
+      Value<String?> togglePairId,
       Value<int> rowid,
     });
 typedef $$ActionsTableUpdateCompanionBuilder =
@@ -5143,12 +5835,34 @@ typedef $$ActionsTableUpdateCompanionBuilder =
       Value<bool> isDeleted,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<String?> fromState,
+      Value<String?> toState,
+      Value<bool> isToggle,
+      Value<String?> togglePairId,
       Value<int> rowid,
     });
 
 final class $$ActionsTableReferences
     extends BaseReferences<_$AppDatabase, $ActionsTable, Action> {
   $$ActionsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$ActionTimeLogsTable, List<ActionTimeLog>>
+  _actionTimeLogsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.actionTimeLogs,
+    aliasName: $_aliasNameGenerator(db.actions.id, db.actionTimeLogs.actionId),
+  );
+
+  $$ActionTimeLogsTableProcessedTableManager get actionTimeLogsRefs {
+    final manager = $$ActionTimeLogsTableTableManager(
+      $_db,
+      $_db.actionTimeLogs,
+    ).filter((f) => f.actionId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_actionTimeLogsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 
   static MultiTypedResultKey<$MarkLinkActionsTable, List<MarkLinkAction>>
   _markLinkActionsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
@@ -5209,6 +5923,51 @@ class $$ActionsTableFilterComposer
     column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<String> get fromState => $composableBuilder(
+    column: $table.fromState,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get toState => $composableBuilder(
+    column: $table.toState,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isToggle => $composableBuilder(
+    column: $table.isToggle,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get togglePairId => $composableBuilder(
+    column: $table.togglePairId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> actionTimeLogsRefs(
+    Expression<bool> Function($$ActionTimeLogsTableFilterComposer f) f,
+  ) {
+    final $$ActionTimeLogsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.actionTimeLogs,
+      getReferencedColumn: (t) => t.actionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ActionTimeLogsTableFilterComposer(
+            $db: $db,
+            $table: $db.actionTimeLogs,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 
   Expression<bool> markLinkActionsRefs(
     Expression<bool> Function($$MarkLinkActionsTableFilterComposer f) f,
@@ -5274,6 +6033,26 @@ class $$ActionsTableOrderingComposer
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get fromState => $composableBuilder(
+    column: $table.fromState,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get toState => $composableBuilder(
+    column: $table.toState,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isToggle => $composableBuilder(
+    column: $table.isToggle,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get togglePairId => $composableBuilder(
+    column: $table.togglePairId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ActionsTableAnnotationComposer
@@ -5304,6 +6083,45 @@ class $$ActionsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get fromState =>
+      $composableBuilder(column: $table.fromState, builder: (column) => column);
+
+  GeneratedColumn<String> get toState =>
+      $composableBuilder(column: $table.toState, builder: (column) => column);
+
+  GeneratedColumn<bool> get isToggle =>
+      $composableBuilder(column: $table.isToggle, builder: (column) => column);
+
+  GeneratedColumn<String> get togglePairId => $composableBuilder(
+    column: $table.togglePairId,
+    builder: (column) => column,
+  );
+
+  Expression<T> actionTimeLogsRefs<T extends Object>(
+    Expression<T> Function($$ActionTimeLogsTableAnnotationComposer a) f,
+  ) {
+    final $$ActionTimeLogsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.actionTimeLogs,
+      getReferencedColumn: (t) => t.actionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ActionTimeLogsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.actionTimeLogs,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 
   Expression<T> markLinkActionsRefs<T extends Object>(
     Expression<T> Function($$MarkLinkActionsTableAnnotationComposer a) f,
@@ -5344,7 +6162,10 @@ class $$ActionsTableTableManager
           $$ActionsTableUpdateCompanionBuilder,
           (Action, $$ActionsTableReferences),
           Action,
-          PrefetchHooks Function({bool markLinkActionsRefs})
+          PrefetchHooks Function({
+            bool actionTimeLogsRefs,
+            bool markLinkActionsRefs,
+          })
         > {
   $$ActionsTableTableManager(_$AppDatabase db, $ActionsTable table)
     : super(
@@ -5365,6 +6186,10 @@ class $$ActionsTableTableManager
                 Value<bool> isDeleted = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<String?> fromState = const Value.absent(),
+                Value<String?> toState = const Value.absent(),
+                Value<bool> isToggle = const Value.absent(),
+                Value<String?> togglePairId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ActionsCompanion(
                 id: id,
@@ -5373,6 +6198,10 @@ class $$ActionsTableTableManager
                 isDeleted: isDeleted,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                fromState: fromState,
+                toState: toState,
+                isToggle: isToggle,
+                togglePairId: togglePairId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -5383,6 +6212,10 @@ class $$ActionsTableTableManager
                 Value<bool> isDeleted = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
+                Value<String?> fromState = const Value.absent(),
+                Value<String?> toState = const Value.absent(),
+                Value<bool> isToggle = const Value.absent(),
+                Value<String?> togglePairId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ActionsCompanion.insert(
                 id: id,
@@ -5391,6 +6224,10 @@ class $$ActionsTableTableManager
                 isDeleted: isDeleted,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                fromState: fromState,
+                toState: toState,
+                isToggle: isToggle,
+                togglePairId: togglePairId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -5401,37 +6238,63 @@ class $$ActionsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({markLinkActionsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (markLinkActionsRefs) db.markLinkActions,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (markLinkActionsRefs)
-                    await $_getPrefetchedData<
-                      Action,
-                      $ActionsTable,
-                      MarkLinkAction
-                    >(
-                      currentTable: table,
-                      referencedTable: $$ActionsTableReferences
-                          ._markLinkActionsRefsTable(db),
-                      managerFromTypedResult: (p0) => $$ActionsTableReferences(
-                        db,
-                        table,
-                        p0,
-                      ).markLinkActionsRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.actionId == item.id),
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({actionTimeLogsRefs = false, markLinkActionsRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (actionTimeLogsRefs) db.actionTimeLogs,
+                    if (markLinkActionsRefs) db.markLinkActions,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (actionTimeLogsRefs)
+                        await $_getPrefetchedData<
+                          Action,
+                          $ActionsTable,
+                          ActionTimeLog
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ActionsTableReferences
+                              ._actionTimeLogsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ActionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).actionTimeLogsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.actionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (markLinkActionsRefs)
+                        await $_getPrefetchedData<
+                          Action,
+                          $ActionsTable,
+                          MarkLinkAction
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ActionsTableReferences
+                              ._markLinkActionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ActionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).markLinkActionsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.actionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -5448,7 +6311,10 @@ typedef $$ActionsTableProcessedTableManager =
       $$ActionsTableUpdateCompanionBuilder,
       (Action, $$ActionsTableReferences),
       Action,
-      PrefetchHooks Function({bool markLinkActionsRefs})
+      PrefetchHooks Function({
+        bool actionTimeLogsRefs,
+        bool markLinkActionsRefs,
+      })
     >;
 typedef $$MembersTableCreateCompanionBuilder =
     MembersCompanion Function({
@@ -6952,6 +7818,24 @@ final class $$EventsTableReferences
     );
   }
 
+  static MultiTypedResultKey<$ActionTimeLogsTable, List<ActionTimeLog>>
+  _actionTimeLogsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.actionTimeLogs,
+    aliasName: $_aliasNameGenerator(db.events.id, db.actionTimeLogs.eventId),
+  );
+
+  $$ActionTimeLogsTableProcessedTableManager get actionTimeLogsRefs {
+    final manager = $$ActionTimeLogsTableTableManager(
+      $_db,
+      $_db.actionTimeLogs,
+    ).filter((f) => f.eventId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_actionTimeLogsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
   static MultiTypedResultKey<$EventMembersTable, List<EventMember>>
   _eventMembersRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.eventMembers,
@@ -7120,6 +8004,31 @@ class $$EventsTableFilterComposer
           }) => $$PaymentsTableFilterComposer(
             $db: $db,
             $table: $db.payments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> actionTimeLogsRefs(
+    Expression<bool> Function($$ActionTimeLogsTableFilterComposer f) f,
+  ) {
+    final $$ActionTimeLogsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.actionTimeLogs,
+      getReferencedColumn: (t) => t.eventId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ActionTimeLogsTableFilterComposer(
+            $db: $db,
+            $table: $db.actionTimeLogs,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -7399,6 +8308,31 @@ class $$EventsTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> actionTimeLogsRefs<T extends Object>(
+    Expression<T> Function($$ActionTimeLogsTableAnnotationComposer a) f,
+  ) {
+    final $$ActionTimeLogsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.actionTimeLogs,
+      getReferencedColumn: (t) => t.eventId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ActionTimeLogsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.actionTimeLogs,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<T> eventMembersRefs<T extends Object>(
     Expression<T> Function($$EventMembersTableAnnotationComposer a) f,
   ) {
@@ -7468,6 +8402,7 @@ class $$EventsTableTableManager
             bool payMemberId,
             bool markLinksRefs,
             bool paymentsRefs,
+            bool actionTimeLogsRefs,
             bool eventMembersRefs,
             bool eventTagsRefs,
           })
@@ -7543,6 +8478,7 @@ class $$EventsTableTableManager
                 payMemberId = false,
                 markLinksRefs = false,
                 paymentsRefs = false,
+                actionTimeLogsRefs = false,
                 eventMembersRefs = false,
                 eventTagsRefs = false,
               }) {
@@ -7551,6 +8487,7 @@ class $$EventsTableTableManager
                   explicitlyWatchedTables: [
                     if (markLinksRefs) db.markLinks,
                     if (paymentsRefs) db.payments,
+                    if (actionTimeLogsRefs) db.actionTimeLogs,
                     if (eventMembersRefs) db.eventMembers,
                     if (eventTagsRefs) db.eventTags,
                   ],
@@ -7639,6 +8576,27 @@ class $$EventsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (actionTimeLogsRefs)
+                        await $_getPrefetchedData<
+                          Event,
+                          $EventsTable,
+                          ActionTimeLog
+                        >(
+                          currentTable: table,
+                          referencedTable: $$EventsTableReferences
+                              ._actionTimeLogsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$EventsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).actionTimeLogsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.eventId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                       if (eventMembersRefs)
                         await $_getPrefetchedData<
                           Event,
@@ -7706,6 +8664,7 @@ typedef $$EventsTableProcessedTableManager =
         bool payMemberId,
         bool markLinksRefs,
         bool paymentsRefs,
+        bool actionTimeLogsRefs,
         bool eventMembersRefs,
         bool eventTagsRefs,
       })
@@ -9060,6 +10019,458 @@ typedef $$PaymentsTableProcessedTableManager =
         bool paymentMemberId,
         bool paymentSplitMembersRefs,
       })
+    >;
+typedef $$ActionTimeLogsTableCreateCompanionBuilder =
+    ActionTimeLogsCompanion Function({
+      required String id,
+      required String eventId,
+      required String actionId,
+      required DateTime timestamp,
+      Value<bool> isDeleted,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$ActionTimeLogsTableUpdateCompanionBuilder =
+    ActionTimeLogsCompanion Function({
+      Value<String> id,
+      Value<String> eventId,
+      Value<String> actionId,
+      Value<DateTime> timestamp,
+      Value<bool> isDeleted,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$ActionTimeLogsTableReferences
+    extends BaseReferences<_$AppDatabase, $ActionTimeLogsTable, ActionTimeLog> {
+  $$ActionTimeLogsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $EventsTable _eventIdTable(_$AppDatabase db) => db.events.createAlias(
+    $_aliasNameGenerator(db.actionTimeLogs.eventId, db.events.id),
+  );
+
+  $$EventsTableProcessedTableManager get eventId {
+    final $_column = $_itemColumn<String>('event_id')!;
+
+    final manager = $$EventsTableTableManager(
+      $_db,
+      $_db.events,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_eventIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $ActionsTable _actionIdTable(_$AppDatabase db) =>
+      db.actions.createAlias(
+        $_aliasNameGenerator(db.actionTimeLogs.actionId, db.actions.id),
+      );
+
+  $$ActionsTableProcessedTableManager get actionId {
+    final $_column = $_itemColumn<String>('action_id')!;
+
+    final manager = $$ActionsTableTableManager(
+      $_db,
+      $_db.actions,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_actionIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ActionTimeLogsTableFilterComposer
+    extends Composer<_$AppDatabase, $ActionTimeLogsTable> {
+  $$ActionTimeLogsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get timestamp => $composableBuilder(
+    column: $table.timestamp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$EventsTableFilterComposer get eventId {
+    final $$EventsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.eventId,
+      referencedTable: $db.events,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventsTableFilterComposer(
+            $db: $db,
+            $table: $db.events,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$ActionsTableFilterComposer get actionId {
+    final $$ActionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.actionId,
+      referencedTable: $db.actions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ActionsTableFilterComposer(
+            $db: $db,
+            $table: $db.actions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ActionTimeLogsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ActionTimeLogsTable> {
+  $$ActionTimeLogsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get timestamp => $composableBuilder(
+    column: $table.timestamp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$EventsTableOrderingComposer get eventId {
+    final $$EventsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.eventId,
+      referencedTable: $db.events,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventsTableOrderingComposer(
+            $db: $db,
+            $table: $db.events,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$ActionsTableOrderingComposer get actionId {
+    final $$ActionsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.actionId,
+      referencedTable: $db.actions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ActionsTableOrderingComposer(
+            $db: $db,
+            $table: $db.actions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ActionTimeLogsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ActionTimeLogsTable> {
+  $$ActionTimeLogsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get timestamp =>
+      $composableBuilder(column: $table.timestamp, builder: (column) => column);
+
+  GeneratedColumn<bool> get isDeleted =>
+      $composableBuilder(column: $table.isDeleted, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$EventsTableAnnotationComposer get eventId {
+    final $$EventsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.eventId,
+      referencedTable: $db.events,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$EventsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.events,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$ActionsTableAnnotationComposer get actionId {
+    final $$ActionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.actionId,
+      referencedTable: $db.actions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ActionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.actions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ActionTimeLogsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ActionTimeLogsTable,
+          ActionTimeLog,
+          $$ActionTimeLogsTableFilterComposer,
+          $$ActionTimeLogsTableOrderingComposer,
+          $$ActionTimeLogsTableAnnotationComposer,
+          $$ActionTimeLogsTableCreateCompanionBuilder,
+          $$ActionTimeLogsTableUpdateCompanionBuilder,
+          (ActionTimeLog, $$ActionTimeLogsTableReferences),
+          ActionTimeLog,
+          PrefetchHooks Function({bool eventId, bool actionId})
+        > {
+  $$ActionTimeLogsTableTableManager(
+    _$AppDatabase db,
+    $ActionTimeLogsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ActionTimeLogsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ActionTimeLogsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ActionTimeLogsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> eventId = const Value.absent(),
+                Value<String> actionId = const Value.absent(),
+                Value<DateTime> timestamp = const Value.absent(),
+                Value<bool> isDeleted = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ActionTimeLogsCompanion(
+                id: id,
+                eventId: eventId,
+                actionId: actionId,
+                timestamp: timestamp,
+                isDeleted: isDeleted,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String eventId,
+                required String actionId,
+                required DateTime timestamp,
+                Value<bool> isDeleted = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => ActionTimeLogsCompanion.insert(
+                id: id,
+                eventId: eventId,
+                actionId: actionId,
+                timestamp: timestamp,
+                isDeleted: isDeleted,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ActionTimeLogsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({eventId = false, actionId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (eventId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.eventId,
+                                referencedTable: $$ActionTimeLogsTableReferences
+                                    ._eventIdTable(db),
+                                referencedColumn:
+                                    $$ActionTimeLogsTableReferences
+                                        ._eventIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+                    if (actionId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.actionId,
+                                referencedTable: $$ActionTimeLogsTableReferences
+                                    ._actionIdTable(db),
+                                referencedColumn:
+                                    $$ActionTimeLogsTableReferences
+                                        ._actionIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ActionTimeLogsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ActionTimeLogsTable,
+      ActionTimeLog,
+      $$ActionTimeLogsTableFilterComposer,
+      $$ActionTimeLogsTableOrderingComposer,
+      $$ActionTimeLogsTableAnnotationComposer,
+      $$ActionTimeLogsTableCreateCompanionBuilder,
+      $$ActionTimeLogsTableUpdateCompanionBuilder,
+      (ActionTimeLog, $$ActionTimeLogsTableReferences),
+      ActionTimeLog,
+      PrefetchHooks Function({bool eventId, bool actionId})
     >;
 typedef $$EventMembersTableCreateCompanionBuilder =
     EventMembersCompanion Function({
@@ -10867,6 +12278,8 @@ class $AppDatabaseManager {
       $$MarkLinksTableTableManager(_db, _db.markLinks);
   $$PaymentsTableTableManager get payments =>
       $$PaymentsTableTableManager(_db, _db.payments);
+  $$ActionTimeLogsTableTableManager get actionTimeLogs =>
+      $$ActionTimeLogsTableTableManager(_db, _db.actionTimeLogs);
   $$EventMembersTableTableManager get eventMembers =>
       $$EventMembersTableTableManager(_db, _db.eventMembers);
   $$EventTagsTableTableManager get eventTags =>

@@ -39,7 +39,7 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
       if (markLink == null) {
         // markLinksに存在しない: 新規作成モード（UUIDはrouterから渡された値）
         final draft = MarkDetailDraft(markLinkDate: DateTime.now());
-        emit(MarkDetailLoaded(draft: draft));
+        emit(MarkDetailLoaded(draft: draft, topicConfig: event.topicConfig));
         return;
       }
       // 既存編集モード
@@ -57,7 +57,7 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
             : '',
         gasPriceInput: markLink.gasPrice?.toString() ?? '',
       );
-      emit(MarkDetailLoaded(draft: draft));
+      emit(MarkDetailLoaded(draft: draft, topicConfig: event.topicConfig));
     } on Exception catch (e) {
       emit(MarkDetailError(message: e.toString()));
     }

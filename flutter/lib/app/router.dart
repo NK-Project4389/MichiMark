@@ -12,9 +12,11 @@ import '../features/selection/bloc/selection_event.dart';
 import '../features/selection/selection_args.dart';
 import '../features/link_detail/bloc/link_detail_bloc.dart';
 import '../features/link_detail/bloc/link_detail_event.dart';
+import '../features/link_detail/link_detail_args.dart';
 import '../features/link_detail/view/link_detail_page.dart';
 import '../features/mark_detail/bloc/mark_detail_bloc.dart';
 import '../features/mark_detail/bloc/mark_detail_event.dart';
+import '../features/mark_detail/mark_detail_args.dart';
 import '../features/mark_detail/view/mark_detail_page.dart';
 import '../features/payment_detail/bloc/payment_detail_bloc.dart';
 import '../features/payment_detail/bloc/payment_detail_event.dart';
@@ -74,11 +76,17 @@ final router = GoRouter(
       path: '/event/mark/:markId',
       builder: (context, state) {
         final markId = state.pathParameters['markId'] ?? '';
-        final eventId = state.extra as String? ?? '';
+        final args = state.extra;
+        final eventId = args is MarkDetailArgs ? args.eventId : (args as String? ?? '');
+        final topicConfig = args is MarkDetailArgs ? args.topicConfig : null;
         return BlocProvider(
           create: (_) => MarkDetailBloc(
             eventRepository: getIt<EventRepository>(),
-          )..add(MarkDetailStarted(eventId: eventId, markLinkId: markId)),
+          )..add(MarkDetailStarted(
+              eventId: eventId,
+              markLinkId: markId,
+              topicConfig: topicConfig,
+            )),
           child: const MarkDetailPage(),
         );
       },
@@ -87,11 +95,17 @@ final router = GoRouter(
       path: '/event/link/:linkId',
       builder: (context, state) {
         final linkId = state.pathParameters['linkId'] ?? '';
-        final eventId = state.extra as String? ?? '';
+        final args = state.extra;
+        final eventId = args is LinkDetailArgs ? args.eventId : (args as String? ?? '');
+        final topicConfig = args is LinkDetailArgs ? args.topicConfig : null;
         return BlocProvider(
           create: (_) => LinkDetailBloc(
             eventRepository: getIt<EventRepository>(),
-          )..add(LinkDetailStarted(eventId: eventId, markLinkId: linkId)),
+          )..add(LinkDetailStarted(
+              eventId: eventId,
+              markLinkId: linkId,
+              topicConfig: topicConfig,
+            )),
           child: const LinkDetailPage(),
         );
       },

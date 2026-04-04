@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../../domain/action_time/action_state.dart';
 
 sealed class ActionSettingDetailEvent extends Equatable {
   const ActionSettingDetailEvent();
@@ -26,6 +27,33 @@ class ActionSettingDetailNameChanged extends ActionSettingDetailEvent {
 class ActionSettingDetailIsVisibleChanged extends ActionSettingDetailEvent {
   final bool value;
   const ActionSettingDetailIsVisibleChanged(this.value);
+
+  @override
+  List<Object?> get props => [value];
+}
+
+/// 遷移前状態が変更されたとき（null = 任意状態から遷移可）
+class ActionSettingDetailFromStateChanged extends ActionSettingDetailEvent {
+  final ActionState? value;
+  const ActionSettingDetailFromStateChanged(this.value);
+
+  @override
+  List<Object?> get props => [value];
+}
+
+/// 遷移後状態が変更されたとき（null = 状態変化なし）
+class ActionSettingDetailToStateChanged extends ActionSettingDetailEvent {
+  final ActionState? value;
+  const ActionSettingDetailToStateChanged(this.value);
+
+  @override
+  List<Object?> get props => [value];
+}
+
+/// トグルフラグが変更されたとき
+class ActionSettingDetailIsToggleChanged extends ActionSettingDetailEvent {
+  final bool value;
+  const ActionSettingDetailIsToggleChanged(this.value);
 
   @override
   List<Object?> get props => [value];

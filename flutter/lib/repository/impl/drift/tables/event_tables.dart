@@ -59,3 +59,17 @@ class Payments extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+/// action_time_logs テーブル
+class ActionTimeLogs extends Table {
+  TextColumn get id => text()();
+  TextColumn get eventId => text().references(Events, #id)();
+  TextColumn get actionId => text().references(Actions, #id)();
+  DateTimeColumn get timestamp => dateTime()();
+  BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}

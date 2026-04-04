@@ -56,10 +56,12 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
         MarkOrLink.mark => MichiInfoOpenMarkDelegate(
             eventId: _eventId,
             markLinkId: event.markLinkId,
+            topicConfig: current.topicConfig,
           ),
         MarkOrLink.link => MichiInfoOpenLinkDelegate(
             eventId: _eventId,
             markLinkId: event.markLinkId,
+            topicConfig: current.topicConfig,
           ),
       };
       emit(current.copyWith(delegate: delegate));
@@ -72,7 +74,9 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
   ) async {
     if (state is MichiInfoLoaded) {
       final current = state as MichiInfoLoaded;
-      emit(current.copyWith(delegate: MichiInfoAddMarkDelegate(_eventId)));
+      emit(current.copyWith(
+        delegate: MichiInfoAddMarkDelegate(_eventId, current.topicConfig),
+      ));
     }
   }
 
@@ -82,7 +86,9 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
   ) async {
     if (state is MichiInfoLoaded) {
       final current = state as MichiInfoLoaded;
-      emit(current.copyWith(delegate: MichiInfoAddLinkDelegate(_eventId)));
+      emit(current.copyWith(
+        delegate: MichiInfoAddLinkDelegate(_eventId, current.topicConfig),
+      ));
     }
   }
 

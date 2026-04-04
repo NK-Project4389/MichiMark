@@ -1,8 +1,15 @@
 # 2026-04-05 要件書・Feature Spec作成：Topic / ActionTime / Aggregation
 
 ## 完了した作業
+- chore: T-045 OverviewStarted発火問題解決をDONEに更新 (1d07c3d)
+- feat: Topic / ActionTime / Aggregation / EventDetailOverview Feature 実装 (115b264)
 - docs: 進捗ファイルの末尾ゴミ行を除去 (daa5c56)
 - fix(hooks): push時の進捗追記を完了した作業セクション直下に挿入するよう修正 (09e0593)
+- fix: reviewer指摘4件修正（2026-04-05）
+  - schemaVersion 2 マイグレーション実装（actions 4カラム追加 + action_time_logs テーブル新規作成）
+  - ActionSetting DetailにActionState関連フィールド追加（Draft/Event/Bloc/Projection/View）
+  - MarkDetail/LinkDetail への TopicConfig 伝播（MarkDetailArgs/LinkDetailArgs で extra に含めて渡す）
+  - build_runner で database.g.dart を再生成
 
 ### Topic_Requirements.md 作成・詳細化
 

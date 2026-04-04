@@ -9,6 +9,18 @@ class Actions extends Table {
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
+  /// 遷移前の状態（enumの文字列値。nullは任意状態から遷移可）
+  TextColumn get fromState => text().nullable()();
+
+  /// 遷移後の状態（enumの文字列値。nullは状態変化なし）
+  TextColumn get toState => text().nullable()();
+
+  /// トグル型Actionかどうか
+  BoolColumn get isToggle => boolean().withDefault(const Constant(false))();
+
+  /// 対になるActionのid
+  TextColumn get togglePairId => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }

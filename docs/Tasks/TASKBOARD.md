@@ -44,7 +44,7 @@
 | T-041 | ActionTime Feature 実装 | flutter-dev | `DONE` | | Spec: `docs/Spec/Features/ActionTime_Spec.md` |
 | T-042 | Aggregation Feature 実装 | flutter-dev | `DONE` | | Spec: `docs/Spec/Features/Aggregation_Spec.md` |
 | T-043 | EventDetailOverview Feature 実装 | flutter-dev | `DONE` | | Spec: `docs/Spec/Features/EventDetailOverview_Spec.md` |
-| T-044 | Topic / ActionTime / Aggregation / EventDetailOverview レビュー | reviewer | `TODO` | | T-040〜T-043完了後 |
+| T-044 | Topic / ActionTime / Aggregation / EventDetailOverview レビュー | reviewer | `DONE` | | レビュー指摘4件修正済み（2026-04-05）|
 | T-045 | OverviewBloc OverviewStarted 発火問題解決 | flutter-dev | `DONE` | | EventDetailStateにcachedEventを追加・EventDetailPageのBlocListenerでOverviewStarted発火 |
 
 ## Phase 3: 機能追加・仕上げ

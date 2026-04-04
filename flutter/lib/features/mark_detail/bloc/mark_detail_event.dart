@@ -11,10 +11,24 @@ sealed class MarkDetailEvent extends Equatable {
 class MarkDetailStarted extends MarkDetailEvent {
   final String eventId;
   final String markLinkId;
-  const MarkDetailStarted({required this.eventId, required this.markLinkId});
+  final TopicConfig topicConfig;
+  const MarkDetailStarted({
+    required this.eventId,
+    required this.markLinkId,
+    TopicConfig? topicConfig,
+  }) : topicConfig = topicConfig ?? const TopicConfig(
+          showMeterValue: true,
+          showFuelDetail: true,
+          allowLinkAdd: true,
+          showLinkDistance: true,
+          showKmPerGas: true,
+          showPricePerGas: true,
+          showPayMember: true,
+          showPaymentInfoTab: true,
+        );
 
   @override
-  List<Object?> get props => [eventId, markLinkId];
+  List<Object?> get props => [eventId, markLinkId, topicConfig];
 }
 
 /// 戻るボタンが押されたとき

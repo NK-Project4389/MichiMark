@@ -12,38 +12,50 @@ sealed class MichiInfoDelegate extends Equatable {
 class MichiInfoOpenMarkDelegate extends MichiInfoDelegate {
   final String eventId;
   final String markLinkId;
-  const MichiInfoOpenMarkDelegate({required this.eventId, required this.markLinkId});
+  final TopicConfig topicConfig;
+  const MichiInfoOpenMarkDelegate({
+    required this.eventId,
+    required this.markLinkId,
+    required this.topicConfig,
+  });
 
   @override
-  List<Object?> get props => [eventId, markLinkId];
+  List<Object?> get props => [eventId, markLinkId, topicConfig];
 }
 
 /// リンク詳細へ遷移
 class MichiInfoOpenLinkDelegate extends MichiInfoDelegate {
   final String eventId;
   final String markLinkId;
-  const MichiInfoOpenLinkDelegate({required this.eventId, required this.markLinkId});
+  final TopicConfig topicConfig;
+  const MichiInfoOpenLinkDelegate({
+    required this.eventId,
+    required this.markLinkId,
+    required this.topicConfig,
+  });
 
   @override
-  List<Object?> get props => [eventId, markLinkId];
+  List<Object?> get props => [eventId, markLinkId, topicConfig];
 }
 
 /// 新規マーク追加画面へ遷移
 class MichiInfoAddMarkDelegate extends MichiInfoDelegate {
   final String eventId;
-  const MichiInfoAddMarkDelegate(this.eventId);
+  final TopicConfig topicConfig;
+  const MichiInfoAddMarkDelegate(this.eventId, this.topicConfig);
 
   @override
-  List<Object?> get props => [eventId];
+  List<Object?> get props => [eventId, topicConfig];
 }
 
 /// 新規リンク追加画面へ遷移
 class MichiInfoAddLinkDelegate extends MichiInfoDelegate {
   final String eventId;
-  const MichiInfoAddLinkDelegate(this.eventId);
+  final TopicConfig topicConfig;
+  const MichiInfoAddLinkDelegate(this.eventId, this.topicConfig);
 
   @override
-  List<Object?> get props => [eventId];
+  List<Object?> get props => [eventId, topicConfig];
 }
 
 // ---------------------------------------------------------------------------
