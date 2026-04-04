@@ -1,0 +1,5 @@
+{
+  "installCommand": "git clone https://github.com/flutter/flutter.git -b stable flutter-sdk && ./flutter-sdk/bin/flutter config --enable-web",
+  "buildCommand": "cd flutter && ../flutter-sdk/bin/flutter build web --release",
+  "outputDirectory": "flutter/build/web"
+}
