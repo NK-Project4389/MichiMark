@@ -1,6 +1,7 @@
 # 2026-04-05 要件書・Feature Spec作成：Topic / ActionTime / Aggregation
 
 ## 完了した作業
+- fix(hooks): push時の進捗追記を完了した作業セクション直下に挿入するよう修正 (09e0593)
 
 ### Topic_Requirements.md 作成・詳細化
 
