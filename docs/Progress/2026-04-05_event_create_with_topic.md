@@ -40,6 +40,17 @@
 ### レビュー（reviewer）
 - T-021c: **PASS**（修正1件：fetchByType戻り値をFuture<TopicDomain?>に統一）
 
+### バグ修正（flutter-dev）
+実機確認でトピックが引き継がれないバグを修正。
+
+**原因**: `EventDetailBloc` が新規イベントをDBに保存した後に `BasicInfoBloc` が動くため、イベントが「既存」扱いになり `initialTopicType` が無視されていた。
+
+**修正内容（4ファイル）**:
+- `EventDetailStarted` に `initialTopicType: TopicType?` パラメータ追加
+- `EventDetailBloc` 新規作成時に `initialTopicType` でAppBarテーマカラー・表示名を設定
+- `router.dart` で `initialTopicType` を `EventDetailStarted` に渡すよう変更
+- `BasicInfoBloc` でDBのtopicがnullかつ `initialTopicType` がある場合にそれを使用
+
 ---
 
 ## 動作フロー
@@ -70,11 +81,7 @@ FABタップ
 
 ## 次回セッションで最初にやること
 
-1. **実機 or シミュレータで動作確認**
-   - 「+」ボタンタップでTopicSelectionBottomSheetが表示されるか
-   - トピック選択後にEventDetailに遷移し、BasicInfoのトピックラベルが正しく表示されるか
-   - BottomSheetをスワイプで閉じたとき（キャンセル）にEventDetailに遷移しないか
+1. **T-022: マスターデータ初期投入**（Trans/Member/Tag/Action のデフォルトデータ）
 
-2. **T-022: マスターデータ初期投入**（Trans/Member/Tag/Action のデフォルトデータ）
-
-3. **REQ-009: TopicSetting Spec・実装**
+2. **REQ-009: TopicSetting Spec・実装**
+   - Settings画面でTopicの表示/非表示を設定できる機能
