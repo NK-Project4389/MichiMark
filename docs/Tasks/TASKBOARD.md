@@ -54,6 +54,9 @@
 | T-050 | Topic・Action再定義 Spec作成 | architect | `TODO` | | 要件書: docs/Requirements/REQ-topic_action_redesign.md |
 | T-051 | Topic・Action再定義 実装 | flutter-dev | `BLOCKED` | | T-050完了後 |
 | T-052 | Topic・Action再定義 レビュー | reviewer | `BLOCKED` | | T-051完了後 |
+| T-053 | EventListカード色・EventDetailテーマカラー デザイン提案 | designer | `TODO` | | REQ-007・REQ-008。HTMLレポート→叩き作成→PM確認 |
+| T-054 | EventListカード色・EventDetailテーマカラー Spec作成 | architect | `BLOCKED` | | T-053のデザイン承認後 |
+| T-055 | EventListカード色・EventDetailテーマカラー 実装 | flutter-dev | `BLOCKED` | | T-054完了後 |
 
 ## Phase 3: 機能追加・仕上げ
 

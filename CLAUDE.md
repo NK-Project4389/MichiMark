@@ -32,11 +32,12 @@ AIはコード生成前に必ず設計憲章を参照すること。
 
 | 役割名 | 担当 |
 |---|---|
-| `product-manager` | 追加要件の要件書作成・ユーザーストーリー定義・スコープ決定 |
+| `product-manager` | 追加要件の要件書作成・ユーザーストーリー定義・スコープ決定。designerからの叩きをレビューしてユーザーへフィードバック |
 | `architect` | Feature Spec作成・アーキテクチャ設計。実装・レビューは行わない |
 | `charter-reviewer` | 設計憲章・アーキテクチャドキュメントのレビューと改善提案 |
 | `flutter-dev` | Specに基づくFlutter/Dart実装。Spec不足・曖昧な場合はarchitectに差し戻す |
 | `reviewer` | 生成コードが設計憲章・Specに従っているかレビュー。違反・アンチパターンを検出 |
+| `designer` | テーマカラー・UIデザイン提案。HTML形式レポートで出力。アプリ反映案はproduct-managerへ叩きを渡す |
 | `orchestrator` | 上記に該当しない作業（環境構築・ツール操作・進捗管理・会話の調整など） |
 
 ---
@@ -104,6 +105,20 @@ product-manager（要件書）→ architect（Spec）→ flutter-dev（実装）
 architect（Spec）→ flutter-dev（実装）→ reviewer（レビュー）
 ```
 
+### デザイン提案フロー
+
+```
+designer（デザイン提案・HTMLレポート作成）
+  ↓ 要件の叩き（docs/Design/draft/）を作成
+product-manager（叩きのレビュー・フィードバック内容整理）
+  ↓ ユーザーへフィードバック・方針確認
+  ↓ 承認後 → docs/Requirements/ に要件書として格納
+architect（Spec）→ flutter-dev（実装）→ reviewer（レビュー）
+```
+
+- `designer` が要件の叩きを作成したら、必ず `product-manager` がレビューしてユーザーに確認を取る
+- ユーザーの承認なしに叩きをそのまま要件書として格納しない
+
 ---
 
 ## Git操作ルール
@@ -150,5 +165,7 @@ architect（Spec）→ flutter-dev（実装）→ reviewer（レビュー）
 | `docs/Spec/Features/` | Feature Spec格納ディレクトリ |
 | `docs/Requirements/` | 要件書格納ディレクトリ |
 | `docs/Domain/` | Domain設計MDファイル格納ディレクトリ |
+| `docs/Design/` | デザインレポート格納ディレクトリ（designer が HTML形式で出力） |
+| `docs/Design/draft/` | designer が作成する要件の叩き格納ディレクトリ |
 | `docs/Progress/README.md` | 進捗記録一覧 |
 | `docs/Tasks/TASKBOARD.md` | セッション間共有タスクボード |

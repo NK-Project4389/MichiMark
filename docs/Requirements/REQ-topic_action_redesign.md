@@ -54,8 +54,8 @@ ActionTimeBlocが提示するアクション候補を、全Actionマスタから
 
 | TopicType | markActions（地点用） | linkActions（区間用） |
 |---|---|---|
-| movingCost | 出発, 到着, 帰着 | （なし） |
-| travelExpense | チェックイン, チェックアウト | （なし） |
+| movingCost | 出発, 到着 | （なし） |
+| travelExpense | （なし） | （なし） |
 
 > 具体的なAction名・IDはSeedDataと一致させる。architectがSpec作成時に確定させること。
 
@@ -117,14 +117,10 @@ ActionDomainに `needsTransition: bool` フラグを追加する。
 
 | actionName | toState | needsTransition | 備考 |
 |---|---|---|---|
-| 出発 | moving | true | 遷移あり |
-| 到着 | working | true | 遷移あり |
-| 帰着 | waiting | true | 遷移あり |
-| 休憩開始 | break_ | true | 遷移あり |
-| 休憩終了 | working | true | 遷移あり |
-| メモ | null | false | 時間ログのみ（例） |
+| 出発 | moving | true | 遷移あり（movingCost地点用） |
+| 到着 | working | true | 遷移あり（movingCost地点用） |
 
-> 具体的なSeedDataはarchitectがSpec確定時に定義すること。
+> 帰着アクションは廃止。具体的なSeedDataはarchitectがSpec確定時に定義すること。
 
 ---
 
@@ -140,12 +136,63 @@ Settings画面のAppBar（またはボトム）に「イベント一覧へ戻る
 
 ---
 
+### REQ-007: トピックごとにEventListカード色を分ける
+
+**概要**
+EventList（イベント一覧）の各カードを、設定されているTopicのカラーで色分けして表示する。
+
+**変更内容**
+- `TopicDomain` に `color` フィールドを追加する（カラーコード文字列 例: `#4A90D9`）
+- `TopicConfig` に `themeColor` フィールドを追加する（Color値）
+- EventListのイベントカードUIにTopicカラーをアクセントカラーとして適用する（左ボーダー・ヘッダー帯・背景tintなど。具体的なデザインはdesignerが定義）
+- Topic未設定のイベントはデフォルトカラー（グレー系）で表示する
+
+**注意**
+具体的なカラー値・デザイン適用方法は `designer` エージェントがデザイン提案レポートで定義し、product-managerのレビューを経て確定させること。
+
+---
+
+### REQ-008: EventDetailの上部にトピック名とテーマカラーを表示
+
+**概要**
+EventDetail画面の上部（AppBarまたはヘッダー部）にトピック名をラベル表示し、テーマカラーで装飾する。
+
+**変更内容**
+- EventDetailのヘッダーエリアにトピック名ラベルを追加する（例: 「移動コスト可視化」）
+- ヘッダーまたはAppBarのアクセントカラーをTopicのテーマカラーで表示する
+- Topic未設定の場合はラベル非表示・デフォルトカラーにフォールバックする
+- TopicカラーはTopicConfigから取得する（REQ-007で追加する `themeColor` フィールドを利用）
+
+**注意**
+具体的なレイアウト・カラー適用箇所は `designer` エージェントが定義すること。
+
+---
+
+### REQ-009: Settings画面でTopicの表示/非表示を設定できる
+
+**概要**
+Settings画面に「トピック設定」を追加し、各Topicの `isVisible` フラグをON/OFFできるようにする。
+
+**変更内容**
+- SettingsPageにTopicSettingへの導線を追加する（ActionSettingと同形式）
+- TopicSetting一覧画面でTopic一覧を表示し、各Topicの表示/非表示をトグルで切り替えられる
+- isVisible = false のTopicはイベント新規作成時のTopic選択候補から除外される
+- 既存イベントのTopicがisVisible = falseになっても、そのイベントのTopicは変わらない（表示制御のみ）
+- TopicSettingはisVisible変更のみ対応。Topic名変更・追加・削除はスコープ外（Phase 3）
+
+**アーキテクチャ方針**
+- 既存の TransSetting / TagSetting / MemberSetting と同形式の TopicSettingBloc を作成する
+- `TopicRepository.save()` の既存インターフェースで対応可能
+
+---
+
 ## スコープ外（本要件で対応しないもの）
 
 - EventList新規作成フロー（Topic選択ステップの追加）→ T-021で対応
 - ActionSettingマスタ画面の再公開
-- カスタムTopicの作成
+- カスタムTopicの作成・名前変更・削除
 - isToggle / togglePairId の廃止（現状維持）
+- EventListのカード具体的デザイン（designerが別途提案）
 
 ---
 
@@ -156,11 +203,15 @@ Settings画面のAppBar（またはボトム）に「イベント一覧へ戻る
 | `ActionDomain` | `fromState` 削除・`needsTransition` 追加 |
 | `ActionSettingDraft/Projection/Bloc` | `fromState` 削除・`needsTransition` 追加 |
 | `ActionTimeAdapter` | fromState照合ロジック廃止・needsTransition考慮 |
-| `TopicConfig` | `markActions`・`linkActions` 追加 |
+| `TopicConfig` | `markActions`・`linkActions`・`themeColor` 追加 |
+| `TopicDomain` | `color` フィールド追加 |
 | `BasicInfoView/Bloc/Draft` | Topic選択UI削除・読み取り専用ラベル追加 |
-| `SettingsPage` | ActionSetting行の非表示・イベント一覧戻るボタン追加 |
-| `drift DBスキーマ` | `actions.needs_transition` カラム追加（schemaVersion +1） |
-| `SeedData` | fromState削除・needsTransition設定 |
+| `EventDetailPage/AppBar` | トピック名ラベル・テーマカラー表示 |
+| `EventListCard` | Topicカラーによる色分け表示 |
+| `SettingsPage` | ActionSetting行の非表示・TopicSetting行の追加・イベント一覧戻るボタン追加 |
+| `TopicSettingBloc/View` | 新規作成（isVisible切り替えのみ） |
+| `drift DBスキーマ` | `actions.needs_transition` カラム追加・`topics.color` カラム追加（schemaVersion +1） |
+| `SeedData` | fromState削除・needsTransition設定・Topicカラー追加 |
 
 ---
 
@@ -169,9 +220,15 @@ Settings画面のAppBar（またはボトム）に「イベント一覧へ戻る
 - [ ] 既存のEventDetailBasicInfoでTopicを変更できないこと（選択UIが表示されない）
 - [ ] BasicInfoでTopicが読み取り専用ラベルとして表示されること
 - [ ] ActionTime画面でのアクション候補がTopicConfig定義のリストから取得されること
-- [ ] 地点（Mark）と区間（Link）でそれぞれ異なるアクションセットが表示されること
+- [ ] movingCostの地点用アクションが「出発」「到着」の2種のみであること
+- [ ] travelExpenseのアクションが0件であること
 - [ ] Settings画面にActionの行が表示されないこと
+- [ ] Settings画面にTopicSettingへの導線があること
+- [ ] TopicSettingでisVisibleをOFFにしたTopicが新規作成候補から除外されること
 - [ ] ActionDomainにfromStateが存在しないこと
 - [ ] needsTransition = false のActionをタップするとActionTimeLogは記録されるが状態遷移は起きないこと
 - [ ] needsTransition = true のActionをタップするとtoStateへの状態遷移が起きること
 - [ ] Settings画面の「イベント一覧へ戻る」ボタンタップでイベント一覧に遷移すること
+- [ ] EventListカードにTopicカラーのアクセントが表示されること
+- [ ] EventDetail上部にトピック名ラベルが表示されること
+- [ ] EventDetailのヘッダーにTopicテーマカラーが適用されること
