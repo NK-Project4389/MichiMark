@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark トピックカラー設計提案</title>
+  <style>
+    :root {
+      --logo-teal: #2B7A9B;
+      --white: #FFFFFF;
+      --gray-50: #F8F9FA;
+      --gray-100: #F1F3F5;
+      --gray-200: #E9ECEF;
+      --gray-400: #ADB5BD;
+      --gray-600: #6C757D;
+      --gray-800: #343A40;
+      --text-primary: #1A1A2E;
+      --text-secondary: #6C757D;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+      background: #F5F7FA;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #1A4A5E 0%, #2B7A9B 50%, #3A9DC4 100%);
+      color: white;
+      padding: 48px 40px 40px;
+    }
+
+    .page-header .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 24px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .page-header .subtitle {
+      font-size: 16px;
+      opacity: 0.8;
+      margin-bottom: 24px;
+    }
+
+    .page-header .meta {
+      display: flex;
+      gap: 24px;
+      font-size: 13px;
+      opacity: 0.7;
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===== SECTION ===== */
+    section {
+      padding: 48px 0;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--logo-teal);
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 32px;
+    }
+
+    /* ===== DIVIDER ===== */
+    hr {
+      border: none;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    /* ===== BASE PALETTE ===== */
+    .base-palette-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      margin-bottom: 32px;
+    }
+
+    .palette-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .swatch-color {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .swatch-code {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-600);
+      font-family: 'SF Mono', monospace;
+    }
+
+    .swatch-name {
+      font-size: 11px;
+      color: var(--gray-400);
+      text-align: center;
+    }
+
+    .swatch.large .swatch-color {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+    }
+
+    .swatch.large .swatch-code {
+      font-size: 13px;
+    }
+
+    .logo-reference {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .logo-pin {
+      width: 56px;
+      height: 56px;
+      background: var(--logo-teal);
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      position: relative;
+      box-shadow: 0 3px 12px rgba(43,122,155,0.4);
+      flex-shrink: 0;
+    }
+
+    .logo-pin::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .logo-info h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--logo-teal);
+      font-family: -apple-system, sans-serif;
+    }
+
+    .logo-info p {
+      font-size: 13px;
+      color: var(--gray-600);
+      margin-top: 2px;
+    }
+
+    /* ===== PATTERN CARDS ===== */
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 640px) {
+      .pattern-grid { grid-template-columns: 1fr; }
+    }
+
+    .pattern-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    }
+
+    .pattern-card-header {
+      padding: 20px 24px;
+      color: white;
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pattern-card-body {
+      padding: 24px;
+    }
+
+    .color-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .color-item:last-child { margin-bottom: 0; }
+
+    .color-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .color-item-info {
+      flex: 1;
+    }
+
+    .color-item-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .color-item-code {
+      font-size: 12px;
+      font-family: 'SF Mono', monospace;
+      color: var(--gray-600);
+    }
+
+    .color-item-reason {
+      font-size: 12px;
+      color: var(--gray-600);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    /* ===== MOCKUP ===== */
+    .mockup-section {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      margin-bottom: 32px;
+    }
+
+    .mockup-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .mockup-desc {
+      font-size: 13px;
+      color: var(--gray-600);
+      margin-bottom: 24px;
+    }
+
+    .phone-frame {
+      width: 280px;
+      margin: 0 auto;
+      background: #F2F2F7;
+      border-radius: 32px;
+      padding: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+
+    .phone-screen {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      min-height: 480px;
+    }
+
+    /* EventList mock */
+    .event-list-screen {
+      padding: 0;
+    }
+
+    .screen-nav {
+      background: white;
+      padding: 16px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .screen-nav-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .screen-content {
+      padding: 12px;
+      background: var(--gray-50);
+      min-height: 400px;
+    }
+
+    /* EventListカード */
+    .event-card {
+      background: white;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: stretch;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .event-card-border {
+      width: 4px;
+      border-radius: 2px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .event-card-body {
+      flex: 1;
+    }
+
+    .event-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .event-card-sub {
+      font-size: 11px;
+      color: var(--gray-600);
+    }
+
+    .event-card-amount {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    /* EventDetailヘッダー */
+    .detail-header {
+      padding: 24px 16px 20px;
+      color: white;
+    }
+
+    .detail-header-back {
+      font-size: 13px;
+      opacity: 0.8;
+      margin-bottom: 12px;
+    }
+
+    .detail-header-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .detail-header-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .detail-header-sub {
+      font-size: 12px;
+      opacity: 0.75;
+    }
+
+    .detail-header-amount {
+      font-size: 28px;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .phone-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 640px) {
+      .phone-pair { grid-template-columns: 1fr; }
+    }
+
+    .phone-label {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-600);
+      margin-bottom: 12px;
+    }
+
+    .phone-frame-sm {
+      background: #E5E5EA;
+      border-radius: 28px;
+      padding: 8px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    }
+
+    .phone-screen-sm {
+      background: white;
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    /* ===== COMPARISON TABLE ===== */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .comparison-table th {
+      background: var(--gray-50);
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: left;
+      color: var(--gray-600);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .comparison-table td {
+      padding: 14px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--gray-100);
+      vertical-align: middle;
+    }
+
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .color-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .color-chip-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+
+    .color-chip-code {
+      font-family: 'SF Mono', monospace;
+      font-size: 12px;
+      color: var(--gray-800);
+    }
+
+    /* ===== RECOMMENDATION BADGE ===== */
+    .rec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #E8F5E9;
+      color: #2E7D32;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .alt-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #FFF8E1;
+      color: #F57F17;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* ===== FOOTER ===== */
+    .page-footer {
+      background: white;
+      border-top: 1px solid var(--gray-200);
+      padding: 32px 40px;
+      text-align: center;
+      color: var(--gray-600);
+      font-size: 13px;
+    }
+
+    /* Pattern A colors */
+    --pa-moving: #2E9E6B;
+    --pa-travel: #E07B39;
+
+    /* Pattern B colors */
+    --pb-moving: #3B82C4;
+    --pb-travel: #9B5EA8;
+
+    /* Pattern C colors */
+    --pc-moving: #1E8A8A;
+    --pc-travel: #D4914A;
+
+    /* Utility */
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .tag-blue { background: #E3F2FD; color: #1565C0; }
+    .tag-green { background: #E8F5E9; color: #2E7D32; }
+    .tag-orange { background: #FFF3E0; color: #E65100; }
+    .tag-purple { background: #F3E5F5; color: #6A1B9A; }
+    .tag-teal { background: #E0F2F1; color: #00695C; }
+
+  </style>
+</head>
+<body>
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-header">
+  <div class="container">
+    <div class="logo-badge">
+      <span>MichiMark Design Report</span>
+    </div>
+    <h1>トピックカラー設計提案</h1>
+    <p class="subtitle">ロゴのティールブルーを起点とした、TopicType別カラーシステムの提案</p>
+    <div class="meta">
+      <span>作成日: 2026-04-05</span>
+      <span>作成者: designer</span>
+      <span>対象: REQ-007 / REQ-008</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION 1: ベースカラー ===== -->
+<div class="container">
+<section>
+  <div class="section-label">Section 01</div>
+  <h2>ロゴベースカラー分析</h2>
+  <p class="section-desc">MichiMarkロゴのティールブルーを色彩理論の起点として使用する。</p>
+
+  <div class="base-palette-card">
+    <div class="logo-reference">
+      <div class="logo-pin"></div>
+      <div class="logo-info">
+        <h3>MichiMark</h3>
+        <p>ロゴカラー: スチールティールブルー</p>
+      </div>
+    </div>
+
+    <div class="palette-row">
+      <div class="swatch large">
+        <div class="swatch-color" style="background:#2B7A9B;"></div>
+        <div class="swatch-code">#2B7A9B</div>
+        <div class="swatch-name">ロゴ メイン<br>（H200° S56% L39%）</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1A4A5E;"></div>
+        <div class="swatch-code">#1A4A5E</div>
+        <div class="swatch-name">ダーク<br>（明度-20%）</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#3A9DC4;"></div>
+        <div class="swatch-code">#3A9DC4</div>
+        <div class="swatch-name">ライト<br>（明度+15%）</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#C8E9F4;"></div>
+        <div class="swatch-code">#C8E9F4</div>
+        <div class="swatch-name">ティント<br>（明度+75%）</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#9B4A2B;"></div>
+        <div class="swatch-code">#9B4A2B</div>
+        <div class="swatch-name">補色<br>（H20° 対角）</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#E07B39;"></div>
+        <div class="swatch-code">#E07B39</div>
+        <div class="swatch-name">分割補色<br>（H25° 明度+）</div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px; padding:16px; background:#F8F9FA; border-radius:10px; font-size:13px; color:#6C757D;">
+      <strong style="color:#343A40;">色彩理論の方針：</strong>
+      ベースティール（H=200°）を固定値として、movingCostには<span class="tag tag-teal" style="margin:0 4px;">同系色（H=165〜170°）</span>の緑ティール系、travelExpenseには<span class="tag tag-orange" style="margin:0 4px;">分割補色（H=25〜30°）</span>のアンバーオレンジ系を採用することで、2トピックが明確に区別されつつロゴと調和する。
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- ===== SECTION 2: パターンA ===== -->
+<section>
+  <div class="section-label">Section 02 — Pattern A（推奨）</div>
+  <h2>同系色 × 補色コントラストパターン</h2>
+  <p class="section-desc">
+    movingCostにロゴの同系色（緑ティール系）、travelExpenseに分割補色（アンバーオレンジ系）を使用。
+    最もロゴとの調和が高く、2トピック間の視認性も良好。<strong>推奨パターン。</strong>
+  </p>
+
+  <div class="pattern-grid">
+    <!-- movingCost -->
+    <div class="pattern-card">
+      <div class="pattern-card-header" style="background:linear-gradient(135deg,#1A7A52,#2E9E6B);">
+        <span>🚃</span> movingCost
+      </div>
+      <div class="pattern-card-body">
+        <div class="color-item">
+          <div class="color-dot" style="background:#2E9E6B;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Primary <span class="tag tag-green">メイン</span></div>
+            <div class="color-item-code">#2E9E6B</div>
+            <div class="color-item-reason">緑ティール系（H=155°）。ロゴのH=200°から同系色方向へ展開。通勤・日常移動の「安定・継続」を表現。</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-dot" style="background:#1A7A52;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Dark</div>
+            <div class="color-item-code">#1A7A52</div>
+            <div class="color-item-reason">ヘッダーグラデーション起点色。明度-20%でコントラスト確保。</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-dot" style="background:#D4F0E4;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Tint（背景tint用）</div>
+            <div class="color-item-code">#D4F0E4</div>
+            <div class="color-item-reason">カードの背景tintや薄いアクセント装飾に使用可能。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- travelExpense -->
+    <div class="pattern-card">
+      <div class="pattern-card-header" style="background:linear-gradient(135deg,#B85C20,#E07B39);">
+        <span>✈️</span> travelExpense
+      </div>
+      <div class="pattern-card-body">
+        <div class="color-item">
+          <div class="color-dot" style="background:#E07B39;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Primary <span class="tag tag-orange">メイン</span></div>
+            <div class="color-item-code">#E07B39</div>
+            <div class="color-item-reason">アンバーオレンジ（H=25°）。ティールの分割補色。出張・旅行の「活動・移動のワクワク感」を表現。</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-dot" style="background:#B85C20;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Dark</div>
+            <div class="color-item-code">#B85C20</div>
+            <div class="color-item-reason">ヘッダーグラデーション起点色。白テキストとの対比を確保。</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-dot" style="background:#FDEBD4;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Tint（背景tint用）</div>
+            <div class="color-item-code">#FDEBD4</div>
+            <div class="color-item-reason">温かみのあるクリームオレンジ。カード背景や薄いアクセントに。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- モックアップ A -->
+  <div class="mockup-section">
+    <div class="mockup-title">Pattern A — モックアップ</div>
+    <div class="mockup-desc">EventListカード（左ボーダー）とEventDetailヘッダーの表示イメージ</div>
+
+    <div class="phone-pair">
+      <!-- EventList -->
+      <div>
+        <div class="phone-label">EventList 画面</div>
+        <div class="phone-frame-sm">
+          <div class="phone-screen-sm">
+            <div class="screen-nav">
+              <div class="screen-nav-title">イベント一覧</div>
+            </div>
+            <div class="screen-content">
+              <!-- movingCost card -->
+              <div class="event-card">
+                <div class="event-card-border" style="background:#2E9E6B;"></div>
+                <div class="event-card-body">
+                  <div class="event-card-title">4月定期代</div>
+                  <div class="event-card-sub">movingCost · 2026/04/01</div>
+                </div>
+                <div class="event-card-amount">¥12,000</div>
+              </div>
+              <!-- travelExpense card -->
+              <div class="event-card">
+                <div class="event-card-border" style="background:#E07B39;"></div>
+                <div class="event-card-body">
+                  <div class="event-card-title">大阪出張</div>
+                  <div class="event-card-sub">travelExpense · 2026/04/03</div>
+                </div>
+                <div class="event-card-amount">¥34,500</div>
+              </div>
+              <!-- movingCost card 2 -->
+              <div class="event-card">
+                <div class="event-card-border" style="background:#2E9E6B;"></div>
+                <div class="event-card-body">
+                  <div class="event-card-title">バス代（4月）</div>
+                  <div class="event-card-sub">movingCost · 2026/04/04</div>
+                </div>
+                <div class="event-card-amount">¥6,200</div>
+              </div>
+              <!-- travelExpense card 2 -->
+              <div class="event-card">
+                <div class="event-card-border" style="background:#E07B39;"></div>
+                <div class="event-card-body">
+                  <div class="event-card-title">福岡旅行</div>
+                  <div class="event-card-sub">travelExpense · 2026/04/05</div>
+                </div>
+                <div class="event-card-amount">¥58,000</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EventDetail -->
+      <div>
+        <div class="phone-label">EventDetail 画面</div>
+        <div class="phone-frame-sm">
+          <div class="phone-screen-sm">
+            <!-- movingCost detail header -->
+            <div class="detail-header" style="background:linear-gradient(160deg,#1A7A52,#2E9E6B);">
+              <div class="detail-header-back">← イベント一覧</div>
+              <div class="detail-header-icon">🚃</div>
+              <div class="detail-header-title">4月定期代</div>
+              <div class="detail-header-sub">movingCost · 2026/04/01</div>
+              <div class="detail-header-amount">¥12,000</div>
+            </div>
+            <div style="padding:16px;">
+              <div style="font-size:12px;color:#6C757D;margin-bottom:8px;font-weight:600;">詳細情報</div>
+              <div style="background:#F8F9FA;border-radius:10px;padding:12px;font-size:12px;color:#343A40;line-height:1.8;">
+                <div>区間: 自宅 → 会社</div>
+                <div>交通手段: 電車</div>
+                <div>備考: 4月分定期</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- travelExpense detail separate -->
+    <div style="max-width:280px; margin: 0 auto;">
+      <div class="phone-label">travelExpense の EventDetail</div>
+      <div class="phone-frame-sm">
+        <div class="phone-screen-sm">
+          <div class="detail-header" style="background:linear-gradient(160deg,#B85C20,#E07B39);">
+            <div class="detail-header-back">← イベント一覧</div>
+            <div class="detail-header-icon">✈️</div>
+            <div class="detail-header-title">大阪出張</div>
+            <div class="detail-header-sub">travelExpense · 2026/04/03</div>
+            <div class="detail-header-amount">¥34,500</div>
+          </div>
+          <div style="padding:16px;">
+            <div style="font-size:12px;color:#6C757D;margin-bottom:8px;font-weight:600;">詳細情報</div>
+            <div style="background:#FFF8F4;border-radius:10px;padding:12px;font-size:12px;color:#343A40;line-height:1.8;">
+              <div>行き先: 大阪</div>
+              <div>交通手段: 新幹線</div>
+              <div>備考: 3泊4日</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- ===== SECTION 3: パターンB ===== -->
+<section>
+  <div class="section-label">Section 03 — Pattern B</div>
+  <h2>ブルー系統一 × パープル分岐パターン</h2>
+  <p class="section-desc">
+    ロゴのティールブルーを中心に、movingCostは寒色ブルー系、travelExpenseは同系のパープル系へ展開。
+    全体的に落ち着いた統一感があり、コーポレートライクな印象。
+  </p>
+
+  <div class="pattern-grid">
+    <div class="pattern-card">
+      <div class="pattern-card-header" style="background:linear-gradient(135deg,#2256A0,#3B82C4);">
+        <span>🚃</span> movingCost
+      </div>
+      <div class="pattern-card-body">
+        <div class="color-item">
+          <div class="color-dot" style="background:#3B82C4;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Primary <span class="tag tag-blue">メイン</span></div>
+            <div class="color-item-code">#3B82C4</div>
+            <div class="color-item-reason">ロゴ（H=200°）よりHue+15°のロイヤルブルー。日常の移動を「信頼・効率」で表現。</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-dot" style="background:#2256A0;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Dark</div>
+            <div class="color-item-code">#2256A0</div>
+            <div class="color-item-reason">コントラスト確保用のダークブルー。</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-dot" style="background:#D6E8F8;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Tint</div>
+            <div class="color-item-code">#D6E8F8</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pattern-card">
+      <div class="pattern-card-header" style="background:linear-gradient(135deg,#6B3580,#9B5EA8);">
+        <span>✈️</span> travelExpense
+      </div>
+      <div class="pattern-card-body">
+        <div class="color-item">
+          <div class="color-dot" style="background:#9B5EA8;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Primary <span class="tag tag-purple">メイン</span></div>
+            <div class="color-item-code">#9B5EA8</div>
+            <div class="color-item-reason">パープル（H=290°）。ブルー系ロゴからHue+90°の類似補色。旅行の「特別感・非日常」を表現。</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-dot" style="background:#6B3580;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Dark</div>
+            <div class="color-item-code">#6B3580</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-dot" style="background:#EEE0F4;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Tint</div>
+            <div class="color-item-code">#EEE0F4</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-section">
+    <div class="mockup-title">Pattern B — EventListカードプレビュー</div>
+    <div class="mockup-desc">左ボーダーへの適用イメージ（2トピック比較）</div>
+    <div style="max-width:320px; margin:0 auto;">
+      <div class="event-card">
+        <div class="event-card-border" style="background:#3B82C4;"></div>
+        <div class="event-card-body">
+          <div class="event-card-title">4月定期代</div>
+          <div class="event-card-sub">movingCost · 2026/04/01</div>
+        </div>
+        <div class="event-card-amount">¥12,000</div>
+      </div>
+      <div class="event-card">
+        <div class="event-card-border" style="background:#9B5EA8;"></div>
+        <div class="event-card-body">
+          <div class="event-card-title">大阪出張</div>
+          <div class="event-card-sub">travelExpense · 2026/04/03</div>
+        </div>
+        <div class="event-card-amount">¥34,500</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:14px;background:#FFF8E1;border-radius:10px;font-size:13px;color:#6C757D;">
+      <strong style="color:#343A40;">注意点：</strong> パープルはロゴカラーとの距離が大きく、統一感よりも「区別のしやすさ」を優先したパターン。アプリ全体がブルー〜パープルに寄るため、やや単調に感じる可能性あり。
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- ===== SECTION 4: パターンC ===== -->
+<section>
+  <div class="section-label">Section 04 — Pattern C</div>
+  <h2>ダブルティール × アンバーゴールドパターン</h2>
+  <p class="section-desc">
+    movingCostに純粋なティール（ロゴ同系）を使い、travelExpenseに落ち着いたアンバーゴールドを使用。
+    Aパターンより全体的に抑えた彩度で、シックな仕上がり。
+  </p>
+
+  <div class="pattern-grid">
+    <div class="pattern-card">
+      <div class="pattern-card-header" style="background:linear-gradient(135deg,#136868,#1E8A8A);">
+        <span>🚃</span> movingCost
+      </div>
+      <div class="pattern-card-body">
+        <div class="color-item">
+          <div class="color-dot" style="background:#1E8A8A;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Primary <span class="tag tag-teal">メイン</span></div>
+            <div class="color-item-code">#1E8A8A</div>
+            <div class="color-item-reason">ロゴ直系のティール（H=180°）。ロゴとの一体感が最も高い。落ち着いた日常感。</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-dot" style="background:#136868;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Dark</div>
+            <div class="color-item-code">#136868</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-dot" style="background:#C8ECEC;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Tint</div>
+            <div class="color-item-code">#C8ECEC</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pattern-card">
+      <div class="pattern-card-header" style="background:linear-gradient(135deg,#9E6830,#D4914A);">
+        <span>✈️</span> travelExpense
+      </div>
+      <div class="pattern-card-body">
+        <div class="color-item">
+          <div class="color-dot" style="background:#D4914A;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Primary <span class="tag tag-orange">メイン</span></div>
+            <div class="color-item-code">#D4914A</div>
+            <div class="color-item-reason">アンバーゴールド（H=32°）。Aよりやや彩度を落とした上品なオレンジ。旅費精算の「まとまり感」を表現。</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-dot" style="background:#9E6830;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Dark</div>
+            <div class="color-item-code">#9E6830</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-dot" style="background:#F8E6CC;"></div>
+          <div class="color-item-info">
+            <div class="color-item-name">Tint</div>
+            <div class="color-item-code">#F8E6CC</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-section">
+    <div class="mockup-title">Pattern C — EventListカードプレビュー</div>
+    <div style="max-width:320px; margin:0 auto;">
+      <div class="event-card">
+        <div class="event-card-border" style="background:#1E8A8A;"></div>
+        <div class="event-card-body">
+          <div class="event-card-title">4月定期代</div>
+          <div class="event-card-sub">movingCost · 2026/04/01</div>
+        </div>
+        <div class="event-card-amount">¥12,000</div>
+      </div>
+      <div class="event-card">
+        <div class="event-card-border" style="background:#D4914A;"></div>
+        <div class="event-card-body">
+          <div class="event-card-title">大阪出張</div>
+          <div class="event-card-sub">travelExpense · 2026/04/03</div>
+        </div>
+        <div class="event-card-amount">¥34,500</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:14px;background:#E8F5E9;border-radius:10px;font-size:13px;color:#6C757D;">
+      <strong style="color:#343A40;">特徴：</strong> movingCostにロゴと同一系のティールを使うためブランドとの一体感が高い。travelExpenseのアンバーが落ち着いた色みで、全体的にシック＆上品なまとまり。
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- ===== SECTION 5: 比較表 ===== -->
+<section>
+  <div class="section-label">Section 05</div>
+  <h2>パターン比較まとめ</h2>
+  <p class="section-desc">3パターンを評価軸で比較し、採用候補を明示する。</p>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>パターン</th>
+        <th>movingCost</th>
+        <th>travelExpense</th>
+        <th>ロゴ調和</th>
+        <th>視認性</th>
+        <th>印象・特徴</th>
+        <th>判定</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>A</strong></td>
+        <td>
+          <div class="color-chip">
+            <div class="color-chip-dot" style="background:#2E9E6B;"></div>
+            <span class="color-chip-code">#2E9E6B</span>
+          </div>
+        </td>
+        <td>
+          <div class="color-chip">
+            <div class="color-chip-dot" style="background:#E07B39;"></div>
+            <span class="color-chip-code">#E07B39</span>
+          </div>
+        </td>
+        <td>◎ 高い</td>
+        <td>◎ 高い</td>
+        <td>活発・フレッシュ。2トピックの意味が色から直感的に伝わる</td>
+        <td><span class="rec-badge">推奨</span></td>
+      </tr>
+      <tr>
+        <td><strong>B</strong></td>
+        <td>
+          <div class="color-chip">
+            <div class="color-chip-dot" style="background:#3B82C4;"></div>
+            <span class="color-chip-code">#3B82C4</span>
+          </div>
+        </td>
+        <td>
+          <div class="color-chip">
+            <div class="color-chip-dot" style="background:#9B5EA8;"></div>
+            <span class="color-chip-code">#9B5EA8</span>
+          </div>
+        </td>
+        <td>○ 普通</td>
+        <td>◎ 高い</td>
+        <td>コーポレートライク。寒色系でまとまるが単調になりやすい</td>
+        <td><span class="alt-badge">代替A</span></td>
+      </tr>
+      <tr>
+        <td><strong>C</strong></td>
+        <td>
+          <div class="color-chip">
+            <div class="color-chip-dot" style="background:#1E8A8A;"></div>
+            <span class="color-chip-code">#1E8A8A</span>
+          </div>
+        </td>
+        <td>
+          <div class="color-chip">
+            <div class="color-chip-dot" style="background:#D4914A;"></div>
+            <span class="color-chip-code">#D4914A</span>
+          </div>
+        </td>
+        <td>◎ 高い</td>
+        <td>○ 普通</td>
+        <td>シック・上品。ブランド一体感が高いがAより落ち着きすぎる</td>
+        <td><span class="alt-badge">代替B</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:24px; padding:20px; background:white; border-radius:12px; border-left:4px solid #2E9E6B; box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+    <strong style="font-size:15px;">推奨: Pattern A</strong>
+    <p style="font-size:13px;color:#6C757D;margin-top:6px;line-height:1.6;">
+      ロゴとの色彩調和（同系色 + 補色理論）、モバイルUIでの視認性、トピックの意味と色の直感的な一致、すべてにおいてバランスが良い。
+      Material 3のカラーシステムとも親和性が高く、実装コストも低い。
+    </p>
+  </div>
+</section>
+
+<hr>
+
+<!-- ===== SECTION 6: Flutter実装値 ===== -->
+<section>
+  <div class="section-label">Section 06</div>
+  <h2>Flutter実装参考値（Pattern A）</h2>
+  <p class="section-desc">architectへの引き継ぎ用。Flutter Color値と適用方法の参考情報。</p>
+
+  <div class="base-palette-card">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>用途</th>
+          <th>TopicType</th>
+          <th>カラーコード</th>
+          <th>Flutter Color値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>テーマカラー（メイン）</td>
+          <td>movingCost</td>
+          <td><div class="color-chip"><div class="color-chip-dot" style="background:#2E9E6B;"></div><span class="color-chip-code">#2E9E6B</span></div></td>
+          <td><code style="font-size:12px;background:#F1F3F5;padding:3px 6px;border-radius:4px;">Color(0xFF2E9E6B)</code></td>
+        </tr>
+        <tr>
+          <td>ヘッダーグラデーション起点</td>
+          <td>movingCost</td>
+          <td><div class="color-chip"><div class="color-chip-dot" style="background:#1A7A52;"></div><span class="color-chip-code">#1A7A52</span></div></td>
+          <td><code style="font-size:12px;background:#F1F3F5;padding:3px 6px;border-radius:4px;">Color(0xFF1A7A52)</code></td>
+        </tr>
+        <tr>
+          <td>背景Tint</td>
+          <td>movingCost</td>
+          <td><div class="color-chip"><div class="color-chip-dot" style="background:#D4F0E4;"></div><span class="color-chip-code">#D4F0E4</span></div></td>
+          <td><code style="font-size:12px;background:#F1F3F5;padding:3px 6px;border-radius:4px;">Color(0xFFD4F0E4)</code></td>
+        </tr>
+        <tr>
+          <td>テーマカラー（メイン）</td>
+          <td>travelExpense</td>
+          <td><div class="color-chip"><div class="color-chip-dot" style="background:#E07B39;"></div><span class="color-chip-code">#E07B39</span></div></td>
+          <td><code style="font-size:12px;background:#F1F3F5;padding:3px 6px;border-radius:4px;">Color(0xFFE07B39)</code></td>
+        </tr>
+        <tr>
+          <td>ヘッダーグラデーション起点</td>
+          <td>travelExpense</td>
+          <td><div class="color-chip"><div class="color-chip-dot" style="background:#B85C20;"></div><span class="color-chip-code">#B85C20</span></div></td>
+          <td><code style="font-size:12px;background:#F1F3F5;padding:3px 6px;border-radius:4px;">Color(0xFFB85C20)</code></td>
+        </tr>
+        <tr>
+          <td>背景Tint</td>
+          <td>travelExpense</td>
+          <td><div class="color-chip"><div class="color-chip-dot" style="background:#FDEBD4;"></div><span class="color-chip-code">#FDEBD4</span></div></td>
+          <td><code style="font-size:12px;background:#F1F3F5;padding:3px 6px;border-radius:4px;">Color(0xFFFDEBD4)</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:20px; padding:16px; background:#F8F9FA; border-radius:10px; font-size:13px; color:#6C757D; line-height:1.8;">
+      <strong style="color:#343A40;">EventListカードへの適用：</strong><br>
+      左ボーダーに 4dp 幅の縦線として適用。<code style="background:#E9ECEF;padding:1px 4px;border-radius:3px;">Container(width:4, color: topicColor)</code><br><br>
+      <strong style="color:#343A40;">EventDetailヘッダーへの適用：</strong><br>
+      ヘッダー全体に <code style="background:#E9ECEF;padding:1px 4px;border-radius:3px;">LinearGradient(colors:[darkColor, primaryColor])</code> を適用。テキストカラーはすべて白（<code style="background:#E9ECEF;padding:1px 4px;border-radius:3px;">Colors.white</code>）。<br><br>
+      <strong style="color:#343A40;">TopicDomain.color フィールドへの格納：</strong><br>
+      <code style="background:#E9ECEF;padding:1px 4px;border-radius:3px;">movingCost.color = 0xFF2E9E6B</code>、
+      <code style="background:#E9ECEF;padding:1px 4px;border-radius:3px;">travelExpense.color = 0xFFE07B39</code>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div class="page-footer">
+  <div class="container">
+    MichiMark Design Report · トピックカラー設計提案 · 2026-04-05<br>
+    作成: designer agent · 次ステップ: product-managerによるレビュー・ユーザー確認
+  </div>
+</div>
+
+</body>
+</html>
