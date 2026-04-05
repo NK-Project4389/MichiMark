@@ -47,14 +47,22 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
         );
         await _eventRepository.save(newDomain);
         final projection = EventDetailAdapter.toProjection(newDomain);
-        final topicConfig = TopicConfig.fromTopicType(null);
+        // initialTopicType が指定されている場合はそのTopicConfigを使用する
+        final initialTopicType = event.initialTopicType;
+        final topicConfig = TopicConfig.fromTopicType(initialTopicType);
+        final topicThemeColor = initialTopicType != null
+            ? TopicConfig.forType(initialTopicType).themeColor
+            : null;
+        final topicDisplayName = initialTopicType != null
+            ? TopicConfig.forType(initialTopicType).displayName
+            : null;
         emit(EventDetailLoaded(
           projection: projection,
           draft: const EventDetailDraft(),
           topicConfig: topicConfig,
           cachedEvent: newDomain,
-          topicThemeColor: null,
-          topicDisplayName: null,
+          topicThemeColor: topicThemeColor,
+          topicDisplayName: (topicDisplayName?.isNotEmpty ?? false) ? topicDisplayName : null,
           delegate: EventDetailTopicConfigPropagateDelegate(topicConfig),
         ));
         return;

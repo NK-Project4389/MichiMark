@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/topic/topic_domain.dart';
 import '../../basic_info/draft/basic_info_draft.dart';
 import '../draft/event_detail_draft.dart';
 
@@ -9,10 +10,14 @@ sealed class EventDetailEvent extends Equatable {
 /// 画面が表示されたとき
 class EventDetailStarted extends EventDetailEvent {
   final String eventId;
-  const EventDetailStarted(this.eventId);
+
+  /// 新規作成時のみ使用。既存イベントの場合は null。
+  final TopicType? initialTopicType;
+
+  const EventDetailStarted(this.eventId, {this.initialTopicType});
 
   @override
-  List<Object?> get props => [eventId];
+  List<Object?> get props => [eventId, initialTopicType];
 }
 
 /// タブが選択されたとき

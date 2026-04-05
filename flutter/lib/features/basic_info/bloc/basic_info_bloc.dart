@@ -39,7 +39,11 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
     emit(const BasicInfoLoading());
     try {
       final domain = await _eventRepository.fetch(event.eventId);
-      // 既存イベント: DB値からDraftを初期化（initialTopicTypeは無視）
+      // initialTopicTypeがあり、かつDBのtopicがnullの場合（新規作成直後）はinitialTopicTypeを使用する
+      TopicDomain? topicDomain = domain.topic;
+      if (topicDomain == null && event.initialTopicType != null) {
+        topicDomain = await _topicRepository.fetchByType(event.initialTopicType!);
+      }
       final draft = BasicInfoDraft(
         eventName: domain.eventName,
         selectedTrans: domain.trans,
@@ -50,12 +54,12 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
             ? (domain.kmPerGas! / 10.0).toString()
             : '',
         pricePerGasInput: domain.pricePerGas?.toString() ?? '',
-        selectedTopic: domain.topic,
+        selectedTopic: topicDomain,
       );
-      final topicConfig = TopicConfig.fromTopicType(domain.topic?.topicType);
+      final topicConfig = TopicConfig.fromTopicType(topicDomain?.topicType ?? event.initialTopicType);
       emit(BasicInfoLoaded(draft: draft, topicConfig: topicConfig));
     } on NotFoundError {
-      // 新規イベント: initialTopicTypeでDraftを初期化
+      // 通常はEventDetailBlocが先に新規イベントをDBに保存するためここには入らないが念のため維持
       final initialTopicType = event.initialTopicType;
       TopicDomain? topicDomain;
       if (initialTopicType != null) {
