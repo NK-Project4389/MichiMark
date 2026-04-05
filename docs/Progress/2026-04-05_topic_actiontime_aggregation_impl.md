@@ -46,13 +46,23 @@
 
 ---
 
+### 実機ビルド確認
+
+- `flutter build ios --debug` → ✅ ビルド成功
+- `flutter run` → Xcodeデバッグセッションタイムアウトで起動失敗
+- Xcode から **Product > Run** で手動インストール推奨
+
+---
+
 ## 未完了
 
 - T-010〜T-012（Phase 2動作確認）は引き続きIN_PROGRESS
+- 実機での動作確認（Xcode経由でのインストール・起動）
 
 ---
 
 ## 次回セッションで最初にやること
 
-1. **flutter run で動作確認**（Topic選択→表示制御・Overview集計・ActionTime記録が正しく動くか）
-2. **Phase 2動作確認（T-010〜T-012）の継続**
+1. **Xcode（Product > Run）で実機インストール・起動確認**（`open flutter/ios/Runner.xcworkspace`）
+2. **動作確認**（Topic選択→表示制御・Overview集計・ActionTime記録が正しく動くか）
+3. **Phase 2動作確認（T-010〜T-012）の継続**
