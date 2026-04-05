@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../adapter/event_detail_adapter.dart';
 import '../../../domain/topic/topic_config.dart';
+import '../../../domain/topic/topic_domain.dart';
+import '../../../domain/topic/topic_theme_color.dart';
 import '../../../domain/transaction/event/event_domain.dart';
 import '../../../repository/event_repository.dart';
 import '../../../repository/repository_error.dart';
@@ -51,17 +53,23 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
           draft: const EventDetailDraft(),
           topicConfig: topicConfig,
           cachedEvent: newDomain,
+          topicThemeColor: null,
+          topicDisplayName: null,
           delegate: EventDetailTopicConfigPropagateDelegate(topicConfig),
         ));
         return;
       }
       final projection = EventDetailAdapter.toProjection(domain);
       final topicConfig = TopicConfig.fromTopicType(domain.topic?.topicType);
+      final resolvedThemeColor = _resolveThemeColor(domain.topic);
+      final resolvedDisplayName = _resolveDisplayName(domain.topic);
       emit(EventDetailLoaded(
         projection: projection,
         draft: const EventDetailDraft(),
         topicConfig: topicConfig,
         cachedEvent: domain,
+        topicThemeColor: resolvedThemeColor,
+        topicDisplayName: resolvedDisplayName,
         delegate: EventDetailTopicConfigPropagateDelegate(topicConfig),
       ));
     } on Exception catch (e) {
@@ -133,6 +141,18 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     }
   }
 
+  /// Topic から TopicThemeColor を解決する。Topic未設定時は null。
+  TopicThemeColor? _resolveThemeColor(TopicDomain? topic) {
+    if (topic == null) return null;
+    return topic.themeColor;
+  }
+
+  /// Topic から displayName を解決する。Topic未設定時は null。
+  String? _resolveDisplayName(TopicDomain? topic) {
+    if (topic == null) return null;
+    return TopicConfig.forType(topic.topicType).displayName;
+  }
+
   Future<void> _onSaveRequested(
     EventDetailSaveRequested event,
     Emitter<EventDetailState> emit,
@@ -176,6 +196,8 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
       await _eventRepository.save(updated);
 
       final projection = EventDetailAdapter.toProjection(updated);
+      final updatedThemeColor = _resolveThemeColor(updated.topic);
+      final updatedDisplayName = _resolveDisplayName(updated.topic);
       emit(EventDetailLoaded(
         projection: projection,
         draft: current.draft,
@@ -183,6 +205,8 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
         isSaving: false,
         topicConfig: current.topicConfig,
         cachedEvent: updated,
+        topicThemeColor: updatedThemeColor,
+        topicDisplayName: updatedDisplayName,
       ));
     } on Exception catch (e) {
       emit(current.copyWith(

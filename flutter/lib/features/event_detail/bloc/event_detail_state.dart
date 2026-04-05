@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/topic/topic_config.dart';
+import '../../../domain/topic/topic_theme_color.dart';
 import '../../../domain/transaction/event/event_domain.dart';
 import '../draft/event_detail_draft.dart';
 import '../projection/event_detail_projection.dart';
@@ -85,6 +86,10 @@ class EventDetailLoaded extends EventDetailState {
   final TopicConfig topicConfig;
   /// OverviewBlocにEventDomainを渡すためにキャッシュする
   final EventDomain? cachedEvent;
+  /// Topicのテーマカラー。Topic未設定時はnull（デフォルトAppBar表示）（REQ-008）
+  final TopicThemeColor? topicThemeColor;
+  /// Topicの日本語表示名。Topic未設定時はnull（REQ-008）
+  final String? topicDisplayName;
 
   const EventDetailLoaded({
     required this.projection,
@@ -94,6 +99,8 @@ class EventDetailLoaded extends EventDetailState {
     this.saveErrorMessage,
     TopicConfig? topicConfig,
     this.cachedEvent,
+    this.topicThemeColor,
+    this.topicDisplayName,
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -113,6 +120,10 @@ class EventDetailLoaded extends EventDetailState {
     String? saveErrorMessage,
     TopicConfig? topicConfig,
     EventDomain? cachedEvent,
+    TopicThemeColor? topicThemeColor,
+    String? topicDisplayName,
+    bool clearTopicThemeColor = false,
+    bool clearTopicDisplayName = false,
   }) {
     return EventDetailLoaded(
       projection: projection ?? this.projection,
@@ -122,11 +133,23 @@ class EventDetailLoaded extends EventDetailState {
       saveErrorMessage: saveErrorMessage,
       topicConfig: topicConfig ?? this.topicConfig,
       cachedEvent: cachedEvent ?? this.cachedEvent,
+      topicThemeColor: clearTopicThemeColor ? null : (topicThemeColor ?? this.topicThemeColor),
+      topicDisplayName: clearTopicDisplayName ? null : (topicDisplayName ?? this.topicDisplayName),
     );
   }
 
   @override
-  List<Object?> get props => [projection, draft, delegate, isSaving, saveErrorMessage, topicConfig, cachedEvent];
+  List<Object?> get props => [
+        projection,
+        draft,
+        delegate,
+        isSaving,
+        saveErrorMessage,
+        topicConfig,
+        cachedEvent,
+        topicThemeColor,
+        topicDisplayName,
+      ];
 }
 
 class EventDetailError extends EventDetailState {

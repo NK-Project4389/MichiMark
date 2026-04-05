@@ -26,6 +26,7 @@ final seedTopics = [
     isDeleted: false,
     createdAt: _d(2026, 1, 1),
     updatedAt: _d(2026, 1, 1),
+    color: 'emeraldGreen',
   ),
   TopicDomain(
     id: 'topic-002',
@@ -35,6 +36,7 @@ final seedTopics = [
     isDeleted: false,
     createdAt: _d(2026, 1, 1),
     updatedAt: _d(2026, 1, 1),
+    color: 'amberOrange',
   ),
 ];
 

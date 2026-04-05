@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/di.dart';
+import '../../../domain/topic/topic_theme_color.dart';
 import '../../../repository/event_repository.dart';
 import '../../basic_info/bloc/basic_info_bloc.dart';
 import '../../basic_info/bloc/basic_info_event.dart';
@@ -50,11 +51,19 @@ class EventDetailPage extends StatelessWidget {
           EventDetailError(:final message) => Scaffold(
               body: Center(child: Text(message)),
             ),
-          EventDetailLoaded(:final projection, :final draft, :final isSaving) =>
+          EventDetailLoaded(
+            :final projection,
+            :final draft,
+            :final isSaving,
+            :final topicThemeColor,
+            :final topicDisplayName,
+          ) =>
             _EventDetailScaffold(
               projection: projection,
               draft: draft,
               isSaving: isSaving,
+              topicThemeColor: topicThemeColor,
+              topicDisplayName: topicDisplayName,
             ),
         };
       },
@@ -94,11 +103,15 @@ class _EventDetailScaffold extends StatelessWidget {
   final EventDetailProjection projection;
   final EventDetailDraft draft;
   final bool isSaving;
+  final TopicThemeColor? topicThemeColor;
+  final String? topicDisplayName;
 
   const _EventDetailScaffold({
     required this.projection,
     required this.draft,
     required this.isSaving,
+    this.topicThemeColor,
+    this.topicDisplayName,
   });
 
   @override
@@ -133,6 +146,8 @@ class _EventDetailScaffold extends StatelessWidget {
         projection: projection,
         draft: draft,
         isSaving: isSaving,
+        topicThemeColor: topicThemeColor,
+        topicDisplayName: topicDisplayName,
       ),
     );
   }
@@ -143,12 +158,122 @@ class _EventDetailScaffoldInner extends StatelessWidget {
   final EventDetailProjection projection;
   final EventDetailDraft draft;
   final bool isSaving;
+  final TopicThemeColor? topicThemeColor;
+  final String? topicDisplayName;
 
   const _EventDetailScaffoldInner({
     required this.projection,
     required this.draft,
     required this.isSaving,
+    this.topicThemeColor,
+    this.topicDisplayName,
   });
+
+  AppBar _buildAppBar(BuildContext context) {
+    final themeColor = topicThemeColor;
+    final displayName = topicDisplayName;
+    final eventName = projection.basicInfo.eventName.isEmpty
+        ? 'イベント詳細'
+        : projection.basicInfo.eventName;
+
+    final saveAction = BlocBuilder<BasicInfoBloc, BasicInfoState>(
+      builder: (context, basicInfoState) {
+        return IconButton(
+          icon: const Icon(Icons.check),
+          onPressed: basicInfoState is BasicInfoLoaded
+              ? () => context.read<EventDetailBloc>().add(
+                    EventDetailSaveRequested(
+                      eventId: projection.basicInfo.eventId,
+                      basicInfoDraft: basicInfoState.draft,
+                    ),
+                  )
+              : null,
+        );
+      },
+    );
+
+    if (themeColor == null) {
+      // Topic未設定: デフォルトのAppBar表示
+      return AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left),
+          onPressed: () => context
+              .read<EventDetailBloc>()
+              .add(const EventDetailDismissPressed()),
+        ),
+        title: Text(eventName),
+        centerTitle: true,
+        actions: [
+          if (isSaving)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
+          else
+            saveAction,
+        ],
+      );
+    }
+
+    // Topic設定済み: グラデーション AppBar
+    return AppBar(
+      leading: IconButton(
+        icon: const Icon(Icons.chevron_left),
+        onPressed: () => context
+            .read<EventDetailBloc>()
+            .add(const EventDetailDismissPressed()),
+      ),
+      title: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            eventName,
+            style: const TextStyle(color: Colors.white),
+          ),
+          if (displayName != null && displayName.isNotEmpty)
+            Text(
+              displayName,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+        ],
+      ),
+      centerTitle: true,
+      foregroundColor: Colors.white,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [themeColor.darkColor, themeColor.primaryColor],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+      ),
+      actions: [
+        if (isSaving)
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            ),
+          )
+        else
+          saveAction,
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,45 +330,7 @@ class _EventDetailScaffoldInner extends StatelessWidget {
         ),
       ],
       child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.chevron_left),
-            onPressed: () => context
-                .read<EventDetailBloc>()
-                .add(const EventDetailDismissPressed()),
-          ),
-          title: Text(projection.basicInfo.eventName.isEmpty
-              ? 'イベント詳細'
-              : projection.basicInfo.eventName),
-          centerTitle: true,
-          actions: [
-            if (isSaving)
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-              )
-            else
-              BlocBuilder<BasicInfoBloc, BasicInfoState>(
-                builder: (context, basicInfoState) {
-                  return IconButton(
-                    icon: const Icon(Icons.check),
-                    onPressed: basicInfoState is BasicInfoLoaded
-                        ? () => context.read<EventDetailBloc>().add(
-                              EventDetailSaveRequested(
-                                eventId: projection.basicInfo.eventId,
-                                basicInfoDraft: basicInfoState.draft,
-                              ),
-                            )
-                        : null,
-                  );
-                },
-              ),
-          ],
-        ),
+        appBar: _buildAppBar(context),
         body: Column(
           children: [
             Expanded(child: _tabContent(context, draft, projection)),

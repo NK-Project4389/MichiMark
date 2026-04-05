@@ -53,10 +53,10 @@
 |---|---|---|---|---|---|
 | T-050 | Topic・Action再定義 Spec作成 | architect | `DONE` | | REQ-001〜006対応済み。REQ-007/008カラー枠のみ確保 |
 | T-051 | Topic・Action再定義 実装 | flutter-dev | `DONE` | | REQ-001〜006完了。REQ-007/008はデザイン確定後 |
-| T-052 | Topic・Action再定義 レビュー | reviewer | `IN_PROGRESS` | 2026-04-05_topic_action_review | T-051完了後 |
+| T-052 | Topic・Action再定義 レビュー | reviewer | `DONE` | | 全項目PASS。アーキテクチャ違反なし |
 | T-053 | EventListカード色・EventDetailテーマカラー デザイン提案 | designer | `DONE` | | HTMLレポート・叩きMD作成済み。ユーザー確認待ち |
 | T-054 | EventListカード色・EventDetailテーマカラー Spec作成 | architect | `DONE` | | v2.1更新済み。TopicThemeColor enum・EventList/EventDetail適用Spec追加 |
-| T-055 | EventListカード色・EventDetailテーマカラー 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-05_topic_color_impl | T-054完了 |
+| T-055 | EventListカード色・EventDetailテーマカラー 実装 | flutter-dev | `DONE` | | REQ-007/008完了。TopicThemeColor enum・カード左ボーダー・AppBarグラデーション |
 
 ## Phase 3: 機能追加・仕上げ
 

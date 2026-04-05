@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import '../domain/transaction/event/event_domain.dart';
 import '../features/event_list/projection/event_list_projection.dart';
+import '../domain/topic/topic_theme_color.dart';
 
 /// EventList の Domain → Projection 変換
 class EventListAdapter {
@@ -28,11 +29,14 @@ class EventListAdapter {
         ? _dateFormat.format(visibleMarkLinks.last.markLinkDate)
         : '';
 
+    final TopicThemeColor? themeColor = event.topic?.themeColor;
+
     return EventSummaryItemProjection(
       id: event.id,
       eventName: event.eventName,
       displayFromDate: firstDate,
       displayToDate: lastDate,
+      themeColor: themeColor,
     );
   }
 }

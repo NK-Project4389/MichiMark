@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/topic/topic_theme_color.dart';
 
 /// イベント一覧画面の表示用データ
 class EventListProjection extends Equatable {
@@ -23,13 +24,17 @@ class EventSummaryItemProjection extends Equatable {
   /// 最後のマーク/リンクの日付（フォーマット済み文字列）。未実装時は空文字
   final String displayToDate;
 
+  /// Topicのテーマカラー。Topic未設定時は null（左ボーダーはグレー表示）
+  final TopicThemeColor? themeColor;
+
   const EventSummaryItemProjection({
     required this.id,
     required this.eventName,
     required this.displayFromDate,
     required this.displayToDate,
+    this.themeColor,
   });
 
   @override
-  List<Object?> get props => [id, eventName, displayFromDate, displayToDate];
+  List<Object?> get props => [id, eventName, displayFromDate, displayToDate, themeColor];
 }

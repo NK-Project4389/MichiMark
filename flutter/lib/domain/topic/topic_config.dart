@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'topic_domain.dart';
+import 'topic_theme_color.dart';
 
 /// TopicConfigはTopicTypeを入力として表示制御フラグのセットを返す値オブジェクト。
 /// BlocやWidgetから参照される読み取り専用の設定値。
@@ -36,6 +37,12 @@ class TopicConfig extends Equatable {
   /// 区間（Link）タップ時に提示するActionIDのリスト（REQ-002）
   final List<String> linkActions;
 
+  /// テーマカラー（REQ-007確定値）
+  final TopicThemeColor themeColor;
+
+  /// トピックの日本語表示名。EventDetailヘッダーラベルに使用（REQ-008）
+  final String displayName;
+
   const TopicConfig({
     required this.showMeterValue,
     required this.showFuelDetail,
@@ -47,7 +54,12 @@ class TopicConfig extends Equatable {
     required this.showPaymentInfoTab,
     this.markActions = const [],
     this.linkActions = const [],
+    this.themeColor = TopicThemeColor.brandTeal,
+    this.displayName = '',
   });
+
+  /// TopicTypeからTopicConfigを生成するファクトリ（エイリアス）。
+  static TopicConfig forType(TopicType type) => TopicConfig.fromTopicType(type);
 
   /// TopicTypeからTopicConfigを生成するファクトリ。
   /// Topic未設定（null）の場合は movingCost 相当の設定にフォールバックする。
@@ -66,6 +78,8 @@ class TopicConfig extends Equatable {
           // SeedDataで定義される固定UUIDを参照（出発・到着）
           markActions: ['action-seed-depart', 'action-seed-arrive'],
           linkActions: [],
+          themeColor: TopicThemeColor.emeraldGreen,
+          displayName: '移動コスト可視化',
         ),
       TopicType.travelExpense => const TopicConfig(
           showMeterValue: false,
@@ -78,6 +92,8 @@ class TopicConfig extends Equatable {
           showPaymentInfoTab: true,
           markActions: [],
           linkActions: [],
+          themeColor: TopicThemeColor.amberOrange,
+          displayName: '旅費可視化',
         ),
     };
   }
@@ -94,5 +110,7 @@ class TopicConfig extends Equatable {
         showPaymentInfoTab,
         markActions,
         linkActions,
+        themeColor,
+        displayName,
       ];
 }

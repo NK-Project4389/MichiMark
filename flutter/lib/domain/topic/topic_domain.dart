@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'topic_config.dart';
+import 'topic_theme_color.dart';
 
 /// Topicの用途種別enum。
 /// Phase 3でカスタム種別が追加される可能性を想定し、enumを参照する形で表示制御を実装する（ハードコード禁止）。
@@ -35,6 +37,10 @@ class TopicDomain extends Equatable {
   /// 更新日時
   final DateTime updatedAt;
 
+  /// TopicThemeColorのenum name文字列（例: 'emeraldGreen'）。
+  /// null の場合は TopicConfig のデフォルト themeColor にフォールバックする（REQ-007）。
+  final String? color;
+
   const TopicDomain({
     required this.id,
     required this.topicName,
@@ -43,7 +49,21 @@ class TopicDomain extends Equatable {
     this.isDeleted = false,
     required this.createdAt,
     required this.updatedAt,
+    this.color,
   });
+
+  /// TopicThemeColorを解決して返す。
+  /// colorフィールドが null または未知の場合は TopicConfig のデフォルト値にフォールバックする。
+  TopicThemeColor get themeColor {
+    final colorValue = color;
+    if (colorValue != null) {
+      return TopicThemeColor.values.firstWhere(
+        (c) => c.name == colorValue,
+        orElse: () => TopicConfig.fromTopicType(topicType).themeColor,
+      );
+    }
+    return TopicConfig.fromTopicType(topicType).themeColor;
+  }
 
   TopicDomain copyWith({
     String? id,
@@ -53,6 +73,7 @@ class TopicDomain extends Equatable {
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? color,
   }) {
     return TopicDomain(
       id: id ?? this.id,
@@ -62,6 +83,7 @@ class TopicDomain extends Equatable {
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      color: color ?? this.color,
     );
   }
 
@@ -74,5 +96,6 @@ class TopicDomain extends Equatable {
         isDeleted,
         createdAt,
         updatedAt,
+        color,
       ];
 }
