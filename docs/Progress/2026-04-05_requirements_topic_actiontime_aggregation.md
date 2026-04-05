@@ -1,6 +1,8 @@
 # 2026-04-05 要件書・Feature Spec作成：Topic / ActionTime / Aggregation
 
 ## 完了した作業
+- docs: 進捗更新（実機ビルド確認・次回やること追記） (1d155b5)
+- docs: Topic/ActionTime/Aggregation/EventDetailOverview 実装完了・進捗更新 (d46f5e0)
 - fix: reviewer指摘4件修正（schemaVersion2移行・ActionSetting拡張・TopicConfig伝播） (8e60d40)
 - chore: T-045 OverviewStarted発火問題解決をDONEに更新 (1d07c3d)
 - feat: Topic / ActionTime / Aggregation / EventDetailOverview Feature 実装 (115b264)
