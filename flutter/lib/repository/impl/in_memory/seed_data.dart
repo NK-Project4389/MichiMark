@@ -1,3 +1,4 @@
+import '../../../domain/action_time/action_state.dart';
 import '../../../domain/master/action/action_domain.dart';
 import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/master/tag/tag_domain.dart';
@@ -38,7 +39,27 @@ final seedTopics = [
 ];
 
 // --- Actions ---
+// デフォルトマスタ（REQ-005対応: 出発・到着の2種）
+// TopicConfig.markActionsで参照される固定IDを使用する
 final seedActions = [
+  ActionDomain(
+    id: 'action-seed-depart',
+    actionName: '出発',
+    toState: ActionState.moving,
+    isToggle: false,
+    needsTransition: true,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  ActionDomain(
+    id: 'action-seed-arrive',
+    actionName: '到着',
+    toState: ActionState.working,
+    isToggle: false,
+    needsTransition: true,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
   ActionDomain(
     id: 'action-001',
     actionName: '観光',

@@ -40,7 +40,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -72,6 +72,17 @@ class AppDatabase extends _$AppDatabase {
                 updated_at INTEGER NOT NULL
               )
             ''');
+          }
+          if (from < 3) {
+            // REQ-005: actions テーブルに needs_transition カラムを追加
+            await customStatement(
+              'ALTER TABLE actions ADD COLUMN needs_transition INTEGER NOT NULL DEFAULT 1',
+            );
+            // REQ-007枠: topics テーブルに color カラムを追加（NULLABLE）
+            // topics テーブルが存在する場合のみ実行
+            await customStatement(
+              'ALTER TABLE topics ADD COLUMN color TEXT',
+            );
           }
         },
       );

@@ -4,7 +4,6 @@ import '../../../domain/topic/topic_config.dart';
 import '../../../domain/transaction/event/event_domain.dart';
 import '../../../repository/event_repository.dart';
 import '../../../repository/repository_error.dart';
-import '../../../repository/topic_repository.dart';
 import '../draft/event_detail_draft.dart';
 import 'event_detail_event.dart';
 import 'event_detail_state.dart';
@@ -12,9 +11,7 @@ import 'event_detail_state.dart';
 class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
   EventDetailBloc({
     required EventRepository eventRepository,
-    required TopicRepository topicRepository,
   })  : _eventRepository = eventRepository,
-        _topicRepository = topicRepository,
         super(const EventDetailLoading()) {
     on<EventDetailStarted>(_onStarted);
     on<EventDetailTabSelected>(_onTabSelected);
@@ -24,11 +21,9 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     on<EventDetailOpenPaymentRequested>(_onOpenPaymentRequested);
     on<EventDetailAddMarkLinkRequested>(_onAddMarkLinkRequested);
     on<EventDetailSaveRequested>(_onSaveRequested);
-    on<EventDetailTopicChanged>(_onTopicChanged);
   }
 
   final EventRepository _eventRepository;
-  final TopicRepository _topicRepository;
 
   Future<void> _onStarted(
     EventDetailStarted event,
@@ -51,25 +46,23 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
         await _eventRepository.save(newDomain);
         final projection = EventDetailAdapter.toProjection(newDomain);
         final topicConfig = TopicConfig.fromTopicType(null);
-        final availableTopics = await _topicRepository.fetchAll();
         emit(EventDetailLoaded(
           projection: projection,
           draft: const EventDetailDraft(),
           topicConfig: topicConfig,
           cachedEvent: newDomain,
-          delegate: EventDetailAvailableTopicsDelegate(availableTopics),
+          delegate: EventDetailTopicConfigPropagateDelegate(topicConfig),
         ));
         return;
       }
       final projection = EventDetailAdapter.toProjection(domain);
       final topicConfig = TopicConfig.fromTopicType(domain.topic?.topicType);
-      final availableTopics = await _topicRepository.fetchAll();
       emit(EventDetailLoaded(
         projection: projection,
         draft: const EventDetailDraft(),
         topicConfig: topicConfig,
         cachedEvent: domain,
-        delegate: EventDetailAvailableTopicsDelegate(availableTopics),
+        delegate: EventDetailTopicConfigPropagateDelegate(topicConfig),
       ));
     } on Exception catch (e) {
       emit(EventDetailError(message: e.toString()));
@@ -199,16 +192,4 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     }
   }
 
-  Future<void> _onTopicChanged(
-    EventDetailTopicChanged event,
-    Emitter<EventDetailState> emit,
-  ) async {
-    if (state is! EventDetailLoaded) return;
-    final current = state as EventDetailLoaded;
-    final topicConfig = TopicConfig.fromTopicType(event.topic?.topicType);
-    emit(current.copyWith(
-      topicConfig: topicConfig,
-      delegate: EventDetailTopicConfigPropagateDelegate(topicConfig),
-    ));
-  }
 }

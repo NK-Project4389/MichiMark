@@ -1,8 +1,15 @@
 # ActionSetting Feature Specification
 
 Platform: Flutter / Dart
-Version: 1.0
+Version: 2.0
 Category: Settings Feature
+
+## 改版履歴
+
+| バージョン | 日付 | 変更概要 |
+|---|---|---|
+| 1.0 | 初版 | ActionSetting Feature 初期設計 |
+| 2.0 | 2026-04-05 | REQ-003・004・005対応。UI非表示化・fromState廃止・needsTransition追加 |
 
 ---
 
@@ -10,14 +17,15 @@ Category: Settings Feature
 
 行動イベント（Action）のマスタデータを一覧表示・追加・編集するFeature。
 
+> **[v2.0 REQ-003]** SettingsPageからActionSetting画面への導線を **一時非表示** にする。コード・Router・BloC・Repositoryは削除しない。将来フェーズで再公開可能なよう実装を維持する。
+
 ---
 
 ## 2. Scope
 
 **含むもの**
-- Action一覧表示
-- Action新規追加
-- Action既存編集（名前・表示設定）
+- Action一覧表示（実装維持・UI導線のみ非表示）
+- Action既存編集（名前・toState・isToggle・needsTransition）
 - バリデーション（名前必須）
 - 保存成功後の一覧へ戻る
 
@@ -25,6 +33,8 @@ Category: Settings Feature
 - Action物理削除（論理削除のみ）
 - Actionの並び順変更
 - Navigation管理（Delegateで通知のみ）
+- SettingsPageからActionSettingへの導線（REQ-003で非表示化）
+- fromState設定UI（REQ-004で廃止）
 
 ---
 
@@ -38,20 +48,25 @@ ActionSettingFeature
 
 ---
 
-## 4. Draft Model
+## 4. Draft Model（v2.0 / REQ-004・005対応）
 
 ### ActionSettingDetailDraft
 
-| フィールド名 | Dart型 | 説明 |
-|---|---|---|
-| `actionName` | `String` | 行動名（必須・空欄不可） |
-| `isVisible` | `bool` | 表示設定（true=表示） |
+| フィールド名 | Dart型 | 説明 | 変更 |
+|---|---|---|---|
+| `actionName` | `String` | 行動名（必須・空欄不可） | 変更なし |
+| `isVisible` | `bool` | 表示設定（true=表示） | 変更なし |
+| `fromState` | `ActionState?` | 遷移前の状態 | **廃止**（REQ-004） |
+| `toState` | `ActionState?` | 遷移後の状態 | 変更なし（ActionTime_Specより引き継ぎ） |
+| `isToggle` | `bool` | トグル型かどうか | 変更なし |
+| `togglePairId` | `String?` | 対ActionのID | 変更なし |
+| `needsTransition` | `bool` | 状態遷移フラグ（デフォルト: `true`） | **新規追加**（REQ-005） |
 
 ---
 
-## 5. Projection Model
+## 5. Projection Model（v2.0）
 
-### ActionItemProjection
+### ActionItemProjection（変更なし）
 
 | フィールド名 | Dart型 | 説明 |
 |---|---|---|
@@ -59,111 +74,88 @@ ActionSettingFeature
 | `actionName` | `String` | 行動名 |
 | `isVisible` | `bool` | 表示設定 |
 
+### ActionSettingDetailProjection（v2.0 / REQ-004・005対応）
+
+| フィールド名 | Dart型 | 説明 | 変更 |
+|---|---|---|---|
+| `actionName` | `String` | 行動名表示文字列 | 変更なし |
+| `isVisible` | `bool` | 表示フラグ | 変更なし |
+| `fromStateLabel` | `String?` | fromStateの表示文字列 | **廃止**（REQ-004） |
+| `toStateLabel` | `String?` | toStateの表示文字列（未設定時は「変化なし」） | 変更なし |
+| `isToggle` | `bool` | トグル表示用フラグ | 変更なし |
+| `togglePairId` | `String?` | 対ActionのID | 変更なし |
+| `needsTransition` | `bool` | 状態遷移フラグ | **新規追加**（REQ-005） |
+
 ---
 
-## 6. Domain Model
+## 6. Domain Model（v2.0）
 
-`ActionDomain`（`docs/Domain/ActionDomain.md` 参照）
+`ActionDomain`（`docs/Domain/ActionDomain.md` 参照・`ActionTime_Spec.md §2.2` 参照）
 
-| フィールド名 | Dart型 | 備考 |
+| フィールド名 | Dart型 | 備考 | 変更 |
+|---|---|---|---|
+| `id` | `String` | UUID文字列 | 変更なし |
+| `actionName` | `String` | 行動名 | 変更なし |
+| `isVisible` | `bool` | 表示設定 | 変更なし |
+| `isDeleted` | `bool` | 論理削除フラグ | 変更なし |
+| `createdAt` | `DateTime` | 初回登録時に設定 | 変更なし |
+| `updatedAt` | `DateTime` | 保存時に更新 | 変更なし |
+| `fromState` | `ActionState?` | 遷移前状態 | **廃止**（REQ-004） |
+| `toState` | `ActionState?` | 遷移後状態 | 変更なし |
+| `isToggle` | `bool` | トグル型フラグ | 変更なし |
+| `togglePairId` | `String?` | 対ActionのID | 変更なし |
+| `needsTransition` | `bool` | 状態遷移フラグ（デフォルト: `true`） | **新規追加**（REQ-005） |
+
+---
+
+## 7. Events（v2.0）
+
+### ActionSettingBloc（変更なし）
+
+| Event名 | 発火タイミング | 説明 |
 |---|---|---|
-| `id` | `String` | UUID文字列 |
-| `actionName` | `String` | 行動名 |
-| `isVisible` | `bool` | 表示設定 |
-| `isDeleted` | `bool` | 論理削除フラグ |
-| `createdAt` | `DateTime` | 初回登録時に設定 |
-| `updatedAt` | `DateTime` | 保存時に更新 |
+| `ActionSettingStarted` | 画面表示時 | Repository から fetchAll → `items` 更新 |
+| `ActionSettingItemSelected` | 一覧アイテムタップ | `ActionSettingOpenDetailDelegate` を発火 |
+| `ActionSettingAddTapped` | 追加ボタンタップ | `ActionSettingOpenNewDelegate` を発火 |
+
+### ActionSettingDetailBloc（v2.0）
+
+| Event名 | 発火タイミング | 説明 | 変更 |
+|---|---|---|---|
+| `ActionSettingDetailStarted` | 画面表示時 | actionId が null なら空 Draft 生成。非 null なら fetch → Draft 生成 | 変更なし |
+| `ActionSettingDetailNameChanged` | 名前入力変更時 | Draft の actionName を更新 | 変更なし |
+| `ActionSettingDetailIsVisibleChanged` | 表示フラグ変更時 | Draft の isVisible を更新 | 変更なし |
+| `ActionSettingDetailFromStateChanged` | fromState選択時 | Draft の fromState を更新 | **廃止**（REQ-004） |
+| `ActionSettingDetailToStateChanged` | toState選択時 | Draft の toState を更新 | 変更なし |
+| `ActionSettingDetailIsToggleChanged` | トグルスイッチ変更時 | Draft の isToggle を更新 | 変更なし |
+| `ActionSettingDetailNeedsTransitionChanged` | needsTransitionスイッチ変更時 | Draft の needsTransition を更新 | **新規追加**（REQ-005） |
+| `ActionSettingDetailSaveTapped` | 保存ボタンタップ | バリデーション → Delegate発火 | 変更なし |
+| `ActionSettingDetailBackTapped` | 戻るボタンタップ | `ActionSettingDetailDismissDelegate` を発火 | 変更なし |
+| `ActionSettingDetailSavingFinished` | 保存完了通知 | `ActionSettingDetailDidSaveDelegate` を発火 | 変更なし |
+| `ActionSettingDetailSaveFailed` | 保存エラー通知 | `saveErrorMessage` をセット | 変更なし |
 
 ---
 
-## 7. Events
+## 8. State Structure（v2.0）
 
-### ActionSettingBloc
+### ActionSettingState（変更なし）
 
-```dart
-sealed class ActionSettingEvent extends Equatable {}
+| フィールド名 | Dart型 | 説明 |
+|---|---|---|
+| `items` | `List<ActionItemProjection>` | Action一覧表示用データ |
+| `delegate` | `ActionSettingDelegate?` | 遷移意図の通知 |
 
-class ActionSettingStarted extends ActionSettingEvent {}
+### ActionSettingDetailState（v2.0）
 
-class ActionSettingItemSelected extends ActionSettingEvent {
-  final String actionId;
-  const ActionSettingItemSelected(this.actionId);
-}
-
-class ActionSettingAddTapped extends ActionSettingEvent {}
-```
-
-### ActionSettingDetailBloc
-
-```dart
-sealed class ActionSettingDetailEvent extends Equatable {}
-
-class ActionSettingDetailStarted extends ActionSettingDetailEvent {
-  final String? actionId; // null = 新規
-  const ActionSettingDetailStarted({this.actionId});
-}
-
-class ActionSettingDetailNameChanged extends ActionSettingDetailEvent {
-  final String value;
-  const ActionSettingDetailNameChanged(this.value);
-}
-
-class ActionSettingDetailIsVisibleChanged extends ActionSettingDetailEvent {
-  final bool value;
-  const ActionSettingDetailIsVisibleChanged(this.value);
-}
-
-class ActionSettingDetailSaveTapped extends ActionSettingDetailEvent {}
-
-class ActionSettingDetailBackTapped extends ActionSettingDetailEvent {}
-
-class ActionSettingDetailSavingFinished extends ActionSettingDetailEvent {}
-
-class ActionSettingDetailSaveFailed extends ActionSettingDetailEvent {
-  final String message;
-  const ActionSettingDetailSaveFailed(this.message);
-}
-```
-
----
-
-## 8. State Structure
-
-### ActionSettingState
-
-```dart
-class ActionSettingState extends Equatable {
-  final List<ActionItemProjection> items;
-  final ActionSettingDelegate? delegate;
-
-  const ActionSettingState({
-    required this.items,
-    this.delegate,
-  });
-}
-```
-
-### ActionSettingDetailState
-
-```dart
-class ActionSettingDetailState extends Equatable {
-  final String actionId;
-  final ActionSettingDetailDraft draft;
-  final String? validationError;    // バリデーションエラーメッセージ
-  final String? saveErrorMessage;   // 保存エラーメッセージ
-  final bool isSaving;
-  final ActionSettingDetailDelegate? delegate;
-
-  const ActionSettingDetailState({
-    required this.actionId,
-    required this.draft,
-    this.validationError,
-    this.saveErrorMessage,
-    this.isSaving = false,
-    this.delegate,
-  });
-}
-```
+| フィールド名 | Dart型 | 説明 | 変更 |
+|---|---|---|---|
+| `actionId` | `String` | 対象ActionのID | 変更なし |
+| `draft` | `ActionSettingDetailDraft` | 編集中データ（fromState削除・needsTransition追加） | 構造変更（REQ-004・005） |
+| `projection` | `ActionSettingDetailProjection` | 表示用データ（fromStateLabel削除・needsTransition追加） | 構造変更（REQ-004・005） |
+| `validationError` | `String?` | バリデーションエラーメッセージ | 変更なし |
+| `saveErrorMessage` | `String?` | 保存エラーメッセージ | 変更なし |
+| `isSaving` | `bool` | ローディング中フラグ | 変更なし |
+| `delegate` | `ActionSettingDetailDelegate?` | 遷移意図の通知 | 変更なし |
 
 ---
 
@@ -203,20 +195,44 @@ class ActionSettingDetailDismissDelegate extends ActionSettingDetailDelegate {}
 
 ---
 
-## 10. Bloc Responsibility
+## 10. Bloc Responsibility（v2.0）
 
-### ActionSettingBloc
+### ActionSettingBloc（変更なし）
 - `ActionSettingStarted`: Repository から fetchAll → `items` 更新
 - `ActionSettingItemSelected`: `ActionSettingOpenDetailDelegate` を発火
 - `ActionSettingAddTapped`: `ActionSettingOpenNewDelegate` を発火
 
-### ActionSettingDetailBloc
+### ActionSettingDetailBloc（v2.0）
 - `ActionSettingDetailStarted`: actionId が null なら空 Draft 生成。非 null なら Repository から fetch → Draft 生成
 - `*Changed` イベント: Draft 更新・バリデーション実行
+- `ActionSettingDetailFromStateChanged`: **廃止**（REQ-004）
+- `ActionSettingDetailNeedsTransitionChanged`: Draft の needsTransition を更新（REQ-005）
 - `ActionSettingDetailSaveTapped`: バリデーション → 通過なら `ActionSettingDetailSaveRequestedDelegate` を発火・`isSaving = true`
 - `ActionSettingDetailSavingFinished`: `isSaving = false` → `ActionSettingDetailDidSaveDelegate` を発火
 - `ActionSettingDetailSaveFailed`: `isSaving = false` → `saveErrorMessage` をセット
 - `ActionSettingDetailBackTapped`: `ActionSettingDetailDismissDelegate` を発火
+
+### REQ-003 実装指示
+
+- SettingsPageの「行動」行は非表示にする（**UIレベルの非表示のみ**）
+- ActionSettingBloc・ActionSettingDetailBloc・Router定義・Repository は削除しない
+- ActionSeedData（出発・到着）のアプリ起動時自動投入は維持する（ActionSetting経由での編集不可）
+
+### 影響するクラス・ファイル（REQ-003）
+
+| ファイル | 変更内容 |
+|---|---|
+| `features/settings/view/settings_page.dart` | 「行動」`_SettingsRow` の表示を `false` にする（コメントアウトまたは条件分岐） |
+
+### 影響するクラス・ファイル（REQ-004・005）
+
+| ファイル | 変更内容 |
+|---|---|
+| `features/settings/action_setting/draft/action_setting_detail_draft.dart` | `fromState` 削除・`needsTransition` 追加 |
+| `features/settings/action_setting/projection/action_setting_detail_projection.dart` | `fromStateLabel` 削除・`needsTransition` 追加 |
+| `features/settings/action_setting/bloc/action_setting_detail_event.dart` | `ActionSettingDetailFromStateChanged` 削除・`ActionSettingDetailNeedsTransitionChanged` 追加 |
+| `features/settings/action_setting/bloc/action_setting_detail_bloc.dart` | fromState処理削除・needsTransition処理追加 |
+| `features/settings/action_setting/view/action_setting_detail_page.dart` | fromState設定UI削除・needsTransition設定UI追加 |
 
 ---
 

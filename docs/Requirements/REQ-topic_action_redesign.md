@@ -142,13 +142,35 @@ Settings画面のAppBar（またはボトム）に「イベント一覧へ戻る
 EventList（イベント一覧）の各カードを、設定されているTopicのカラーで色分けして表示する。
 
 **変更内容**
-- `TopicDomain` に `color` フィールドを追加する（カラーコード文字列 例: `#4A90D9`）
-- `TopicConfig` に `themeColor` フィールドを追加する（Color値）
-- EventListのイベントカードUIにTopicカラーをアクセントカラーとして適用する（左ボーダー・ヘッダー帯・背景tintなど。具体的なデザインはdesignerが定義）
+- `TopicThemeColor` enum を定義する（10色のパレット。後述）
+- `TopicDomain` の `color` フィールドに `TopicThemeColor` の name 文字列を保存する
+- `TopicConfig` の `themeColor` フィールドに `TopicThemeColor` の Color値を持たせる
+- EventListのイベントカードに左ボーダー（幅4dp）としてTopicカラーを適用する
+- 背景へのTint適用は任意（`tintColor.withOpacity(0.3)` 程度）
 - Topic未設定のイベントはデフォルトカラー（グレー系）で表示する
 
-**注意**
-具体的なカラー値・デザイン適用方法は `designer` エージェントがデザイン提案レポートで定義し、product-managerのレビューを経て確定させること。
+**確定デザイン（2026-04-05 承認）**
+
+`TopicThemeColor` enum 定義（10色）:
+
+| No | 色名 | HEX | Flutter Color |
+|---|---|---|---|
+| 1 | coralRed | #D94F4F | Color(0xFFD94F4F) |
+| 2 | amberOrange | #E07B39 | Color(0xFFE07B39) |
+| 3 | goldenYellow | #C4A43A | Color(0xFFC4A43A) |
+| 4 | freshGreen | #4DB36B | Color(0xFF4DB36B) |
+| 5 | emeraldGreen | #2E9E6B | Color(0xFF2E9E6B) |
+| 6 | tealGreen | #1E8A8A | Color(0xFF1E8A8A) |
+| 7 | brandTeal | #2B7A9B | Color(0xFF2B7A9B) |
+| 8 | indigoBlue | #3D65C4 | Color(0xFF3D65C4) |
+| 9 | violetPurple | #7B5CC4 | Color(0xFF7B5CC4) |
+| 10 | rosePink | #C4497A | Color(0xFFC4497A) |
+
+**現トピックへのデフォルト割り当て:**
+- movingCost → `emeraldGreen`（#2E9E6B）
+- travelExpense → `amberOrange`（#E07B39）
+
+**参照:** `docs/Design/2026-04-05_topic_color_proposal.html` / `docs/Design/draft/2026-04-05_topic_color_draft.md`
 
 ---
 
@@ -159,12 +181,11 @@ EventDetail画面の上部（AppBarまたはヘッダー部）にトピック名
 
 **変更内容**
 - EventDetailのヘッダーエリアにトピック名ラベルを追加する（例: 「移動コスト可視化」）
-- ヘッダーまたはAppBarのアクセントカラーをTopicのテーマカラーで表示する
-- Topic未設定の場合はラベル非表示・デフォルトカラーにフォールバックする
+- ヘッダーまたはAppBarのアクセントカラーをTopicのテーマカラーで表示する（Dark→Primaryのグラデーション）
+- テキスト・アイコンカラーは白（Colors.white）
+- グラデーション方向: begin=Alignment.topLeft, end=Alignment.bottomRight
+- Topic未設定の場合はラベル非表示・デフォルトカラー（グレー）にフォールバックする
 - TopicカラーはTopicConfigから取得する（REQ-007で追加する `themeColor` フィールドを利用）
-
-**注意**
-具体的なレイアウト・カラー適用箇所は `designer` エージェントが定義すること。
 
 ---
 

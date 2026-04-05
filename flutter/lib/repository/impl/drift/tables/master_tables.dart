@@ -21,6 +21,9 @@ class Actions extends Table {
   /// 対になるActionのid
   TextColumn get togglePairId => text().nullable()();
 
+  /// 状態遷移フラグ（REQ-005）。1=遷移あり、0=ログ記録のみ
+  BoolColumn get needsTransition => boolean().withDefault(const Constant(true))();
+
   @override
   Set<Column> get primaryKey => {id};
 }

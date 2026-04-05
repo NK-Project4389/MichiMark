@@ -14,9 +14,9 @@ class ActionSettingDetailBloc
     on<ActionSettingDetailStarted>(_onStarted);
     on<ActionSettingDetailNameChanged>(_onNameChanged);
     on<ActionSettingDetailIsVisibleChanged>(_onIsVisibleChanged);
-    on<ActionSettingDetailFromStateChanged>(_onFromStateChanged);
     on<ActionSettingDetailToStateChanged>(_onToStateChanged);
     on<ActionSettingDetailIsToggleChanged>(_onIsToggleChanged);
+    on<ActionSettingDetailNeedsTransitionChanged>(_onNeedsTransitionChanged);
     on<ActionSettingDetailSaveTapped>(_onSaveTapped);
     on<ActionSettingDetailBackTapped>(_onBackTapped);
   }
@@ -50,10 +50,10 @@ class ActionSettingDetailBloc
         draft: ActionSettingDetailDraft(
           actionName: domain.actionName,
           isVisible: domain.isVisible,
-          fromState: domain.fromState,
           toState: domain.toState,
           isToggle: domain.isToggle,
           togglePairId: domain.togglePairId,
+          needsTransition: domain.needsTransition,
         ),
       ));
     } on Exception catch (e) {
@@ -90,22 +90,6 @@ class ActionSettingDetailBloc
     }
   }
 
-  Future<void> _onFromStateChanged(
-    ActionSettingDetailFromStateChanged event,
-    Emitter<ActionSettingDetailState> emit,
-  ) async {
-    if (state is ActionSettingDetailLoaded) {
-      final current = state as ActionSettingDetailLoaded;
-      emit(current.copyWith(
-        draft: current.draft.copyWith(
-          fromState: event.value,
-          clearFromState: event.value == null,
-        ),
-        clearSaveError: true,
-      ));
-    }
-  }
-
   Future<void> _onToStateChanged(
     ActionSettingDetailToStateChanged event,
     Emitter<ActionSettingDetailState> emit,
@@ -130,6 +114,19 @@ class ActionSettingDetailBloc
       final current = state as ActionSettingDetailLoaded;
       emit(current.copyWith(
         draft: current.draft.copyWith(isToggle: event.value),
+        clearSaveError: true,
+      ));
+    }
+  }
+
+  Future<void> _onNeedsTransitionChanged(
+    ActionSettingDetailNeedsTransitionChanged event,
+    Emitter<ActionSettingDetailState> emit,
+  ) async {
+    if (state is ActionSettingDetailLoaded) {
+      final current = state as ActionSettingDetailLoaded;
+      emit(current.copyWith(
+        draft: current.draft.copyWith(needsTransition: event.value),
         clearSaveError: true,
       ));
     }
@@ -163,10 +160,10 @@ class ActionSettingDetailBloc
         isDeleted: false,
         createdAt: existing?.createdAt ?? now,
         updatedAt: now,
-        fromState: current.draft.fromState,
         toState: current.draft.toState,
         isToggle: current.draft.isToggle,
         togglePairId: current.draft.togglePairId,
+        needsTransition: current.draft.needsTransition,
       );
 
       await _actionRepository.save(domain);

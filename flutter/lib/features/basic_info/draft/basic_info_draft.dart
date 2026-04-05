@@ -28,11 +28,8 @@ class BasicInfoDraft extends Equatable {
   /// ガソリン単価の入力文字列（例: "170"。未入力時は空文字）
   final String pricePerGasInput;
 
-  /// 選択中のTopic（null = 未設定）
+  /// 選択中のTopic（null = 未設定）。読み取り専用表示用（REQ-001）
   final TopicDomain? selectedTopic;
-
-  /// 選択可能なTopic一覧（EventDetailBlocから渡される）
-  final List<TopicDomain> availableTopics;
 
   const BasicInfoDraft({
     this.eventName = '',
@@ -43,7 +40,6 @@ class BasicInfoDraft extends Equatable {
     this.kmPerGasInput = '',
     this.pricePerGasInput = '',
     this.selectedTopic,
-    this.availableTopics = const [],
   });
 
   BasicInfoDraft copyWith({
@@ -55,7 +51,6 @@ class BasicInfoDraft extends Equatable {
     String? kmPerGasInput,
     String? pricePerGasInput,
     TopicDomain? selectedTopic,
-    List<TopicDomain>? availableTopics,
     bool clearSelectedTopic = false,
   }) {
     return BasicInfoDraft(
@@ -67,7 +62,6 @@ class BasicInfoDraft extends Equatable {
       kmPerGasInput: kmPerGasInput ?? this.kmPerGasInput,
       pricePerGasInput: pricePerGasInput ?? this.pricePerGasInput,
       selectedTopic: clearSelectedTopic ? null : (selectedTopic ?? this.selectedTopic),
-      availableTopics: availableTopics ?? this.availableTopics,
     );
   }
 
@@ -81,6 +75,5 @@ class BasicInfoDraft extends Equatable {
         kmPerGasInput,
         pricePerGasInput,
         selectedTopic,
-        availableTopics,
       ];
 }

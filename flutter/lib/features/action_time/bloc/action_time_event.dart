@@ -1,16 +1,25 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/topic/topic_config.dart';
+import '../../../domain/transaction/mark_link/mark_or_link.dart';
 
 sealed class ActionTimeEvent extends Equatable {
   const ActionTimeEvent();
 }
 
-/// 画面表示時: 指定EventのActionTimeLogをRepositoryから読み込む
+/// 画面表示時: 指定EventのActionTimeLogをRepositoryから読み込む（REQ-002）
 class ActionTimeStarted extends ActionTimeEvent {
   final String eventId;
-  const ActionTimeStarted(this.eventId);
+  final TopicConfig topicConfig;
+  final MarkOrLink markOrLink;
+
+  const ActionTimeStarted(
+    this.eventId, {
+    required this.topicConfig,
+    this.markOrLink = MarkOrLink.mark,
+  });
 
   @override
-  List<Object?> get props => [eventId];
+  List<Object?> get props => [eventId, topicConfig, markOrLink];
 }
 
 /// ActionボタンタップTime: 選択したActionのActionTimeLogを現在時刻で記録する

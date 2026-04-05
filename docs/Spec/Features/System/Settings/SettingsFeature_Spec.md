@@ -6,16 +6,25 @@ SettingsFeature (SettingsBloc)
 Category
 System Feature
 
+Version: 2.0
+
+## 改版履歴
+
+| バージョン | 日付 | 変更概要 |
+|---|---|---|
+| 1.0 | 初版 | Settings Feature 初期設計 |
+| 2.0 | 2026-04-05 | REQ-003・006対応。ActionSetting行非表示・イベント一覧へ戻るボタン追加 |
+
 Purpose
 
 MichiMarkのマスタデータを管理するFeature。
 
 SettingsFeatureは以下のマスタを管理する。
 
-Trans  
-Tag  
-Member  
-Action  
+Trans
+Tag
+Member
+Action（導線は一時非表示・REQ-003）
 
 ---
 
@@ -35,7 +44,7 @@ Navigation管理
 
 ---
 
-# Settings Structure
+# Settings Structure（v2.0）
 
 SettingsFeatureは複数のマスタFeatureを管理する。
 
@@ -44,7 +53,7 @@ SettingsFeature
  ├ TransSettingFeature（TransSettingBloc）
  ├ TagSettingFeature（TagSettingBloc）
  ├ MemberSettingFeature（MemberSettingBloc）
- └ ActionSettingFeature（ActionSettingBloc）
+ └ ActionSettingFeature（ActionSettingBloc）[UI導線のみ非表示 / REQ-003]
 ```
 
 ---
@@ -148,7 +157,7 @@ Responsibilities
 
 ---
 
-# Bloc Structure
+# Bloc Structure（v2.0）
 
 ```
 SettingsBloc
@@ -156,8 +165,38 @@ SettingsBloc
  ├ TransSettingBloc
  ├ TagSettingBloc
  ├ MemberSettingBloc
- └ ActionSettingBloc
+ └ ActionSettingBloc  ← Bloc・Route維持。SettingsPageからの導線のみ非表示（REQ-003）
 ```
+
+## SettingsBloc 設計（v2.0 / REQ-006対応）
+
+### SettingsBloc 追加Event
+
+| Event名 | 発火タイミング | 説明 |
+|---|---|---|
+| `SettingsNavigateToEventsRequested` | 「イベント一覧へ戻る」ボタンタップ時 | EventList画面（`/events`）への遷移Delegateを発火する |
+
+### SettingsState 追加フィールド
+
+| フィールド名 | Dart型 | 説明 |
+|---|---|---|
+| `delegate` | `SettingsDelegate?` | 遷移意図の通知（REQ-006） |
+
+### Delegate Contract（REQ-006）
+
+| Delegate名 | 遷移先 | 説明 |
+|---|---|---|
+| `SettingsNavigateToEventsDelegate` | `/events` | BlocListenerが `context.go('/events')` を呼び出す |
+
+> **[設計方針]** BLoC内・Widget内で `context.go()` を直接呼び出すことは禁止。SettingsBlocがDelegateをStateに乗せ、SettingsPageのBlocListenerが `context.go('/events')` で遷移する。
+
+### 影響するクラス・ファイル（REQ-006）
+
+| ファイル | 変更内容 |
+|---|---|
+| `features/settings/view/settings_page.dart` | AppBarまたはボトムに「イベント一覧へ戻る」ボタン追加・BlocListenerで `SettingsNavigateToEventsDelegate` を受け取り `context.go('/events')` を呼び出す |
+| SettingsBlocファイル（新規または既存拡張） | `SettingsNavigateToEventsRequested` Event処理・`SettingsNavigateToEventsDelegate` Delegate発火 |
+| SettingsStateファイル（新規または既存拡張） | `delegate: SettingsDelegate?` フィールド追加 |
 
 ---
 
@@ -282,6 +321,8 @@ Domain更新（Bloc経由・DI注入されたRepositoryを使用）
 
 並び順管理
 
+ActionSetting画面の再公開（REQ-003は一時非表示のため）
+
 ---
 
 # Architecture Summary
@@ -292,12 +333,28 @@ SettingsFeatureは
 
 マスタは
 
-Trans  
-Tag  
-Member  
-Action  
+Trans
+Tag
+Member
+Action
 
 の4種類を管理する。
+
+---
+
+# 受け入れ条件（v2.0）
+
+## REQ-003 対応
+
+- [ ] SettingsPageに「行動」の行が表示されないこと
+- [ ] ActionSetting画面へのRouterおよびBlocのコードが削除されていないこと（実装維持）
+- [ ] ActionSeedData（出発・到着）がアプリ起動時に自動投入されること
+
+## REQ-006 対応
+
+- [ ] SettingsPageに「イベント一覧へ戻る」ボタン（またはリンク）が表示されること
+- [ ] ボタンタップでイベント一覧画面（`/events`）に遷移すること
+- [ ] SettingsBloc内・SettingsPage Widget内で `context.go()` を直接呼び出していないこと（Delegate経由）
 
 ---
 

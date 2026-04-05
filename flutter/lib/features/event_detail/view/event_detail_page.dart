@@ -81,10 +81,6 @@ class EventDetailPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('保存しました')),
         );
-      case EventDetailAvailableTopicsDelegate():
-        // BasicInfoBlocはEventDetailScaffoldのMultiBlocProvider内で生成されるため
-        // このスコープからは直接アクセスできない。_EventDetailScaffoldInnerのBlocListenerで処理する。
-        break;
       case EventDetailTopicConfigPropagateDelegate():
         // 子BlocへTopicConfigを伝播する。
         // 子BlocはEventDetailScaffoldのMultiBlocProvider内にある。
@@ -156,22 +152,9 @@ class _EventDetailScaffoldInner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BasicInfoBlocのDelegateを監視し、TopicChanged → EventDetailTopicChanged を送信する
     // EventDetailBlocのDelegateを監視し、子BlocへTopicConfig伝播を行う
     return MultiBlocListener(
       listeners: [
-        BlocListener<BasicInfoBloc, BasicInfoState>(
-          listenWhen: (prev, curr) =>
-              curr is BasicInfoLoaded &&
-              curr.delegate is BasicInfoTopicChangedDelegate,
-          listener: (context, state) {
-            if (state case BasicInfoLoaded(
-              delegate: BasicInfoTopicChangedDelegate(:final topic),
-            )) {
-              context.read<EventDetailBloc>().add(EventDetailTopicChanged(topic));
-            }
-          },
-        ),
         BlocListener<EventDetailBloc, EventDetailState>(
           listenWhen: (prev, curr) =>
               curr is EventDetailLoaded && curr.delegate != null,
@@ -181,11 +164,6 @@ class _EventDetailScaffoldInner extends StatelessWidget {
             if (delegate == null) return;
 
             switch (delegate) {
-              case EventDetailAvailableTopicsDelegate(:final topics):
-                context
-                    .read<BasicInfoBloc>()
-                    .add(BasicInfoAvailableTopicsReceived(topics));
-
               case EventDetailTopicConfigPropagateDelegate(:final topicConfig):
                 context
                     .read<MichiInfoBloc>()
@@ -200,10 +178,6 @@ class _EventDetailScaffoldInner extends StatelessWidget {
                         ),
                       );
                 }
-                // MarkDetailBloc / LinkDetailBloc はルートレベルにあるため
-                // このスコープからは参照不可。EventDetailで管理しているBlocのみ伝播する。
-                // NOTE: MarkDetailBloc / LinkDetailBloc は別ルートで生成されるため、
-                // topicConfig の伝播は現状のアーキテクチャでは未対応（別ルート起動時に初期値を使用）。
 
               default:
                 break;

@@ -19,9 +19,6 @@ class ActionDomain extends Equatable {
   /// 更新日（保存時更新）
   final DateTime updatedAt;
 
-  /// 遷移前の状態。nullは任意状態から遷移可を意味する
-  final ActionState? fromState;
-
   /// 遷移後の状態。nullは状態変化なしのActionを意味する
   final ActionState? toState;
 
@@ -31,6 +28,10 @@ class ActionDomain extends Equatable {
   /// 対になるActionのid（例: 休憩開始 ↔ 休憩終了）
   final String? togglePairId;
 
+  /// 状態遷移フラグ。trueのときtoStateへの状態遷移を発生させる。
+  /// falseのときログ記録のみで状態遷移しない（REQ-005）
+  final bool needsTransition;
+
   const ActionDomain({
     required this.id,
     required this.actionName,
@@ -38,10 +39,10 @@ class ActionDomain extends Equatable {
     this.isDeleted = false,
     required this.createdAt,
     required this.updatedAt,
-    this.fromState,
     this.toState,
     this.isToggle = false,
     this.togglePairId,
+    this.needsTransition = true,
   });
 
   ActionDomain copyWith({
@@ -51,11 +52,10 @@ class ActionDomain extends Equatable {
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
-    ActionState? fromState,
     ActionState? toState,
     bool? isToggle,
     String? togglePairId,
-    bool clearFromState = false,
+    bool? needsTransition,
     bool clearToState = false,
     bool clearTogglePairId = false,
   }) {
@@ -66,10 +66,10 @@ class ActionDomain extends Equatable {
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      fromState: clearFromState ? null : (fromState ?? this.fromState),
       toState: clearToState ? null : (toState ?? this.toState),
       isToggle: isToggle ?? this.isToggle,
       togglePairId: clearTogglePairId ? null : (togglePairId ?? this.togglePairId),
+      needsTransition: needsTransition ?? this.needsTransition,
     );
   }
 
@@ -81,9 +81,9 @@ class ActionDomain extends Equatable {
         isDeleted,
         createdAt,
         updatedAt,
-        fromState,
         toState,
         isToggle,
         togglePairId,
+        needsTransition,
       ];
 }

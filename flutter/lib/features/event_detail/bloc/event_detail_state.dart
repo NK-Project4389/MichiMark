@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/topic/topic_config.dart';
-import '../../../domain/topic/topic_domain.dart';
 import '../../../domain/transaction/event/event_domain.dart';
 import '../draft/event_detail_draft.dart';
 import '../projection/event_detail_projection.dart';
@@ -55,22 +54,13 @@ class EventDetailSavedDelegate extends EventDetailDelegate {
   List<Object?> get props => [];
 }
 
-/// TopicConfig変更を子Blocへ伝播するようPageに通知する
+/// TopicConfig変更を子Blocへ伝播するようPageに通知する（起動時の一方向初期化用）
 class EventDetailTopicConfigPropagateDelegate extends EventDetailDelegate {
   final TopicConfig topicConfig;
   const EventDetailTopicConfigPropagateDelegate(this.topicConfig);
 
   @override
   List<Object?> get props => [topicConfig];
-}
-
-/// 利用可能なTopic一覧をBasicInfoBlocへ渡すようPageに通知する
-class EventDetailAvailableTopicsDelegate extends EventDetailDelegate {
-  final List<TopicDomain> topics;
-  const EventDetailAvailableTopicsDelegate(this.topics);
-
-  @override
-  List<Object?> get props => [topics];
 }
 
 // ---------------------------------------------------------------------------

@@ -106,27 +106,6 @@ class _BasicInfoViewState extends State<BasicInfoView> {
               .read<BasicInfoBloc>()
               .add(BasicInfoPayMemberSelected(selected.firstOrNull));
         }
-
-      case BasicInfoOpenTopicSelectionDelegate():
-        final result = await context.push<SelectionResult>(
-          '/selection',
-          extra: SelectionArgs(
-            type: SelectionType.eventTopic,
-            selectedIds:
-                draft.selectedTopic != null ? {draft.selectedTopic!.id} : {},
-          ),
-        );
-        if (!mounted) return;
-        if (result case TopicSelectionResult(:final selected)) {
-          context
-              .read<BasicInfoBloc>()
-              .add(BasicInfoTopicSelected(selected));
-        }
-
-      case BasicInfoTopicChangedDelegate():
-        // EventDetailBloc への通知はEventDetailPageのBlocListenerが担う。
-        // BasicInfoView 側では何もしない。
-        break;
     }
   }
 }
@@ -144,12 +123,9 @@ class _BasicInfoForm extends StatelessWidget {
       children: [
         _EventNameField(value: draft.eventName),
         const SizedBox(height: 16),
-        _SelectionRow(
+        _ReadOnlyRow(
           label: 'トピック',
-          value: draft.selectedTopic?.topicName ?? '未選択',
-          onEditPressed: () => context
-              .read<BasicInfoBloc>()
-              .add(const BasicInfoEditTopicPressed()),
+          value: draft.selectedTopic?.topicName ?? '未設定',
         ),
         const SizedBox(height: 16),
         _SelectionRow(
@@ -293,6 +269,41 @@ class _NumberInputFieldState extends State<_NumberInputField> {
       ),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       onChanged: widget.onChanged,
+    );
+  }
+}
+
+/// 読み取り専用ラベル行（タップ・編集不可）
+class _ReadOnlyRow extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _ReadOnlyRow({
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 120,
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+      ],
     );
   }
 }

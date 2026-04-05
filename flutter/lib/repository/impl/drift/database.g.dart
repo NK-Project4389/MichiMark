@@ -128,6 +128,21 @@ class $ActionsTable extends Actions with TableInfo<$ActionsTable, Action> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _needsTransitionMeta = const VerificationMeta(
+    'needsTransition',
+  );
+  @override
+  late final GeneratedColumn<bool> needsTransition = GeneratedColumn<bool>(
+    'needs_transition',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("needs_transition" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -140,6 +155,7 @@ class $ActionsTable extends Actions with TableInfo<$ActionsTable, Action> {
     toState,
     isToggle,
     togglePairId,
+    needsTransition,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -221,6 +237,15 @@ class $ActionsTable extends Actions with TableInfo<$ActionsTable, Action> {
         ),
       );
     }
+    if (data.containsKey('needs_transition')) {
+      context.handle(
+        _needsTransitionMeta,
+        needsTransition.isAcceptableOrUnknown(
+          data['needs_transition']!,
+          _needsTransitionMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -270,6 +295,10 @@ class $ActionsTable extends Actions with TableInfo<$ActionsTable, Action> {
         DriftSqlType.string,
         data['${effectivePrefix}toggle_pair_id'],
       ),
+      needsTransition: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}needs_transition'],
+      )!,
     );
   }
 
@@ -298,6 +327,9 @@ class Action extends DataClass implements Insertable<Action> {
 
   /// 対になるActionのid
   final String? togglePairId;
+
+  /// 状態遷移フラグ（REQ-005）。1=遷移あり、0=ログ記録のみ
+  final bool needsTransition;
   const Action({
     required this.id,
     required this.actionName,
@@ -309,6 +341,7 @@ class Action extends DataClass implements Insertable<Action> {
     this.toState,
     required this.isToggle,
     this.togglePairId,
+    required this.needsTransition,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -329,6 +362,7 @@ class Action extends DataClass implements Insertable<Action> {
     if (!nullToAbsent || togglePairId != null) {
       map['toggle_pair_id'] = Variable<String>(togglePairId);
     }
+    map['needs_transition'] = Variable<bool>(needsTransition);
     return map;
   }
 
@@ -350,6 +384,7 @@ class Action extends DataClass implements Insertable<Action> {
       togglePairId: togglePairId == null && nullToAbsent
           ? const Value.absent()
           : Value(togglePairId),
+      needsTransition: Value(needsTransition),
     );
   }
 
@@ -369,6 +404,7 @@ class Action extends DataClass implements Insertable<Action> {
       toState: serializer.fromJson<String?>(json['toState']),
       isToggle: serializer.fromJson<bool>(json['isToggle']),
       togglePairId: serializer.fromJson<String?>(json['togglePairId']),
+      needsTransition: serializer.fromJson<bool>(json['needsTransition']),
     );
   }
   @override
@@ -385,6 +421,7 @@ class Action extends DataClass implements Insertable<Action> {
       'toState': serializer.toJson<String?>(toState),
       'isToggle': serializer.toJson<bool>(isToggle),
       'togglePairId': serializer.toJson<String?>(togglePairId),
+      'needsTransition': serializer.toJson<bool>(needsTransition),
     };
   }
 
@@ -399,6 +436,7 @@ class Action extends DataClass implements Insertable<Action> {
     Value<String?> toState = const Value.absent(),
     bool? isToggle,
     Value<String?> togglePairId = const Value.absent(),
+    bool? needsTransition,
   }) => Action(
     id: id ?? this.id,
     actionName: actionName ?? this.actionName,
@@ -410,6 +448,7 @@ class Action extends DataClass implements Insertable<Action> {
     toState: toState.present ? toState.value : this.toState,
     isToggle: isToggle ?? this.isToggle,
     togglePairId: togglePairId.present ? togglePairId.value : this.togglePairId,
+    needsTransition: needsTransition ?? this.needsTransition,
   );
   Action copyWithCompanion(ActionsCompanion data) {
     return Action(
@@ -427,6 +466,9 @@ class Action extends DataClass implements Insertable<Action> {
       togglePairId: data.togglePairId.present
           ? data.togglePairId.value
           : this.togglePairId,
+      needsTransition: data.needsTransition.present
+          ? data.needsTransition.value
+          : this.needsTransition,
     );
   }
 
@@ -442,7 +484,8 @@ class Action extends DataClass implements Insertable<Action> {
           ..write('fromState: $fromState, ')
           ..write('toState: $toState, ')
           ..write('isToggle: $isToggle, ')
-          ..write('togglePairId: $togglePairId')
+          ..write('togglePairId: $togglePairId, ')
+          ..write('needsTransition: $needsTransition')
           ..write(')'))
         .toString();
   }
@@ -459,6 +502,7 @@ class Action extends DataClass implements Insertable<Action> {
     toState,
     isToggle,
     togglePairId,
+    needsTransition,
   );
   @override
   bool operator ==(Object other) =>
@@ -473,7 +517,8 @@ class Action extends DataClass implements Insertable<Action> {
           other.fromState == this.fromState &&
           other.toState == this.toState &&
           other.isToggle == this.isToggle &&
-          other.togglePairId == this.togglePairId);
+          other.togglePairId == this.togglePairId &&
+          other.needsTransition == this.needsTransition);
 }
 
 class ActionsCompanion extends UpdateCompanion<Action> {
@@ -487,6 +532,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
   final Value<String?> toState;
   final Value<bool> isToggle;
   final Value<String?> togglePairId;
+  final Value<bool> needsTransition;
   final Value<int> rowid;
   const ActionsCompanion({
     this.id = const Value.absent(),
@@ -499,6 +545,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     this.toState = const Value.absent(),
     this.isToggle = const Value.absent(),
     this.togglePairId = const Value.absent(),
+    this.needsTransition = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ActionsCompanion.insert({
@@ -512,6 +559,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     this.toState = const Value.absent(),
     this.isToggle = const Value.absent(),
     this.togglePairId = const Value.absent(),
+    this.needsTransition = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        actionName = Value(actionName),
@@ -528,6 +576,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     Expression<String>? toState,
     Expression<bool>? isToggle,
     Expression<String>? togglePairId,
+    Expression<bool>? needsTransition,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -541,6 +590,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
       if (toState != null) 'to_state': toState,
       if (isToggle != null) 'is_toggle': isToggle,
       if (togglePairId != null) 'toggle_pair_id': togglePairId,
+      if (needsTransition != null) 'needs_transition': needsTransition,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -556,6 +606,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     Value<String?>? toState,
     Value<bool>? isToggle,
     Value<String?>? togglePairId,
+    Value<bool>? needsTransition,
     Value<int>? rowid,
   }) {
     return ActionsCompanion(
@@ -569,6 +620,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
       toState: toState ?? this.toState,
       isToggle: isToggle ?? this.isToggle,
       togglePairId: togglePairId ?? this.togglePairId,
+      needsTransition: needsTransition ?? this.needsTransition,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -606,6 +658,9 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     if (togglePairId.present) {
       map['toggle_pair_id'] = Variable<String>(togglePairId.value);
     }
+    if (needsTransition.present) {
+      map['needs_transition'] = Variable<bool>(needsTransition.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -625,6 +680,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
           ..write('toState: $toState, ')
           ..write('isToggle: $isToggle, ')
           ..write('togglePairId: $togglePairId, ')
+          ..write('needsTransition: $needsTransition, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5825,6 +5881,7 @@ typedef $$ActionsTableCreateCompanionBuilder =
       Value<String?> toState,
       Value<bool> isToggle,
       Value<String?> togglePairId,
+      Value<bool> needsTransition,
       Value<int> rowid,
     });
 typedef $$ActionsTableUpdateCompanionBuilder =
@@ -5839,6 +5896,7 @@ typedef $$ActionsTableUpdateCompanionBuilder =
       Value<String?> toState,
       Value<bool> isToggle,
       Value<String?> togglePairId,
+      Value<bool> needsTransition,
       Value<int> rowid,
     });
 
@@ -5941,6 +5999,11 @@ class $$ActionsTableFilterComposer
 
   ColumnFilters<String> get togglePairId => $composableBuilder(
     column: $table.togglePairId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get needsTransition => $composableBuilder(
+    column: $table.needsTransition,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6053,6 +6116,11 @@ class $$ActionsTableOrderingComposer
     column: $table.togglePairId,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get needsTransition => $composableBuilder(
+    column: $table.needsTransition,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ActionsTableAnnotationComposer
@@ -6095,6 +6163,11 @@ class $$ActionsTableAnnotationComposer
 
   GeneratedColumn<String> get togglePairId => $composableBuilder(
     column: $table.togglePairId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get needsTransition => $composableBuilder(
+    column: $table.needsTransition,
     builder: (column) => column,
   );
 
@@ -6190,6 +6263,7 @@ class $$ActionsTableTableManager
                 Value<String?> toState = const Value.absent(),
                 Value<bool> isToggle = const Value.absent(),
                 Value<String?> togglePairId = const Value.absent(),
+                Value<bool> needsTransition = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ActionsCompanion(
                 id: id,
@@ -6202,6 +6276,7 @@ class $$ActionsTableTableManager
                 toState: toState,
                 isToggle: isToggle,
                 togglePairId: togglePairId,
+                needsTransition: needsTransition,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -6216,6 +6291,7 @@ class $$ActionsTableTableManager
                 Value<String?> toState = const Value.absent(),
                 Value<bool> isToggle = const Value.absent(),
                 Value<String?> togglePairId = const Value.absent(),
+                Value<bool> needsTransition = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ActionsCompanion.insert(
                 id: id,
@@ -6228,6 +6304,7 @@ class $$ActionsTableTableManager
                 toState: toState,
                 isToggle: isToggle,
                 togglePairId: togglePairId,
+                needsTransition: needsTransition,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

@@ -2,6 +2,8 @@ import 'package:intl/intl.dart';
 import '../domain/action_time/action_state.dart';
 import '../domain/action_time/action_time_log.dart';
 import '../domain/master/action/action_domain.dart';
+import '../domain/topic/topic_config.dart';
+import '../domain/transaction/mark_link/mark_or_link.dart';
 import '../features/action_time/draft/action_time_draft.dart';
 import '../features/action_time/projection/action_time_projection.dart';
 
@@ -13,56 +15,75 @@ class ActionTimeAdapter {
   static final _timeFormat = DateFormat('HH:mm');
 
   /// ログリストから現在のActionStateを導出する。
-  /// ログが空の場合は waiting をデフォルト値とする。
+  /// REQ-005: needsTransition == true のログのみ toState 計算の対象とする。
+  /// ログが空（またはフィルタ後が空）の場合は waiting をデフォルト値とする。
   static ActionState deriveCurrentState(
     List<ActionTimeLog> logs,
     Map<String, ActionDomain> actionMap,
   ) {
     if (logs.isEmpty) return ActionState.waiting;
-    final lastLog = logs.last;
+    // needsTransition == true のログのみで状態遷移を計算する（REQ-005）
+    final transitionLogs = logs.where((log) {
+      final action = actionMap[log.actionId];
+      return action?.needsTransition ?? true;
+    }).toList();
+    if (transitionLogs.isEmpty) return ActionState.waiting;
+    final lastLog = transitionLogs.last;
     final action = actionMap[lastLog.actionId];
     return action?.toState ?? ActionState.waiting;
   }
 
-  /// 現在状態から発火できるAction候補を導出する。
+  /// TopicConfigのmarkActionsまたはlinkActionsからAction候補を導出する（REQ-002）。
+  /// fromState照合ロジックは廃止（REQ-004）。
   static List<ActionDomain> deriveAvailableActions(
-    ActionState currentState,
-    List<ActionDomain> allActions,
+    MarkOrLink markOrLink,
+    TopicConfig topicConfig,
+    Map<String, ActionDomain> actionMap,
   ) {
-    return allActions.where((action) {
-      if (action.isDeleted || !action.isVisible) return false;
-      final from = action.fromState;
-      // fromState == null は任意状態から遷移可
-      if (from == null) return true;
-      return from == currentState;
-    }).toList();
+    final actionIds = markOrLink == MarkOrLink.mark
+        ? topicConfig.markActions
+        : topicConfig.linkActions;
+
+    return actionIds
+        .map((id) => actionMap[id])
+        .where((action) {
+          if (action == null) return false;
+          if (action.isDeleted || !action.isVisible) return false;
+          return true;
+        })
+        .cast<ActionDomain>()
+        .toList();
   }
 
-  /// Draft・Projectionを生成する。
+  /// Draft・Projectionを生成する（REQ-002・004・005対応）。
   static (ActionTimeDraft, ActionTimeProjection) buildDraftAndProjection({
     required String eventId,
     required List<ActionTimeLog> logs,
     required List<ActionDomain> allActions,
+    required TopicConfig topicConfig,
+    required MarkOrLink markOrLink,
   }) {
     final actionMap = {for (final a in allActions) a.id: a};
     final sortedLogs = List.of(logs)
       ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
     final currentState = deriveCurrentState(sortedLogs, actionMap);
-    final availableActions = deriveAvailableActions(currentState, allActions);
+    final availableActions = deriveAvailableActions(markOrLink, topicConfig, actionMap);
 
     final draft = ActionTimeDraft(
       eventId: eventId,
       currentState: currentState,
       availableActions: availableActions,
       logs: sortedLogs,
+      topicConfig: topicConfig,
+      markOrLink: markOrLink,
     );
 
     final logItems = sortedLogs.map((log) {
       final action = actionMap[log.actionId];
-      final fromLabel = action?.fromState?.label ?? '任意';
       final toLabel = action?.toState?.label ?? '変化なし';
-      final transitionLabel = '${fromLabel} → ${toLabel}';
+      // REQ-004: fromState は廃止。状態遷移ラベルは toState のみで表示
+      final transitionLabel = '→ $toLabel';
       return ActionTimeLogProjection(
         id: log.id,
         actionName: action?.actionName ?? '（不明）',

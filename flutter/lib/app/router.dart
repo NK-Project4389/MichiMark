@@ -23,6 +23,7 @@ import '../features/payment_detail/bloc/payment_detail_event.dart';
 import '../features/payment_detail/payment_detail_args.dart';
 import '../features/payment_detail/view/payment_detail_page.dart';
 import '../features/selection/view/selection_page.dart';
+import '../features/settings/bloc/settings_bloc.dart';
 import '../features/settings/view/settings_page.dart';
 import '../features/settings/trans_setting/bloc/trans_setting_bloc.dart';
 import '../features/settings/trans_setting/bloc/trans_setting_event.dart';
@@ -133,7 +134,6 @@ final router = GoRouter(
         return BlocProvider(
           create: (_) => EventDetailBloc(
             eventRepository: getIt<EventRepository>(),
-            topicRepository: getIt<TopicRepository>(),
           )..add(EventDetailStarted(eventId)),
           child: const EventDetailPage(),
         );
@@ -175,7 +175,10 @@ final router = GoRouter(
     // Settings
     GoRoute(
       path: '/settings',
-      builder: (context, state) => const SettingsPage(),
+      builder: (context, state) => BlocProvider(
+        create: (_) => SettingsBloc(),
+        child: const SettingsPage(),
+      ),
     ),
     // Trans Setting
     GoRoute(

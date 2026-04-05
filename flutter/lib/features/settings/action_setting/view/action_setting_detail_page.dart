@@ -122,15 +122,6 @@ class _ActionSettingDetailForm extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         _ActionStateDropdown(
-          label: '遷移前の状態',
-          hint: '任意状態（未設定）',
-          value: draft.fromState,
-          onChanged: (v) => context
-              .read<ActionSettingDetailBloc>()
-              .add(ActionSettingDetailFromStateChanged(v)),
-        ),
-        const SizedBox(height: 8),
-        _ActionStateDropdown(
           label: '遷移後の状態',
           hint: '状態変化なし（未設定）',
           value: draft.toState,
@@ -147,6 +138,15 @@ class _ActionSettingDetailForm extends StatelessWidget {
           onChanged: (v) => context
               .read<ActionSettingDetailBloc>()
               .add(ActionSettingDetailIsToggleChanged(v)),
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: const Text('状態遷移あり'),
+          subtitle: const Text('オフにするとログ記録のみで状態遷移しない'),
+          value: draft.needsTransition,
+          onChanged: (v) => context
+              .read<ActionSettingDetailBloc>()
+              .add(ActionSettingDetailNeedsTransitionChanged(v)),
         ),
         if (state.saveErrorMessage != null) ...[
           const SizedBox(height: 16),

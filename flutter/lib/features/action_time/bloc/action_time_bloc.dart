@@ -45,6 +45,8 @@ class ActionTimeBloc extends Bloc<ActionTimeEvent, ActionTimeState> {
         eventId: event.eventId,
         logs: logs,
         allActions: allActions,
+        topicConfig: event.topicConfig,
+        markOrLink: event.markOrLink,
       );
       emit(state.copyWith(
         draft: draft,
@@ -90,14 +92,13 @@ class ActionTimeBloc extends Bloc<ActionTimeEvent, ActionTimeState> {
     final allActions = await _actionRepository.fetchAll();
     final isBreakActive = state.projection.isBreakActive;
 
-    // 休憩中 → 休憩終了Action（break_ → working）、そうでない場合 → 休憩開始Action（working → break_）を探す
-    // isBreakActive == true なら break_ → working (休憩終了) を探す
-    // isBreakActive == false なら working → break_ (休憩開始) を探す
+    // 休憩中 → 休憩終了Action（toState: working）、そうでない場合 → 休憩開始Action（toState: break_）を探す
+    // REQ-004: fromState照合は廃止。toStateのみで判定する
     final action = allActions.where((a) {
       if (isBreakActive) {
-        return a.fromState == ActionState.break_ && a.toState == ActionState.working;
+        return a.toState == ActionState.working;
       } else {
-        return a.fromState == ActionState.working && a.toState == ActionState.break_;
+        return a.toState == ActionState.break_;
       }
     }).firstOrNull;
 
@@ -143,6 +144,8 @@ class ActionTimeBloc extends Bloc<ActionTimeEvent, ActionTimeState> {
       eventId: eventId,
       logs: logs,
       allActions: allActions,
+      topicConfig: state.draft.topicConfig,
+      markOrLink: state.draft.markOrLink,
     );
     emit(state.copyWith(draft: draft, projection: projection));
   }

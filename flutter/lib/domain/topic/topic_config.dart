@@ -30,6 +30,12 @@ class TopicConfig extends Equatable {
   /// EventDetailのPaymentInfoタブを表示するか
   final bool showPaymentInfoTab;
 
+  /// 地点（Mark）タップ時に提示するActionIDのリスト（REQ-002）
+  final List<String> markActions;
+
+  /// 区間（Link）タップ時に提示するActionIDのリスト（REQ-002）
+  final List<String> linkActions;
+
   const TopicConfig({
     required this.showMeterValue,
     required this.showFuelDetail,
@@ -39,6 +45,8 @@ class TopicConfig extends Equatable {
     required this.showPricePerGas,
     required this.showPayMember,
     required this.showPaymentInfoTab,
+    this.markActions = const [],
+    this.linkActions = const [],
   });
 
   /// TopicTypeからTopicConfigを生成するファクトリ。
@@ -55,6 +63,9 @@ class TopicConfig extends Equatable {
           showPricePerGas: true,
           showPayMember: true,
           showPaymentInfoTab: true,
+          // SeedDataで定義される固定UUIDを参照（出発・到着）
+          markActions: ['action-seed-depart', 'action-seed-arrive'],
+          linkActions: [],
         ),
       TopicType.travelExpense => const TopicConfig(
           showMeterValue: false,
@@ -65,6 +76,8 @@ class TopicConfig extends Equatable {
           showPricePerGas: false,
           showPayMember: false,
           showPaymentInfoTab: true,
+          markActions: [],
+          linkActions: [],
         ),
     };
   }
@@ -79,5 +92,7 @@ class TopicConfig extends Equatable {
         showPricePerGas,
         showPayMember,
         showPaymentInfoTab,
+        markActions,
+        linkActions,
       ];
 }

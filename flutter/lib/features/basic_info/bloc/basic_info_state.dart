@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/topic/topic_config.dart';
-import '../../../domain/topic/topic_domain.dart';
 import '../draft/basic_info_draft.dart';
 
 /// BasicInfoのDelegate（画面遷移・操作意図の通知）
@@ -34,23 +33,6 @@ class BasicInfoOpenPayMemberSelectionDelegate extends BasicInfoDelegate {
 
   @override
   List<Object?> get props => [];
-}
-
-/// Topic選択画面を開く
-class BasicInfoOpenTopicSelectionDelegate extends BasicInfoDelegate {
-  const BasicInfoOpenTopicSelectionDelegate();
-
-  @override
-  List<Object?> get props => [];
-}
-
-/// Topic変更をEventDetailBlocに通知する
-class BasicInfoTopicChangedDelegate extends BasicInfoDelegate {
-  final TopicDomain? topic;
-  const BasicInfoTopicChangedDelegate(this.topic);
-
-  @override
-  List<Object?> get props => [topic];
 }
 
 // ---------------------------------------------------------------------------

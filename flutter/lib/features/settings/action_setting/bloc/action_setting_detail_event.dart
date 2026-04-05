@@ -32,15 +32,6 @@ class ActionSettingDetailIsVisibleChanged extends ActionSettingDetailEvent {
   List<Object?> get props => [value];
 }
 
-/// 遷移前状態が変更されたとき（null = 任意状態から遷移可）
-class ActionSettingDetailFromStateChanged extends ActionSettingDetailEvent {
-  final ActionState? value;
-  const ActionSettingDetailFromStateChanged(this.value);
-
-  @override
-  List<Object?> get props => [value];
-}
-
 /// 遷移後状態が変更されたとき（null = 状態変化なし）
 class ActionSettingDetailToStateChanged extends ActionSettingDetailEvent {
   final ActionState? value;
@@ -54,6 +45,15 @@ class ActionSettingDetailToStateChanged extends ActionSettingDetailEvent {
 class ActionSettingDetailIsToggleChanged extends ActionSettingDetailEvent {
   final bool value;
   const ActionSettingDetailIsToggleChanged(this.value);
+
+  @override
+  List<Object?> get props => [value];
+}
+
+/// needsTransitionフラグが変更されたとき（REQ-005）
+class ActionSettingDetailNeedsTransitionChanged extends ActionSettingDetailEvent {
+  final bool value;
+  const ActionSettingDetailNeedsTransitionChanged(this.value);
 
   @override
   List<Object?> get props => [value];

@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/master/tag/tag_domain.dart';
 import '../../../domain/master/trans/trans_domain.dart';
-import '../../../domain/topic/topic_domain.dart';
 
 sealed class BasicInfoEvent extends Equatable {
   const BasicInfoEvent();
@@ -110,30 +109,4 @@ class BasicInfoPricePerGasChanged extends BasicInfoEvent {
 
   @override
   List<Object?> get props => [input];
-}
-
-/// Topic選択行の編集ボタン押下
-class BasicInfoEditTopicPressed extends BasicInfoEvent {
-  const BasicInfoEditTopicPressed();
-
-  @override
-  List<Object?> get props => [];
-}
-
-/// Topic選択画面から結果返却時
-class BasicInfoTopicSelected extends BasicInfoEvent {
-  final TopicDomain? topic;
-  const BasicInfoTopicSelected(this.topic);
-
-  @override
-  List<Object?> get props => [topic];
-}
-
-/// EventDetailBlocからTopic一覧が渡されたとき
-class BasicInfoAvailableTopicsReceived extends BasicInfoEvent {
-  final List<TopicDomain> topics;
-  const BasicInfoAvailableTopicsReceived(this.topics);
-
-  @override
-  List<Object?> get props => [topics];
 }

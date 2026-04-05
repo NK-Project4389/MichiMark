@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import '../../../domain/topic/topic_domain.dart';
 import '../../basic_info/draft/basic_info_draft.dart';
 import '../draft/event_detail_draft.dart';
 
@@ -66,15 +65,6 @@ class EventDetailAddMarkLinkRequested extends EventDetailEvent {
 
   @override
   List<Object?> get props => [];
-}
-
-/// BasicInfoBlocのTopicChangedDelegateを受け取り、TopicConfigを再生成して子Blocへ伝播
-class EventDetailTopicChanged extends EventDetailEvent {
-  final TopicDomain? topic;
-  const EventDetailTopicChanged(this.topic);
-
-  @override
-  List<Object?> get props => [topic];
 }
 
 /// 保存ボタンが押されたとき（全タブ一括保存）

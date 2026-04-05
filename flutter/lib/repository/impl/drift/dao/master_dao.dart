@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 
+import '../../../../domain/action_time/action_state.dart';
 import '../../../../domain/master/action/action_domain.dart';
 import '../../../../domain/master/member/member_domain.dart';
 import '../../../../domain/master/tag/tag_domain.dart';
@@ -81,6 +82,11 @@ class MasterDao extends DatabaseAccessor<AppDatabase> with _$MasterDaoMixin {
         isDeleted: Value(d.isDeleted),
         createdAt: Value(d.createdAt),
         updatedAt: Value(d.updatedAt),
+        // from_state カラムは REQ-004 により廃止。NULLABLEのままDBカラムは残す
+        toState: Value(d.toState?.name),
+        isToggle: Value(d.isToggle),
+        togglePairId: Value(d.togglePairId),
+        needsTransition: Value(d.needsTransition),
       );
 
   MembersCompanion _toMemberCompanion(MemberDomain d) => MembersCompanion(
@@ -117,14 +123,32 @@ class MasterDao extends DatabaseAccessor<AppDatabase> with _$MasterDaoMixin {
   // Row → Domain 変換
   // ---------------------------------------------------------------------------
 
-  ActionDomain _toActionDomain(Action row) => ActionDomain(
-        id: row.id,
-        actionName: row.actionName,
-        isVisible: row.isVisible,
-        isDeleted: row.isDeleted,
-        createdAt: row.createdAt,
-        updatedAt: row.updatedAt,
-      );
+  ActionDomain _toActionDomain(Action row) {
+    // from_state カラムは REQ-004 により廃止。アプリロジックで使用しない
+    return ActionDomain(
+      id: row.id,
+      actionName: row.actionName,
+      isVisible: row.isVisible,
+      isDeleted: row.isDeleted,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      toState: _parseActionState(row.toState),
+      isToggle: row.isToggle,
+      togglePairId: row.togglePairId,
+      needsTransition: row.needsTransition,
+    );
+  }
+
+  ActionState? _parseActionState(String? value) {
+    if (value == null) return null;
+    return switch (value) {
+      'waiting' => ActionState.waiting,
+      'moving' => ActionState.moving,
+      'working' => ActionState.working,
+      'break_' => ActionState.break_,
+      _ => null,
+    };
+  }
 
   MemberDomain _toMemberDomain(Member row) => MemberDomain(
         id: row.id,
