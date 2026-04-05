@@ -5,6 +5,12 @@
 ---
 
 ## 完了した作業
+- fix: 新規イベント作成時のトピック引き継ぎ不具合修正 (4443720)
+- feat: T-021 イベント新規作成時のトピック選択フロー実装 (bfd7bfe)
+- feat: EventCreateWithTopic実装 - Topic選択BottomSheet・BasicInfoBloc初期化・ルーター対応 (9a62b8d)
+- docs: Phase 5完了 進捗記録・タスクボード更新 (52b9693)
+- feat: REQ-007/008 トピックテーマカラー実装 (34c4212)
+- feat: REQ-001〜006 Topic・Action再定義実装 (d80eed0)
 
 ### REQ-001: BasicInfoでTopicを読み取り専用表示に変更
 
