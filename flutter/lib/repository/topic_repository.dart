@@ -5,8 +5,8 @@ abstract interface class TopicRepository {
   /// is_deleted = false の全Topic取得
   Future<List<TopicDomain>> fetchAll();
 
-  /// 指定typeのTopic取得
-  Future<List<TopicDomain>> fetchByType(TopicType type);
+  /// 指定typeのTopic取得（存在しない場合はnull）
+  Future<TopicDomain?> fetchByType(TopicType type);
 
   /// upsert
   Future<void> save(TopicDomain topic);

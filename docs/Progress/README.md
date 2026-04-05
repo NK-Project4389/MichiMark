@@ -44,3 +44,4 @@
 | [2026-04-05_topic_color_impl.md](./2026-04-05_topic_color_impl.md) | REQ-007/008 トピックテーマカラー実装（EventListカード左ボーダー・EventDetailヘッダーグラデーション） |
 | [2026-04-05_phase5_topic_action_redesign.md](./2026-04-05_phase5_topic_action_redesign.md) | Phase 5完了：Topic・Action再定義・10色パレット・カラー実装・全レビューPASS |
 | [2026-04-05_event_create_topic_impl.md](./2026-04-05_event_create_topic_impl.md) | EventCreateWithTopic実装：Topic選択BottomSheet・BasicInfoBloc初期化・ルーター対応 |
+| [2026-04-05_event_create_with_topic.md](./2026-04-05_event_create_with_topic.md) | イベント新規作成時のトピック選択フロー 完全完了（要件書・Spec・実装・レビュー） |

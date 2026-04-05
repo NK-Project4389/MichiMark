@@ -59,8 +59,7 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
       final initialTopicType = event.initialTopicType;
       TopicDomain? topicDomain;
       if (initialTopicType != null) {
-        final topics = await _topicRepository.fetchByType(initialTopicType);
-        topicDomain = topics.firstOrNull;
+        topicDomain = await _topicRepository.fetchByType(initialTopicType);
       }
       final draft = BasicInfoDraft(
         selectedTopic: topicDomain,

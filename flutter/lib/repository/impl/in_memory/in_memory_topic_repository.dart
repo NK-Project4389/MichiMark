@@ -13,8 +13,8 @@ class InMemoryTopicRepository implements TopicRepository {
       _items.where((t) => !t.isDeleted && t.isVisible).toList();
 
   @override
-  Future<List<TopicDomain>> fetchByType(TopicType type) async =>
-      _items.where((t) => !t.isDeleted && t.topicType == type).toList();
+  Future<TopicDomain?> fetchByType(TopicType type) async =>
+      _items.where((t) => !t.isDeleted && t.topicType == type).firstOrNull;
 
   @override
   Future<void> save(TopicDomain topic) async {
