@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/topic/topic_domain.dart';
 import '../projection/event_list_projection.dart';
 
 /// EventListのDelegate（画面遷移・操作意図の通知）
@@ -15,12 +16,17 @@ class OpenEventDetailDelegate extends EventListDelegate {
   List<Object?> get props => [eventId];
 }
 
-/// イベント追加画面へ遷移する
-class OpenAddEventDelegate extends EventListDelegate {
-  const OpenAddEventDelegate();
+/// Topic選択済みでイベント追加画面へ遷移する
+class OpenAddEventWithTopicDelegate extends EventListDelegate {
+  final TopicType topicType;
+  final String eventId;
+  const OpenAddEventWithTopicDelegate({
+    required this.topicType,
+    required this.eventId,
+  });
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [topicType, eventId];
 }
 
 /// 設定画面へ遷移する
@@ -50,23 +56,29 @@ class EventListLoaded extends EventListState {
   final EventListProjection projection;
   final EventListDelegate? delegate;
 
+  /// BottomSheet表示トリガー。trueになったらPageがBottomSheetを表示する
+  final bool showTopicSelection;
+
   const EventListLoaded({
     required this.projection,
     this.delegate,
+    this.showTopicSelection = false,
   });
 
   EventListLoaded copyWith({
     EventListProjection? projection,
     EventListDelegate? delegate,
+    bool? showTopicSelection,
   }) {
     return EventListLoaded(
       projection: projection ?? this.projection,
       delegate: delegate,
+      showTopicSelection: showTopicSelection ?? false,
     );
   }
 
   @override
-  List<Object?> get props => [projection, delegate];
+  List<Object?> get props => [projection, delegate, showTopicSelection];
 }
 
 /// エラー発生

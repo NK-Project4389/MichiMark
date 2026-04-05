@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/topic/topic_domain.dart';
 
 sealed class EventListEvent extends Equatable {
   const EventListEvent();
@@ -44,4 +45,17 @@ class EventListDeleteRequested extends EventListEvent {
 
   @override
   List<Object?> get props => [eventId];
+}
+
+/// BottomSheetでTopicTypeが選択されたとき
+class EventListTopicSelectedForNewEvent extends EventListEvent {
+  final TopicType topicType;
+  final String eventId;
+  const EventListTopicSelectedForNewEvent({
+    required this.topicType,
+    required this.eventId,
+  });
+
+  @override
+  List<Object?> get props => [topicType, eventId];
 }

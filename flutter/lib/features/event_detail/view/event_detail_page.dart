@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/di.dart';
+import '../../../domain/topic/topic_domain.dart';
 import '../../../domain/topic/topic_theme_color.dart';
 import '../../../repository/event_repository.dart';
+import '../../../repository/topic_repository.dart';
 import '../../basic_info/bloc/basic_info_bloc.dart';
 import '../../basic_info/bloc/basic_info_event.dart';
 import '../../basic_info/bloc/basic_info_state.dart';
@@ -24,7 +26,9 @@ import '../draft/event_detail_draft.dart';
 import '../projection/event_detail_projection.dart';
 
 class EventDetailPage extends StatelessWidget {
-  const EventDetailPage({super.key});
+  final TopicType? initialTopicType;
+
+  const EventDetailPage({super.key, this.initialTopicType});
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +68,7 @@ class EventDetailPage extends StatelessWidget {
               isSaving: isSaving,
               topicThemeColor: topicThemeColor,
               topicDisplayName: topicDisplayName,
+              initialTopicType: initialTopicType,
             ),
         };
       },
@@ -105,6 +110,7 @@ class _EventDetailScaffold extends StatelessWidget {
   final bool isSaving;
   final TopicThemeColor? topicThemeColor;
   final String? topicDisplayName;
+  final TopicType? initialTopicType;
 
   const _EventDetailScaffold({
     required this.projection,
@@ -112,6 +118,7 @@ class _EventDetailScaffold extends StatelessWidget {
     required this.isSaving,
     this.topicThemeColor,
     this.topicDisplayName,
+    this.initialTopicType,
   });
 
   @override
@@ -122,7 +129,8 @@ class _EventDetailScaffold extends StatelessWidget {
         BlocProvider(
           create: (_) => BasicInfoBloc(
             eventRepository: getIt<EventRepository>(),
-          )..add(BasicInfoStarted(eventId)),
+            topicRepository: getIt<TopicRepository>(),
+          )..add(BasicInfoStarted(eventId, initialTopicType: initialTopicType)),
         ),
         BlocProvider(
           create: (_) => MichiInfoBloc(

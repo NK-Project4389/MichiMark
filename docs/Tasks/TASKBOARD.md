@@ -63,7 +63,9 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-020 | EventList Feature 実装（Spec作成 → 実装 → レビュー） | architect / flutter-dev / reviewer | `TODO` | | 現状スタブのみ |
-| T-021 | イベント新規作成フロー実装（EventDetail 新規作成・Topic選択ステップ含む） | architect / flutter-dev / reviewer | `TODO` | | T-020完了後推奨。REQ-topic_action_redesign REQ-001参照 |
+| T-021a | イベント新規作成フロー Spec作成（EventCreateWithTopic_Spec.md） | architect | `DONE` | | REQ-event_create_with_topic 対応 |
+| T-021b | イベント新規作成フロー実装（Topic選択BottomSheet・BasicInfoBloc初期化・ルーター対応） | flutter-dev | `DONE` | | Spec: EventCreateWithTopic_Spec.md |
+| T-021c | イベント新規作成フロー レビュー | reviewer | `TODO` | | T-021b完了後 |
 | T-022 | マスターデータ初期投入（Trans/Member/Tag/Action のデフォルトデータ） | flutter-dev | `TODO` | | |
 | T-023 | app_id / Bundle ID / アイコン等の設定 | orchestrator | `TODO` | | ストア公開準備 |
 | T-030 | MichiInfo レイアウト変更 Spec作成 | architect | `DONE` | | 要件書: docs/Requirements/REQ-michi_info_layout.md |

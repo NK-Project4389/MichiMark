@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'di.dart';
 import '../features/event_detail/bloc/event_detail_bloc.dart';
 import '../features/event_detail/bloc/event_detail_event.dart';
+import '../features/event_detail/event_detail_args.dart';
 import '../features/event_detail/view/event_detail_page.dart';
 import '../features/event_list/bloc/event_list_bloc.dart';
 import '../features/event_list/bloc/event_list_event.dart';
@@ -131,11 +132,12 @@ final router = GoRouter(
       path: '/event/:id',
       builder: (context, state) {
         final eventId = state.pathParameters['id'] ?? '';
+        final args = state.extra as EventDetailArgs?;
         return BlocProvider(
           create: (_) => EventDetailBloc(
             eventRepository: getIt<EventRepository>(),
           )..add(EventDetailStarted(eventId)),
-          child: const EventDetailPage(),
+          child: EventDetailPage(initialTopicType: args?.initialTopicType),
         );
       },
     ),

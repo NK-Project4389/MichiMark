@@ -2,21 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
+import '../../../domain/topic/topic_config.dart';
+import '../../../domain/topic/topic_domain.dart';
 import '../../../domain/topic/topic_theme_color.dart';
+import '../../event_detail/event_detail_args.dart';
 import '../bloc/event_list_bloc.dart';
 import '../bloc/event_list_event.dart';
 import '../bloc/event_list_state.dart';
 import '../projection/event_list_projection.dart';
 
-class EventListPage extends StatelessWidget {
+class EventListPage extends StatefulWidget {
   const EventListPage({super.key});
 
+  @override
+  State<EventListPage> createState() => _EventListPageState();
+}
+
+class _EventListPageState extends State<EventListPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<EventListBloc, EventListState>(
       listener: (context, state) {
-        if (state is EventListLoaded && state.delegate != null) {
-          _handleDelegate(context, state.delegate!);
+        if (state is! EventListLoaded) return;
+
+        if (state.showTopicSelection) {
+          _handleShowTopicSelection();
+        }
+
+        final delegate = state.delegate;
+        if (delegate != null) {
+          _handleDelegate(context, delegate);
         }
       },
       builder: (context, state) {
@@ -51,15 +66,67 @@ class EventListPage extends StatelessWidget {
     );
   }
 
+  void _handleShowTopicSelection() {
+    showModalBottomSheet<TopicType>(
+      context: context,
+      builder: (sheetContext) => _TopicSelectionSheet(),
+    ).then((selectedTopicType) {
+      if (!mounted) return;
+      if (selectedTopicType == null) return;
+      final eventId = const Uuid().v4();
+      context.read<EventListBloc>().add(
+            EventListTopicSelectedForNewEvent(
+              topicType: selectedTopicType,
+              eventId: eventId,
+            ),
+          );
+    });
+  }
+
   void _handleDelegate(BuildContext context, EventListDelegate delegate) {
     switch (delegate) {
       case OpenEventDetailDelegate(:final eventId):
         context.push('/event/$eventId');
-      case OpenAddEventDelegate():
-        context.push('/event/${const Uuid().v4()}');
+      case OpenAddEventWithTopicDelegate(:final topicType, :final eventId):
+        context.push(
+          '/event/$eventId',
+          extra: EventDetailArgs(initialTopicType: topicType),
+        );
       case OpenSettingsDelegate():
         context.go('/settings');
     }
+  }
+}
+
+class _TopicSelectionSheet extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              'トピックを選択',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+          ...TopicType.values.map((type) {
+            final config = TopicConfig.forType(type);
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundColor: config.themeColor.primaryColor,
+                radius: 16,
+              ),
+              title: Text(config.displayName),
+              onTap: () => Navigator.of(context).pop(type),
+            );
+          }),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
   }
 }
 

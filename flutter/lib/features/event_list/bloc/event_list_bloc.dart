@@ -13,6 +13,7 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
     on<EventListAddButtonPressed>(_onAddButtonPressed);
     on<EventListSettingsButtonPressed>(_onSettingsButtonPressed);
     on<EventListDeleteRequested>(_onDeleteRequested);
+    on<EventListTopicSelectedForNewEvent>(_onTopicSelectedForNewEvent);
   }
 
   final EventRepository _eventRepository;
@@ -49,7 +50,7 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
   ) async {
     if (state is EventListLoaded) {
       final current = state as EventListLoaded;
-      emit(current.copyWith(delegate: const OpenAddEventDelegate()));
+      emit(current.copyWith(showTopicSelection: true));
     }
   }
 
@@ -74,6 +75,21 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
       emit(EventListLoaded(projection: projection));
     } on Exception catch (e) {
       emit(EventListError(message: e.toString()));
+    }
+  }
+
+  Future<void> _onTopicSelectedForNewEvent(
+    EventListTopicSelectedForNewEvent event,
+    Emitter<EventListState> emit,
+  ) async {
+    if (state is EventListLoaded) {
+      final current = state as EventListLoaded;
+      emit(current.copyWith(
+        delegate: OpenAddEventWithTopicDelegate(
+          topicType: event.topicType,
+          eventId: event.eventId,
+        ),
+      ));
     }
   }
 }

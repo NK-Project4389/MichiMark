@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/master/tag/tag_domain.dart';
 import '../../../domain/master/trans/trans_domain.dart';
+import '../../../domain/topic/topic_domain.dart';
 
 sealed class BasicInfoEvent extends Equatable {
   const BasicInfoEvent();
@@ -10,10 +11,14 @@ sealed class BasicInfoEvent extends Equatable {
 /// 画面が表示されたとき
 class BasicInfoStarted extends BasicInfoEvent {
   final String eventId;
-  const BasicInfoStarted(this.eventId);
+
+  /// 新規作成時のTopic種別。既存イベントでは null を渡す（DB値を使用）
+  final TopicType? initialTopicType;
+
+  const BasicInfoStarted(this.eventId, {this.initialTopicType});
 
   @override
-  List<Object?> get props => [eventId];
+  List<Object?> get props => [eventId, initialTopicType];
 }
 
 /// イベント名が変更されたとき
