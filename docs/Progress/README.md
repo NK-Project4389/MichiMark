@@ -42,3 +42,4 @@
 | [2026-04-05_topic_action_redesign_requirements.md](./2026-04-05_topic_action_redesign_requirements.md) | Topic・Action設計再定義 要件書作成（REQ-topic_action_redesign） |
 | [2026-04-05_claudecode_statusbar.md](./2026-04-05_claudecode_statusbar.md) | ClaudeCode ステータスバー修正（週次プログレスバー・リセット時間表示） |
 | [2026-04-05_topic_color_impl.md](./2026-04-05_topic_color_impl.md) | REQ-007/008 トピックテーマカラー実装（EventListカード左ボーダー・EventDetailヘッダーグラデーション） |
+| [2026-04-05_phase5_topic_action_redesign.md](./2026-04-05_phase5_topic_action_redesign.md) | Phase 5完了：Topic・Action再定義・10色パレット・カラー実装・全レビューPASS |
