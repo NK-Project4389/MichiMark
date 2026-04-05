@@ -47,12 +47,20 @@
 | T-044 | Topic / ActionTime / Aggregation / EventDetailOverview レビュー | reviewer | `DONE` | | レビュー指摘4件修正済み（2026-04-05）|
 | T-045 | OverviewBloc OverviewStarted 発火問題解決 | flutter-dev | `DONE` | | EventDetailStateにcachedEventを追加・EventDetailPageのBlocListenerでOverviewStarted発火 |
 
+## Phase 5: Topic・Action 設計再定義
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-050 | Topic・Action再定義 Spec作成 | architect | `TODO` | | 要件書: docs/Requirements/REQ-topic_action_redesign.md |
+| T-051 | Topic・Action再定義 実装 | flutter-dev | `BLOCKED` | | T-050完了後 |
+| T-052 | Topic・Action再定義 レビュー | reviewer | `BLOCKED` | | T-051完了後 |
+
 ## Phase 3: 機能追加・仕上げ
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-020 | EventList Feature 実装（Spec作成 → 実装 → レビュー） | architect / flutter-dev / reviewer | `TODO` | | 現状スタブのみ |
-| T-021 | イベント新規作成フロー実装（EventDetail 新規作成） | architect / flutter-dev / reviewer | `TODO` | | T-020完了後推奨 |
+| T-021 | イベント新規作成フロー実装（EventDetail 新規作成・Topic選択ステップ含む） | architect / flutter-dev / reviewer | `TODO` | | T-020完了後推奨。REQ-topic_action_redesign REQ-001参照 |
 | T-022 | マスターデータ初期投入（Trans/Member/Tag/Action のデフォルトデータ） | flutter-dev | `TODO` | | |
 | T-023 | app_id / Bundle ID / アイコン等の設定 | orchestrator | `TODO` | | ストア公開準備 |
 | T-030 | MichiInfo レイアウト変更 Spec作成 | architect | `DONE` | | 要件書: docs/Requirements/REQ-michi_info_layout.md |
