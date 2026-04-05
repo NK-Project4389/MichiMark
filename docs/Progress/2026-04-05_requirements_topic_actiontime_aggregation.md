@@ -1,6 +1,10 @@
 # 2026-04-05 要件書・Feature Spec作成：Topic / ActionTime / Aggregation
 
 ## 完了した作業
+- docs: 進捗ファイル最終更新（セッション終了） (9ef4e2c)
+- docs: デザインエージェント追加・Topic/Action要件書更新（REQ-007〜009追加） (e065f17)
+- docs: Topic・Action設計再定義 要件書作成（REQ-topic_action_redesign） (88162e5)
+- docs: 進捗ファイル最終更新（セッション終了） (c29e4d7)
 - docs: 進捗更新（実機ビルド確認・次回やること追記） (1d155b5)
 - docs: Topic/ActionTime/Aggregation/EventDetailOverview 実装完了・進捗更新 (d46f5e0)
 - fix: reviewer指摘4件修正（schemaVersion2移行・ActionSetting拡張・TopicConfig伝播） (8e60d40)

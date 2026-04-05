@@ -40,3 +40,4 @@
 | [2026-04-05_requirements_topic_actiontime_aggregation.md](./2026-04-05_requirements_topic_actiontime_aggregation.md) | 要件書作成：Topic / ActionTime / Aggregation |
 | [2026-04-05_topic_actiontime_aggregation_impl.md](./2026-04-05_topic_actiontime_aggregation_impl.md) | Topic / ActionTime / Aggregation / EventDetailOverview 実装・レビュー完了 |
 | [2026-04-05_topic_action_redesign_requirements.md](./2026-04-05_topic_action_redesign_requirements.md) | Topic・Action設計再定義 要件書作成（REQ-topic_action_redesign） |
+| [2026-04-05_claudecode_statusbar.md](./2026-04-05_claudecode_statusbar.md) | ClaudeCode ステータスバー修正（週次プログレスバー・リセット時間表示） |
