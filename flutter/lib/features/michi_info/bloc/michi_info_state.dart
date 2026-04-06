@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../features/event_detail/projection/michi_info_list_projection.dart';
+import '../../../features/shared/projection/action_item_projection.dart';
 import '../draft/michi_info_draft.dart';
 
 /// MichiInfoのDelegate（画面遷移・操作意図の通知）
@@ -77,11 +78,15 @@ class MichiInfoLoaded extends MichiInfoState {
   final MichiInfoDelegate? delegate;
   final TopicConfig topicConfig;
 
+  /// 地点（マーク）に表示するアクションボタン一覧（TopicConfig.markActions から生成）
+  final List<ActionItemProjection> markActionItems;
+
   const MichiInfoLoaded({
     required this.projection,
     required this.draft,
     this.delegate,
     TopicConfig? topicConfig,
+    this.markActionItems = const [],
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -98,17 +103,19 @@ class MichiInfoLoaded extends MichiInfoState {
     MichiInfoDraft? draft,
     MichiInfoDelegate? delegate,
     TopicConfig? topicConfig,
+    List<ActionItemProjection>? markActionItems,
   }) {
     return MichiInfoLoaded(
       projection: projection ?? this.projection,
       draft: draft ?? this.draft,
       delegate: delegate,
       topicConfig: topicConfig ?? this.topicConfig,
+      markActionItems: markActionItems ?? this.markActionItems,
     );
   }
 
   @override
-  List<Object?> get props => [projection, draft, delegate, topicConfig];
+  List<Object?> get props => [projection, draft, delegate, topicConfig, markActionItems];
 }
 
 class MichiInfoError extends MichiInfoState {

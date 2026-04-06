@@ -1,20 +1,29 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 import '../../../adapter/event_detail_adapter.dart';
 import '../../../adapter/mark_link_draft_adapter.dart';
+import '../../../domain/action_time/action_time_log.dart';
+import '../../../domain/master/action/action_domain.dart';
+import '../../../domain/topic/topic_config.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../features/event_detail/projection/michi_info_list_projection.dart';
 import '../../../features/link_detail/draft/link_detail_draft.dart';
 import '../../../features/mark_detail/draft/mark_detail_draft.dart';
+import '../../../features/shared/projection/action_item_projection.dart';
 import '../../../features/shared/projection/mark_link_item_projection.dart';
+import '../../../repository/action_repository.dart';
 import '../../../repository/event_repository.dart';
 import '../draft/michi_info_draft.dart';
 import 'michi_info_event.dart';
 import 'michi_info_state.dart';
 
 class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
-  MichiInfoBloc({required EventRepository eventRepository})
-      : _eventRepository = eventRepository,
+  MichiInfoBloc({
+    required EventRepository eventRepository,
+    required ActionRepository actionRepository,
+  })  : _eventRepository = eventRepository,
+        _actionRepository = actionRepository,
         super(const MichiInfoLoading()) {
     on<MichiInfoStarted>(_onStarted);
     on<MichiInfoItemTapped>(_onItemTapped);
@@ -23,10 +32,15 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     on<MichiInfoMarkDraftApplied>(_onMarkDraftApplied);
     on<MichiInfoLinkDraftApplied>(_onLinkDraftApplied);
     on<MichiInfoTopicConfigUpdated>(_onTopicConfigUpdated);
+    on<MichiInfoMarkActionPressed>(_onMarkActionPressed);
   }
 
   final EventRepository _eventRepository;
+  final ActionRepository _actionRepository;
   String _eventId = '';
+
+  /// アクションマスタのキャッシュ（startedで一度取得して保持）
+  List<ActionDomain> _cachedActions = [];
 
   Future<void> _onStarted(
     MichiInfoStarted event,
@@ -36,6 +50,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     emit(const MichiInfoLoading());
     try {
       final domain = await _eventRepository.fetch(event.eventId);
+      _cachedActions = await _actionRepository.fetchAll();
       final projection = EventDetailAdapter.toProjection(domain).michiInfo;
       emit(MichiInfoLoaded(
         projection: projection,
@@ -174,8 +189,47 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
   ) async {
     if (state is MichiInfoLoaded) {
       final current = state as MichiInfoLoaded;
-      emit(current.copyWith(topicConfig: event.config));
+      emit(current.copyWith(
+        topicConfig: event.config,
+        markActionItems: _buildMarkActionItems(event.config),
+      ));
     }
+  }
+
+  Future<void> _onMarkActionPressed(
+    MichiInfoMarkActionPressed event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (_eventId.isEmpty) return;
+    try {
+      final now = DateTime.now();
+      final log = ActionTimeLog(
+        id: const Uuid().v4(),
+        eventId: _eventId,
+        actionId: event.actionId,
+        timestamp: now,
+        createdAt: now,
+        updatedAt: now,
+      );
+      await _eventRepository.saveActionTimeLog(log);
+    } on Exception {
+      // ログ記録失敗は一覧UIに影響を与えない
+    }
+  }
+
+  /// TopicConfig.markActions に基づいてアクションボタン一覧を生成する
+  List<ActionItemProjection> _buildMarkActionItems(TopicConfig config) {
+    final actionMap = {for (final a in _cachedActions) a.id: a};
+    return config.markActions
+        .map((id) => actionMap[id])
+        .where((a) => a != null && a.isVisible && !a.isDeleted)
+        .cast<ActionDomain>()
+        .map((a) => ActionItemProjection(
+              id: a.id,
+              actionName: a.actionName,
+              isVisible: a.isVisible,
+            ))
+        .toList();
   }
 
   /// ソート済み items を走査して displayMeterDiff を再計算する

@@ -71,3 +71,16 @@ class MichiInfoLinkDraftApplied extends MichiInfoEvent {
   @override
   List<Object?> get props => [markLinkId, draft];
 }
+
+/// ミチ情報一覧の地点（マーク）に対するアクションボタンが押されたとき
+class MichiInfoMarkActionPressed extends MichiInfoEvent {
+  final String markLinkId;
+  final String actionId;
+  const MichiInfoMarkActionPressed({
+    required this.markLinkId,
+    required this.actionId,
+  });
+
+  @override
+  List<Object?> get props => [markLinkId, actionId];
+}

@@ -169,15 +169,10 @@ class _MarkDetailForm extends StatelessWidget {
           const SizedBox(height: 16),
           _MeterValueField(value: draft.meterValueInput),
         ],
-        const SizedBox(height: 16),
-        _SelectionRow(
-          label: 'アクション',
-          value: draft.selectedActions.isEmpty
-              ? '未選択'
-              : draft.selectedActions.map((a) => a.actionName).join('、'),
-          onEditPressed: () => context
-              .read<MarkDetailBloc>()
-              .add(const MarkDetailEditActionsPressed()),
+        // アクション行：ミチ情報一覧のボタンに移行したため非表示
+        const Visibility(
+          visible: false,
+          child: SizedBox.shrink(),
         ),
         const SizedBox(height: 16),
         _MemoField(value: draft.memo),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/di.dart';
 import '../../../domain/topic/topic_domain.dart';
 import '../../../domain/topic/topic_theme_color.dart';
+import '../../../repository/action_repository.dart';
 import '../../../repository/event_repository.dart';
 import '../../../repository/tag_repository.dart';
 import '../../../repository/topic_repository.dart';
@@ -137,6 +138,7 @@ class _EventDetailScaffold extends StatelessWidget {
         BlocProvider(
           create: (_) => MichiInfoBloc(
             eventRepository: getIt<EventRepository>(),
+            actionRepository: getIt<ActionRepository>(),
           )..add(MichiInfoStarted(eventId)),
         ),
         BlocProvider(

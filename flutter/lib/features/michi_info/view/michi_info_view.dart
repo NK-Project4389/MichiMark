@@ -9,6 +9,7 @@ import '../../../features/link_detail/draft/link_detail_draft.dart';
 import '../../../features/link_detail/link_detail_args.dart';
 import '../../../features/mark_detail/draft/mark_detail_draft.dart';
 import '../../../features/mark_detail/mark_detail_args.dart';
+import '../../../features/shared/projection/action_item_projection.dart';
 import '../../../features/shared/projection/mark_link_item_projection.dart';
 import '../bloc/michi_info_bloc.dart';
 import '../bloc/michi_info_event.dart';
@@ -35,10 +36,11 @@ class _MichiInfoViewState extends State<MichiInfoView> {
           MichiInfoLoading() =>
             const Center(child: CircularProgressIndicator()),
           MichiInfoError(:final message) => Center(child: Text(message)),
-          MichiInfoLoaded(:final projection, :final topicConfig) =>
+          MichiInfoLoaded(:final projection, :final topicConfig, :final markActionItems) =>
             _MichiInfoList(
               projection: projection,
               topicConfig: topicConfig,
+              markActionItems: markActionItems,
             ),
         };
       },
@@ -161,10 +163,12 @@ List<_GroupData> _buildGroups(List<MarkLinkItemProjection> items) {
 class _MichiInfoList extends StatelessWidget {
   final MichiInfoListProjection projection;
   final TopicConfig topicConfig;
+  final List<ActionItemProjection> markActionItems;
 
   const _MichiInfoList({
     required this.projection,
     required this.topicConfig,
+    required this.markActionItems,
   });
 
   @override
@@ -193,6 +197,7 @@ class _MichiInfoList extends StatelessWidget {
                     group: groups[i],
                     isFirst: i == 0,
                     isLast: i == groups.length - 1,
+                    markActionItems: markActionItems,
                   ),
               ],
             ),
@@ -254,11 +259,13 @@ class _MarkGroup extends StatelessWidget {
   final _GroupData group;
   final bool isFirst;
   final bool isLast;
+  final List<ActionItemProjection> markActionItems;
 
   const _MarkGroup({
     required this.group,
     required this.isFirst,
     required this.isLast,
+    required this.markActionItems,
   });
 
   @override
@@ -285,14 +292,24 @@ class _MarkGroup extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: _MarkCard(
-                      item: group.mark,
-                      onTap: () => context.read<MichiInfoBloc>().add(
-                            MichiInfoItemTapped(
-                              markLinkId: group.mark.id,
-                              type: group.mark.markLinkType,
-                            ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _MarkCard(
+                          item: group.mark,
+                          onTap: () => context.read<MichiInfoBloc>().add(
+                                MichiInfoItemTapped(
+                                  markLinkId: group.mark.id,
+                                  type: group.mark.markLinkType,
+                                ),
+                              ),
+                        ),
+                        if (markActionItems.isNotEmpty)
+                          _MarkActionButtons(
+                            markLinkId: group.mark.id,
+                            actions: markActionItems,
                           ),
+                      ],
                     ),
                   ),
                   for (final link in group.links)
@@ -589,6 +606,41 @@ class _VerticalArrowPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_VerticalArrowPainter old) => color != old.color;
+}
+
+// ────────────────────────────────────────────────────────
+// _MarkActionButtons (地点アクションボタン群)
+// ────────────────────────────────────────────────────────
+
+class _MarkActionButtons extends StatelessWidget {
+  final String markLinkId;
+  final List<ActionItemProjection> actions;
+
+  const _MarkActionButtons({
+    required this.markLinkId,
+    required this.actions,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 28, top: 6),
+      child: Wrap(
+        spacing: 8,
+        children: actions
+            .map((action) => FilledButton.tonal(
+                  onPressed: () => context.read<MichiInfoBloc>().add(
+                        MichiInfoMarkActionPressed(
+                          markLinkId: markLinkId,
+                          actionId: action.id,
+                        ),
+                      ),
+                  child: Text(action.actionName),
+                ))
+            .toList(),
+      ),
+    );
+  }
 }
 
 // ────────────────────────────────────────────────────────
