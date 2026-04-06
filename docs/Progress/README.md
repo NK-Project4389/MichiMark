@@ -45,3 +45,6 @@
 | [2026-04-05_phase5_topic_action_redesign.md](./2026-04-05_phase5_topic_action_redesign.md) | Phase 5完了：Topic・Action再定義・10色パレット・カラー実装・全レビューPASS |
 | [2026-04-05_event_create_topic_impl.md](./2026-04-05_event_create_topic_impl.md) | EventCreateWithTopic実装：Topic選択BottomSheet・BasicInfoBloc初期化・ルーター対応 |
 | [2026-04-05_event_create_with_topic.md](./2026-04-05_event_create_with_topic.md) | イベント新規作成時のトピック選択フロー 完全完了（要件書・Spec・実装・レビュー） |
+- [2026-04-06](./2026-04-06_docs__進捗ファイルにバグ修正内容を追記.md)
+- [2026-04-07](./2026-04-07_fix__基本画面のトピック項目を非表示に変更.md)
+| [2026-04-07_event_detail_save_bugfix.md](./2026-04-07_event_detail_save_bugfix.md) | イベント詳細画面 保存バグ修正（タグハンドラ未登録・actionTimeLogs消失） |

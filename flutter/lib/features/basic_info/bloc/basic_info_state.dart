@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/master/tag/tag_domain.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../draft/basic_info_draft.dart';
 
@@ -55,26 +56,38 @@ class BasicInfoLoaded extends BasicInfoState {
   /// 現在のTopicに基づく表示制御設定
   final TopicConfig topicConfig;
 
+  /// タグマスタ全件キャッシュ（サジェスト検索用）
+  final List<TagDomain> allTags;
+
+  /// 現在表示中のタグサジェスト一覧
+  final List<TagDomain> tagSuggestions;
+
   const BasicInfoLoaded({
     required this.draft,
     this.delegate,
     required this.topicConfig,
+    this.allTags = const [],
+    this.tagSuggestions = const [],
   });
 
   BasicInfoLoaded copyWith({
     BasicInfoDraft? draft,
     BasicInfoDelegate? delegate,
     TopicConfig? topicConfig,
+    List<TagDomain>? allTags,
+    List<TagDomain>? tagSuggestions,
   }) {
     return BasicInfoLoaded(
       draft: draft ?? this.draft,
       delegate: delegate,
       topicConfig: topicConfig ?? this.topicConfig,
+      allTags: allTags ?? this.allTags,
+      tagSuggestions: tagSuggestions ?? this.tagSuggestions,
     );
   }
 
   @override
-  List<Object?> get props => [draft, delegate, topicConfig];
+  List<Object?> get props => [draft, delegate, topicConfig, allTags, tagSuggestions];
 }
 
 class BasicInfoError extends BasicInfoState {

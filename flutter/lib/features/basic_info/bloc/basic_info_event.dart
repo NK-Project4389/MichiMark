@@ -64,7 +64,7 @@ class BasicInfoMembersSelected extends BasicInfoEvent {
   List<Object?> get props => [members];
 }
 
-/// タグ編集ボタンが押されたとき
+/// タグ編集ボタンが押されたとき（選択画面遷移用。現在は基本画面から未使用）
 class BasicInfoEditTagsPressed extends BasicInfoEvent {
   const BasicInfoEditTagsPressed();
 
@@ -72,13 +72,49 @@ class BasicInfoEditTagsPressed extends BasicInfoEvent {
   List<Object?> get props => [];
 }
 
-/// 選択画面からタグが返却されたとき
+/// 選択画面からタグが返却されたとき（選択画面遷移用。現在は基本画面から未使用）
 class BasicInfoTagsSelected extends BasicInfoEvent {
   final List<TagDomain> tags;
   const BasicInfoTagsSelected(this.tags);
 
   @override
   List<Object?> get props => [tags];
+}
+
+/// タグ入力フィールドのテキストが変化したとき
+class BasicInfoTagInputChanged extends BasicInfoEvent {
+  final String input;
+  const BasicInfoTagInputChanged(this.input);
+
+  @override
+  List<Object?> get props => [input];
+}
+
+/// サジェストリストからタグが選択されたとき
+class BasicInfoTagSuggestionSelected extends BasicInfoEvent {
+  final TagDomain tag;
+  const BasicInfoTagSuggestionSelected(this.tag);
+
+  @override
+  List<Object?> get props => [tag];
+}
+
+/// タグ入力フィールドで確定（新規タグ作成を含む）
+class BasicInfoTagInputConfirmed extends BasicInfoEvent {
+  final String input;
+  const BasicInfoTagInputConfirmed(this.input);
+
+  @override
+  List<Object?> get props => [input];
+}
+
+/// 選択済みタグが削除されたとき
+class BasicInfoTagRemoved extends BasicInfoEvent {
+  final TagDomain tag;
+  const BasicInfoTagRemoved(this.tag);
+
+  @override
+  List<Object?> get props => [tag];
 }
 
 /// ガソリン支払メンバー編集ボタンが押されたとき

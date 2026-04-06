@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../domain/master/tag/tag_domain.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../features/selection/selection_args.dart';
 import '../../../features/selection/selection_result.dart';
@@ -32,8 +33,8 @@ class _BasicInfoViewState extends State<BasicInfoView> {
           BasicInfoLoading() =>
             const Center(child: CircularProgressIndicator()),
           BasicInfoError(:final message) => Center(child: Text(message)),
-          BasicInfoLoaded(:final draft, :final topicConfig) =>
-            _BasicInfoForm(draft: draft, topicConfig: topicConfig),
+          BasicInfoLoaded(:final draft, :final topicConfig, :final tagSuggestions) =>
+            _BasicInfoForm(draft: draft, topicConfig: topicConfig, tagSuggestions: tagSuggestions),
         };
       },
     );
@@ -113,8 +114,13 @@ class _BasicInfoViewState extends State<BasicInfoView> {
 class _BasicInfoForm extends StatelessWidget {
   final BasicInfoDraft draft;
   final TopicConfig topicConfig;
+  final List<TagDomain> tagSuggestions;
 
-  const _BasicInfoForm({required this.draft, required this.topicConfig});
+  const _BasicInfoForm({
+    required this.draft,
+    required this.topicConfig,
+    required this.tagSuggestions,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -161,14 +167,9 @@ class _BasicInfoForm extends StatelessWidget {
               .add(const BasicInfoEditMembersPressed()),
         ),
         const SizedBox(height: 16),
-        _SelectionRow(
-          label: 'タグ',
-          value: draft.selectedTags.isEmpty
-              ? '未選択'
-              : draft.selectedTags.map((t) => t.tagName).join('、'),
-          onEditPressed: () => context
-              .read<BasicInfoBloc>()
-              .add(const BasicInfoEditTagsPressed()),
+        _TagInputSection(
+          selectedTags: draft.selectedTags,
+          tagSuggestions: tagSuggestions,
         ),
         if (topicConfig.showPayMember) ...[
           const SizedBox(height: 16),
@@ -268,36 +269,103 @@ class _NumberInputFieldState extends State<_NumberInputField> {
   }
 }
 
-/// 読み取り専用ラベル行（タップ・編集不可）
-class _ReadOnlyRow extends StatelessWidget {
-  final String label;
-  final String value;
+/// タグのインライン入力・サジェスト・チップ表示セクション
+class _TagInputSection extends StatefulWidget {
+  final List<TagDomain> selectedTags;
+  final List<TagDomain> tagSuggestions;
 
-  const _ReadOnlyRow({
-    required this.label,
-    required this.value,
+  const _TagInputSection({
+    required this.selectedTags,
+    required this.tagSuggestions,
   });
 
   @override
+  State<_TagInputSection> createState() => _TagInputSectionState();
+}
+
+class _TagInputSectionState extends State<_TagInputSection> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _clearInput() {
+    _controller.clear();
+    context.read<BasicInfoBloc>().add(const BasicInfoTagInputChanged(''));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+        Text('タグ', style: labelStyle),
+        if (widget.selectedTags.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: widget.selectedTags
+                .map((tag) => Chip(
+                      label: Text(tag.tagName),
+                      onDeleted: () => context
+                          .read<BasicInfoBloc>()
+                          .add(BasicInfoTagRemoved(tag)),
+                    ))
+                .toList(),
           ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium,
+        ],
+        const SizedBox(height: 8),
+        TextField(
+          controller: _controller,
+          decoration: const InputDecoration(
+            hintText: 'タグを入力して追加...',
+            border: OutlineInputBorder(),
+            isDense: true,
           ),
+          onChanged: (input) => context
+              .read<BasicInfoBloc>()
+              .add(BasicInfoTagInputChanged(input)),
+          onSubmitted: (input) {
+            context.read<BasicInfoBloc>().add(BasicInfoTagInputConfirmed(input));
+            _clearInput();
+          },
         ),
+        if (widget.tagSuggestions.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Theme.of(context).colorScheme.outline),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: widget.tagSuggestions.length,
+              separatorBuilder: (_, _) => const Divider(height: 1),
+              itemBuilder: (context, index) {
+                final tag = widget.tagSuggestions[index];
+                return ListTile(
+                  dense: true,
+                  title: Text(tag.tagName),
+                  onTap: () {
+                    context
+                        .read<BasicInfoBloc>()
+                        .add(BasicInfoTagSuggestionSelected(tag));
+                    _clearInput();
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ],
     );
   }
