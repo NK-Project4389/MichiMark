@@ -37,6 +37,7 @@ AIはコード生成前に必ず設計憲章を参照すること。
 | `charter-reviewer` | 設計憲章・アーキテクチャドキュメントのレビューと改善提案 |
 | `flutter-dev` | Specに基づくFlutter/Dart実装。Spec不足・曖昧な場合はarchitectに差し戻す |
 | `reviewer` | 生成コードが設計憲章・Specに従っているかレビュー。違反・アンチパターンを検出 |
+| `tester` | reviewerの承認後にFeature SpecのテストシナリオをもとにIntegration Testを実装・実行。ブラックボックステスト |
 | `designer` | テーマカラー・UIデザイン提案。HTML形式レポートで出力。アプリ反映案はproduct-managerへ叩きを渡す |
 | `orchestrator` | 上記に該当しない作業（環境構築・ツール操作・進捗管理・会話の調整など） |
 
@@ -93,16 +94,20 @@ flutter-dev（修正）→ reviewer（レビュー）
 ## 実装・レビューサイクルルール
 
 ```
-product-manager（要件書）→ architect（Spec）→ flutter-dev（実装）
+product-manager（要件書）→ architect（Spec・テストシナリオ込み）→ flutter-dev（実装）
   → reviewer（レビュー・自動交代）→ 違反あり → flutter-dev（修正）→ reviewer（再レビュー）
+  → reviewer承認 → tester（Integration Test実行）
+  → 失敗 → flutter-dev（問題切り分け）
+      ├─ 設計レベル → architect（設計修正）→ reviewer → flutter-dev → reviewer → tester
+      └─ コードレベル → flutter-dev（直接修正）→ reviewer → tester
 ```
 
-違反がなくなるまでサイクルを繰り返す。reviewerへの交代はユーザー指示不要。
+違反がなくなるまでサイクルを繰り返す。reviewerへの交代はユーザー指示不要。testerへの引き継ぎもreviewer承認後に自動で行う。
 
 ### Flutter移行タスクのフロー
 
 ```
-architect（Spec）→ flutter-dev（実装）→ reviewer（レビュー）
+architect（Spec・テストシナリオ込み）→ flutter-dev（実装）→ reviewer（レビュー）→ tester（テスト）
 ```
 
 ### デザイン提案フロー
