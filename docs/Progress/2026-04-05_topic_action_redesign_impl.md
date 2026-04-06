@@ -5,6 +5,8 @@
 ---
 
 ## 完了した作業
+- docs: 進捗ファイルにバグ修正内容を追記 (d6a6a08)
+- chore: iOS設定・進捗ドキュメント更新 (2d6116e)
 - fix: 新規イベント作成時のトピック引き継ぎ不具合修正 (4443720)
 - feat: T-021 イベント新規作成時のトピック選択フロー実装 (bfd7bfe)
 - feat: EventCreateWithTopic実装 - Topic選択BottomSheet・BasicInfoBloc初期化・ルーター対応 (9a62b8d)

@@ -46,6 +46,10 @@
 ---
 
 ## 完了した作業
+- feat: MichiInfo タイムラインUI Canvas/Path ベースに全面再設計 (68af4a1)
+- feat: ミチ情報一覧への地点アクションボタン追加 (d85801e)
+- fix: UIの表示名を「マーク→地点」「リンク→区間」に変更 (f62cc6c)
+- docs: タグインラインサジェスト実装内容を進捗ファイルに追記 (f5fe7b4)
 
 ### バグ修正（d15f26c）
 - Bug 1 修正: BasicInfoBloc タグ系イベントハンドラ未登録（TagInputChanged/SuggestionSelected/InputConfirmed/Removed）
