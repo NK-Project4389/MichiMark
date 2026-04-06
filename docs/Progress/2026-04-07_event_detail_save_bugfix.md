@@ -46,6 +46,11 @@
 ---
 
 ## 完了した作業
+- fix: Xcodeビルドエラー対応（integration_test削除・xcscheme修正） (1e1dd24)
+- feat: testerエージェント追加・Integration Test基盤整備 (202578e)
+- feat: 割り勘メンバー選択で支払者を常にON固定・非活性化 (9667daa)
+- feat: 割り勘メンバー選択で支払者を常にON固定・非活性化 (9667daa)
+- docs: MichiInfo Canvas/Path再設計の進捗ファイル追加 (f4d1f41)
 - feat: MichiInfo タイムラインUI Canvas/Path ベースに全面再設計 (68af4a1)
 - feat: ミチ情報一覧への地点アクションボタン追加 (d85801e)
 - fix: UIの表示名を「マーク→地点」「リンク→区間」に変更 (f62cc6c)
