@@ -77,6 +77,9 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
           extra: SelectionArgs(
             type: SelectionType.splitMembers,
             selectedIds: draft.splitMembers.map((m) => m.id).toSet(),
+            fixedSelectedIds: draft.paymentMember != null
+                ? {draft.paymentMember!.id}
+                : const {},
           ),
         );
         if (!mounted) return;

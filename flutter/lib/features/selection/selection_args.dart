@@ -5,9 +5,13 @@ class SelectionArgs {
   /// 現在選択済みのIDセット（初期選択状態の設定に使用）
   final Set<String> selectedIds;
 
+  /// 常にON固定にするIDセット（割り勘の支払者など）
+  final Set<String> fixedSelectedIds;
+
   const SelectionArgs({
     required this.type,
     this.selectedIds = const {},
+    this.fixedSelectedIds = const {},
   });
 }
 

@@ -7,15 +7,19 @@ class SelectionItemProjection extends Equatable {
   final String? subLabel;
   final bool isSelected;
 
+  /// trueのとき、チェックが固定されトグル不可
+  final bool isFixed;
+
   const SelectionItemProjection({
     required this.id,
     required this.label,
     this.subLabel,
     required this.isSelected,
+    this.isFixed = false,
   });
 
   @override
-  List<Object?> get props => [id, label, subLabel, isSelected];
+  List<Object?> get props => [id, label, subLabel, isSelected, isFixed];
 }
 
 class SelectionProjection extends Equatable {

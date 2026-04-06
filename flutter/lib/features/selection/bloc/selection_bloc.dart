@@ -15,6 +15,7 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
   SelectionBloc({
     required SelectionType type,
     required Set<String> selectedIds,
+    Set<String> fixedSelectedIds = const {},
     required TransRepository transRepository,
     required MemberRepository memberRepository,
     required TagRepository tagRepository,
@@ -22,6 +23,7 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
     required TopicRepository topicRepository,
   })  : _type = type,
         _selectedIds = selectedIds,
+        _fixedSelectedIds = fixedSelectedIds,
         _transRepository = transRepository,
         _memberRepository = memberRepository,
         _tagRepository = tagRepository,
@@ -36,6 +38,7 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
 
   final SelectionType _type;
   final Set<String> _selectedIds;
+  final Set<String> _fixedSelectedIds;
   final TransRepository _transRepository;
   final MemberRepository _memberRepository;
   final TagRepository _tagRepository;
@@ -74,6 +77,7 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
             type: _type,
             items: items,
             selectedIds: _selectedIds,
+            fixedSelectedIds: _fixedSelectedIds,
           );
           emit(SelectionLoaded(
             projection: projection,
@@ -132,6 +136,8 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
   ) async {
     if (state is SelectionLoaded) {
       final current = state as SelectionLoaded;
+      // 固定IDはトグル不可
+      if (_fixedSelectedIds.contains(event.id)) return;
       final newDraft =
           current.draft.toggle(event.id, current.projection.mode);
       final newProjection = SelectionAdapter.rebuild(
@@ -177,8 +183,12 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
       case SelectionType.markMembers:
       case SelectionType.linkMembers:
       case SelectionType.splitMembers:
+        final allSelectedIds = {
+          ...state.draft.selectedIds,
+          ..._fixedSelectedIds,
+        };
         final selected = state.cachedMembers
-            .where((m) => state.draft.selectedIds.contains(m.id))
+            .where((m) => allSelectedIds.contains(m.id))
             .toList();
         return MembersSelectionResult(selected);
 

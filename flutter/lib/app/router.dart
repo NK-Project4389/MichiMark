@@ -149,6 +149,7 @@ final router = GoRouter(
           create: (_) => SelectionBloc(
             type: args.type,
             selectedIds: args.selectedIds,
+            fixedSelectedIds: args.fixedSelectedIds,
             transRepository: getIt<TransRepository>(),
             memberRepository: getIt<MemberRepository>(),
             tagRepository: getIt<TagRepository>(),

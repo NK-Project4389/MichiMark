@@ -49,3 +49,4 @@
 - [2026-04-07](./2026-04-07_fix__基本画面のトピック項目を非表示に変更.md)
 | [2026-04-07_event_detail_save_bugfix.md](./2026-04-07_event_detail_save_bugfix.md) | イベント詳細画面 保存バグ修正（タグハンドラ未登録・actionTimeLogs消失） |
 | [2026-04-07_michi_canvas_layout.md](./2026-04-07_michi_canvas_layout.md) | MichiInfo タイムラインUI Canvas/Path 全面再設計 |
+| [2026-04-07_payment_payer_fixed_selection.md](./2026-04-07_payment_payer_fixed_selection.md) | 割り勘メンバー選択で支払者を常にON固定・非活性化 |

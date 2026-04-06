@@ -31,6 +31,7 @@ class SelectionAdapter {
     required SelectionType type,
     required List<MemberDomain> items,
     required Set<String> selectedIds,
+    Set<String> fixedSelectedIds = const {},
   }) {
     return SelectionProjection(
       title: type.title,
@@ -39,7 +40,9 @@ class SelectionAdapter {
           .map((m) => SelectionItemProjection(
                 id: m.id,
                 label: m.memberName,
-                isSelected: selectedIds.contains(m.id),
+                isSelected:
+                    selectedIds.contains(m.id) || fixedSelectedIds.contains(m.id),
+                isFixed: fixedSelectedIds.contains(m.id),
               ))
           .toList(),
     );
@@ -112,7 +115,8 @@ class SelectionAdapter {
                 id: item.id,
                 label: item.label,
                 subLabel: item.subLabel,
-                isSelected: selectedIds.contains(item.id),
+                isSelected: item.isFixed || selectedIds.contains(item.id),
+                isFixed: item.isFixed,
               ))
           .toList(),
     );

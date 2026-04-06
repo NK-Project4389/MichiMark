@@ -99,17 +99,34 @@ class _SelectionItem extends StatelessWidget {
       SelectionMode.multiple =>
         item.isSelected ? Icons.check_box : Icons.check_box_outline_blank,
     };
+    final disabledColor = Theme.of(context).disabledColor;
     return ListTile(
       leading: Icon(
         leadingIcon,
-        color: item.isSelected
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).colorScheme.onSurfaceVariant,
+        color: item.isFixed
+            ? disabledColor
+            : item.isSelected
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.onSurfaceVariant,
       ),
-      title: Text(item.label),
-      subtitle: item.subLabel != null ? Text(item.subLabel!) : null,
-      onTap: () =>
-          context.read<SelectionBloc>().add(SelectionItemToggled(item.id)),
+      title: Text(
+        item.label,
+        style: item.isFixed
+            ? TextStyle(color: disabledColor)
+            : null,
+      ),
+      subtitle: item.subLabel != null
+          ? Text(
+              item.subLabel!,
+              style: item.isFixed
+                  ? TextStyle(color: disabledColor)
+                  : null,
+            )
+          : null,
+      onTap: item.isFixed
+          ? null
+          : () =>
+              context.read<SelectionBloc>().add(SelectionItemToggled(item.id)),
     );
   }
 }
