@@ -123,11 +123,6 @@ class _BasicInfoForm extends StatelessWidget {
       children: [
         _EventNameField(value: draft.eventName),
         const SizedBox(height: 16),
-        _ReadOnlyRow(
-          label: 'トピック',
-          value: draft.selectedTopic?.topicName ?? '未設定',
-        ),
-        const SizedBox(height: 16),
         _SelectionRow(
           label: '交通手段',
           value: draft.selectedTrans?.transName ?? '未選択',
