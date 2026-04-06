@@ -5,6 +5,7 @@ import '../../../app/di.dart';
 import '../../../domain/topic/topic_domain.dart';
 import '../../../domain/topic/topic_theme_color.dart';
 import '../../../repository/event_repository.dart';
+import '../../../repository/tag_repository.dart';
 import '../../../repository/topic_repository.dart';
 import '../../basic_info/bloc/basic_info_bloc.dart';
 import '../../basic_info/bloc/basic_info_event.dart';
@@ -130,6 +131,7 @@ class _EventDetailScaffold extends StatelessWidget {
           create: (_) => BasicInfoBloc(
             eventRepository: getIt<EventRepository>(),
             topicRepository: getIt<TopicRepository>(),
+            tagRepository: getIt<TagRepository>(),
           )..add(BasicInfoStarted(eventId, initialTopicType: initialTopicType)),
         ),
         BlocProvider(

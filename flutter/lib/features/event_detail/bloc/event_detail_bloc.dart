@@ -196,6 +196,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
         topic: draft.selectedTopic,
         markLinks: existing.markLinks,
         payments: existing.payments,
+        actionTimeLogs: existing.actionTimeLogs,
         isDeleted: existing.isDeleted,
         createdAt: existing.createdAt,
         updatedAt: DateTime.now(),
