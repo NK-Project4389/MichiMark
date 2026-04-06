@@ -51,3 +51,4 @@
 | [2026-04-07_michi_canvas_layout.md](./2026-04-07_michi_canvas_layout.md) | MichiInfo タイムラインUI Canvas/Path 全面再設計 |
 | [2026-04-07_payment_payer_fixed_selection.md](./2026-04-07_payment_payer_fixed_selection.md) | 割り勘メンバー選択で支払者を常にON固定・非活性化 |
 | [2026-04-07_tester_agent_setup.md](./2026-04-07_tester_agent_setup.md) | testerエージェント追加・Integration Test基盤整備 |
+| [2026-04-07_xcode_build_fix.md](./2026-04-07_xcode_build_fix.md) | Xcode ビルドエラー調査（integration_test 削除・xcscheme 修正） |
