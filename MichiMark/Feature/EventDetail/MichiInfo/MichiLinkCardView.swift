@@ -21,7 +21,7 @@ struct MichiLinkCardView: View {
             }
         }
         .padding()
-        .frame(maxWidth: .infinity, minHeight: 60, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
         .background(Color.green.opacity(0.15))
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }

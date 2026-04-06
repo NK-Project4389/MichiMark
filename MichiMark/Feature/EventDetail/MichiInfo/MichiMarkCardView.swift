@@ -1,7 +1,5 @@
 import SwiftUI
 
-import SwiftUI
-
 struct MichiMarkCardView: View {
 
     let title: String
@@ -30,7 +28,7 @@ struct MichiMarkCardView: View {
             }
         }
         .padding()
-        .frame(maxWidth: .infinity, minHeight: 80, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
         .background(Color(.systemGray5))
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
