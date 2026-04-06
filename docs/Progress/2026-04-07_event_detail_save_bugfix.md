@@ -47,24 +47,30 @@
 
 ## 完了した作業
 
-- Bug 1 修正 (基本画面タグ操作クラッシュ)
-- Bug 2 修正 (保存時 actionTimeLogs 消失)
-- DI 更新
+### バグ修正（d15f26c）
+- Bug 1 修正: BasicInfoBloc タグ系イベントハンドラ未登録（TagInputChanged/SuggestionSelected/InputConfirmed/Removed）
+- Bug 2 修正: EventDetailBloc 保存時 actionTimeLogs 消失
+- DI 更新: BasicInfoBloc に TagRepository 注入
+
+### feat: タグインラインサジェスト入力実装（d7f29d7）
+- `basic_info_event.dart`: 新イベント4種追加（TagInputChanged/SuggestionSelected/InputConfirmed/TagRemoved）
+- `basic_info_state.dart`: `BasicInfoLoaded` に `allTags`・`tagSuggestions` フィールド追加
+- `basic_info_view.dart`: タグ行を `_TagInputSection`（インラインサジェスト・Chip表示）に置き換え
+- 要件書: `docs/Requirements/REQ-tag_inline_suggest.md`
+- Spec: `docs/Spec/Features/TagInlineSuggest_Spec.md`
 - dart analyze エラー 0 確認
-- コミット・プッシュ
 
 ---
 
 ## 未完了
 
 - Drift実装への切り替え（DI は InMemory のまま）
-- T-052 レビューは別セッション
 
 ---
 
 ## 次回セッションで最初にやること
 
 1. **動作確認**: タグ追加・削除→保存が正しく動くか実機/シミュレータで確認
-2. **T-052: Topic・Action再定義 レビュー**（設計憲章に沿っているか）
+2. **T-010 Phase2動作確認** の継続
 
 ---
