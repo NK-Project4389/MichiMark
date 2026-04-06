@@ -115,7 +115,7 @@ class _MarkDetailScaffold extends StatelessWidget {
               .add(const MarkDetailDismissPressed()),
         ),
         title: Text(
-          draft.markLinkName.isEmpty ? 'マーク詳細' : draft.markLinkName,
+          draft.markLinkName.isEmpty ? '地点詳細' : draft.markLinkName,
         ),
         centerTitle: true,
         actions: [

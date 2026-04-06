@@ -171,7 +171,7 @@ class _MichiInfoList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (projection.items.isEmpty) {
       return Scaffold(
-        body: const Center(child: Text('マーク/リンクがありません')),
+        body: const Center(child: Text('地点/区間がありません')),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _showAddMenu(context),
           child: const Icon(Icons.add),
@@ -220,7 +220,7 @@ class _MichiInfoList extends StatelessWidget {
           children: [
             ListTile(
               leading: const Icon(Icons.place),
-              title: const Text('マークを追加'),
+              title: const Text('地点を追加'),
               onTap: () {
                 Navigator.of(context).pop();
                 context
@@ -231,7 +231,7 @@ class _MichiInfoList extends StatelessWidget {
             if (topicConfig.allowLinkAdd)
               ListTile(
                 leading: const Icon(Icons.route),
-                title: const Text('リンクを追加'),
+                title: const Text('区間を追加'),
                 onTap: () {
                   Navigator.of(context).pop();
                   context
