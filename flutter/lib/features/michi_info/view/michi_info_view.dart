@@ -19,7 +19,7 @@ import '../bloc/michi_info_state.dart';
 // 定数（レイアウト）
 // ────────────────────────────────────────────────────────
 
-/// Mark カードの固定高さ。スパン矢印 Y 座標の基準値
+/// Mark カードの固定高さ
 const double _cardHeight = 72.0;
 
 /// Link カードのコンパクト高さ（C-2 デザイン）
@@ -28,18 +28,14 @@ const double _linkCardHeight = 34.0;
 /// _MarkActionButtons がある場合の追加高さ
 const double _actionButtonsHeight = 48.0;
 
-/// Link 個別距離列の固定幅
-const double _linkDistanceColumnWidth = 64.0;
-
-/// Mark 間スパン矢印列の固定幅
+/// スパン矢印列の固定幅（メーター差分・区間距離テキストも含む）
 const double _spanArrowColumnWidth = 72.0;
 
-/// 距離表示エリア合計幅
-// ignore: unused_element
-const double _distanceAreaTotalWidth = 136.0;
-
-/// タイムラインアイテム間の隙間
+/// タイムラインアイテム間の通常隙間
 const double _itemGap = 8.0;
+
+/// Mark-Mark 直接隣接時のギャップ（スパン矢印表示スペース確保）
+const double _markMarkGap = 50.0;
 
 // ────────────────────────────────────────────────────────
 // C-2 カラーパレット
@@ -61,24 +57,53 @@ const Color _linkTintLightColor = Color(0xFFEDFAF4);
 const Color _linkBorderColor = Color(0xFFC3EBD8);
 
 // ────────────────────────────────────────────────────────
-// SpanArrowData
+// データクラス
 // ────────────────────────────────────────────────────────
 
 /// Mark 間スパン矢印の描画データ
+/// startY = 上側 Mark の底辺 Y、endY = 下側 Mark の上辺 Y
 class SpanArrowData {
-  /// スパン開始 Mark のリスト内絶対 Y 座標（中心）
   final double startY;
-
-  /// スパン終了 Mark のリスト内絶対 Y 座標（中心）
   final double endY;
-
-  /// 表示する距離文字列（displayMeterDiff）
   final String distanceText;
 
   const SpanArrowData({
     required this.startY,
     required this.endY,
     required this.distanceText,
+  });
+}
+
+/// Link カードの Emerald グラデーション縦線セグメントデータ
+class LinkSegmentData {
+  final double startY;
+  final double endY;
+
+  const LinkSegmentData({required this.startY, required this.endY});
+}
+
+/// Link カードの区間距離テキスト描画データ
+class LinkDistanceData {
+  final double centerY;
+  final String distanceText;
+
+  const LinkDistanceData({required this.centerY, required this.distanceText});
+}
+
+/// タイムライン描画データ一式
+class _TimelineData {
+  final List<SpanArrowData> spans;
+  final List<LinkSegmentData> linkSegments;
+  final List<LinkDistanceData> linkDistances;
+  final List<double> gapAfterItem;
+  final double totalContentHeight;
+
+  const _TimelineData({
+    required this.spans,
+    required this.linkSegments,
+    required this.linkDistances,
+    required this.gapAfterItem,
+    required this.totalContentHeight,
   });
 }
 
@@ -213,7 +238,7 @@ class _MichiInfoListState extends State<_MichiInfoList> {
     setState(() {});
   }
 
-  /// this Mark から次の Mark まで連続する Link の件数を数える
+  /// この Mark から次の Mark まで連続する Link の件数を数える
   int _buildSpanLinkCount(List<MarkLinkItemProjection> items, int index) {
     if (items[index].markLinkType != MarkOrLink.mark) return 0;
     var count = 0;
@@ -227,80 +252,112 @@ class _MichiInfoListState extends State<_MichiInfoList> {
     return count;
   }
 
-  /// この Link がスパン区間内かどうかを判定する
-  bool _buildIsSpanLink(List<MarkLinkItemProjection> items, int index) {
-    if (items[index].markLinkType != MarkOrLink.link) return false;
-    for (var i = index - 1; i >= 0; i--) {
-      if (items[i].markLinkType == MarkOrLink.mark) {
-        final spanCount = _buildSpanLinkCount(items, i);
-        return spanCount > 0;
-      }
-    }
-    return false;
-  }
-
-  /// SpanArrowData のリストを事前計算する（Link カード高さ・アイテム間隔を考慮）
-  List<SpanArrowData> _buildSpanArrows(
+  /// タイムライン描画データを一括計算する
+  ///
+  /// - Y座標はリスト先頭からの相対値（topPadding・scrollOffset は含まない）
+  /// - Mark-Mark 直接隣接時は _markMarkGap を使用
+  /// - startY = 上側 Mark 底辺、endY = 下側 Mark 上辺
+  _TimelineData _buildTimelineData(
     List<MarkLinkItemProjection> items,
     List<ActionItemProjection> markActionItems,
   ) {
-    final spans = <SpanArrowData>[];
-    final hasActions = markActionItems.isNotEmpty;
+    if (items.isEmpty) {
+      return const _TimelineData(
+        spans: [],
+        linkSegments: [],
+        linkDistances: [],
+        gapAfterItem: [],
+        totalContentHeight: 0,
+      );
+    }
 
-    // 各アイテムの累積 Y オフセットを計算
-    // _itemGap を含めて実際の描画位置と一致させる
+    final hasActions = markActionItems.isNotEmpty;
     final yOffsets = <double>[];
+    final cardHeightList = <double>[];
+    final gapAfterItem = <double>[];
     var cumulative = 0.0;
-    for (final item in items) {
+
+    for (var k = 0; k < items.length; k++) {
       yOffsets.add(cumulative);
-      final isMark = item.markLinkType == MarkOrLink.mark;
+      final isMark = items[k].markLinkType == MarkOrLink.mark;
       final cardH = isMark
           ? (hasActions ? _cardHeight + _actionButtonsHeight : _cardHeight)
           : _linkCardHeight;
-      cumulative += cardH + _itemGap;
+      cardHeightList.add(cardH);
+
+      // Mark-Mark 直接隣接 → 大きめギャップ
+      final currentIsMark = isMark;
+      final nextIsMark = k + 1 < items.length &&
+          items[k + 1].markLinkType == MarkOrLink.mark;
+      final gap = (currentIsMark && nextIsMark) ? _markMarkGap : _itemGap;
+      gapAfterItem.add(gap);
+      cumulative += cardH + gap;
     }
 
-    // Mark を走査してスパン矢印データを生成
-    // displayMeterDiff は「前の Mark からの差分」なので、
-    // 終点 Mark（目的地）の displayMeterDiff = 始点〜終点の距離 を使う
+    final totalContentHeight = yOffsets.last + cardHeightList.last;
+
+    final spans = <SpanArrowData>[];
+    final linkSegments = <LinkSegmentData>[];
+    final linkDistances = <LinkDistanceData>[];
+
     for (var i = 0; i < items.length; i++) {
       if (items[i].markLinkType != MarkOrLink.mark) continue;
 
       final spanCount = _buildSpanLinkCount(items, i);
 
       if (spanCount == 0) {
-        // パターン1: 次の Mark を探す
-        for (var j = i + 1; j < items.length; j++) {
-          if (items[j].markLinkType == MarkOrLink.mark) {
-            final distanceText = items[j].displayMeterDiff;
-            if (distanceText != null) {
-              spans.add(SpanArrowData(
-                startY: yOffsets[i] + _cardHeight / 2,
-                endY: yOffsets[j] + _cardHeight / 2,
-                distanceText: distanceText,
-              ));
-            }
-            break;
+        // パターン1: Mark-Mark 直接隣接
+        final j = i + 1;
+        if (j < items.length && items[j].markLinkType == MarkOrLink.mark) {
+          final distanceText = items[j].displayMeterDiff;
+          if (distanceText != null) {
+            spans.add(SpanArrowData(
+              startY: yOffsets[i] + cardHeightList[i],
+              endY: yOffsets[j],
+              distanceText: distanceText,
+            ));
           }
         }
       } else {
-        // パターン3・4: 終点 Mark のインデックスを計算
+        // パターン2: Mark-Link*-Mark
         final endMarkIndex = i + spanCount + 1;
         if (endMarkIndex < items.length &&
             items[endMarkIndex].markLinkType == MarkOrLink.mark) {
           final distanceText = items[endMarkIndex].displayMeterDiff;
           if (distanceText != null) {
             spans.add(SpanArrowData(
-              startY: yOffsets[i] + _cardHeight / 2,
-              endY: yOffsets[endMarkIndex] + _cardHeight / 2,
+              startY: yOffsets[i] + cardHeightList[i],
+              endY: yOffsets[endMarkIndex],
               distanceText: distanceText,
             ));
+            // Link セグメント・区間距離データを収集
+            for (var k = i + 1; k < endMarkIndex; k++) {
+              if (items[k].markLinkType == MarkOrLink.link) {
+                linkSegments.add(LinkSegmentData(
+                  startY: yOffsets[k],
+                  endY: yOffsets[k] + _linkCardHeight,
+                ));
+                final dist = items[k].displayDistanceValue;
+                if (dist != null) {
+                  linkDistances.add(LinkDistanceData(
+                    centerY: yOffsets[k] + _linkCardHeight / 2,
+                    distanceText: dist,
+                  ));
+                }
+              }
+            }
           }
         }
       }
     }
 
-    return spans;
+    return _TimelineData(
+      spans: spans,
+      linkSegments: linkSegments,
+      linkDistances: linkDistances,
+      gapAfterItem: gapAfterItem,
+      totalContentHeight: totalContentHeight,
+    );
   }
 
   @override
@@ -322,19 +379,20 @@ class _MichiInfoListState extends State<_MichiInfoList> {
     final scrollOffset = _scrollController.hasClients
         ? _scrollController.offset
         : 0.0;
-    final spans = _buildSpanArrows(items, markActionItems);
+    final timelineData = _buildTimelineData(items, markActionItems);
 
     return Scaffold(
       body: Stack(
         children: [
-          // 背景レイヤー: Mark 間スパン矢印（Teal）
+          // 背景レイヤー: 縦線全体 + スパン矢印 + 距離テキスト
           Positioned.fill(
             child: CustomPaint(
               painter: _MichiTimelineCanvas(
-                spans: spans,
+                spans: timelineData.spans,
+                linkSegments: timelineData.linkSegments,
+                linkDistances: timelineData.linkDistances,
+                totalContentHeight: timelineData.totalContentHeight,
                 scrollOffset: scrollOffset,
-                arrowColor: _markPrimaryColor,
-                textColor: _markPrimaryColor,
               ),
             ),
           ),
@@ -348,29 +406,9 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       final item = items[index];
-                      final isFirst = index == 0;
-                      final isLast = index == items.length - 1;
-
-                      // 太線判定（Link ゾーン判定）
-                      final bool isLinkActive;
-                      if (item.markLinkType == MarkOrLink.link) {
-                        isLinkActive = true;
-                      } else {
-                        final prevIsLink = !isFirst &&
-                            items[index - 1].markLinkType == MarkOrLink.link;
-                        final nextIsLink = !isLast &&
-                            items[index + 1].markLinkType == MarkOrLink.link;
-                        isLinkActive = prevIsLink || nextIsLink;
-                      }
-
-                      final isSpanLink = _buildIsSpanLink(items, index);
-
                       return _TimelineItem(
                         item: item,
-                        isFirst: isFirst,
-                        isLast: isLast,
-                        isLinkActive: isLinkActive,
-                        isSpanLink: isSpanLink,
+                        gapAfter: timelineData.gapAfterItem[index],
                         onTap: () => context.read<MichiInfoBloc>().add(
                               MichiInfoItemTapped(
                                 markLinkId: item.id,
@@ -437,95 +475,153 @@ class _MichiInfoListState extends State<_MichiInfoList> {
 }
 
 // ────────────────────────────────────────────────────────
-// _MichiTimelineCanvas（全体スパン矢印 CustomPainter）
+// _MichiTimelineCanvas（全体縦線 + スパン矢印 CustomPainter）
 // ────────────────────────────────────────────────────────
 
 class _MichiTimelineCanvas extends CustomPainter {
   final List<SpanArrowData> spans;
+  final List<LinkSegmentData> linkSegments;
+  final List<LinkDistanceData> linkDistances;
+  final double totalContentHeight;
   final double scrollOffset;
-  final Color arrowColor;
-  final Color textColor;
 
+  static const double _axisX = 20.0;
+  static const double _thinLineWidth = 1.5;
+  static const double _thickLineWidth = 6.0;
   static const double _arrowHeadSize = 6.0;
   static const double _arrowStrokeWidth = 1.5;
+  static const double _topPadding = 48.0;
 
   const _MichiTimelineCanvas({
     required this.spans,
+    required this.linkSegments,
+    required this.linkDistances,
+    required this.totalContentHeight,
     required this.scrollOffset,
-    required this.arrowColor,
-    required this.textColor,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (spans.isEmpty) return;
+    // ── 1. 細い Teal 縦線（全体背景・途切れなし）────────────────
+    if (totalContentHeight > 0) {
+      final lineStartY = _topPadding - scrollOffset;
+      final lineEndY = _topPadding + totalContentHeight - scrollOffset;
+      canvas.drawLine(
+        Offset(_axisX, lineStartY.clamp(0.0, size.height)),
+        Offset(_axisX, lineEndY.clamp(0.0, size.height)),
+        Paint()
+          ..color = _markPrimaryColor.withValues(alpha: 0.4)
+          ..strokeWidth = _thinLineWidth
+          ..strokeCap = StrokeCap.butt,
+      );
+    }
 
-    // 矢印はスパン列の左寄せ、テキストは矢印の右側に配置
+    // ── 2. Emerald グラデーション縦線（Link カード区間）─────────
+    for (final seg in linkSegments) {
+      final segStartY = _topPadding + seg.startY - scrollOffset;
+      final segEndY = _topPadding + seg.endY - scrollOffset;
+      if (segEndY < 0 || segStartY > size.height) continue;
+
+      final lineRect = Rect.fromLTWH(
+        _axisX - _thickLineWidth / 2,
+        segStartY,
+        _thickLineWidth,
+        segEndY - segStartY,
+      );
+      canvas.drawRect(
+        lineRect,
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: const [_linkPrimaryColor, _linkDarkColor],
+          ).createShader(lineRect),
+      );
+    }
+
+    // ── 3. スパン矢印（Mark 底辺 → Mark 上辺）+ メーター差分テキスト ─
     final arrowX = size.width - _spanArrowColumnWidth + 8.0;
-    final textStartX = arrowX + _arrowHeadSize + 4.0;
-    final textMaxWidth = size.width - textStartX - 2.0;
+    final textX = arrowX + _arrowHeadSize + 4.0;
+    final textMaxWidth = size.width - textX - 2.0;
 
-    final paint = Paint()
-      ..color = arrowColor
+    final arrowPaint = Paint()
+      ..color = _markPrimaryColor
       ..strokeWidth = _arrowStrokeWidth
       ..strokeCap = StrokeCap.round;
 
-    const topPadding = 48.0;
-
     for (final span in spans) {
-      final drawStartY = span.startY - scrollOffset + topPadding;
-      final drawEndY = span.endY - scrollOffset + topPadding;
-
+      final drawStartY = span.startY - scrollOffset + _topPadding;
+      final drawEndY = span.endY - scrollOffset + _topPadding;
       if (drawEndY < 0 || drawStartY > size.height) continue;
 
-      // 縦線（矢印左端）
+      // 縦線
       canvas.drawLine(
         Offset(arrowX, drawStartY),
         Offset(arrowX, drawEndY),
-        paint,
+        arrowPaint,
       );
 
-      // 上向き矢印頭
+      // 上向き矢印頭（スパン開始 = start Mark 底辺）
       canvas.drawLine(
         Offset(arrowX, drawStartY),
         Offset(arrowX - _arrowHeadSize / 2, drawStartY + _arrowHeadSize),
-        paint,
+        arrowPaint,
       );
       canvas.drawLine(
         Offset(arrowX, drawStartY),
         Offset(arrowX + _arrowHeadSize / 2, drawStartY + _arrowHeadSize),
-        paint,
+        arrowPaint,
       );
 
-      // 下向き矢印頭
+      // 下向き矢印頭（スパン終了 = end Mark 上辺）
       canvas.drawLine(
         Offset(arrowX, drawEndY),
         Offset(arrowX - _arrowHeadSize / 2, drawEndY - _arrowHeadSize),
-        paint,
+        arrowPaint,
       );
       canvas.drawLine(
         Offset(arrowX, drawEndY),
         Offset(arrowX + _arrowHeadSize / 2, drawEndY - _arrowHeadSize),
-        paint,
+        arrowPaint,
       );
 
-      // 距離テキスト（矢印の右側・中央高さ）
-      final midY = (drawStartY + drawEndY) / 2;
-      final textPainter = TextPainter(
+      // メーター差分テキスト（矢印上端の右側）
+      final meterPainter = TextPainter(
         text: TextSpan(
           text: span.distanceText,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 11,
-            color: textColor,
+            color: _markPrimaryColor,
             fontWeight: FontWeight.bold,
           ),
         ),
         textDirection: TextDirection.ltr,
       )..layout(maxWidth: textMaxWidth);
-
-      textPainter.paint(
+      meterPainter.paint(
         canvas,
-        Offset(textStartX, midY - textPainter.height / 2),
+        Offset(textX, drawStartY + 2),
+      );
+    }
+
+    // ── 4. Link 区間距離テキスト（スパン列右側・Link カード中心 Y）──
+    for (final ld in linkDistances) {
+      final drawCenterY = ld.centerY - scrollOffset + _topPadding;
+      if (drawCenterY < -20 || drawCenterY > size.height + 20) continue;
+
+      final distPainter = TextPainter(
+        text: TextSpan(
+          text: ld.distanceText,
+          style: const TextStyle(
+            fontSize: 11,
+            color: _linkPrimaryColor,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(maxWidth: textMaxWidth);
+      distPainter.paint(
+        canvas,
+        Offset(textX, drawCenterY - distPainter.height / 2),
       );
     }
   }
@@ -533,9 +629,10 @@ class _MichiTimelineCanvas extends CustomPainter {
   @override
   bool shouldRepaint(_MichiTimelineCanvas old) =>
       spans != old.spans ||
-      scrollOffset != old.scrollOffset ||
-      arrowColor != old.arrowColor ||
-      textColor != old.textColor;
+      linkSegments != old.linkSegments ||
+      linkDistances != old.linkDistances ||
+      totalContentHeight != old.totalContentHeight ||
+      scrollOffset != old.scrollOffset;
 }
 
 // ────────────────────────────────────────────────────────
@@ -544,19 +641,13 @@ class _MichiTimelineCanvas extends CustomPainter {
 
 class _TimelineItem extends StatelessWidget {
   final MarkLinkItemProjection item;
-  final bool isFirst;
-  final bool isLast;
-  final bool isLinkActive;
-  final bool isSpanLink;
+  final double gapAfter;
   final VoidCallback onTap;
   final List<ActionItemProjection> markActionItems;
 
   const _TimelineItem({
     required this.item,
-    required this.isFirst,
-    required this.isLast,
-    required this.isLinkActive,
-    required this.isSpanLink,
+    required this.gapAfter,
     required this.onTap,
     required this.markActionItems,
   });
@@ -565,7 +656,6 @@ class _TimelineItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMark = item.markLinkType == MarkOrLink.mark;
     final hasActionButtons = isMark && markActionItems.isNotEmpty;
-    // Mark: _cardHeight / Link: _linkCardHeight (C-2 コンパクト化)
     final rowHeight = isMark ? _cardHeight : _linkCardHeight;
 
     return Column(
@@ -585,9 +675,6 @@ class _TimelineItem extends StatelessWidget {
                       child: CustomPaint(
                         painter: _MichiTimelinePainter(
                           markLinkType: item.markLinkType,
-                          isFirst: isFirst,
-                          isLast: isLast,
-                          isLinkActive: isLinkActive,
                         ),
                       ),
                     ),
@@ -602,12 +689,6 @@ class _TimelineItem extends StatelessWidget {
                   ],
                 ),
               ),
-              // Link 個別距離列（Link 行のみ）
-              if (!isMark)
-                SizedBox(
-                  width: _linkDistanceColumnWidth,
-                  child: _LinkDistanceCell(item: item),
-                ),
               // スパン矢印列スペース確保（_MichiTimelineCanvas が描画）
               const SizedBox(width: _spanArrowColumnWidth),
             ],
@@ -619,15 +700,15 @@ class _TimelineItem extends StatelessWidget {
             markLinkId: item.id,
             actions: markActionItems,
           ),
-        // カード間の隙間
-        const SizedBox(height: _itemGap),
+        // カード間の隙間（Mark-Mark 直接隣接時は大きめ）
+        SizedBox(height: gapAfter),
       ],
     );
   }
 }
 
 // ────────────────────────────────────────────────────────
-// _MichiTimelinePainter v4.0（C-2 カラーデザイン）
+// _MichiTimelinePainter v4.1（縦線描画なし・カード+ドットのみ）
 // ────────────────────────────────────────────────────────
 
 class _MichiTimelinePainter extends CustomPainter {
@@ -637,8 +718,11 @@ class _MichiTimelinePainter extends CustomPainter {
   /// カード左端 X 座標
   static const double _cardLeft = 40.0;
 
-  /// カード右端余白
-  static const double _cardRight = 8.0;
+  /// Mark カード右端余白（右端まで拡張）
+  static const double _markCardRight = 0.0;
+
+  /// Link カード右端余白
+  static const double _linkCardRight = 8.0;
 
   /// 水平接続線の長さ（axisX からカード左端まで）
   static const double _connectorLength = 20.0;
@@ -651,24 +735,14 @@ class _MichiTimelinePainter extends CustomPainter {
   static const double _linkDotSize = 14.0;
   static const double _linkDotCorner = 4.0;
 
-  // 縦線の太さ
-  static const double _thinLineWidth = 1.5;
-  static const double _thickLineWidth = 6.0;
-
   // カード角丸
   static const double _markCornerRadius = 16.0;
   static const double _linkCornerRadius = 8.0;
 
   final MarkOrLink markLinkType;
-  final bool isFirst;
-  final bool isLast;
-  final bool isLinkActive;
 
   const _MichiTimelinePainter({
     required this.markLinkType,
-    required this.isFirst,
-    required this.isLast,
-    required this.isLinkActive,
   });
 
   @override
@@ -676,55 +750,15 @@ class _MichiTimelinePainter extends CustomPainter {
     final centerY = size.height / 2;
     final isMark = markLinkType == MarkOrLink.mark;
 
-    // ── 1. タイムライン縦線 ─────────────────────────────────
-    if (isMark) {
-      // Mark カード: ドットの上下に縦線を描画（ドット部分はスキップ）
-      final dotClearance = _markDotRadius + _markDotRingWidth;
+    // 縦線は _MichiTimelineCanvas が全体を通して描画するため、ここでは描画しない
 
-      if (!isFirst) {
-        final topEnd = centerY - dotClearance;
-        if (topEnd > 0) {
-          canvas.drawLine(
-            Offset(_axisX, 0),
-            Offset(_axisX, topEnd),
-            _makeLinePaint(isLinkActive),
-          );
-        }
-      }
-      if (!isLast) {
-        final bottomStart = centerY + dotClearance;
-        if (size.height > bottomStart) {
-          canvas.drawLine(
-            Offset(_axisX, bottomStart),
-            Offset(_axisX, size.height),
-            _makeLinePaint(isLinkActive),
-          );
-        }
-      }
-    } else {
-      // Link カード: Emerald グラデーション縦線をカード全体に描画
-      final lineRect = Rect.fromLTWH(
-        _axisX - _thickLineWidth / 2,
-        0,
-        _thickLineWidth,
-        size.height,
-      );
-      final gradientPaint = Paint()
-        ..shader = const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [_linkPrimaryColor, _linkDarkColor],
-        ).createShader(lineRect);
-      canvas.drawRect(lineRect, gradientPaint);
-    }
-
-    // ── 2. カード背景 ──────────────────────────────────────
-    final cardCornerRadius =
-        isMark ? _markCornerRadius : _linkCornerRadius;
+    // ── 1. カード背景 ──────────────────────────────────────
+    final cardCornerRadius = isMark ? _markCornerRadius : _linkCornerRadius;
+    final cardRight = isMark ? _markCardRight : _linkCardRight;
     final cardRect = Rect.fromLTWH(
       _cardLeft,
       0,
-      size.width - _cardLeft - _cardRight,
+      size.width - _cardLeft - cardRight,
       size.height,
     );
     final rrect = RRect.fromRectAndRadius(
@@ -734,15 +768,14 @@ class _MichiTimelinePainter extends CustomPainter {
 
     // Mark カード: ドロップシャドウ
     if (isMark) {
-      final shadowPaint = Paint()
-        ..color = Colors.black.withValues(alpha: 0.08)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
       canvas.drawRRect(
         RRect.fromRectAndRadius(
           cardRect.translate(0, 2),
           Radius.circular(cardCornerRadius),
         ),
-        shadowPaint,
+        Paint()
+          ..color = Colors.black.withValues(alpha: 0.08)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0),
       );
     }
 
@@ -756,12 +789,7 @@ class _MichiTimelinePainter extends CustomPainter {
 
     // カードボーダー
     if (isMark) {
-      // 上辺 3dp Teal ボーダー
-      final topBorderPaint = Paint()
-        ..color = _markPrimaryColor
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3.0
-        ..strokeCap = StrokeCap.round;
+      // 上辺 3dp Teal ボーダー（左上・右上を外側に湾曲）
       final topPath = Path()
         ..moveTo(cardRect.left, cardRect.top + cardCornerRadius)
         ..arcToPoint(
@@ -773,7 +801,14 @@ class _MichiTimelinePainter extends CustomPainter {
           Offset(cardRect.right, cardRect.top + cardCornerRadius),
           radius: Radius.circular(cardCornerRadius),
         );
-      canvas.drawPath(topPath, topBorderPaint);
+      canvas.drawPath(
+        topPath,
+        Paint()
+          ..color = _markPrimaryColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3.0
+          ..strokeCap = StrokeCap.round,
+      );
     } else {
       // 全辺 1.5px Emerald ボーダー
       canvas.drawRRect(
@@ -785,7 +820,7 @@ class _MichiTimelinePainter extends CustomPainter {
       );
     }
 
-    // ── 3. 水平接続線（axisX → cardLeft）─────────────────
+    // ── 2. 水平接続線（axisX → cardLeft）────────────────────
     canvas.drawLine(
       Offset(_axisX, centerY),
       Offset(_axisX + _connectorLength, centerY),
@@ -797,7 +832,7 @@ class _MichiTimelinePainter extends CustomPainter {
         ..strokeCap = StrokeCap.round,
     );
 
-    // ── 4. ドット ───────────────────────────────────────
+    // ── 3. ドット ─────────────────────────────────────────
     if (isMark) {
       // 白リング（背景との分離）
       canvas.drawCircle(
@@ -834,20 +869,9 @@ class _MichiTimelinePainter extends CustomPainter {
     }
   }
 
-  /// 縦線用 Paint を生成（isLinkActive で Emerald 太線 / Teal 細線）
-  Paint _makeLinePaint(bool linkActive) => Paint()
-    ..color = linkActive
-        ? _linkPrimaryColor.withValues(alpha: 0.8)
-        : _markPrimaryColor.withValues(alpha: 0.4)
-    ..strokeWidth = linkActive ? _thickLineWidth : _thinLineWidth
-    ..strokeCap = StrokeCap.butt;
-
   @override
   bool shouldRepaint(_MichiTimelinePainter old) =>
-      markLinkType != old.markLinkType ||
-      isFirst != old.isFirst ||
-      isLast != old.isLast ||
-      isLinkActive != old.isLinkActive;
+      markLinkType != old.markLinkType;
 }
 
 // ────────────────────────────────────────────────────────
@@ -872,8 +896,6 @@ class _TimelineItemOverlay extends StatelessWidget {
     final name =
         item.markLinkName.isEmpty ? '（名称未設定）' : item.markLinkName;
     const leftPadding = _cardLeft + 8.0;
-
-    // Link カード（34dp）は padding を縮小して収まるようにする
     final verticalPadding = isMark ? 8.0 : 4.0;
 
     return GestureDetector(
@@ -913,48 +935,17 @@ class _TimelineItemOverlay extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                     ),
-                  // Link の距離は _LinkDistanceCell に表示するため overlay では非表示
                 ],
               ),
             ),
             if (item.isFuel)
-              Icon(
+              const Icon(
                 Icons.local_gas_station,
                 size: 16,
                 color: _markPrimaryColor,
               ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// ────────────────────────────────────────────────────────
-// _LinkDistanceCell（Link 行の個別距離表示・Emerald カラー）
-// ────────────────────────────────────────────────────────
-
-class _LinkDistanceCell extends StatelessWidget {
-  final MarkLinkItemProjection item;
-
-  const _LinkDistanceCell({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    final displayText = item.displayDistanceValue;
-    if (displayText == null) return const SizedBox.shrink();
-
-    // 矢印はスパン列の1本矢印に集約済み。距離テキストのみ表示
-    return Center(
-      child: Text(
-        displayText,
-        style: const TextStyle(
-          fontSize: 12,
-          color: _linkPrimaryColor,
-          fontWeight: FontWeight.w800,
-        ),
-        textAlign: TextAlign.center,
-        overflow: TextOverflow.ellipsis,
       ),
     );
   }
