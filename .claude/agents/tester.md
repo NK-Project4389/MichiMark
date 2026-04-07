@@ -39,13 +39,106 @@ tools: Read,Glob,Bash
 - `tester.tap` / `tester.enterText` / `tester.pump` で操作する
 - `expect` でUI状態を検証する
 
+### NG パターン（絶対に使わない）
+
 ```dart
+setUpAll(() {
+  app.main(); // ❌ 初回テストにしか効かない！
+});
+```
+
+`IntegrationTestWidgetsFlutterBinding` は各 `testWidgets` でウィジェットツリーをリセットする。
+`setUpAll` で `app.main()` を一度だけ呼ぶパターンは **2番目以降のテストでアプリが未起動になり全滅する**。
+
+### OK パターン（必ずこれを使う）
+
+```dart
+// setUpAll は不要
+
+Future<void> goToXxxPage(WidgetTester tester) async {
+  app_router.router.go('/target-path'); // runApp より先にセット → スプラッシュスキップ
+  app.main();                           // 各テストで個別に起動
+  for (var i = 0; i < 20; i++) {
+    await tester.pump(const Duration(milliseconds: 500));
+    if (find.byKey(const Key('target_widget_key')).evaluate().isNotEmpty) return;
+  }
+  fail('[タイムアウト] ページが10秒以内にロードされませんでした');
+}
+
 testWidgets('TC-001: 地点の新規登録', (tester) async {
-  app.main();
-  await tester.pumpAndSettle();
+  await goToXxxPage(tester); // 各テストの先頭で呼ぶ
   // Specのシナリオに従って操作・検証
 });
 ```
+
+**ポイント：**
+- `router.go('/path')` を `app.main()` より**先に**呼ぶことでスプラッシュをスキップできる
+- GoRouter はグローバルシングルトンのため、`runApp` 前に設定した location が適用される
+
+---
+
+## よくある落とし穴
+
+テスト実装前に必ず確認すること。
+
+### 落とし穴 1: ボタンがキーボード・スクロールで画面外に押し出される
+
+**症状**: `tester.tap(saveButton)` で `"would not hit test"` 警告 → タップが無効になる。
+
+**原因**: `tester.enterText()` でキーボードが表示されると、ボタンが画面外に押し出される。
+Bottom sheet のスクロール内でリストが長い場合も同様。
+
+**対処**: `tester.tap()` の前に `ensureVisible` を挿入する。
+
+```dart
+await tester.ensureVisible(find.byKey(const Key('save_button')));
+await tester.pumpAndSettle();
+await tester.tap(find.byKey(const Key('save_button')));
+```
+
+---
+
+### 落とし穴 2: ListView.builder は画面外のアイテムを描画しない
+
+**症状**: 保存後に `find.byKey('item_card')` でアイテム数を数えても増えない。
+
+**原因**: `ListView.builder` はlazyレンダリングのため、ビューポート内のWidgetのみが
+Widget treeに存在する。横スクロールリストの末尾に追加されたカードや、
+縦スクロールリストの下部にある新しいグループは `find` で検出できない。
+
+**対処**: 数を数えるのではなく、対象グループを縦スクロールで表示してから検証する。
+
+```dart
+// ❌ NG: 横スクロール末尾のカードは不可視のため count が増えない
+expect(find.byKey(Key('item_card')).evaluate().length, count1 + 1);
+
+// ✅ OK: 対象グループを縦スクロールで表示してから存在確認
+for (var i = 0; i < 10; i++) {
+  if (find.byKey(Key('group_TARGET')).evaluate().isNotEmpty) break;
+  await tester.drag(find.byType(ListView).first, const Offset(0, -400));
+  await tester.pump(const Duration(milliseconds: 200));
+}
+expect(find.byKey(Key('group_TARGET')), findsOneWidget);
+```
+
+---
+
+### 落とし穴 3: ListView.builder 内のウィジェットキーは一意にする
+
+**症状**: `Duplicate Global Key` エラーでビルドクラッシュ。
+
+**原因**: `ListView.builder` で全アイテムに同じキーを付けると重複する。
+
+```dart
+// ❌ NG
+.map((item) => ListTile(key: const Key('item'), ...))
+
+// ✅ OK: インデックス付きキー
+.asMap().entries.map((entry) =>
+  ListTile(key: Key('item_${entry.key}'), ...))
+```
+
+テスト側では `find.byKey(const Key('item_0'))` でアクセスする。
 
 ---
 
