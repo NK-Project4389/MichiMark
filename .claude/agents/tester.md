@@ -163,6 +163,11 @@ flutter test integration_test/[feature_name]_test.dart -d [device_id]
 | TC-001 | xxx | PASS |
 ```
 
+**全件パスを報告したら、必ず以下をセットで実施すること:**
+1. 進捗ファイル（`docs/Progress/YYYY-MM-DD_[作業内容].md`）を作成・更新する
+2. `docs/Progress/README.md` のファイル一覧も更新する
+3. git add → git commit → git push する
+
 ### テスト失敗時
 ```
 ## テスト結果: 失敗あり
