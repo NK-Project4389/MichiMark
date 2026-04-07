@@ -22,6 +22,45 @@ import '../bloc/michi_info_state.dart';
 /// 1カードの固定高さ。全描画座標の基準値
 const double _cardHeight = 72.0;
 
+/// _MarkActionButtons がある場合の追加高さ
+const double _actionButtonsHeight = 48.0;
+
+/// Mark カード右端の内側余白。スパン矢印列幅分を確保する
+// ignore: unused_element
+const double _markCardRightInset = 80.0;
+
+/// Link 個別距離列の固定幅
+const double _linkDistanceColumnWidth = 64.0;
+
+/// Mark 間スパン矢印列の固定幅
+const double _spanArrowColumnWidth = 72.0;
+
+/// 距離表示エリア合計幅（_linkDistanceColumnWidth + _spanArrowColumnWidth）
+// ignore: unused_element
+const double _distanceAreaTotalWidth = 136.0;
+
+// ────────────────────────────────────────────────────────
+// SpanArrowData
+// ────────────────────────────────────────────────────────
+
+/// Mark 間スパン矢印の描画データ
+class SpanArrowData {
+  /// スパン開始 Mark のリスト内絶対 Y 座標（中心）
+  final double startY;
+
+  /// スパン終了 Mark のリスト内絶対 Y 座標（中心）
+  final double endY;
+
+  /// 表示する距離文字列（displayMeterDiff）
+  final String distanceText;
+
+  const SpanArrowData({
+    required this.startY,
+    required this.endY,
+    required this.distanceText,
+  });
+}
+
 // ────────────────────────────────────────────────────────
 // MichiInfoView
 // ────────────────────────────────────────────────────────
@@ -117,7 +156,7 @@ class _MichiInfoViewState extends State<MichiInfoView> {
 // _MichiInfoList
 // ────────────────────────────────────────────────────────
 
-class _MichiInfoList extends StatelessWidget {
+class _MichiInfoList extends StatefulWidget {
   final MichiInfoListProjection projection;
   final TopicConfig topicConfig;
   final List<ActionItemProjection> markActionItems;
@@ -129,7 +168,126 @@ class _MichiInfoList extends StatelessWidget {
   });
 
   @override
+  State<_MichiInfoList> createState() => _MichiInfoListState();
+}
+
+class _MichiInfoListState extends State<_MichiInfoList> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    setState(() {});
+  }
+
+  /// this Mark から次の Mark まで連続する Link の件数を数える
+  int _buildSpanLinkCount(List<MarkLinkItemProjection> items, int index) {
+    if (items[index].markLinkType != MarkOrLink.mark) return 0;
+    var count = 0;
+    for (var i = index + 1; i < items.length; i++) {
+      if (items[i].markLinkType == MarkOrLink.link) {
+        count++;
+      } else {
+        break;
+      }
+    }
+    return count;
+  }
+
+  /// この Link がスパン区間内かどうかを判定する
+  bool _buildIsSpanLink(List<MarkLinkItemProjection> items, int index) {
+    if (items[index].markLinkType != MarkOrLink.link) return false;
+    // 直近の Mark を遡って探す
+    for (var i = index - 1; i >= 0; i--) {
+      if (items[i].markLinkType == MarkOrLink.mark) {
+        // その Mark の spanLinkCount > 0 かつ次に Mark が存在するか確認
+        final spanCount = _buildSpanLinkCount(items, i);
+        return spanCount > 0;
+      }
+    }
+    return false;
+  }
+
+  /// SpanArrowData のリストを事前計算する
+  List<SpanArrowData> _buildSpanArrows(
+    List<MarkLinkItemProjection> items,
+    List<ActionItemProjection> markActionItems,
+  ) {
+    final spans = <SpanArrowData>[];
+    final hasActions = markActionItems.isNotEmpty;
+
+    // 各アイテムの累積 Y オフセットを計算
+    final yOffsets = <double>[];
+    var cumulative = 0.0;
+    for (final item in items) {
+      yOffsets.add(cumulative);
+      final isMark = item.markLinkType == MarkOrLink.mark;
+      final itemHeight = isMark && hasActions
+          ? _cardHeight + _actionButtonsHeight
+          : _cardHeight;
+      cumulative += itemHeight;
+    }
+
+    // Mark を走査してスパン矢印データを生成
+    for (var i = 0; i < items.length; i++) {
+      final item = items[i];
+      if (item.markLinkType != MarkOrLink.mark) continue;
+
+      final spanCount = _buildSpanLinkCount(items, i);
+      final distanceText = item.displayMeterDiff;
+      if (distanceText == null) continue;
+
+      // スパンなし（パターン1）: 次の Mark との間
+      if (spanCount == 0) {
+        // 次の Mark を探す
+        for (var j = i + 1; j < items.length; j++) {
+          if (items[j].markLinkType == MarkOrLink.mark) {
+            final startY = yOffsets[i] + _cardHeight / 2;
+            final endY = yOffsets[j] + _cardHeight / 2;
+            spans.add(SpanArrowData(
+              startY: startY,
+              endY: endY,
+              distanceText: distanceText,
+            ));
+            break;
+          }
+        }
+      } else {
+        // スパンあり（パターン3・4）: 次の Mark まで
+        final endMarkIndex = i + spanCount + 1;
+        if (endMarkIndex < items.length &&
+            items[endMarkIndex].markLinkType == MarkOrLink.mark) {
+          final startY = yOffsets[i] + _cardHeight / 2;
+          final endY = yOffsets[endMarkIndex] + _cardHeight / 2;
+          spans.add(SpanArrowData(
+            startY: startY,
+            endY: endY,
+            distanceText: distanceText,
+          ));
+        }
+      }
+    }
+
+    return spans;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final projection = widget.projection;
+    final markActionItems = widget.markActionItems;
+
     if (projection.items.isEmpty) {
       return Scaffold(
         body: const Center(child: Text('地点/区間がありません')),
@@ -141,47 +299,75 @@ class _MichiInfoList extends StatelessWidget {
     }
 
     final items = projection.items;
+    final colorScheme = Theme.of(context).colorScheme;
+    final scrollOffset = _scrollController.hasClients
+        ? _scrollController.offset
+        : 0.0;
+    final spans = _buildSpanArrows(items, markActionItems);
 
     return Scaffold(
       body: Stack(
         children: [
-          ListView.builder(
-            padding: const EdgeInsets.only(top: 48, bottom: 80),
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              final isFirst = index == 0;
-              final isLast = index == items.length - 1;
-
-              // 太線判定:
-              // - Link 行: isLinkActive = true
-              // - Mark 行: 前後いずれかが Link なら isLinkActive = true
-              final bool isLinkActive;
-              if (item.markLinkType == MarkOrLink.link) {
-                isLinkActive = true;
-              } else {
-                final prevIsLink = !isFirst &&
-                    items[index - 1].markLinkType == MarkOrLink.link;
-                final nextIsLink = !isLast &&
-                    items[index + 1].markLinkType == MarkOrLink.link;
-                isLinkActive = prevIsLink || nextIsLink;
-              }
-
-              return _TimelineItem(
-                item: item,
-                isFirst: isFirst,
-                isLast: isLast,
-                isLinkActive: isLinkActive,
-                onTap: () => context.read<MichiInfoBloc>().add(
-                      MichiInfoItemTapped(
-                        markLinkId: item.id,
-                        type: item.markLinkType,
-                      ),
-                    ),
-                markActionItems: markActionItems,
-              );
-            },
+          // 背景レイヤー: Mark 間スパン矢印
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _MichiTimelineCanvas(
+                spans: spans,
+                scrollOffset: scrollOffset,
+                arrowColor: colorScheme.onSurface,
+                textColor: colorScheme.onSurface,
+              ),
+            ),
           ),
+          // メインスクロールビュー
+          CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.only(top: 48, bottom: 80),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final item = items[index];
+                      final isFirst = index == 0;
+                      final isLast = index == items.length - 1;
+
+                      // 太線判定
+                      final bool isLinkActive;
+                      if (item.markLinkType == MarkOrLink.link) {
+                        isLinkActive = true;
+                      } else {
+                        final prevIsLink = !isFirst &&
+                            items[index - 1].markLinkType == MarkOrLink.link;
+                        final nextIsLink = !isLast &&
+                            items[index + 1].markLinkType == MarkOrLink.link;
+                        isLinkActive = prevIsLink || nextIsLink;
+                      }
+
+                      final isSpanLink = _buildIsSpanLink(items, index);
+
+                      return _TimelineItem(
+                        item: item,
+                        isFirst: isFirst,
+                        isLast: isLast,
+                        isLinkActive: isLinkActive,
+                        isSpanLink: isSpanLink,
+                        onTap: () => context.read<MichiInfoBloc>().add(
+                              MichiInfoItemTapped(
+                                markLinkId: item.id,
+                                type: item.markLinkType,
+                              ),
+                            ),
+                        markActionItems: markActionItems,
+                      );
+                    },
+                    childCount: items.length,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // 右上固定の凡例
           const Positioned(
             top: 8,
             right: 8,
@@ -213,7 +399,7 @@ class _MichiInfoList extends StatelessWidget {
                     .add(const MichiInfoAddMarkPressed());
               },
             ),
-            if (topicConfig.allowLinkAdd)
+            if (widget.topicConfig.allowLinkAdd)
               ListTile(
                 leading: const Icon(Icons.route),
                 title: const Text('区間を追加'),
@@ -232,6 +418,111 @@ class _MichiInfoList extends StatelessWidget {
 }
 
 // ────────────────────────────────────────────────────────
+// _MichiTimelineCanvas（新設・全体スパン矢印 CustomPainter）
+// ────────────────────────────────────────────────────────
+
+class _MichiTimelineCanvas extends CustomPainter {
+  final List<SpanArrowData> spans;
+  final double scrollOffset;
+  final Color arrowColor;
+  final Color textColor;
+
+  /// スパン矢印列の中心 X（画面右端 - spanArrowColumnWidth の中央）
+  static const double _arrowHeadSize = 6.0;
+  static const double _arrowStrokeWidth = 1.5;
+
+  const _MichiTimelineCanvas({
+    required this.spans,
+    required this.scrollOffset,
+    required this.arrowColor,
+    required this.textColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (spans.isEmpty) return;
+
+    // スパン矢印列の中心 X
+    final arrowCenterX = size.width - _spanArrowColumnWidth / 2;
+
+    final paint = Paint()
+      ..color = arrowColor
+      ..strokeWidth = _arrowStrokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    const topPadding = 48.0; // SliverPadding top と一致させる
+
+    for (final span in spans) {
+      final drawStartY = span.startY - scrollOffset + topPadding;
+      final drawEndY = span.endY - scrollOffset + topPadding;
+
+      // 画面外なら描画スキップ
+      if (drawEndY < 0 || drawStartY > size.height) continue;
+
+      // 縦線
+      canvas.drawLine(
+        Offset(arrowCenterX, drawStartY),
+        Offset(arrowCenterX, drawEndY),
+        paint,
+      );
+
+      // 上向き矢印頭
+      canvas.drawLine(
+        Offset(arrowCenterX, drawStartY),
+        Offset(arrowCenterX - _arrowHeadSize / 2, drawStartY + _arrowHeadSize),
+        paint,
+      );
+      canvas.drawLine(
+        Offset(arrowCenterX, drawStartY),
+        Offset(arrowCenterX + _arrowHeadSize / 2, drawStartY + _arrowHeadSize),
+        paint,
+      );
+
+      // 下向き矢印頭
+      canvas.drawLine(
+        Offset(arrowCenterX, drawEndY),
+        Offset(arrowCenterX - _arrowHeadSize / 2, drawEndY - _arrowHeadSize),
+        paint,
+      );
+      canvas.drawLine(
+        Offset(arrowCenterX, drawEndY),
+        Offset(arrowCenterX + _arrowHeadSize / 2, drawEndY - _arrowHeadSize),
+        paint,
+      );
+
+      // 距離テキスト（矢印の中央）
+      final midY = (drawStartY + drawEndY) / 2;
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: span.distanceText,
+          style: TextStyle(
+            fontSize: 11,
+            color: textColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(maxWidth: _spanArrowColumnWidth - 4);
+
+      textPainter.paint(
+        canvas,
+        Offset(
+          arrowCenterX - textPainter.width / 2,
+          midY - textPainter.height / 2,
+        ),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_MichiTimelineCanvas old) =>
+      spans != old.spans ||
+      scrollOffset != old.scrollOffset ||
+      arrowColor != old.arrowColor ||
+      textColor != old.textColor;
+}
+
+// ────────────────────────────────────────────────────────
 // _TimelineItem
 // ────────────────────────────────────────────────────────
 
@@ -240,6 +531,7 @@ class _TimelineItem extends StatelessWidget {
   final bool isFirst;
   final bool isLast;
   final bool isLinkActive;
+  final bool isSpanLink;
   final VoidCallback onTap;
   final List<ActionItemProjection> markActionItems;
 
@@ -248,6 +540,7 @@ class _TimelineItem extends StatelessWidget {
     required this.isFirst,
     required this.isLast,
     required this.isLinkActive,
+    required this.isSpanLink,
     required this.onTap,
     required this.markActionItems,
   });
@@ -272,7 +565,7 @@ class _TimelineItem extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // タイムライン軸 + カード本体
+              // タイムライン軸 + カード本体（幅: 画面幅 - 距離エリア幅）
               Expanded(
                 child: Stack(
                   children: [
@@ -289,20 +582,26 @@ class _TimelineItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // テキスト・タップ領域のオーバーレイ
-                    _TimelineItemOverlay(
-                      item: item,
-                      onTap: onTap,
-                      colorScheme: colorScheme,
+                    // テキスト・タップ領域のオーバーレイ（Positioned.fill でカード全体をタップ可能に）
+                    Positioned.fill(
+                      child: _TimelineItemOverlay(
+                        item: item,
+                        onTap: onTap,
+                        colorScheme: colorScheme,
+                        isMark: isMark,
+                      ),
                     ),
                   ],
                 ),
               ),
-              // 距離表示列
-              SizedBox(
-                width: 72,
-                child: _DistanceColumn(item: item),
-              ),
+              // Link 個別距離列（Link 行のみ表示）
+              if (!isMark)
+                SizedBox(
+                  width: _linkDistanceColumnWidth,
+                  child: _LinkDistanceCell(item: item),
+                ),
+              // スパン矢印列のスペース確保（_MichiTimelineCanvas が描画）
+              SizedBox(width: _spanArrowColumnWidth),
             ],
           ),
         ),
@@ -318,7 +617,7 @@ class _TimelineItem extends StatelessWidget {
 }
 
 // ────────────────────────────────────────────────────────
-// _MichiTimelinePainter (統合 CustomPainter)
+// _MichiTimelinePainter v3.0（統合 CustomPainter）
 // ────────────────────────────────────────────────────────
 
 class _MichiTimelinePainter extends CustomPainter {
@@ -329,7 +628,7 @@ class _MichiTimelinePainter extends CustomPainter {
   /// タイムライン軸の中心 X 座標（左端からの距離）
   static const double _axisX = 20.0;
 
-  /// カード左端の X 座標（タイムライン軸 + 余白）
+  /// カード左端の X 座標（Mark・Link ともに統一）
   static const double _cardLeft = 40.0;
 
   /// カード右端の余白
@@ -338,13 +637,7 @@ class _MichiTimelinePainter extends CustomPainter {
   /// カード角丸
   static const double _cornerRadius = 8.0;
 
-  /// 三角ポインターの幅（先端からボディ左端まで）
-  static const double _pointerWidth = 20.0;
-
-  /// 三角ポインターの高さ（上下幅）
-  static const double _pointerHeight = 14.0;
-
-  /// Link カードの水平接続線の長さ（タイムライン軸からカード左端まで）
+  /// 水平接続線の長さ（タイムライン軸からカード左端まで）
   static const double _connectorLineLength = 20.0;
 
   final MarkOrLink markLinkType;
@@ -380,77 +673,68 @@ class _MichiTimelinePainter extends CustomPainter {
 
     // ──────────────────────────────
     // タイムライン縦線（上半分）
+    // _cardHeight 範囲内に限定（size.height ではなく _cardHeight を使用）
     // ──────────────────────────────
     if (!isFirst) {
-      final topLineEnd = isMark ? centerY - _dotRadius : centerY;
+      final topLineEnd = isMark ? centerY - _dotRadius : 0.0;
       final topPaint = isLinkActive ? thickPaint : normalPaint;
-      canvas.drawLine(
-        Offset(_axisX, 0),
-        Offset(_axisX, topLineEnd),
-        topPaint,
-      );
+      // 上端から dotTop または cardTop まで
+      final topLineStart = 0.0;
+      if (topLineEnd > topLineStart) {
+        canvas.drawLine(
+          Offset(_axisX, topLineStart),
+          Offset(_axisX, topLineEnd),
+          topPaint,
+        );
+      }
     }
 
     // ──────────────────────────────
     // タイムライン縦線（下半分）
+    // _cardHeight 範囲内に限定
     // ──────────────────────────────
     if (!isLast) {
-      final bottomLineStart = isMark ? centerY + _dotRadius : centerY;
+      final bottomLineStart = isMark ? centerY + _dotRadius : size.height;
+      final bottomLineEnd = _cardHeight;
       final bottomPaint = isLinkActive ? thickPaint : normalPaint;
-      canvas.drawLine(
-        Offset(_axisX, bottomLineStart),
-        Offset(_axisX, size.height),
-        bottomPaint,
-      );
+      if (bottomLineEnd > bottomLineStart) {
+        canvas.drawLine(
+          Offset(_axisX, bottomLineStart),
+          Offset(_axisX, bottomLineEnd),
+          bottomPaint,
+        );
+      }
     }
 
     // ──────────────────────────────
-    // カード背景
+    // カード背景（Mark・Link ともに角丸矩形）
     // ──────────────────────────────
     final cardPaint = Paint()
       ..color = cardBgColor
       ..style = PaintingStyle.fill;
 
-    if (isMark) {
-      // バブルカード（三角ポインター付き）
-      final cardBodyLeft = _cardLeft + _pointerWidth;
-      final rect = Rect.fromLTWH(
-        cardBodyLeft,
-        0,
-        size.width - cardBodyLeft - _cardRight,
-        size.height,
-      );
-      final rrect =
-          RRect.fromRectAndRadius(rect, const Radius.circular(_cornerRadius));
+    // カード右端を幅設定に合わせる
+    // Mark: size.width - _cardLeft - _cardRight（スパン矢印列は SizedBox で確保済み）
+    // Link: size.width - _cardLeft - _cardRight（Link距離列も SizedBox で確保済み）
+    final rect = Rect.fromLTWH(
+      _cardLeft,
+      0,
+      size.width - _cardLeft - _cardRight,
+      size.height,
+    );
+    final rrect =
+        RRect.fromRectAndRadius(rect, const Radius.circular(_cornerRadius));
+    canvas.drawRRect(rrect, cardPaint);
 
-      final pointerTipX = _cardLeft;
-      final path = Path()
-        ..addRRect(rrect)
-        ..moveTo(cardBodyLeft, centerY - _pointerHeight / 2)
-        ..lineTo(pointerTipX, centerY)
-        ..lineTo(cardBodyLeft, centerY + _pointerHeight / 2)
-        ..close();
-
-      canvas.drawPath(path, cardPaint);
-    } else {
-      // Link カード（角丸矩形）
-      final rect = Rect.fromLTWH(
-        _cardLeft,
-        0,
-        size.width - _cardLeft - _cardRight,
-        size.height,
-      );
-      final rrect =
-          RRect.fromRectAndRadius(rect, const Radius.circular(_cornerRadius));
-      canvas.drawRRect(rrect, cardPaint);
-
-      // 水平接続線（タイムライン軸からカード左端まで）
-      canvas.drawLine(
-        Offset(_axisX, centerY),
-        Offset(_axisX + _connectorLineLength, centerY),
-        normalPaint,
-      );
-    }
+    // ──────────────────────────────
+    // 水平接続線（タイムライン軸からカード左端まで）
+    // Mark・Link ともに同じ描画パターン
+    // ──────────────────────────────
+    canvas.drawLine(
+      Offset(_axisX, centerY),
+      Offset(_axisX + _connectorLineLength, centerY),
+      normalPaint,
+    );
 
     // ──────────────────────────────
     // ドット（Mark のみ）
@@ -481,33 +765,31 @@ class _TimelineItemOverlay extends StatelessWidget {
   final MarkLinkItemProjection item;
   final VoidCallback onTap;
   final ColorScheme colorScheme;
+  final bool isMark;
 
-  /// タイムライン軸 + ポインター幅分のオフセット
-  static const double _axisX = 20.0;
+  /// タイムライン軸 + 接続線幅分のオフセット
   static const double _cardLeft = 40.0;
-  static const double _pointerWidth = 20.0;
 
   const _TimelineItemOverlay({
     required this.item,
     required this.onTap,
     required this.colorScheme,
+    required this.isMark,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isMark = item.markLinkType == MarkOrLink.mark;
     final name =
         item.markLinkName.isEmpty ? '（名称未設定）' : item.markLinkName;
 
-    // Mark はポインター分の左余白を加算
-    final leftPadding =
-        isMark ? _axisX + _pointerWidth * 2 : _cardLeft + 8.0;
+    // Mark・Link ともに同じ leftPadding（三角ポインター廃止で統一）
+    const leftPadding = _cardLeft + 8.0;
 
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.translucent,
       child: Padding(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           left: leftPadding,
           right: 12,
           top: 8,
@@ -561,37 +843,20 @@ class _TimelineItemOverlay extends StatelessWidget {
 }
 
 // ────────────────────────────────────────────────────────
-// _DistanceColumn (距離表示列)
+// _LinkDistanceCell（新設・Link 行の個別距離表示）
 // ────────────────────────────────────────────────────────
 
-class _DistanceColumn extends StatelessWidget {
+class _LinkDistanceCell extends StatelessWidget {
   final MarkLinkItemProjection item;
 
-  const _DistanceColumn({required this.item});
+  const _LinkDistanceCell({required this.item});
 
   @override
   Widget build(BuildContext context) {
-    final isMark = item.markLinkType == MarkOrLink.mark;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    final outline = Theme.of(context).colorScheme.outline;
-
-    // Mark: displayMeterDiff を表示
-    // Link: displayDistanceValue を表示
-    final String? displayText;
-    final Color textColor;
-    final bool isBold;
-
-    if (isMark) {
-      displayText = item.displayMeterDiff;
-      textColor = onSurface;
-      isBold = true;
-    } else {
-      displayText = item.displayDistanceValue;
-      textColor = outline;
-      isBold = false;
-    }
-
+    final displayText = item.displayDistanceValue;
     if (displayText == null) return const SizedBox.shrink();
+
+    final outline = Theme.of(context).colorScheme.outline;
 
     return Center(
       child: Column(
@@ -599,15 +864,15 @@ class _DistanceColumn extends StatelessWidget {
         children: [
           CustomPaint(
             size: const Size(16, 24),
-            painter: _VerticalArrowPainter(color: textColor),
+            painter: _VerticalArrowPainter(color: outline),
           ),
           const SizedBox(height: 2),
           Text(
             displayText,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontSize: 11,
-                  color: textColor,
-                  fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+                  color: outline,
+                  fontWeight: FontWeight.normal,
                 ),
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
@@ -695,7 +960,7 @@ class _MarkActionButtons extends StatelessWidget {
 }
 
 // ────────────────────────────────────────────────────────
-// _DistanceLegend
+// _DistanceLegend（凡例文言更新）
 // ────────────────────────────────────────────────────────
 
 class _DistanceLegend extends StatelessWidget {
@@ -721,7 +986,7 @@ class _DistanceLegend extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'メーター差分',
+            'Mark間合計',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontSize: 10,
                   color: onSurface,
@@ -729,7 +994,7 @@ class _DistanceLegend extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            '区間距離',
+            '区間距離（Link）',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontSize: 10,
                   color: outline,
@@ -740,4 +1005,3 @@ class _DistanceLegend extends StatelessWidget {
     );
   }
 }
-
