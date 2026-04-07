@@ -46,6 +46,7 @@
 ---
 
 ## 完了した作業
+- feat: MichiInfo レイアウトを統合 CustomPainter + Stack overlay 型に変更（Spec v2.0） (746e82c)
 - docs: 進捗記録更新・MichiCanvasLayout 要件書・Spec追加 (8f0a725)
 - fix: Xcodeビルドエラー対応（integration_test削除・xcscheme修正） (1e1dd24)
 - feat: testerエージェント追加・Integration Test基盤整備 (202578e)
