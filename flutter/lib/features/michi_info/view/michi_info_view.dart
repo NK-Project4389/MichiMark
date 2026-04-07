@@ -38,6 +38,9 @@ const double _spanArrowColumnWidth = 72.0;
 // ignore: unused_element
 const double _distanceAreaTotalWidth = 136.0;
 
+/// タイムラインアイテム間の隙間
+const double _itemGap = 8.0;
+
 // ────────────────────────────────────────────────────────
 // C-2 カラーパレット
 // ────────────────────────────────────────────────────────
@@ -236,7 +239,7 @@ class _MichiInfoListState extends State<_MichiInfoList> {
     return false;
   }
 
-  /// SpanArrowData のリストを事前計算する（Link カード高さを考慮）
+  /// SpanArrowData のリストを事前計算する（Link カード高さ・アイテム間隔を考慮）
   List<SpanArrowData> _buildSpanArrows(
     List<MarkLinkItemProjection> items,
     List<ActionItemProjection> markActionItems,
@@ -244,53 +247,55 @@ class _MichiInfoListState extends State<_MichiInfoList> {
     final spans = <SpanArrowData>[];
     final hasActions = markActionItems.isNotEmpty;
 
-    // 各アイテムの累積 Y オフセットを計算（Link は _linkCardHeight を使用）
+    // 各アイテムの累積 Y オフセットを計算
+    // _itemGap を含めて実際の描画位置と一致させる
     final yOffsets = <double>[];
     var cumulative = 0.0;
     for (final item in items) {
       yOffsets.add(cumulative);
       final isMark = item.markLinkType == MarkOrLink.mark;
-      final itemHeight = isMark
+      final cardH = isMark
           ? (hasActions ? _cardHeight + _actionButtonsHeight : _cardHeight)
           : _linkCardHeight;
-      cumulative += itemHeight;
+      cumulative += cardH + _itemGap;
     }
 
     // Mark を走査してスパン矢印データを生成
+    // displayMeterDiff は「前の Mark からの差分」なので、
+    // 終点 Mark（目的地）の displayMeterDiff = 始点〜終点の距離 を使う
     for (var i = 0; i < items.length; i++) {
-      final item = items[i];
-      if (item.markLinkType != MarkOrLink.mark) continue;
+      if (items[i].markLinkType != MarkOrLink.mark) continue;
 
       final spanCount = _buildSpanLinkCount(items, i);
-      final distanceText = item.displayMeterDiff;
-      if (distanceText == null) continue;
 
-      // スパンなし（パターン1）: 次の Mark との間
       if (spanCount == 0) {
+        // パターン1: 次の Mark を探す
         for (var j = i + 1; j < items.length; j++) {
           if (items[j].markLinkType == MarkOrLink.mark) {
-            final startY = yOffsets[i] + _cardHeight / 2;
-            final endY = yOffsets[j] + _cardHeight / 2;
-            spans.add(SpanArrowData(
-              startY: startY,
-              endY: endY,
-              distanceText: distanceText,
-            ));
+            final distanceText = items[j].displayMeterDiff;
+            if (distanceText != null) {
+              spans.add(SpanArrowData(
+                startY: yOffsets[i] + _cardHeight / 2,
+                endY: yOffsets[j] + _cardHeight / 2,
+                distanceText: distanceText,
+              ));
+            }
             break;
           }
         }
       } else {
-        // スパンあり（パターン3・4）: 次の Mark まで
+        // パターン3・4: 終点 Mark のインデックスを計算
         final endMarkIndex = i + spanCount + 1;
         if (endMarkIndex < items.length &&
             items[endMarkIndex].markLinkType == MarkOrLink.mark) {
-          final startY = yOffsets[i] + _cardHeight / 2;
-          final endY = yOffsets[endMarkIndex] + _cardHeight / 2;
-          spans.add(SpanArrowData(
-            startY: startY,
-            endY: endY,
-            distanceText: distanceText,
-          ));
+          final distanceText = items[endMarkIndex].displayMeterDiff;
+          if (distanceText != null) {
+            spans.add(SpanArrowData(
+              startY: yOffsets[i] + _cardHeight / 2,
+              endY: yOffsets[endMarkIndex] + _cardHeight / 2,
+              distanceText: distanceText,
+            ));
+          }
         }
       }
     }
@@ -455,7 +460,10 @@ class _MichiTimelineCanvas extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (spans.isEmpty) return;
 
-    final arrowCenterX = size.width - _spanArrowColumnWidth / 2;
+    // 矢印はスパン列の左寄せ、テキストは矢印の右側に配置
+    final arrowX = size.width - _spanArrowColumnWidth + 8.0;
+    final textStartX = arrowX + _arrowHeadSize + 4.0;
+    final textMaxWidth = size.width - textStartX - 2.0;
 
     final paint = Paint()
       ..color = arrowColor
@@ -470,38 +478,38 @@ class _MichiTimelineCanvas extends CustomPainter {
 
       if (drawEndY < 0 || drawStartY > size.height) continue;
 
-      // 縦線
+      // 縦線（矢印左端）
       canvas.drawLine(
-        Offset(arrowCenterX, drawStartY),
-        Offset(arrowCenterX, drawEndY),
+        Offset(arrowX, drawStartY),
+        Offset(arrowX, drawEndY),
         paint,
       );
 
       // 上向き矢印頭
       canvas.drawLine(
-        Offset(arrowCenterX, drawStartY),
-        Offset(arrowCenterX - _arrowHeadSize / 2, drawStartY + _arrowHeadSize),
+        Offset(arrowX, drawStartY),
+        Offset(arrowX - _arrowHeadSize / 2, drawStartY + _arrowHeadSize),
         paint,
       );
       canvas.drawLine(
-        Offset(arrowCenterX, drawStartY),
-        Offset(arrowCenterX + _arrowHeadSize / 2, drawStartY + _arrowHeadSize),
+        Offset(arrowX, drawStartY),
+        Offset(arrowX + _arrowHeadSize / 2, drawStartY + _arrowHeadSize),
         paint,
       );
 
       // 下向き矢印頭
       canvas.drawLine(
-        Offset(arrowCenterX, drawEndY),
-        Offset(arrowCenterX - _arrowHeadSize / 2, drawEndY - _arrowHeadSize),
+        Offset(arrowX, drawEndY),
+        Offset(arrowX - _arrowHeadSize / 2, drawEndY - _arrowHeadSize),
         paint,
       );
       canvas.drawLine(
-        Offset(arrowCenterX, drawEndY),
-        Offset(arrowCenterX + _arrowHeadSize / 2, drawEndY - _arrowHeadSize),
+        Offset(arrowX, drawEndY),
+        Offset(arrowX + _arrowHeadSize / 2, drawEndY - _arrowHeadSize),
         paint,
       );
 
-      // 距離テキスト（矢印の中央）
+      // 距離テキスト（矢印の右側・中央高さ）
       final midY = (drawStartY + drawEndY) / 2;
       final textPainter = TextPainter(
         text: TextSpan(
@@ -513,14 +521,11 @@ class _MichiTimelineCanvas extends CustomPainter {
           ),
         ),
         textDirection: TextDirection.ltr,
-      )..layout(maxWidth: _spanArrowColumnWidth - 4);
+      )..layout(maxWidth: textMaxWidth);
 
       textPainter.paint(
         canvas,
-        Offset(
-          arrowCenterX - textPainter.width / 2,
-          midY - textPainter.height / 2,
-        ),
+        Offset(textStartX, midY - textPainter.height / 2),
       );
     }
   }
@@ -614,6 +619,8 @@ class _TimelineItem extends StatelessWidget {
             markLinkId: item.id,
             actions: markActionItems,
           ),
+        // カード間の隙間
+        const SizedBox(height: _itemGap),
       ],
     );
   }
@@ -760,7 +767,6 @@ class _MichiTimelinePainter extends CustomPainter {
         ..arcToPoint(
           Offset(cardRect.left + cardCornerRadius, cardRect.top),
           radius: Radius.circular(cardCornerRadius),
-          clockwise: false,
         )
         ..lineTo(cardRect.right - cardCornerRadius, cardRect.top)
         ..arcToPoint(
@@ -938,72 +944,20 @@ class _LinkDistanceCell extends StatelessWidget {
     final displayText = item.displayDistanceValue;
     if (displayText == null) return const SizedBox.shrink();
 
-    // _linkCardHeight = 34dp 内に収める:
-    // 矢印(14dp) + 間隔(0dp) + テキスト(≈14dp) = 28dp ≤ 34dp
+    // 矢印はスパン列の1本矢印に集約済み。距離テキストのみ表示
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CustomPaint(
-            size: const Size(14, 14),
-            painter: const _VerticalArrowPainter(color: _linkPrimaryColor),
-          ),
-          Text(
-            displayText,
-            style: const TextStyle(
-              fontSize: 12,
-              color: _linkPrimaryColor,
-              fontWeight: FontWeight.w800,
-            ),
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+      child: Text(
+        displayText,
+        style: const TextStyle(
+          fontSize: 12,
+          color: _linkPrimaryColor,
+          fontWeight: FontWeight.w800,
+        ),
+        textAlign: TextAlign.center,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
-}
-
-/// 縦の両方向矢印を描画する CustomPainter
-class _VerticalArrowPainter extends CustomPainter {
-  final Color color;
-
-  const _VerticalArrowPainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1.5
-      ..strokeCap = StrokeCap.round;
-
-    final cx = size.width / 2;
-    const arrowSize = 5.0;
-
-    canvas.drawLine(
-      Offset(cx, arrowSize),
-      Offset(cx, size.height - arrowSize),
-      paint,
-    );
-
-    canvas.drawLine(Offset(cx, 0), Offset(cx - arrowSize / 2, arrowSize), paint);
-    canvas.drawLine(Offset(cx, 0), Offset(cx + arrowSize / 2, arrowSize), paint);
-
-    canvas.drawLine(
-      Offset(cx, size.height),
-      Offset(cx - arrowSize / 2, size.height - arrowSize),
-      paint,
-    );
-    canvas.drawLine(
-      Offset(cx, size.height),
-      Offset(cx + arrowSize / 2, size.height - arrowSize),
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_VerticalArrowPainter old) => color != old.color;
 }
 
 // ────────────────────────────────────────────────────────
@@ -1067,7 +1021,7 @@ class _DistanceLegend extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Mark間合計',
+            'メーター差分',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontSize: 10,
                   color: _markPrimaryColor,
@@ -1076,7 +1030,7 @@ class _DistanceLegend extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            '区間距離（Link）',
+            '区間距離',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontSize: 10,
                   color: _linkPrimaryColor,
