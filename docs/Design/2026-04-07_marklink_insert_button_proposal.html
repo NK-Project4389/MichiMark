@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark — カード間挿入ボタン デザイン提案</title>
+  <style>
+    :root {
+      --brand-teal:       #2B7A9B;
+      --brand-teal-dark:  #1A4A5E;
+      --brand-teal-light: #3A9DC4;
+      --brand-teal-tint:  #D0EBF5;
+
+      --mark-primary:     #2B7A9B;
+      --mark-dark:        #1A4A5E;
+      --mark-light:       #3A9DC4;
+      --mark-tint:        #D0EBF5;
+      --mark-tint-light:  #EAF5FB;
+
+      --link-primary:     #2E9E6B;
+      --link-dark:        #1A7A52;
+      --link-light:       #4DB36B;
+      --link-tint:        #D4F0E4;
+      --link-tint-light:  #EDFAF4;
+
+      --insert-amber:     #F59E0B;
+      --insert-amber-dark:#D97706;
+      --insert-amber-tint:#FEF3C7;
+      --insert-white:     #FFFFFF;
+
+      --text-primary:     #1A1A2E;
+      --text-secondary:   #6C757D;
+      --text-tertiary:    #ADB5BD;
+      --bg-page:          #F5F7FA;
+      --bg-card:          #FFFFFF;
+      --border-light:     #E9ECEF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #1A4A5E 0%, #2B7A9B 55%, #3A9DC4 100%);
+      color: white;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .page-header p {
+      font-size: 15px;
+      opacity: 0.85;
+      max-width: 700px;
+    }
+    .meta-row {
+      display: flex;
+      gap: 28px;
+      margin-top: 22px;
+      font-size: 12px;
+      opacity: 0.65;
+    }
+
+    /* ===== LAYOUT ===== */
+    .content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 32px;
+    }
+
+    /* ===== SECTION ===== */
+    section {
+      margin-bottom: 72px;
+    }
+    .section-header {
+      margin-bottom: 32px;
+    }
+    .section-header .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+    .section-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .section-header p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      max-width: 720px;
+    }
+
+    /* ===== DIVIDER ===== */
+    .divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 48px 0;
+    }
+
+    /* ===== COLOR PALETTE ===== */
+    .palette-grid {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .swatch-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 2px solid rgba(0,0,0,0.06);
+    }
+    .swatch-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+    .swatch-hex {
+      font-size: 9px;
+      color: var(--text-tertiary);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    /* ===== PATTERN CARDS ===== */
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-top: 8px;
+    }
+
+    .pattern-card {
+      background: white;
+      border-radius: 16px;
+      border: 1.5px solid var(--border-light);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .pattern-card-header {
+      padding: 20px 22px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .pattern-card-header .pattern-badge {
+      display: inline-flex;
+      align-items: center;
+      background: var(--brand-teal-tint);
+      color: var(--brand-teal-dark);
+      border-radius: 8px;
+      padding: 3px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .pattern-card-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .pattern-card-header p {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .pattern-preview {
+      padding: 28px 24px;
+      background: #F8FAFC;
+      min-height: 420px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .pattern-eval {
+      padding: 18px 22px;
+      border-top: 1px solid var(--border-light);
+    }
+    .eval-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .eval-row:last-child { margin-bottom: 0; }
+    .eval-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      min-width: 64px;
+      padding-top: 1px;
+    }
+    .eval-label.merit  { color: #16A34A; }
+    .eval-label.demerit { color: #DC2626; }
+    .eval-label.scene  { color: var(--brand-teal); }
+    .eval-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ===== TIMELINE MOCK (C-2 base) ===== */
+    .timeline-mock {
+      width: 100%;
+      max-width: 260px;
+      position: relative;
+    }
+
+    .tl-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      position: relative;
+    }
+
+    /* --- Left column: dot + vertical line --- */
+    .tl-left {
+      width: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .tl-dot-mark {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--mark-primary);
+      border: 2.5px solid white;
+      box-shadow: 0 0 0 2px var(--mark-primary);
+      flex-shrink: 0;
+      z-index: 2;
+      margin-top: 14px;
+    }
+    .tl-dot-link {
+      width: 11px;
+      height: 11px;
+      border-radius: 3px;
+      background: var(--link-primary);
+      box-shadow: 0 1px 4px rgba(46,158,107,0.35);
+      flex-shrink: 0;
+      z-index: 2;
+      margin-top: 10px;
+    }
+
+    /* vertical lines */
+    .tl-vline-mark {
+      width: 2px;
+      background: rgba(43,122,155,0.35);
+      flex: 1;
+    }
+    .tl-vline-link {
+      width: 5px;
+      border-radius: 3px;
+      background: linear-gradient(180deg, #2E9E6B 0%, #1A7A52 100%);
+      flex: 1;
+    }
+
+    /* --- Right column: connector + card --- */
+    .tl-right {
+      flex: 1;
+      padding-bottom: 8px;
+    }
+
+    .tl-card-mark {
+      background: white;
+      border-radius: 12px;
+      border-top: 3px solid var(--mark-primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+      padding: 9px 11px 9px;
+      margin-left: 8px;
+      position: relative;
+    }
+    .tl-card-mark::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 13px;
+      width: 8px;
+      height: 2px;
+      background: var(--mark-primary);
+    }
+    .tl-card-mark .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+    .tl-card-mark .card-meta {
+      font-size: 9px;
+      color: var(--text-secondary);
+    }
+    .tl-card-mark .card-tag {
+      display: inline-flex;
+      margin-top: 5px;
+      background: var(--mark-tint);
+      color: var(--mark-dark);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 8px;
+      font-weight: 600;
+    }
+
+    .tl-card-link {
+      background: var(--link-tint-light);
+      border-radius: 7px;
+      border: 1.5px solid #C3EBD8;
+      padding: 6px 10px 6px;
+      margin-left: 8px;
+      position: relative;
+    }
+    .tl-card-link::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 9px;
+      width: 8px;
+      height: 2px;
+      background: rgba(46,158,107,0.55);
+    }
+    .tl-card-link .card-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .tl-card-link .card-meta {
+      font-size: 8.5px;
+      color: var(--text-secondary);
+    }
+
+    /* distance badge */
+    .tl-distance-badge {
+      display: inline-flex;
+      align-items: center;
+      background: var(--link-primary);
+      color: white;
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-size: 8px;
+      font-weight: 700;
+      box-shadow: 0 1px 5px rgba(46,158,107,0.4);
+      white-space: nowrap;
+    }
+
+    /* ===== INSERT BUTTON STYLES ===== */
+
+    /* --- Pattern 1: Always Visible --- */
+    .insert-row-always {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 3px 0;
+    }
+    .insert-left-always {
+      width: 36px;
+      display: flex;
+      justify-content: center;
+    }
+    .insert-btn-inline {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      border: 1.5px solid var(--insert-amber);
+      color: var(--insert-amber);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(245,158,11,0.3);
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .insert-btn-inline:hover {
+      background: var(--insert-amber);
+      color: white;
+      box-shadow: 0 2px 8px rgba(245,158,11,0.5);
+      transform: scale(1.15);
+    }
+    .insert-dashed-line {
+      flex: 1;
+      height: 1px;
+      border-top: 1.5px dashed rgba(245,158,11,0.35);
+      margin-left: 4px;
+    }
+
+    /* --- Pattern 2: Tap to Reveal --- */
+    .insert-row-tap {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 2px 0;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.2s, max-height 0.2s;
+    }
+    /* Simulate tap-revealed state via hover on parent card group */
+    .tap-group:hover .insert-row-tap {
+      opacity: 1;
+      max-height: 32px;
+    }
+    .tap-group .tl-card-mark,
+    .tap-group .tl-card-link {
+      transition: box-shadow 0.15s;
+    }
+    .tap-group:hover .tl-card-mark {
+      box-shadow: 0 4px 14px rgba(43,122,155,0.2);
+    }
+    .tap-group:hover .tl-card-link {
+      box-shadow: 0 2px 10px rgba(46,158,107,0.2);
+    }
+
+    .insert-left-tap {
+      width: 36px;
+      display: flex;
+      justify-content: center;
+    }
+    .insert-btn-tap {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--insert-amber);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(245,158,11,0.45);
+      flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+    .insert-btn-tap:hover {
+      transform: scale(1.2);
+    }
+    .insert-tap-hint {
+      font-size: 9px;
+      color: var(--insert-amber-dark);
+      font-weight: 600;
+      margin-left: 6px;
+      letter-spacing: 0.3px;
+    }
+
+    /* --- Pattern 3: FAB --- */
+    .fab-container {
+      position: relative;
+      width: 100%;
+      max-width: 260px;
+    }
+    .fab-button {
+      position: absolute;
+      bottom: -8px;
+      right: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--insert-amber) 0%, var(--insert-amber-dark) 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 1;
+      box-shadow: 0 4px 14px rgba(245,158,11,0.5);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .fab-button:hover {
+      transform: scale(1.08) rotate(15deg);
+      box-shadow: 0 6px 20px rgba(245,158,11,0.6);
+    }
+
+    .insert-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 4px 0;
+    }
+    .insert-indicator-left {
+      width: 36px;
+      display: flex;
+      justify-content: center;
+    }
+    .insert-dot-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(245,158,11,0.2);
+      border: 1.5px solid rgba(245,158,11,0.5);
+    }
+    .insert-indicator-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(245,158,11,0.2);
+      margin-left: 4px;
+    }
+
+    /* ===== BOTTOM SHEET MOCK ===== */
+    .bottomsheet-wrap {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .bottomsheet-mock {
+      width: 260px;
+      background: white;
+      border-radius: 18px 18px 0 0;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.12);
+      padding: 12px 16px 20px;
+      border: 1px solid var(--border-light);
+    }
+    .bs-handle {
+      width: 36px;
+      height: 4px;
+      background: #DEE2E6;
+      border-radius: 2px;
+      margin: 0 auto 14px;
+    }
+    .bs-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .bs-options {
+      display: flex;
+      gap: 10px;
+    }
+    .bs-option {
+      flex: 1;
+      border-radius: 10px;
+      padding: 10px 8px;
+      text-align: center;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: all 0.15s;
+    }
+    .bs-option-mark {
+      background: var(--mark-tint-light);
+      border-color: var(--mark-tint);
+    }
+    .bs-option-link {
+      background: var(--link-tint-light);
+      border-color: var(--link-tint);
+    }
+    .bs-option:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    .bs-option-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      margin: 0 auto 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .bs-option-mark .bs-option-icon {
+      background: var(--mark-primary);
+      color: white;
+    }
+    .bs-option-link .bs-option-icon {
+      background: var(--link-primary);
+      color: white;
+      border-radius: 6px;
+    }
+    .bs-option-label {
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .bs-option-mark .bs-option-label { color: var(--mark-dark); }
+    .bs-option-link .bs-option-label { color: var(--link-dark); }
+    .bs-option-sub {
+      font-size: 8.5px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+
+    /* ===== RECOMMENDATION BOX ===== */
+    .recommendation-box {
+      background: linear-gradient(135deg, #F0F9FF 0%, #ECFDF5 100%);
+      border: 2px solid var(--brand-teal);
+      border-radius: 16px;
+      padding: 28px 32px;
+    }
+    .recommendation-box .rec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--brand-teal);
+      color: white;
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .recommendation-box h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    .recommendation-box p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    /* ===== COMPARISON TABLE ===== */
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+    .comp-table th {
+      background: #F1F5F9;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+      border: 1px solid var(--border-light);
+    }
+    .comp-table td {
+      padding: 11px 14px;
+      border: 1px solid var(--border-light);
+      vertical-align: top;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    .comp-table tr:nth-child(even) td {
+      background: #FAFBFC;
+    }
+    .comp-table tr:hover td {
+      background: #F0F9FF;
+    }
+    .badge-rec {
+      display: inline-block;
+      background: var(--brand-teal);
+      color: white;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .badge-sub {
+      display: inline-block;
+      background: #E9ECEF;
+      color: var(--text-secondary);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* ===== TYPOGRAPHY SECTION ===== */
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 8px;
+    }
+    .type-item {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .type-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+    .type-spec {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    /* ===== SPACER ===== */
+    .tl-spacer { height: 6px; }
+
+  </style>
+</head>
+<body>
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-header">
+  <div class="badge">Designer Report — Insert Button</div>
+  <h1>カード間挿入ボタン デザイン提案</h1>
+  <p>MichiMark タイムライン — C-2スタイル（コンパクトLinkカード＋距離バッジ）に「＋挿入ボタン」を組み合わせた3パターン比較</p>
+  <div class="meta-row">
+    <span>作成日: 2026-04-07</span>
+    <span>作成者: designer</span>
+    <span>ベース: C-2 フローティングバッジ型</span>
+    <span>バージョン: v4.0</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ===== COLOR PALETTE ===== -->
+  <section id="color-palette">
+    <div class="section-header">
+      <div class="label">Color Palette</div>
+      <h2>挿入ボタン カラー定義</h2>
+      <p>既存のMark（Teal）・Link（Emerald）カラーに対して、挿入アクションはAmber（#F59E0B）を採用する。Amberは「アクション誘発色」として広く認知されており、TealとEmeraldの寒色系に対してコントラストを持ちながらも、ブランドイメージである「ドライブ・旅」のエネルギー感と調和する。</p>
+    </div>
+    <div class="palette-grid">
+      <div class="swatch">
+        <div class="swatch-circle" style="background:#2B7A9B;"></div>
+        <div class="swatch-label">Mark<br>Primary</div>
+        <div class="swatch-hex">#2B7A9B</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:#2E9E6B;"></div>
+        <div class="swatch-label">Link<br>Primary</div>
+        <div class="swatch-hex">#2E9E6B</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:#F59E0B;"></div>
+        <div class="swatch-label">Insert<br>Amber</div>
+        <div class="swatch-hex">#F59E0B</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:#D97706;"></div>
+        <div class="swatch-label">Insert<br>Amber Dark</div>
+        <div class="swatch-hex">#D97706</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:#FEF3C7; border: 1.5px solid #F59E0B;"></div>
+        <div class="swatch-label">Insert<br>Amber Tint</div>
+        <div class="swatch-hex">#FEF3C7</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:#1A1A2E;"></div>
+        <div class="swatch-label">Text<br>Primary</div>
+        <div class="swatch-hex">#1A1A2E</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:#6C757D;"></div>
+        <div class="swatch-label">Text<br>Secondary</div>
+        <div class="swatch-hex">#6C757D</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:#F5F7FA; border: 1.5px solid #E9ECEF;"></div>
+        <div class="swatch-label">Background<br>Page</div>
+        <div class="swatch-hex">#F5F7FA</div>
+      </div>
+    </div>
+    <div style="margin-top:20px; padding: 14px 18px; background:#FFFBF0; border: 1px solid #F0C56A; border-radius: 10px; font-size: 13px; color: #7A4A00;">
+      <strong>Amberを採用する理由:</strong> Mark（Teal）でもLink（Emerald）でもない第3色として「追加・挿入」アクションを色で区別する。白背景上でのコントラスト比 — Amber (#F59E0B) on White は低い（2.5:1）ため、ボタン内テキストには白ではなく Dark (#7A4A00 近辺) を使用するか、Amber背景＋白文字は大きいアイコン（＋記号）のみに限定する。WCAG AAを満たすには塗りつぶしボタン＋白アイコンの組み合わせを基本とする。
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== COMPONENT PREVIEW ===== -->
+  <section id="component-preview">
+    <div class="section-header">
+      <div class="label">Component Preview — 3 Patterns</div>
+      <h2>挿入ボタン 3パターン比較</h2>
+      <p>C-2スタイル（Markカード通常サイズ Teal / Linkカードコンパクト Emerald / 距離バッジ縦線中央）を全パターンで統一して描画。パターンごとのホバーでインタラクション表現あり。</p>
+    </div>
+
+    <div class="pattern-grid">
+
+      <!-- ===== PATTERN 1: Always Visible ===== -->
+      <div class="pattern-card">
+        <div class="pattern-card-header">
+          <div class="pattern-badge">Pattern 1</div>
+          <h3>常時表示型</h3>
+          <p>縦線上に小さな＋ボタンを常時配置。ホバーで強調表示。</p>
+        </div>
+        <div class="pattern-preview">
+          <div class="timeline-mock">
+
+            <!-- Mark 1 -->
+            <div class="tl-item">
+              <div class="tl-left">
+                <div class="tl-dot-mark"></div>
+                <div class="tl-vline-mark" style="height:52px;"></div>
+              </div>
+              <div class="tl-right">
+                <div class="tl-card-mark">
+                  <div class="card-title">道の駅 なんぶ</div>
+                  <div class="card-meta">2026.04.07 — 09:42</div>
+                  <div class="card-tag">道の駅</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- INSERT between Mark and Link -->
+            <div class="insert-row-always">
+              <div class="insert-left-always">
+                <div class="insert-btn-inline">+</div>
+              </div>
+              <div class="insert-dashed-line"></div>
+            </div>
+
+            <!-- Link -->
+            <div class="tl-item">
+              <div class="tl-left" style="position:relative;">
+                <div class="tl-dot-link" style="margin-top:8px;"></div>
+                <div class="tl-vline-link" style="height:44px; position:relative;">
+                  <!-- distance badge centered on link vline -->
+                  <div style="position:absolute; top:50%; left:6px; transform:translateY(-50%);">
+                    <div class="tl-distance-badge">50 km</div>
+                  </div>
+                </div>
+              </div>
+              <div class="tl-right">
+                <div class="tl-card-link">
+                  <div class="card-title">国道52号線</div>
+                  <div class="card-meta">一般道 · 1名</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- INSERT between Link and Mark -->
+            <div class="insert-row-always">
+              <div class="insert-left-always">
+                <div class="insert-btn-inline">+</div>
+              </div>
+              <div class="insert-dashed-line"></div>
+            </div>
+
+            <!-- Mark 2 -->
+            <div class="tl-item">
+              <div class="tl-left">
+                <div class="tl-dot-mark"></div>
+                <div class="tl-vline-mark" style="height:52px;"></div>
+              </div>
+              <div class="tl-right">
+                <div class="tl-card-mark">
+                  <div class="card-title">富士川SA</div>
+                  <div class="card-meta">2026.04.07 — 11:15</div>
+                  <div class="card-tag">SA</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- INSERT at tail -->
+            <div class="insert-row-always">
+              <div class="insert-left-always">
+                <div class="insert-btn-inline">+</div>
+              </div>
+              <div class="insert-dashed-line"></div>
+            </div>
+
+          </div>
+        </div>
+        <div class="pattern-eval">
+          <div class="eval-row">
+            <div class="eval-label merit">メリット</div>
+            <div class="eval-text">発見性が高い。操作手順が最短（見てタップ）。学習コスト不要。末尾追加も同じUIで統一できる。</div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-label demerit">デメリット</div>
+            <div class="eval-text">カードが多い場合にタイムラインが騒がしくなる。ボタンと縦線・カードの視覚的密度が高まりスキャン性が低下する恐れがある。</div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-label scene">推奨シーン</div>
+            <div class="eval-text">カード数が少ない（5件以下）シンプルなルート。挿入操作が頻繁なヘビーユーザー向けモード。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PATTERN 2: Tap to Reveal ===== -->
+      <div class="pattern-card">
+        <div class="pattern-card-header">
+          <div class="pattern-badge">Pattern 2</div>
+          <h3>タップ展開型</h3>
+          <p>カードにホバー（実機ではタップ）すると、そのカードの下に＋が出現。アニメーション前提。</p>
+        </div>
+        <div class="pattern-preview">
+          <div class="timeline-mock">
+
+            <!-- Mark 1 (tap group) -->
+            <div class="tap-group">
+              <div class="tl-item">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-vline-mark" style="height:52px;"></div>
+                </div>
+                <div class="tl-right">
+                  <div class="tl-card-mark">
+                    <div class="card-title">道の駅 なんぶ</div>
+                    <div class="card-meta">2026.04.07 — 09:42</div>
+                    <div class="card-tag">道の駅</div>
+                  </div>
+                </div>
+              </div>
+              <div class="insert-row-tap">
+                <div class="insert-left-tap">
+                  <div class="insert-btn-tap">+</div>
+                </div>
+                <div class="insert-tap-hint">ここに挿入</div>
+              </div>
+            </div>
+
+            <!-- Link (tap group) -->
+            <div class="tap-group">
+              <div class="tl-item">
+                <div class="tl-left" style="position:relative;">
+                  <div class="tl-dot-link" style="margin-top:8px;"></div>
+                  <div class="tl-vline-link" style="height:44px; position:relative;">
+                    <div style="position:absolute; top:50%; left:6px; transform:translateY(-50%);">
+                      <div class="tl-distance-badge">50 km</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tl-right">
+                  <div class="tl-card-link">
+                    <div class="card-title">国道52号線</div>
+                    <div class="card-meta">一般道 · 1名</div>
+                  </div>
+                </div>
+              </div>
+              <div class="insert-row-tap">
+                <div class="insert-left-tap">
+                  <div class="insert-btn-tap">+</div>
+                </div>
+                <div class="insert-tap-hint">ここに挿入</div>
+              </div>
+            </div>
+
+            <!-- Mark 2 (tap group) -->
+            <div class="tap-group">
+              <div class="tl-item">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-vline-mark" style="height:52px;"></div>
+                </div>
+                <div class="tl-right">
+                  <div class="tl-card-mark">
+                    <div class="card-title">富士川SA</div>
+                    <div class="card-meta">2026.04.07 — 11:15</div>
+                    <div class="card-tag">SA</div>
+                  </div>
+                </div>
+              </div>
+              <div class="insert-row-tap">
+                <div class="insert-left-tap">
+                  <div class="insert-btn-tap">+</div>
+                </div>
+                <div class="insert-tap-hint">ここに挿入</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 10px; font-size: 10px; color: var(--text-tertiary); text-align: center;">
+              ( カードにホバーして動作確認 )
+            </div>
+
+          </div>
+        </div>
+        <div class="pattern-eval">
+          <div class="eval-row">
+            <div class="eval-label merit">メリット</div>
+            <div class="eval-text">平常時はタイムラインがクリーン。カードとの関連が視覚的に明確（そのカードの直後に挿入）。アニメーションにより「展開した」感覚が得られ、誤タップ率が低い。</div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-label demerit">デメリット</div>
+            <div class="eval-text">挿入機能の存在に気づきにくい（発見性が低い）。「タップすると展開する」という動作を最初に覚える必要がある。末尾追加の扱いが別途必要。</div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-label scene">推奨シーン</div>
+            <div class="eval-text">カード数が多い長いルート。既存カードを閲覧しながら途中で挿入する中上級ユーザー向け。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PATTERN 3: FAB ===== -->
+      <div class="pattern-card">
+        <div class="pattern-card-header">
+          <div class="pattern-badge">Pattern 3</div>
+          <h3>フローティング FAB型</h3>
+          <p>画面右下にAmber FAB。タップするとタイムライン上に挿入ポイントインジケーターが出現。</p>
+        </div>
+        <div class="pattern-preview">
+          <div style="position:relative; width:100%; max-width:260px;">
+            <div class="timeline-mock">
+
+              <!-- Mark 1 -->
+              <div class="tl-item">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-vline-mark" style="height:52px;"></div>
+                </div>
+                <div class="tl-right">
+                  <div class="tl-card-mark">
+                    <div class="card-title">道の駅 なんぶ</div>
+                    <div class="card-meta">2026.04.07 — 09:42</div>
+                    <div class="card-tag">道の駅</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Insert indicator (FAB active state) -->
+              <div class="insert-indicator">
+                <div class="insert-indicator-left">
+                  <div class="insert-dot-indicator"></div>
+                </div>
+                <div class="insert-indicator-line"></div>
+                <div style="font-size:9px; color: rgba(245,158,11,0.7); font-weight:600; margin-left:6px; white-space:nowrap;">挿入ポイント</div>
+              </div>
+
+              <!-- Link -->
+              <div class="tl-item">
+                <div class="tl-left" style="position:relative;">
+                  <div class="tl-dot-link" style="margin-top:8px;"></div>
+                  <div class="tl-vline-link" style="height:44px; position:relative;">
+                    <div style="position:absolute; top:50%; left:6px; transform:translateY(-50%);">
+                      <div class="tl-distance-badge">50 km</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tl-right">
+                  <div class="tl-card-link">
+                    <div class="card-title">国道52号線</div>
+                    <div class="card-meta">一般道 · 1名</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Insert indicator -->
+              <div class="insert-indicator">
+                <div class="insert-indicator-left">
+                  <div class="insert-dot-indicator"></div>
+                </div>
+                <div class="insert-indicator-line"></div>
+                <div style="font-size:9px; color: rgba(245,158,11,0.7); font-weight:600; margin-left:6px; white-space:nowrap;">挿入ポイント</div>
+              </div>
+
+              <!-- Mark 2 -->
+              <div class="tl-item">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-vline-mark" style="height:52px;"></div>
+                </div>
+                <div class="tl-right">
+                  <div class="tl-card-mark">
+                    <div class="card-title">富士川SA</div>
+                    <div class="card-meta">2026.04.07 — 11:15</div>
+                    <div class="card-tag">SA</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Insert indicator (tail) -->
+              <div class="insert-indicator">
+                <div class="insert-indicator-left">
+                  <div class="insert-dot-indicator"></div>
+                </div>
+                <div class="insert-indicator-line"></div>
+                <div style="font-size:9px; color: rgba(245,158,11,0.7); font-weight:600; margin-left:6px; white-space:nowrap;">末尾に追加</div>
+              </div>
+
+            </div>
+
+            <!-- FAB -->
+            <div style="display:flex; justify-content:flex-end; margin-top: 8px;">
+              <div class="fab-button">+</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pattern-eval">
+          <div class="eval-row">
+            <div class="eval-label merit">メリット</div>
+            <div class="eval-text">モバイルUIの慣習に沿っており直感的。通常ビューでは一切タイムラインを汚さない（クリーン度最高）。FABタップ→挿入モードという2ステップで誤タップを防止。末尾追加・中間挿入を同一フローで扱える。</div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-label demerit">デメリット</div>
+            <div class="eval-text">「FABタップ後に挿入ポイントを選択する」という2ステップの操作フローの学習が必要。FABがスクロール位置によっては挿入ポイントを隠す可能性がある。</div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-label scene">推奨シーン</div>
+            <div class="eval-text">カード数が中程度〜多い長距離ルート。通常閲覧モードと編集モードを明確に分けたいUXを目指す場合。モバイルの慣習を重視する場合。</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /pattern-grid -->
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== BOTTOM SHEET ===== -->
+  <section id="insert-type-selection">
+    <div class="section-header">
+      <div class="label">Insert Type Selection</div>
+      <h2>挿入種別選択UI — ボトムシート</h2>
+      <p>どのパターンでも「＋」タップ後に「MarkかLinkか」を選択するUIが必要。ボトムシート形式を推奨。シンプルな2択でユーザーに迷いを与えない。</p>
+    </div>
+
+    <div class="bottomsheet-wrap">
+      <div class="bottomsheet-mock">
+        <div class="bs-handle"></div>
+        <div class="bs-title">何を挿入しますか？</div>
+        <div class="bs-options">
+          <div class="bs-option bs-option-mark">
+            <div class="bs-option-icon">●</div>
+            <div class="bs-option-label">Mark を挿入</div>
+            <div class="bs-option-sub">地点・スポット</div>
+          </div>
+          <div class="bs-option bs-option-link">
+            <div class="bs-option-icon" style="font-size:10px; font-weight:700;">■</div>
+            <div class="bs-option-label">Link を挿入</div>
+            <div class="bs-option-sub">区間・道のり</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; padding: 14px 18px; background: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 10px; font-size: 13px; color: #0C4A6E;">
+      <strong>設計メモ:</strong> ボトムシートでの2択UIを採用することで、挿入ポイント（どこに）と挿入種別（何を）の選択を2ステップに分離できる。これにより各ステップのUIをシンプルに保てる。「Mark後 → Linkのみ選択可」など制約をつける場合はグレーアウトで表現する。
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== TYPOGRAPHY ===== -->
+  <section id="typography">
+    <div class="section-header">
+      <div class="label">Typography</div>
+      <h2>挿入ボタン タイポグラフィ仕様</h2>
+    </div>
+    <div class="type-grid">
+      <div class="type-item">
+        <div class="type-label">常時表示型 — ボタン記号</div>
+        <div style="font-size: 20px; color: var(--insert-amber); margin: 6px 0;">+</div>
+        <div class="type-spec">Size: 14–16px / Weight: 300 (thin)<br>Color: Amber #F59E0B (枠あり) or White (塗りつぶし)</div>
+      </div>
+      <div class="type-item">
+        <div class="type-label">タップ展開型 — ヒントテキスト</div>
+        <div style="font-size: 11px; color: var(--insert-amber-dark); font-weight:600; margin: 6px 0;">ここに挿入</div>
+        <div class="type-spec">Size: 9–10px / Weight: 600<br>Color: Amber Dark #D97706</div>
+      </div>
+      <div class="type-item">
+        <div class="type-label">FAB型 — ボタン記号</div>
+        <div style="font-size: 22px; color: white; background: var(--insert-amber); width: 40px; height: 40px; border-radius: 50%; display:flex; align-items:center; justify-content:center; margin: 6px 0;">+</div>
+        <div class="type-spec">Size: 20–24px / Weight: 300 (thin)<br>Background: Amber gradient / Color: White</div>
+      </div>
+      <div class="type-item">
+        <div class="type-label">挿入ポイント — インジケーターテキスト</div>
+        <div style="font-size: 10px; color: rgba(245,158,11,0.8); font-weight:600; margin: 6px 0;">挿入ポイント</div>
+        <div class="type-spec">Size: 9px / Weight: 600<br>Color: Amber 70% opacity</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== RATIONALE ===== -->
+  <section id="rationale">
+    <div class="section-header">
+      <div class="label">Rationale</div>
+      <h2>各パターン比較サマリー</h2>
+    </div>
+
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>観点</th>
+          <th>Pattern 1: 常時表示型</th>
+          <th>Pattern 2: タップ展開型</th>
+          <th>Pattern 3: FAB型</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>発見性</strong></td>
+          <td>高（常に見える）</td>
+          <td>低（操作を知らないと気づかない）</td>
+          <td>中（FABは慣習的に認知されやすい）</td>
+        </tr>
+        <tr>
+          <td><strong>タイムラインの清潔感</strong></td>
+          <td>低（カードが多いと混雑）</td>
+          <td>高（通常時はボタン非表示）</td>
+          <td>最高（通常時はFABのみ）</td>
+        </tr>
+        <tr>
+          <td><strong>操作ステップ数</strong></td>
+          <td>最短（ボタン見て即タップ）</td>
+          <td>2ステップ（カードタップ→＋タップ）</td>
+          <td>3ステップ（FAB→ポイント選択→種別選択）</td>
+        </tr>
+        <tr>
+          <td><strong>誤タップリスク</strong></td>
+          <td>中（ボタンが小さめ / 常時表示）</td>
+          <td>低（展開後に別操作が必要）</td>
+          <td>低（明確な2ステップ）</td>
+        </tr>
+        <tr>
+          <td><strong>末尾追加との統一性</strong></td>
+          <td>高（同じ＋ボタンを使い回せる）</td>
+          <td>中（末尾カードのみ特別扱いが必要）</td>
+          <td>高（FABから全挿入をまとめて管理）</td>
+        </tr>
+        <tr>
+          <td><strong>実装コスト目安</strong></td>
+          <td>低</td>
+          <td>中（アニメーション実装が必要）</td>
+          <td>中（モード切替・インジケーター制御）</td>
+        </tr>
+        <tr>
+          <td><strong>推奨度</strong></td>
+          <td><span class="badge-sub">サブ候補</span></td>
+          <td><span class="badge-sub">将来拡張向け</span></td>
+          <td><span class="badge-rec">推奨</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== RECOMMENDATION ===== -->
+  <section id="recommendation">
+    <div class="section-header">
+      <div class="label">Designer Recommendation</div>
+      <h2>デザイナー総合推奨案</h2>
+    </div>
+
+    <div class="recommendation-box">
+      <div class="rec-badge">推奨: Pattern 3 × ボトムシート選択</div>
+      <h3>FAB型 + 挿入モード + ボトムシート種別選択</h3>
+      <p>
+        MichiMarkのタイムラインは「閲覧」が主目的であり、「挿入」は編集操作として明確に区別されるべきアクションである。
+        Pattern 3（FAB型）は通常閲覧時にタイムラインを一切汚さず、FABタップによって初めて「挿入モード」に入るという明確なUXフローを提供できる。
+        これはiOS・Androidいずれのモバイル慣習とも整合しており、ユーザーへの学習コストが低い。
+      </p>
+      <p style="margin-top: 12px;">
+        挿入ポイントのインジケーター（小さなAmberドット＋点線）は、挿入モード中にのみタイムライン上に出現させることで、
+        C-2スタイルのクリーンなビジュアルを損なわない。ポイントタップ後にボトムシートで「Mark / Link」の2択を提示する構成は、
+        操作の意図を明確化しつつ最小のUIで完結できる。
+      </p>
+      <p style="margin-top: 12px;">
+        <strong>短期フォールバック案:</strong> Pattern 1（常時表示型）は実装コストが最も低く、初期リリースやプロトタイプ段階での採用に向く。
+        カード数が少ないMichiMarkの初期ユースケースでは視覚的混雑も許容範囲内であり、まずPattern 1で機能実装し、
+        UXが安定したらPattern 3に段階移行するアプローチも有効である。
+      </p>
+    </div>
+
+    <div style="margin-top: 24px; padding: 18px 22px; background: white; border: 1px solid var(--border-light); border-radius: 12px; font-size: 13px; color: var(--text-secondary); line-height: 1.8;">
+      <strong style="color: var(--text-primary);">カラーについての補足:</strong><br>
+      挿入ボタンのAmber（#F59E0B）採用を推奨する。理由は以下の3点。<br>
+      1. Mark（Teal）・Link（Emerald）との明確な色区別ができ、「追加アクション」として独立した役割を持てる。<br>
+      2. 寒色系（TealとEmerald）に対して暖色系Amberは視覚的に浮かび上がり、ボタンの誘目性が高い。<br>
+      3. 代替案の「白抜き＋Teal枠」はMarkドットと色が被り、挿入ボタンとMarkが混同される恐れがあるため不推奨。
+    </div>
+  </section>
+
+</div><!-- /content -->
+
+</body>
+</html>

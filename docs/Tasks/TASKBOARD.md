@@ -58,6 +58,21 @@
 | T-054 | EventListカード色・EventDetailテーマカラー Spec作成 | architect | `DONE` | | v2.1更新済み。TopicThemeColor enum・EventList/EventDetail適用Spec追加 |
 | T-055 | EventListカード色・EventDetailテーマカラー 実装 | flutter-dev | `DONE` | | REQ-007/008完了。TopicThemeColor enum・カード左ボーダー・AppBarグラデーション |
 
+## Phase 6: MichiInfo タイムライン UI リニューアル
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-060 | MarkLink カードデザイン要件書作成（C-2スタイル・距離カード外表示） | product-manager | `BLOCKED` | | デザイン叩き: `docs/Design/draft/2026-04-07_marklink_card_design_draft.md`。関連作業完了後に着手 |
+| T-061 | MarkLink カードデザイン Spec 作成 | architect | `BLOCKED` | | T-060完了後 |
+| T-062 | MarkLink カードデザイン 実装 | flutter-dev | `BLOCKED` | | T-061完了後 |
+| T-063 | MarkLink カードデザイン レビュー | reviewer | `BLOCKED` | | T-062完了後 |
+| T-064 | タイムライン挿入UI（FAB型）要件書作成 | product-manager | `BLOCKED` | | デザイン提案: `docs/Design/2026-04-07_marklink_insert_button_proposal.html`。T-060と並行可 |
+| T-065 | タイムライン挿入UI（FAB型）Spec 作成 | architect | `BLOCKED` | | T-064完了後 |
+| T-066 | タイムライン挿入UI（FAB型）実装 | flutter-dev | `BLOCKED` | | T-065完了後 |
+| T-067 | タイムライン挿入UI（FAB型）レビュー | reviewer | `BLOCKED` | | T-066完了後 |
+
+---
+
 ## Phase 3: 機能追加・仕上げ
 
 | ID | タスク | 役割 | status | locked_by | notes |

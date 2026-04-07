@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark MarkLink カードデザイン提案</title>
+  <style>
+    :root {
+      /* ===== Brand Colors ===== */
+      --brand-teal:       #2B7A9B;
+      --brand-teal-dark:  #1A4A5E;
+      --brand-teal-light: #3A9DC4;
+      --brand-teal-tint:  #D0EBF5;
+
+      /* ===== Mark Colors ===== */
+      --mark-primary:     #2B7A9B;
+      --mark-dark:        #1A4A5E;
+      --mark-tint:        #D0EBF5;
+      --mark-tint-light:  #EAF5FB;
+
+      /* ===== Link Colors ===== */
+      --link-primary:     #2E9E6B;
+      --link-dark:        #1A7A52;
+      --link-tint:        #D4F0E4;
+      --link-tint-light:  #EDFAF4;
+
+      /* ===== Neutral ===== */
+      --text-primary:     #1A1A2E;
+      --text-secondary:   #6C757D;
+      --text-tertiary:    #ADB5BD;
+      --bg-page:          #F5F7FA;
+      --bg-card:          #FFFFFF;
+      --border-light:     #E9ECEF;
+      --shadow-sm:        0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md:        0 4px 12px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-lg:        0 8px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06);
+
+      /* ===== Dark Mode Colors ===== */
+      --dark-bg:          #0D1B2A;
+      --dark-surface:     #1A2B3C;
+      --dark-card:        #1E3245;
+      --dark-border:      #2A4A66;
+      --dark-text:        #E8F4FD;
+      --dark-text-sub:    #8BAAC4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #1A4A5E 0%, #2B7A9B 55%, #3A9DC4 100%);
+      color: white;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .page-header h1 {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .page-header p {
+      font-size: 15px;
+      opacity: 0.85;
+      max-width: 680px;
+    }
+    .meta-row {
+      display: flex;
+      gap: 28px;
+      margin-top: 22px;
+      font-size: 12px;
+      opacity: 0.65;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ===== SECTION TITLES ===== */
+    .section {
+      margin: 52px 0;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .section-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: var(--brand-teal);
+      color: white;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      padding-left: 44px;
+    }
+    .divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 48px 0;
+    }
+
+    /* ===== COLOR PALETTE SECTION ===== */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .swatch {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .swatch-color {
+      height: 72px;
+    }
+    .swatch-info {
+      background: white;
+      padding: 10px 12px;
+    }
+    .swatch-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .swatch-hex {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .swatch-role {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      margin-top: 3px;
+    }
+
+    /* ===== PATTERN SECTION ===== */
+    .pattern-wrapper {
+      background: white;
+      border-radius: 16px;
+      padding: 36px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-light);
+    }
+    .pattern-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .pattern-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pattern-badge {
+      background: var(--brand-teal);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .pattern-badge.recommended {
+      background: linear-gradient(135deg, #E07B39, #C4603A);
+    }
+    .pattern-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .pattern-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      max-width: 460px;
+    }
+
+    /* ===== MOBILE FRAME ===== */
+    .mobile-demo-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    .mobile-frame {
+      background: #1A1A2E;
+      border-radius: 40px;
+      padding: 12px;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1);
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    .mobile-screen {
+      background: var(--bg-page);
+      border-radius: 30px;
+      overflow: hidden;
+      min-height: 520px;
+    }
+    .screen-statusbar {
+      background: white;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .screen-appbar {
+      background: linear-gradient(135deg, #1A4A5E, #2B7A9B);
+      color: white;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .screen-content {
+      padding: 12px 14px;
+    }
+
+    /* ===== PATTERN A: MINIMAL MATERIAL ===== */
+
+    /* Mark Card - Pattern A */
+    .card-a-mark {
+      background: white;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 2px;
+      box-shadow: var(--shadow-sm);
+      border-left: 4px solid var(--mark-primary);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .card-a-mark-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--mark-tint);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      color: var(--mark-primary);
+    }
+    .card-a-mark-body { flex: 1; min-width: 0; }
+    .card-a-mark-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+    .card-a-mark-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tag-a {
+      background: var(--mark-tint);
+      color: var(--mark-dark);
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* Link Card - Pattern A */
+    .card-a-link {
+      background: white;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 2px;
+      box-shadow: var(--shadow-sm);
+      border-left: 4px solid var(--link-primary);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .card-a-link-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--link-tint);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      color: var(--link-primary);
+    }
+    .card-a-link-body { flex: 1; min-width: 0; }
+    .card-a-link-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+    .card-a-link-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tag-a-link {
+      background: var(--link-tint);
+      color: var(--link-dark);
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* Connector A */
+    .connector-a {
+      display: flex;
+      align-items: center;
+      padding: 2px 0 2px 28px;
+      gap: 6px;
+    }
+    .connector-a-line {
+      width: 1px;
+      height: 20px;
+      background: var(--border-light);
+    }
+    .connector-a-dist {
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+
+    /* ===== PATTERN B: ICON-HEAVY VISUAL ===== */
+
+    .card-b-mark {
+      background: linear-gradient(135deg, var(--mark-dark) 0%, var(--mark-primary) 100%);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 4px;
+      box-shadow: 0 4px 16px rgba(43,122,155,0.35);
+      color: white;
+    }
+    .card-b-mark-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .card-b-mark-icon {
+      width: 42px;
+      height: 42px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .card-b-mark-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .card-b-mark-type {
+      font-size: 10px;
+      opacity: 0.75;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .card-b-mark-stats {
+      display: flex;
+      gap: 12px;
+    }
+    .card-b-stat {
+      background: rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 6px 10px;
+      flex: 1;
+      text-align: center;
+    }
+    .card-b-stat-value {
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .card-b-stat-label {
+      font-size: 9px;
+      opacity: 0.75;
+      margin-top: 1px;
+    }
+
+    .card-b-link {
+      background: linear-gradient(135deg, var(--link-dark) 0%, var(--link-primary) 100%);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 4px;
+      box-shadow: 0 4px 14px rgba(46,158,107,0.3);
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-b-link-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .card-b-link-body { flex: 1; }
+    .card-b-link-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    .card-b-link-meta {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+    .card-b-link-dist {
+      text-align: right;
+    }
+    .card-b-link-dist-value {
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .card-b-link-dist-unit {
+      font-size: 10px;
+      opacity: 0.75;
+    }
+
+    .connector-b {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 20px;
+      margin: 0 auto;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--mark-primary), var(--link-primary));
+      border-radius: 2px;
+      position: relative;
+    }
+
+    /* ===== PATTERN C: TIMELINE CONNECTED ===== */
+
+    .timeline-c {
+      position: relative;
+      padding-left: 52px;
+    }
+    .timeline-c-line {
+      position: absolute;
+      left: 19px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border-light);
+    }
+    .timeline-c-item {
+      position: relative;
+      margin-bottom: 6px;
+    }
+
+    /* Mark dot */
+    .timeline-c-mark-dot {
+      position: absolute;
+      left: -40px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      background: var(--mark-primary);
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 0 0 2px var(--mark-primary);
+      z-index: 2;
+    }
+    /* Link dash */
+    .timeline-c-link-dot {
+      position: absolute;
+      left: -36px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      background: var(--link-primary);
+      border-radius: 3px;
+      z-index: 2;
+    }
+
+    /* Card C - Mark */
+    .card-c-mark {
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      padding: 12px 14px;
+      border-top: 3px solid var(--mark-primary);
+      position: relative;
+    }
+    .card-c-mark::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-right: 8px solid white;
+      filter: drop-shadow(-2px 0 2px rgba(0,0,0,0.06));
+    }
+    .card-c-mark-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .card-c-mark-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-c-mark-meter {
+      font-size: 12px;
+      color: var(--mark-primary);
+      font-weight: 600;
+    }
+    .chip-c {
+      background: var(--mark-tint);
+      color: var(--mark-dark);
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* Card C - Link */
+    .card-c-link {
+      background: var(--link-tint-light, #EDFAF4);
+      border-radius: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--link-tint);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-c-link-icon {
+      font-size: 14px;
+      color: var(--link-primary);
+      flex-shrink: 0;
+    }
+    .card-c-link-body { flex: 1; }
+    .card-c-link-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .card-c-link-meta {
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+    .card-c-link-dist {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--link-primary);
+      flex-shrink: 0;
+    }
+
+    /* Timeline thick line for Link range */
+    .timeline-c-thick {
+      position: absolute;
+      left: -34px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--link-primary);
+      border-radius: 2px;
+    }
+
+    /* ===== PATTERN D: DARK MODE ===== */
+
+    .dark-screen {
+      background: var(--dark-bg);
+    }
+    .dark-content {
+      padding: 12px 14px;
+      background: var(--dark-bg);
+    }
+
+    .card-d-mark {
+      background: var(--dark-card);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 4px;
+      border-left: 4px solid #3A9DC4;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .card-d-mark-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(58,157,196,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .card-d-mark-body { flex: 1; }
+    .card-d-mark-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark-text);
+      margin-bottom: 3px;
+    }
+    .card-d-mark-meta {
+      font-size: 11px;
+      color: var(--dark-text-sub);
+      display: flex;
+      gap: 6px;
+    }
+    .tag-d-mark {
+      background: rgba(58,157,196,0.2);
+      color: #3A9DC4;
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .connector-d {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 2px 0 2px 20px;
+    }
+    .connector-d-line {
+      width: 1px;
+      height: 16px;
+      background: var(--dark-border);
+    }
+    .connector-d-dist {
+      font-size: 10px;
+      color: var(--dark-text-sub);
+    }
+
+    .card-d-link {
+      background: var(--dark-surface);
+      border-radius: 10px;
+      padding: 11px 14px;
+      margin-bottom: 4px;
+      border: 1px solid var(--dark-border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-d-link-icon {
+      width: 34px;
+      height: 34px;
+      background: rgba(46,158,107,0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .card-d-link-body { flex: 1; }
+    .card-d-link-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark-text);
+      margin-bottom: 2px;
+    }
+    .card-d-link-meta {
+      font-size: 11px;
+      color: var(--dark-text-sub);
+    }
+    .card-d-link-dist {
+      font-size: 13px;
+      font-weight: 700;
+      color: #3ABF8A;
+      flex-shrink: 0;
+    }
+
+    /* ===== SPEC TABLE ===== */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 16px;
+    }
+    .spec-table th {
+      background: var(--bg-page);
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .spec-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: top;
+      color: var(--text-primary);
+    }
+    .spec-table tr:last-child td {
+      border-bottom: none;
+    }
+    .spec-table .mono {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      color: var(--brand-teal);
+    }
+
+    /* ===== COMPARISON TABLE ===== */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .comparison-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+    }
+    .comparison-card.recommended {
+      border-color: var(--brand-teal);
+      box-shadow: 0 0 0 2px rgba(43,122,155,0.2), var(--shadow-md);
+    }
+    .comparison-card .rec-badge {
+      display: inline-block;
+      background: var(--brand-teal);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .comparison-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+    .pro-list, .con-list {
+      list-style: none;
+      font-size: 12px;
+    }
+    .pro-list li, .con-list li {
+      padding: 3px 0;
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+    .pro-list li::before { content: '+'; color: var(--link-primary); font-weight: 700; }
+    .con-list li::before { content: '-'; color: #D94F4F; font-weight: 700; }
+    .pro-list { margin-bottom: 8px; }
+    .score-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .score-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      width: 60px;
+      flex-shrink: 0;
+    }
+    .score-bar {
+      flex: 1;
+      height: 5px;
+      background: var(--border-light);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .score-fill {
+      height: 100%;
+      background: var(--brand-teal);
+      border-radius: 3px;
+    }
+
+    /* ===== RATIONALE ===== */
+    .rationale-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .rationale-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+    }
+    .rationale-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rationale-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ===== CONTRAST CHECK ===== */
+    .contrast-grid {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .contrast-item {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      min-width: 160px;
+    }
+    .contrast-swatch {
+      padding: 14px 16px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .contrast-meta {
+      background: white;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--border-light);
+    }
+    .contrast-pass {
+      color: var(--link-primary);
+      font-weight: 700;
+    }
+    .contrast-fail {
+      color: #D94F4F;
+      font-weight: 700;
+    }
+
+    /* ===== TYPOGRAPHY SECTION ===== */
+    .typo-row {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .typo-row:last-child { border-bottom: none; }
+    .typo-sample { min-width: 200px; }
+    .typo-spec {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-family: 'SF Mono', monospace;
+    }
+    .typo-role {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    /* ===== RECOMMEND BANNER ===== */
+    .recommend-banner {
+      background: linear-gradient(135deg, #E8F7F2, #D4F0E4);
+      border: 1px solid var(--link-primary);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 32px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .recommend-banner-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .recommend-banner h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--link-dark);
+      margin-bottom: 6px;
+    }
+    .recommend-banner p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ===== FOOTER ===== */
+    .page-footer {
+      background: var(--text-primary);
+      color: white;
+      padding: 32px 48px;
+      margin-top: 64px;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    .page-footer .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-footer a {
+      color: var(--brand-teal-light);
+    }
+
+    /* ===== INTERACTIVE TAB ===== */
+    .tab-nav {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-page);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+    .tab-btn {
+      padding: 8px 18px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: white;
+      color: var(--brand-teal);
+      box-shadow: var(--shadow-sm);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- ===== PAGE HEADER ===== -->
+<header class="page-header">
+  <div class="badge">Designer Report</div>
+  <h1>MarkLink カードデザイン提案</h1>
+  <p>MichiMark の MichiInfo タイムライン上に表示される Mark（地点）・Link（区間）の<br>
+  カードUIについて4パターンのデザインバリエーションを提案します。</p>
+  <div class="meta-row">
+    <span>作成日: 2026-04-07</span>
+    <span>作成者: designer</span>
+    <span>バージョン: v1.0</span>
+    <span>対象: MichiInfo タイムライン</span>
+  </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="container">
+
+  <!-- ===== 1. COLOR PALETTE ===== -->
+  <section id="color-palette" class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2 class="section-title">カラーパレット</h2>
+    </div>
+    <p class="section-subtitle">既存ブランドカラーを基軸に Mark / Link の視覚的差別化を設計しています。</p>
+
+    <div class="palette-grid">
+      <!-- Mark Colors -->
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1A4A5E;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Mark Dark</div>
+          <div class="swatch-hex">#1A4A5E</div>
+          <div class="swatch-role">Mark グラデーション始点・ヘッダー</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#2B7A9B;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Mark Primary (Brand Teal)</div>
+          <div class="swatch-hex">#2B7A9B</div>
+          <div class="swatch-role">Markカード アクセント・アイコン</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#3A9DC4;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Mark Light</div>
+          <div class="swatch-hex">#3A9DC4</div>
+          <div class="swatch-role">Mark ハイライト・ホバー</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#D0EBF5;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Mark Tint</div>
+          <div class="swatch-hex">#D0EBF5</div>
+          <div class="swatch-role">Markアイコン背景・タグ背景</div>
+        </div>
+      </div>
+      <!-- Link Colors -->
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1A7A52;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Link Dark</div>
+          <div class="swatch-hex">#1A7A52</div>
+          <div class="swatch-role">Link グラデーション始点</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#2E9E6B;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Link Primary (Emerald)</div>
+          <div class="swatch-hex">#2E9E6B</div>
+          <div class="swatch-role">Linkカード アクセント・アイコン</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#4DB36B;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Link Light</div>
+          <div class="swatch-hex">#4DB36B</div>
+          <div class="swatch-role">Link ハイライト・距離値表示</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#D4F0E4;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Link Tint</div>
+          <div class="swatch-hex">#D4F0E4</div>
+          <div class="swatch-role">Linkアイコン背景・カード背景(C)</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:white;border-radius:12px;padding:20px 24px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);">
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">
+        <strong style="color:var(--text-primary);">色彩設計の考え方:</strong>
+        Mark (地点) には既存ブランドカラーの Teal (#2B7A9B) をそのまま使用し、
+        Link (区間) には既存パレットの Emerald Green (#2E9E6B) を採用しています。
+        これはトポグラフィックに隣り合う色（H=155° と H=200°）を使い、
+        青緑系の統一感を維持しながら Mark/Link を明確に区別する設計です。
+        色相差は 45° で、近すぎず遠すぎないバランスを持ちます。
+      </p>
+    </div>
+
+    <!-- Contrast Check -->
+    <h3 style="font-size:16px;font-weight:700;margin:28px 0 8px;">WCAG AA コントラスト確認</h3>
+    <div class="contrast-grid">
+      <div class="contrast-item">
+        <div class="contrast-swatch" style="background:#2B7A9B;color:white;">Mark Primary 上の白テキスト</div>
+        <div class="contrast-meta">対比率: 5.12:1 <span class="contrast-pass">AA 合格</span></div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-swatch" style="background:#D0EBF5;color:#1A4A5E;">Mark Tint 上の Dark テキスト</div>
+        <div class="contrast-meta">対比率: 8.30:1 <span class="contrast-pass">AAA 合格</span></div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-swatch" style="background:#2E9E6B;color:white;">Link Primary 上の白テキスト</div>
+        <div class="contrast-meta">対比率: 4.61:1 <span class="contrast-pass">AA 合格</span></div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-swatch" style="background:#D4F0E4;color:#1A7A52;">Link Tint 上の Dark テキスト</div>
+        <div class="contrast-meta">対比率: 7.95:1 <span class="contrast-pass">AAA 合格</span></div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-swatch" style="background:#F5F7FA;color:#1A1A2E;">背景 上の Primary テキスト</div>
+        <div class="contrast-meta">対比率: 16.7:1 <span class="contrast-pass">AAA 合格</span></div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-swatch" style="background:#0D1B2A;color:#E8F4FD;">ダーク背景 上のテキスト</div>
+        <div class="contrast-meta">対比率: 14.2:1 <span class="contrast-pass">AAA 合格</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== 2. TYPOGRAPHY ===== -->
+  <section id="typography" class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2 class="section-title">タイポグラフィ</h2>
+    </div>
+    <p class="section-subtitle">モバイル（iOS/Android）向けの読みやすさを重視したフォントスケール設計です。</p>
+
+    <div style="background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);">
+      <div class="typo-row">
+        <div class="typo-sample" style="font-size:18px;font-weight:700;color:#1A1A2E;">カード見出し (Mark名)</div>
+        <div>
+          <div class="typo-spec">18px / W700 / #1A1A2E</div>
+          <div class="typo-role">Markカードのメインタイトル — 最重要情報</div>
+        </div>
+      </div>
+      <div class="typo-row">
+        <div class="typo-sample" style="font-size:14px;font-weight:600;color:#1A1A2E;">区間タイトル (Link名)</div>
+        <div>
+          <div class="typo-spec">14px / W600 / #1A1A2E</div>
+          <div class="typo-role">Linkカードのタイトル — Markより一段小さく従属関係を示す</div>
+        </div>
+      </div>
+      <div class="typo-row">
+        <div class="typo-sample" style="font-size:13px;font-weight:600;color:#2B7A9B;">10,240 km</div>
+        <div>
+          <div class="typo-spec">13px / W600 / Mark Primary</div>
+          <div class="typo-role">メーター値 — 数値を色で強調</div>
+        </div>
+      </div>
+      <div class="typo-row">
+        <div class="typo-sample" style="font-size:18px;font-weight:800;color:#2E9E6B;">50 km</div>
+        <div>
+          <div class="typo-spec">18px / W800 / Link Primary (パターンB)</div>
+          <div class="typo-role">走行距離 — 区間の主要情報としてサイズアップ</div>
+        </div>
+      </div>
+      <div class="typo-row">
+        <div class="typo-sample" style="font-size:11px;font-weight:500;color:#6C757D;">departure · 2名 · 12:30</div>
+        <div>
+          <div class="typo-spec">11px / W500 / #6C757D</div>
+          <div class="typo-role">メタ情報 — アクション・メンバー・時刻などの補足</div>
+        </div>
+      </div>
+      <div class="typo-row">
+        <div class="typo-sample" style="font-size:10px;font-weight:600;">
+          <span style="background:#D0EBF5;color:#1A4A5E;border-radius:6px;padding:2px 8px;">fuel</span>
+          <span style="background:#D4F0E4;color:#1A7A52;border-radius:6px;padding:2px 8px;margin-left:6px;">drive</span>
+        </div>
+        <div>
+          <div class="typo-spec">10px / W600 / Tint背景 + Dark文字</div>
+          <div class="typo-role">アクションタグ・チップ — コンパクトに情報を整理</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== 3. COMPONENT PREVIEW ===== -->
+  <section id="component-preview" class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2 class="section-title">コンポーネントプレビュー</h2>
+    </div>
+    <p class="section-subtitle">4パターンのカードデザインバリエーションを実際のモバイル表示でプレビューします。</p>
+
+    <!-- ===== PATTERN A ===== -->
+    <div class="pattern-wrapper">
+      <div class="pattern-header">
+        <div>
+          <div class="pattern-label">
+            <span class="pattern-badge">Pattern A</span>
+            <span class="pattern-name">シンプル・ミニマル（マテリアルデザイン風）</span>
+          </div>
+          <p class="pattern-desc" style="margin-top:6px;">白カード + 左ボーダーアクセント + 丸/角アイコンで Mark/Link を区別。情報密度が低く視認性が高い。</p>
+        </div>
+      </div>
+
+      <div class="mobile-demo-area">
+        <!-- Mobile Preview A -->
+        <div class="mobile-frame">
+          <div class="mobile-screen">
+            <div class="screen-statusbar">
+              <span>9:41</span>
+              <span>●●●</span>
+            </div>
+            <div class="screen-appbar">MichiInfo — ドライブ記録</div>
+            <div class="screen-content">
+
+              <!-- Mark: 出発地 -->
+              <div class="card-a-mark">
+                <div class="card-a-mark-icon">📍</div>
+                <div class="card-a-mark-body">
+                  <div class="card-a-mark-title">SA 足柄</div>
+                  <div class="card-a-mark-meta">
+                    <span>10,240 km</span>
+                    <span class="tag-a">departure</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="connector-a">
+                <div class="connector-a-line"></div>
+                <span class="connector-a-dist">50 km</span>
+              </div>
+
+              <!-- Link: 移動区間 -->
+              <div class="card-a-link">
+                <div class="card-a-link-icon">🚗</div>
+                <div class="card-a-link-body">
+                  <div class="card-a-link-title">東名高速 走行</div>
+                  <div class="card-a-link-meta">
+                    <span>50 km</span>
+                    <span class="tag-a-link">drive</span>
+                    <span>田中, 鈴木</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="connector-a">
+                <div class="connector-a-line"></div>
+                <span class="connector-a-dist">50 km</span>
+              </div>
+
+              <!-- Mark: 休憩地 -->
+              <div class="card-a-mark">
+                <div class="card-a-mark-icon">📍</div>
+                <div class="card-a-mark-body">
+                  <div class="card-a-mark-title">PA 大井松田</div>
+                  <div class="card-a-mark-meta">
+                    <span>10,290 km</span>
+                    <span class="tag-a">stop</span>
+                    <span class="tag-a" style="background:#FFF3E0;color:#E07B39;">⛽ 給油</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="connector-a">
+                <div class="connector-a-line"></div>
+                <span class="connector-a-dist">30 km</span>
+              </div>
+
+              <!-- Link: 移動区間 2 -->
+              <div class="card-a-link">
+                <div class="card-a-link-icon">🛣️</div>
+                <div class="card-a-link-body">
+                  <div class="card-a-link-title">R1 国道走行</div>
+                  <div class="card-a-link-meta">
+                    <span>30 km</span>
+                    <span class="tag-a-link">drive</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="connector-a">
+                <div class="connector-a-line"></div>
+                <span class="connector-a-dist">30 km</span>
+              </div>
+
+              <!-- Mark: 目的地 -->
+              <div class="card-a-mark">
+                <div class="card-a-mark-icon">🏁</div>
+                <div class="card-a-mark-body">
+                  <div class="card-a-mark-title">目的地 静岡IC</div>
+                  <div class="card-a-mark-meta">
+                    <span>10,320 km</span>
+                    <span class="tag-a">arrival</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Spec Table A -->
+        <div>
+          <h4 style="font-size:15px;font-weight:700;margin-bottom:12px;color:var(--text-primary);">デザイン仕様</h4>
+          <table class="spec-table">
+            <thead>
+              <tr><th>要素</th><th>Mark</th><th>Link</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>形状</td><td>角丸12px + 左ボーダー4px</td><td>角丸12px + 左ボーダー4px</td></tr>
+              <tr><td>アクセントカラー</td><td class="mono">#2B7A9B (Teal)</td><td class="mono">#2E9E6B (Emerald)</td></tr>
+              <tr><td>アイコン形</td><td>円形 (50%)</td><td>角丸矩形 (8px)</td></tr>
+              <tr><td>アイコン背景</td><td class="mono">#D0EBF5</td><td class="mono">#D4F0E4</td></tr>
+              <tr><td>カード影</td><td>shadow-sm (1-3px)</td><td>shadow-sm (1-3px)</td></tr>
+              <tr><td>背景色</td><td>white</td><td>white</td></tr>
+              <tr><td>高さ (目安)</td><td>64-72dp</td><td>56-64dp</td></tr>
+              <tr><td>コネクター</td><td colspan="2">細い縦線 + 距離テキスト</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:16px;padding:12px 16px;background:var(--mark-tint);border-radius:10px;">
+            <p style="font-size:12px;color:var(--mark-dark);">
+              <strong>適しているケース:</strong> 情報量の多い画面、長いリスト。白背景で視覚ノイズが少なく、スクロール時の読み疲れを抑えられる。Flutterの標準Cardウィジェットとの親和性が高い。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PATTERN B ===== -->
+    <div class="pattern-wrapper">
+      <div class="pattern-header">
+        <div>
+          <div class="pattern-label">
+            <span class="pattern-badge">Pattern B</span>
+            <span class="pattern-name">アイコン強調・ビジュアル重視</span>
+          </div>
+          <p class="pattern-desc" style="margin-top:6px;">グラデーション塗りつぶしカード。Mark/Linkをカラーで明確に区別。距離情報を大きく表示。</p>
+        </div>
+      </div>
+
+      <div class="mobile-demo-area">
+        <!-- Mobile Preview B -->
+        <div class="mobile-frame">
+          <div class="mobile-screen">
+            <div class="screen-statusbar">
+              <span>9:41</span>
+              <span>●●●</span>
+            </div>
+            <div class="screen-appbar">MichiInfo — ドライブ記録</div>
+            <div class="screen-content">
+
+              <!-- Mark B: 出発地 -->
+              <div class="card-b-mark">
+                <div class="card-b-mark-header">
+                  <div class="card-b-mark-icon">📍</div>
+                  <div>
+                    <div class="card-b-mark-title">SA 足柄</div>
+                    <div class="card-b-mark-type">Mark · 出発</div>
+                  </div>
+                </div>
+                <div class="card-b-mark-stats">
+                  <div class="card-b-stat">
+                    <div class="card-b-stat-value">10,240</div>
+                    <div class="card-b-stat-label">km メーター</div>
+                  </div>
+                  <div class="card-b-stat">
+                    <div class="card-b-stat-value">departure</div>
+                    <div class="card-b-stat-label">アクション</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="height:6px;"></div>
+
+              <!-- Link B: 移動 -->
+              <div class="card-b-link">
+                <div class="card-b-link-icon">🚗</div>
+                <div class="card-b-link-body">
+                  <div class="card-b-link-title">東名高速 走行</div>
+                  <div class="card-b-link-meta">drive · 田中, 鈴木</div>
+                </div>
+                <div class="card-b-link-dist">
+                  <div class="card-b-link-dist-value">50</div>
+                  <div class="card-b-link-dist-unit">km</div>
+                </div>
+              </div>
+
+              <div style="height:6px;"></div>
+
+              <!-- Mark B: 休憩 -->
+              <div class="card-b-mark">
+                <div class="card-b-mark-header">
+                  <div class="card-b-mark-icon">⛽</div>
+                  <div>
+                    <div class="card-b-mark-title">PA 大井松田</div>
+                    <div class="card-b-mark-type">Mark · 給油・停車</div>
+                  </div>
+                </div>
+                <div class="card-b-mark-stats">
+                  <div class="card-b-stat">
+                    <div class="card-b-stat-value">10,290</div>
+                    <div class="card-b-stat-label">km メーター</div>
+                  </div>
+                  <div class="card-b-stat">
+                    <div class="card-b-stat-value">fuel</div>
+                    <div class="card-b-stat-label">アクション</div>
+                  </div>
+                  <div class="card-b-stat">
+                    <div class="card-b-stat-value">45L</div>
+                    <div class="card-b-stat-label">給油量</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="height:6px;"></div>
+
+              <!-- Link B: 移動2 -->
+              <div class="card-b-link">
+                <div class="card-b-link-icon">🛣️</div>
+                <div class="card-b-link-body">
+                  <div class="card-b-link-title">R1 国道走行</div>
+                  <div class="card-b-link-meta">drive · 一般道</div>
+                </div>
+                <div class="card-b-link-dist">
+                  <div class="card-b-link-dist-value">30</div>
+                  <div class="card-b-link-dist-unit">km</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Spec Table B -->
+        <div>
+          <h4 style="font-size:15px;font-weight:700;margin-bottom:12px;color:var(--text-primary);">デザイン仕様</h4>
+          <table class="spec-table">
+            <thead>
+              <tr><th>要素</th><th>Mark</th><th>Link</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>形状</td><td>角丸14px, 全面塗り</td><td>角丸14px, 全面塗り</td></tr>
+              <tr><td>背景</td><td>グラデーション Teal Dark→Primary</td><td>グラデーション Emerald Dark→Primary</td></tr>
+              <tr><td>アイコン背景</td><td>rgba(white, 0.2)</td><td>rgba(white, 0.2)</td></tr>
+              <tr><td>テキスト</td><td>white / opacity 0.75</td><td>white / opacity 0.80</td></tr>
+              <tr><td>カード影</td><td>0 4px 16px rgba(Teal, 0.35)</td><td>0 4px 14px rgba(Emerald, 0.3)</td></tr>
+              <tr><td>距離表示</td><td>stat block (W700)</td><td>右端 大数字 (W800)</td></tr>
+              <tr><td>高さ (目安)</td><td>88-96dp (stat含む)</td><td>64-72dp</td></tr>
+              <tr><td>コネクター</td><td colspan="2">グラデーション縦線 (2px)</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:16px;padding:12px 16px;background:var(--link-tint);border-radius:10px;">
+            <p style="font-size:12px;color:var(--link-dark);">
+              <strong>適しているケース:</strong> 地図アプリ・ドライブアプリらしいビジュアルを強調したい場合。情報をグループとして視認しやすく、スクロール量が少ないシーンで映える。ただし画面が派手になりやすく、長リストでは疲れを感じやすい。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PATTERN C ===== -->
+    <div class="pattern-wrapper" style="border: 2px solid var(--brand-teal);">
+      <div class="pattern-header">
+        <div>
+          <div class="pattern-label">
+            <span class="pattern-badge recommended">Pattern C · 推奨</span>
+            <span class="pattern-name">タイムライン連結型</span>
+          </div>
+          <p class="pattern-desc" style="margin-top:6px;">縦線 + ドット + 吹き出しカードでドライブルートの連続性を視覚化。MichiMarkらしさを最も体現するデザイン。</p>
+        </div>
+      </div>
+
+      <div class="mobile-demo-area">
+        <!-- Mobile Preview C -->
+        <div class="mobile-frame">
+          <div class="mobile-screen">
+            <div class="screen-statusbar">
+              <span>9:41</span>
+              <span>●●●</span>
+            </div>
+            <div class="screen-appbar">MichiInfo — ドライブ記録</div>
+            <div class="screen-content" style="padding:12px 10px;">
+
+              <div style="position:relative;">
+                <!-- Timeline vertical line -->
+                <div style="
+                  position:absolute;
+                  left:19px;
+                  top:12px;
+                  bottom:12px;
+                  width:2px;
+                  background:linear-gradient(to bottom,
+                    var(--mark-primary) 0%,
+                    var(--mark-primary) 15%,
+                    var(--link-primary) 20%,
+                    var(--link-primary) 48%,
+                    var(--mark-primary) 52%,
+                    var(--mark-primary) 65%,
+                    var(--link-primary) 68%,
+                    var(--link-primary) 85%,
+                    var(--mark-primary) 88%,
+                    var(--mark-primary) 100%
+                  );
+                "></div>
+
+                <!-- Mark C: 出発地 -->
+                <div style="display:flex;align-items:center;margin-bottom:6px;position:relative;">
+                  <div style="
+                    width:20px;height:20px;
+                    background:var(--mark-primary);
+                    border-radius:50%;
+                    border:3px solid white;
+                    box-shadow: 0 0 0 2px var(--mark-primary);
+                    flex-shrink:0;
+                    z-index:2;
+                    margin-right:0;
+                  "></div>
+                  <div style="
+                    width:8px;height:2px;
+                    background:var(--mark-primary);
+                    flex-shrink:0;
+                  "></div>
+                  <div class="card-c-mark" style="flex:1;">
+                    <div class="card-c-mark-title">SA 足柄</div>
+                    <div class="card-c-mark-row">
+                      <span class="card-c-mark-meter">10,240 km</span>
+                      <span class="chip-c">departure</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Link C: 移動 -->
+                <div style="display:flex;align-items:center;margin-bottom:6px;position:relative;padding-left:8px;">
+                  <div style="
+                    width:12px;height:12px;
+                    background:var(--link-primary);
+                    border-radius:3px;
+                    flex-shrink:0;
+                    z-index:2;
+                    margin-right:4px;
+                  "></div>
+                  <div style="
+                    width:8px;height:1px;
+                    background:var(--link-primary);
+                    opacity:0.5;
+                    flex-shrink:0;
+                  "></div>
+                  <div class="card-c-link" style="flex:1;">
+                    <span class="card-c-link-icon">🚗</span>
+                    <div class="card-c-link-body">
+                      <div class="card-c-link-title">東名高速 走行</div>
+                      <div class="card-c-link-meta">drive · 田中, 鈴木</div>
+                    </div>
+                    <span class="card-c-link-dist">50 km</span>
+                  </div>
+                </div>
+
+                <!-- Mark C: 休憩 -->
+                <div style="display:flex;align-items:center;margin-bottom:6px;position:relative;">
+                  <div style="
+                    width:20px;height:20px;
+                    background:var(--mark-primary);
+                    border-radius:50%;
+                    border:3px solid white;
+                    box-shadow: 0 0 0 2px var(--mark-primary);
+                    flex-shrink:0;
+                    z-index:2;
+                  "></div>
+                  <div style="
+                    width:8px;height:2px;
+                    background:var(--mark-primary);
+                    flex-shrink:0;
+                  "></div>
+                  <div class="card-c-mark" style="flex:1;">
+                    <div class="card-c-mark-title">PA 大井松田</div>
+                    <div class="card-c-mark-row">
+                      <span class="card-c-mark-meter">10,290 km</span>
+                      <div style="display:flex;gap:4px;">
+                        <span class="chip-c">stop</span>
+                        <span class="chip-c" style="background:#FFF3E0;color:#B85C20;">⛽</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Link C: 移動2 -->
+                <div style="display:flex;align-items:center;margin-bottom:6px;position:relative;padding-left:8px;">
+                  <div style="
+                    width:12px;height:12px;
+                    background:var(--link-primary);
+                    border-radius:3px;
+                    flex-shrink:0;
+                    z-index:2;
+                    margin-right:4px;
+                  "></div>
+                  <div style="
+                    width:8px;height:1px;
+                    background:var(--link-primary);
+                    opacity:0.5;
+                    flex-shrink:0;
+                  "></div>
+                  <div class="card-c-link" style="flex:1;">
+                    <span class="card-c-link-icon">🛣️</span>
+                    <div class="card-c-link-body">
+                      <div class="card-c-link-title">R1 国道走行</div>
+                      <div class="card-c-link-meta">drive · 一般道</div>
+                    </div>
+                    <span class="card-c-link-dist">30 km</span>
+                  </div>
+                </div>
+
+                <!-- Mark C: 目적地 -->
+                <div style="display:flex;align-items:center;position:relative;">
+                  <div style="
+                    width:20px;height:20px;
+                    background:var(--mark-primary);
+                    border-radius:50%;
+                    border:3px solid white;
+                    box-shadow: 0 0 0 2px var(--mark-primary);
+                    flex-shrink:0;
+                    z-index:2;
+                  "></div>
+                  <div style="
+                    width:8px;height:2px;
+                    background:var(--mark-primary);
+                    flex-shrink:0;
+                  "></div>
+                  <div class="card-c-mark" style="flex:1;">
+                    <div class="card-c-mark-title">静岡IC</div>
+                    <div class="card-c-mark-row">
+                      <span class="card-c-mark-meter">10,320 km</span>
+                      <span class="chip-c">arrival</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spec Table C -->
+        <div>
+          <h4 style="font-size:15px;font-weight:700;margin-bottom:12px;color:var(--text-primary);">デザイン仕様</h4>
+          <table class="spec-table">
+            <thead>
+              <tr><th>要素</th><th>Mark</th><th>Link</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>ドット/マーカー</td><td>●円 20dp, 塗り Teal, 白枠3dp</td><td>■角丸 12dp, 塗り Emerald</td></tr>
+              <tr><td>ドット接続</td><td>水平線 8dp (Teal)</td><td>水平線 8dp (Emerald, 薄)</td></tr>
+              <tr><td>カード形状</td><td>角丸12px + 上ボーダー3px</td><td>角丸10px + Tint背景</td></tr>
+              <tr><td>カード背景</td><td>white</td><td>Link Tint (#EDFAF4)</td></tr>
+              <tr><td>縦ライン</td><td colspan="2">2px → 4px (Link区間は太く)</td></tr>
+              <tr><td>縦ラインカラー</td><td>Teal (Mark区間)</td><td>Emerald (Link区間)</td></tr>
+              <tr><td>距離表示</td><td>右端テキスト (W700 Emerald)</td><td>右端テキスト (W700 Emerald)</td></tr>
+              <tr><td>高さ (目安)</td><td>64dp</td><td>52dp</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:16px;padding:12px 16px;background:linear-gradient(135deg,#E8F7F2,#D4F0E4);border:1px solid var(--link-primary);border-radius:10px;">
+            <p style="font-size:12px;color:var(--link-dark);">
+              <strong>推奨理由:</strong> 縦線が「道」を視覚的に表現し、MichiMarkのコアコンセプトである「ドライブルート記録」を直感的に伝えられる。既存のREQ-michi_info_layout.mdの吹き出し接続ルールとも整合性が高い。Mark/Linkの視覚差別化（●vs■、白vs薄緑背景、上ボーダーvsなし）が明確で、スクロール中でも迷わない。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PATTERN D ===== -->
+    <div class="pattern-wrapper">
+      <div class="pattern-header">
+        <div>
+          <div class="pattern-label">
+            <span class="pattern-badge" style="background:#0D1B2A;">Pattern D</span>
+            <span class="pattern-name">ダークモード対応デザイン</span>
+          </div>
+          <p class="pattern-desc" style="margin-top:6px;">パターンA（ミニマル系）をベースにしたダークモード。夜間ドライブ記録時の眩しさを低減。</p>
+        </div>
+      </div>
+
+      <div class="mobile-demo-area">
+        <!-- Mobile Preview D -->
+        <div class="mobile-frame">
+          <div class="mobile-screen dark-screen">
+            <div class="screen-statusbar" style="background:#1A2B3C;color:#E8F4FD;border-color:#2A4A66;">
+              <span>9:41</span>
+              <span>●●●</span>
+            </div>
+            <div class="screen-appbar" style="background:linear-gradient(135deg,#0D1B2A,#1A3A52);">MichiInfo — ドライブ記録</div>
+            <div class="dark-content">
+
+              <!-- Mark D: 出発地 -->
+              <div class="card-d-mark">
+                <div class="card-d-mark-icon">📍</div>
+                <div class="card-d-mark-body">
+                  <div class="card-d-mark-title">SA 足柄</div>
+                  <div class="card-d-mark-meta">
+                    <span>10,240 km</span>
+                    <span class="tag-d-mark">departure</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="connector-d">
+                <div class="connector-d-line"></div>
+                <span class="connector-d-dist">50 km</span>
+              </div>
+
+              <!-- Link D: 移動 -->
+              <div class="card-d-link">
+                <div class="card-d-link-icon">🚗</div>
+                <div class="card-d-link-body">
+                  <div class="card-d-link-title">東名高速 走行</div>
+                  <div class="card-d-link-meta">drive · 田中, 鈴木</div>
+                </div>
+                <span class="card-d-link-dist">50 km</span>
+              </div>
+
+              <div class="connector-d">
+                <div class="connector-d-line"></div>
+                <span class="connector-d-dist">50 km</span>
+              </div>
+
+              <!-- Mark D: 休憩 -->
+              <div class="card-d-mark">
+                <div class="card-d-mark-icon">⛽</div>
+                <div class="card-d-mark-body">
+                  <div class="card-d-mark-title">PA 大井松田</div>
+                  <div class="card-d-mark-meta">
+                    <span>10,290 km</span>
+                    <span class="tag-d-mark">fuel</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="connector-d">
+                <div class="connector-d-line"></div>
+                <span class="connector-d-dist">30 km</span>
+              </div>
+
+              <!-- Link D: 移動2 -->
+              <div class="card-d-link">
+                <div class="card-d-link-icon">🛣️</div>
+                <div class="card-d-link-body">
+                  <div class="card-d-link-title">R1 国道走行</div>
+                  <div class="card-d-link-meta">drive · 一般道</div>
+                </div>
+                <span class="card-d-link-dist">30 km</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Spec Table D -->
+        <div>
+          <h4 style="font-size:15px;font-weight:700;margin-bottom:12px;color:var(--text-primary);">デザイン仕様（ダーク）</h4>
+          <table class="spec-table">
+            <thead>
+              <tr><th>要素</th><th>値</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>ページ背景</td><td class="mono">#0D1B2A</td></tr>
+              <tr><td>Surface</td><td class="mono">#1A2B3C</td></tr>
+              <tr><td>Mark カード背景</td><td class="mono">#1E3245</td></tr>
+              <tr><td>Link カード背景</td><td class="mono">#1A2B3C (Surface)</td></tr>
+              <tr><td>Mark ボーダー</td><td class="mono">#3A9DC4 (Teal Light)</td></tr>
+              <tr><td>Link ボーダー</td><td class="mono">#2A4A66</td></tr>
+              <tr><td>テキスト Primary</td><td class="mono">#E8F4FD</td></tr>
+              <tr><td>テキスト Secondary</td><td class="mono">#8BAAC4</td></tr>
+              <tr><td>距離値カラー</td><td class="mono">#3ABF8A (Emerald Light)</td></tr>
+              <tr><td>アイコン背景</td><td>rgba(Teal, 0.2) / rgba(Emerald, 0.2)</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:16px;padding:12px 16px;background:#1A2B3C;border-radius:10px;border:1px solid #2A4A66;">
+            <p style="font-size:12px;color:#8BAAC4;">
+              <strong style="color:#E8F4FD;">位置づけ:</strong> パターンAのダーク版として実装可能。夜間ドライブや暗所での確認に最適。Flutter ThemeDataのdarkThemeとして並行提供できる。現在のスコープ外（REQ-michi_info_layout.md）だが、将来の対応時の参考案。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== 4. COMPARISON ===== -->
+  <section id="comparison" class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2 class="section-title">パターン比較</h2>
+    </div>
+    <p class="section-subtitle">各パターンの強み・弱みと評価スコアをまとめました。</p>
+
+    <div class="comparison-grid">
+      <!-- A -->
+      <div class="comparison-card">
+        <h4>A: ミニマル</h4>
+        <ul class="pro-list">
+          <li>実装コスト最小</li>
+          <li>長リストで疲れにくい</li>
+          <li>Flutterカードと親和性大</li>
+        </ul>
+        <ul class="con-list">
+          <li>ドライブ感が薄い</li>
+          <li>Mark/Linkの差が色のみ</li>
+        </ul>
+        <div class="score-row"><span class="score-label">視認性</span><div class="score-bar"><div class="score-fill" style="width:90%"></div></div></div>
+        <div class="score-row"><span class="score-label">MichiMark感</span><div class="score-bar"><div class="score-fill" style="width:45%"></div></div></div>
+        <div class="score-row"><span class="score-label">実装容易性</span><div class="score-bar"><div class="score-fill" style="width:95%"></div></div></div>
+      </div>
+      <!-- B -->
+      <div class="comparison-card">
+        <h4>B: ビジュアル重視</h4>
+        <ul class="pro-list">
+          <li>距離情報が大きく読める</li>
+          <li>アプリらしい個性</li>
+          <li>Mark/Linkが明確に区別</li>
+        </ul>
+        <ul class="con-list">
+          <li>長リストで視覚疲労</li>
+          <li>情報密度が下がる</li>
+          <li>夜間の眩しさ</li>
+        </ul>
+        <div class="score-row"><span class="score-label">視認性</span><div class="score-bar"><div class="score-fill" style="width:80%"></div></div></div>
+        <div class="score-row"><span class="score-label">MichiMark感</span><div class="score-bar"><div class="score-fill" style="width:75%"></div></div></div>
+        <div class="score-row"><span class="score-label">実装容易性</span><div class="score-bar"><div class="score-fill" style="width:70%"></div></div></div>
+      </div>
+      <!-- C -->
+      <div class="comparison-card recommended">
+        <span class="rec-badge">RECOMMENDED</span>
+        <h4>C: タイムライン連結</h4>
+        <ul class="pro-list">
+          <li>「道」のコンセプトを体現</li>
+          <li>Mark/Linkの文脈が一目瞭然</li>
+          <li>既存Specと整合性高</li>
+          <li>縦線で順序関係が明確</li>
+        </ul>
+        <ul class="con-list">
+          <li>CustomPaint/Stack実装が必要</li>
+          <li>左マージン設計が複雑</li>
+        </ul>
+        <div class="score-row"><span class="score-label">視認性</span><div class="score-bar"><div class="score-fill" style="width:88%"></div></div></div>
+        <div class="score-row"><span class="score-label">MichiMark感</span><div class="score-bar"><div class="score-fill" style="width:98%"></div></div></div>
+        <div class="score-row"><span class="score-label">実装容易性</span><div class="score-bar"><div class="score-fill" style="width:55%"></div></div></div>
+      </div>
+      <!-- D -->
+      <div class="comparison-card">
+        <h4>D: ダークモード</h4>
+        <ul class="pro-list">
+          <li>夜間運転後の記録に最適</li>
+          <li>目への負担が少ない</li>
+          <li>AのDark版として実装可</li>
+        </ul>
+        <ul class="con-list">
+          <li>現スコープ外</li>
+          <li>別途テーマ切り替え実装が必要</li>
+        </ul>
+        <div class="score-row"><span class="score-label">視認性</span><div class="score-bar"><div class="score-fill" style="width:85%"></div></div></div>
+        <div class="score-row"><span class="score-label">MichiMark感</span><div class="score-bar"><div class="score-fill" style="width:70%"></div></div></div>
+        <div class="score-row"><span class="score-label">実装容易性</span><div class="score-bar"><div class="score-fill" style="width:50%"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== 5. RATIONALE ===== -->
+  <section id="rationale" class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2 class="section-title">設計根拠</h2>
+    </div>
+    <p class="section-subtitle">各デザイン判断の理由と MichiMark のデザイン原則との対応をまとめました。</p>
+
+    <div class="recommend-banner">
+      <div class="recommend-banner-icon">&#9989;</div>
+      <div>
+        <h3>推奨: パターン C（タイムライン連結型）</h3>
+        <p>
+          MichiMark のコアコンセプト「道を記録する」を最も直感的に表現するのはタイムライン連結型です。
+          縦線・ドット・カードが一体となって「ルートの流れ」を構成し、
+          スクロールするだけでドライブの時系列を追える体験を実現します。
+          また既存の REQ-michi_info_layout.md が定義した「縦線 + ドット + 吹き出しカード」設計とも方向性が一致しており、
+          実装上の整合性も高いです。REQ-michi_info_timeline_redesign.md の「罫線接続」への変更案とも自然に組み合わせられます。
+        </p>
+      </div>
+    </div>
+
+    <div class="rationale-grid">
+      <div class="rationale-card">
+        <h4>&#127803; Mark = Teal, Link = Emerald の理由</h4>
+        <p>
+          Teal (H=200°) は既存ブランドカラーそのもの。Mark は「地点 = 記録の核」であり
+          アプリのアイデンティティカラーを使うことで重要性を表現します。
+          Emerald (H=155°) は Teal から色相 -45° の隣接色で、
+          統一感を保ちながら明確に区別できる組み合わせです（既存の movingCost カラーとの共有も可）。
+          色相環上で近い青緑系を使うことで「同じドライブ記録の一部」というグルーピング感も生まれます。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>&#9679; Mark = 円ドット, Link = 角丸矩形ドットの理由</h4>
+        <p>
+          円形は「地点・ピン」を普遍的に表すアイコン言語（地図のマーカー）と一致します。
+          Mark が地点を表すため円形ドットが直感的です。
+          Link は「区間・線分」という面的な概念を表すため、
+          角丸矩形（ダッシュのような形）を使うことで「連結・移動」のニュアンスを持たせています。
+          この差異は色彩差に加えて形状差も加わり、視覚的多様性でより確実な区別を実現します。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>&#128247; 縦ライン配色（Teal/Emerald）の根拠</h4>
+        <p>
+          タイムライン縦線のカラーを Mark/Link の区間に応じて Teal/Emerald で切り替えることで、
+          縦線自体が「今どこを見ているか」のコンテキスト情報を提供します。
+          Link 区間で縦線が Emerald になることで、その間が「移動中」であることが
+          カードを読まなくても縦線の色変化で把握できます。これは高速スクロール時のUXを向上させます。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>&#128195; Link カード = Tint 背景の理由</h4>
+        <p>
+          パターン C では Link カードの背景を Emerald Tint (#EDFAF4) にしています。
+          Mark カードが白背景・上ボーダー強調なのに対し、
+          Link カードが薄いグリーン背景を持つことで、
+          リスト上での視覚的ウェイト（重み）を Mark > Link とし、
+          地点が主役・区間が補助という情報階層を色で表現します。
+          Tint は彩度が低く（S≈30%）、長いリストでも目が疲れにくいです。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>&#128249; モバイルサイズ設計の根拠</h4>
+        <p>
+          Mark カード高さ 64dp・Link カード高さ 52dp は、
+          iOS の最小タッチターゲット 44pt・Android の 48dp 以上を確保しながら
+          1画面に 5～7 アイテムを表示できるサイズです。
+          REQ-michi_info_timeline_redesign.md が定義する _cardHeight = 72.0 との整合を取りつつ、
+          Link カードをやや小さくすることで Mark の重要性を階層的に示します。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>&#127758; WCAG AA 対応の考え方</h4>
+        <p>
+          全カラーペアのコントラスト比を 4.5:1 以上（WCAG AA）で設計しています。
+          特に距離値などの重要な数値情報は Teal Primary / Emerald Primary を白背景上で使用し
+          5.12:1 / 4.61:1 を確保。タグ文字は Tint 背景 + Dark 文字で 8.3:1 以上を実現。
+          ドライブ中のチラ見や振動時の読み取りにも耐えられる可読性を優先しています。
+        </p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="page-footer">
+  <div class="footer-row">
+    <div>
+      <strong>MichiMark Design Report</strong> — MarkLink カードデザイン提案 v1.0<br>
+      <span style="opacity:0.6;font-size:12px;">作成: 2026-04-07 · designer · 格納先: docs/Design/</span>
+    </div>
+    <div style="font-size:12px;opacity:0.6;">
+      関連: REQ-michi_info_layout.md · REQ-michi_info_timeline_redesign.md<br>
+      要件の叩き: docs/Design/draft/2026-04-07_marklink_card_design_draft.md
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

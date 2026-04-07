@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark — パターンC バリエーション深掘り提案</title>
+  <style>
+    :root {
+      --brand-teal:       #2B7A9B;
+      --brand-teal-dark:  #1A4A5E;
+      --brand-teal-light: #3A9DC4;
+      --brand-teal-tint:  #D0EBF5;
+
+      --mark-primary:     #2B7A9B;
+      --mark-dark:        #1A4A5E;
+      --mark-light:       #3A9DC4;
+      --mark-tint:        #D0EBF5;
+      --mark-tint-light:  #EAF5FB;
+
+      --link-primary:     #2E9E6B;
+      --link-dark:        #1A7A52;
+      --link-light:       #4DB36B;
+      --link-tint:        #D4F0E4;
+      --link-tint-light:  #EDFAF4;
+
+      --text-primary:     #1A1A2E;
+      --text-secondary:   #6C757D;
+      --text-tertiary:    #ADB5BD;
+      --bg-page:          #F5F7FA;
+      --bg-card:          #FFFFFF;
+      --border-light:     #E9ECEF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #1A4A5E 0%, #2B7A9B 55%, #3A9DC4 100%);
+      color: white;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .page-header p {
+      font-size: 15px;
+      opacity: 0.85;
+      max-width: 700px;
+    }
+    .meta-row {
+      display: flex;
+      gap: 28px;
+      margin-top: 22px;
+      font-size: 12px;
+      opacity: 0.65;
+    }
+    .constraint-box {
+      margin-top: 24px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 10px;
+      padding: 16px 20px;
+      max-width: 680px;
+    }
+    .constraint-box h3 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 8px;
+    }
+    .constraint-box p {
+      font-size: 14px;
+      opacity: 1;
+    }
+    .constraint-box strong { font-weight: 700; }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ===== SECTION HEADER ===== */
+    .section-header {
+      padding: 52px 0 24px;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 40px;
+    }
+    .section-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .section-header p {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* ===== VARIANT BLOCK ===== */
+    .variant-block {
+      margin-bottom: 72px;
+    }
+    .variant-label-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .variant-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--brand-teal);
+      color: white;
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .variant-badge.recommended {
+      background: linear-gradient(135deg, #1A7A52, #2E9E6B);
+    }
+    .variant-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .variant-rec-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: #2E9E6B;
+      background: #D4F0E4;
+      padding: 3px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .variant-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      max-width: 640px;
+      line-height: 1.7;
+    }
+
+    .variant-main {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* ===== MOCK FRAME ===== */
+    .mock-frame {
+      background: #1C1C1E;
+      border-radius: 40px;
+      padding: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25), 0 8px 20px rgba(0,0,0,0.15);
+      width: 280px;
+    }
+    .mock-screen {
+      background: #F5F7FA;
+      border-radius: 30px;
+      overflow: hidden;
+    }
+    .mock-statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 18px 6px;
+      background: white;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .mock-appbar {
+      background: white;
+      padding: 8px 18px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .mock-content {
+      padding: 16px 14px;
+      background: #F5F7FA;
+      min-height: 360px;
+    }
+
+    /* ===== SPEC PANEL ===== */
+    .spec-panel {
+      flex: 1;
+    }
+    .spec-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+    }
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+    .spec-table th {
+      background: var(--bg-page);
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--border-light);
+    }
+    .spec-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: top;
+      color: var(--text-primary);
+    }
+    .spec-table tr:last-child td { border-bottom: none; }
+    .spec-table td:first-child {
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      font-size: 12px;
+    }
+
+    .point-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .point-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    .point-list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--brand-teal);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .color-swatches {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .swatch {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .swatch-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    /* ===== DIVIDER ===== */
+    .divider {
+      border: none;
+      border-top: 2px solid var(--border-light);
+      margin: 0 0 72px;
+    }
+
+    /* ===== RECOMMENDATION BANNER ===== */
+    .rec-banner {
+      background: linear-gradient(135deg, #E8F7F2 0%, #D4F0E4 100%);
+      border: 2px solid var(--link-primary);
+      border-radius: 16px;
+      padding: 32px 36px;
+      margin-bottom: 72px;
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+    .rec-banner-icon {
+      font-size: 32px;
+      flex-shrink: 0;
+    }
+    .rec-banner h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--link-dark);
+      margin-bottom: 10px;
+    }
+    .rec-banner p {
+      font-size: 14px;
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+    .rec-banner .rec-reason-list {
+      list-style: none;
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .rec-banner .rec-reason-list li {
+      font-size: 13px;
+      color: var(--link-dark);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .rec-banner .rec-reason-list li::before {
+      content: 'CHECK';
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--link-primary);
+      color: white;
+      padding: 1px 5px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ===== COMPARISON TABLE ===== */
+    .comparison-section {
+      padding-bottom: 72px;
+    }
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .comparison-card {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .comparison-card.recommended {
+      border-color: var(--link-primary);
+      border-width: 2px;
+    }
+    .comparison-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+    .comparison-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .comparison-card ul li {
+      font-size: 12px;
+      color: var(--text-secondary);
+      padding-left: 10px;
+      position: relative;
+    }
+    .comparison-card ul li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+    }
+    .comparison-card .rec-badge-sm {
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--link-primary);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    footer {
+      background: var(--brand-teal-dark);
+      color: white;
+      padding: 32px 48px;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    /* ===== DISTANCE LABEL STYLES (used inline but defined here for reference) ===== */
+    /* These are the key design elements for "distance outside card" constraint */
+
+  </style>
+</head>
+<body>
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-header">
+  <div class="badge">MichiMark Design · Pattern C Deep Dive</div>
+  <h1>パターンC バリエーション提案</h1>
+  <p>タイムライン連結型の深掘り。距離ラベルをカード外（タイムライン縦線横）に配置する4つのバリエーションを提案します。</p>
+  <div class="meta-row">
+    <span>作成日: 2026-04-07</span>
+    <span>役割: designer</span>
+    <span>参照元: 2026-04-07_marklink_card_design_proposal.html</span>
+  </div>
+  <div class="constraint-box">
+    <h3>設計制約（今回のフィードバック）</h3>
+    <p><strong>距離情報はカード内に表示しない。</strong> タイムラインの「線」部分に紐づく情報として、カード外（縦線の横・線の中央バッジ等）に配置すること。</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== VARIANT C-1 ===== -->
+  <div class="section-header">
+    <h2>バリエーション概要</h2>
+    <p>Mark(地点A) → Link(区間: 50km) → Mark(地点B) の3要素を各バリエーションで描画しています。距離ラベルはすべてカード外に配置。</p>
+  </div>
+
+  <!-- C-1 -->
+  <div class="variant-block">
+    <div class="variant-label-row">
+      <span class="variant-badge">C-1</span>
+      <span class="variant-name">サイドラベル型 — 縦線横に小テキスト浮かせ</span>
+    </div>
+    <p class="variant-desc">
+      タイムライン縦線の左側に距離テキストを小さく浮かせるシンプルな配置。縦線は細め（2px）で統一し、ドットは Mark=大円・Link=小菱形で形状差別化。カードは角丸控えめでフラット寄りの印象。
+    </p>
+
+    <div class="variant-main">
+      <!-- Mock -->
+      <div>
+        <div class="mock-frame">
+          <div class="mock-screen">
+            <div class="mock-statusbar">
+              <span>9:41</span><span>●●●</span>
+            </div>
+            <div class="mock-appbar">MichiInfo — ドライブ記録</div>
+            <div class="mock-content">
+
+              <!-- C-1 Timeline -->
+              <div style="position:relative; padding-left: 48px;">
+
+                <!-- 縦線: Mark→Link間 -->
+                <div style="
+                  position:absolute;
+                  left: 22px;
+                  top: 20px;
+                  height: 56px;
+                  width: 2px;
+                  background: linear-gradient(to bottom, #2B7A9B, #2E9E6B);
+                "></div>
+                <!-- 縦線: Link→Mark間 -->
+                <div style="
+                  position:absolute;
+                  left: 22px;
+                  top: 120px;
+                  height: 60px;
+                  width: 2px;
+                  background: linear-gradient(to bottom, #2E9E6B, #2B7A9B);
+                "></div>
+
+                <!-- 距離ラベル: 縦線の左に浮かせ -->
+                <div style="
+                  position: absolute;
+                  left: 0px;
+                  top: 66px;
+                  width: 18px;
+                  text-align: center;
+                  font-size: 9px;
+                  font-weight: 700;
+                  color: #2E9E6B;
+                  line-height: 1.3;
+                  writing-mode: vertical-rl;
+                  text-orientation: mixed;
+                  letter-spacing: 0.5px;
+                ">50 km</div>
+
+                <!-- Mark A ドット -->
+                <div style="
+                  position: absolute;
+                  left: 13px;
+                  top: 10px;
+                  width: 18px;
+                  height: 18px;
+                  background: #2B7A9B;
+                  border-radius: 50%;
+                  border: 3px solid white;
+                  box-shadow: 0 0 0 2px #2B7A9B;
+                "></div>
+                <!-- 水平コネクタ -->
+                <div style="position:absolute;left:31px;top:18px;width:17px;height:2px;background:#2B7A9B;"></div>
+
+                <!-- Mark A カード -->
+                <div style="
+                  background: white;
+                  border-radius: 8px;
+                  border-top: 3px solid #2B7A9B;
+                  padding: 8px 10px;
+                  margin-bottom: 10px;
+                  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+                ">
+                  <div style="font-size: 13px; font-weight: 700; color: #1A1A2E;">SA 足柄</div>
+                  <div style="display:flex; align-items:center; gap:6px; margin-top:3px;">
+                    <span style="font-size:11px; color:#2B7A9B; font-weight:600;">10,240 km</span>
+                    <span style="font-size:9px; background:#D0EBF5; color:#1A4A5E; padding:1px 5px; border-radius:4px; font-weight:600;">departure</span>
+                  </div>
+                </div>
+
+                <!-- Link ドット (菱形=回転した正方形) -->
+                <div style="
+                  position: absolute;
+                  left: 16px;
+                  top: 81px;
+                  width: 12px;
+                  height: 12px;
+                  background: #2E9E6B;
+                  transform: rotate(45deg);
+                  border-radius: 2px;
+                "></div>
+                <!-- 水平コネクタ -->
+                <div style="position:absolute;left:29px;top:86px;width:19px;height:1px;background:#2E9E6B;opacity:0.5;"></div>
+
+                <!-- Link カード -->
+                <div style="
+                  background: #EDFAF4;
+                  border-radius: 6px;
+                  border: 1px solid #D4F0E4;
+                  padding: 7px 10px;
+                  margin-bottom: 10px;
+                ">
+                  <div style="font-size: 12px; font-weight: 600; color: #1A1A2E;">東名高速 走行</div>
+                  <div style="font-size: 10px; color: #6C757D; margin-top:2px;">drive · 田中, 鈴木</div>
+                </div>
+
+                <!-- Mark B ドット -->
+                <div style="
+                  position: absolute;
+                  left: 13px;
+                  top: 130px;
+                  width: 18px;
+                  height: 18px;
+                  background: #2B7A9B;
+                  border-radius: 50%;
+                  border: 3px solid white;
+                  box-shadow: 0 0 0 2px #2B7A9B;
+                "></div>
+                <!-- 水平コネクタ -->
+                <div style="position:absolute;left:31px;top:138px;width:17px;height:2px;background:#2B7A9B;"></div>
+
+                <!-- Mark B カード -->
+                <div style="
+                  background: white;
+                  border-radius: 8px;
+                  border-top: 3px solid #2B7A9B;
+                  padding: 8px 10px;
+                  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+                ">
+                  <div style="font-size: 13px; font-weight: 700; color: #1A1A2E;">PA 大井松田</div>
+                  <div style="display:flex; align-items:center; gap:6px; margin-top:3px;">
+                    <span style="font-size:11px; color:#2B7A9B; font-weight:600;">10,290 km</span>
+                    <span style="font-size:9px; background:#D0EBF5; color:#1A4A5E; padding:1px 5px; border-radius:4px; font-weight:600;">stop</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--text-tertiary);margin-top:10px;text-align:center;">縦書き距離テキスト: 縦線左横に配置</p>
+      </div>
+
+      <!-- Spec -->
+      <div class="spec-panel">
+        <p class="spec-section-title">特徴・デザインポイント</p>
+        <ul class="point-list">
+          <li>距離テキスト「50 km」を縦書きで縦線の左側に配置。タイムライン帯域内に収まり、カードへの干渉ゼロ。</li>
+          <li>Mark ドット=大円(18dp)、Link ドット=菱形(12dp回転)で形状を明確に差別化。色＋形の二重識別。</li>
+          <li>縦線は細め(2px)グラデーションで Mark→Link の色変化を滑らかに表現。</li>
+          <li>Mark カード: 白背景・上ボーダー3px・角丸8px。Link カード: 薄緑背景・1pxボーダー・角丸6px。</li>
+          <li>最もシンプルな構造。実装コストが低く、フォールバックとしても機能する。</li>
+        </ul>
+
+        <p class="spec-section-title">デザイン仕様</p>
+        <table class="spec-table">
+          <thead>
+            <tr><th>要素</th><th>仕様</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>縦線</td><td>2px / グラデーション (#2B7A9B→#2E9E6B)</td></tr>
+            <tr><td>Mark ドット</td><td>円形 18dp / 塗り #2B7A9B / 白枠3dp / glow</td></tr>
+            <tr><td>Link ドット</td><td>菱形 (12dp正方形 45°回転) / 塗り #2E9E6B</td></tr>
+            <tr><td>水平コネクタ</td><td>Mark:2px Teal / Link:1px Emerald 50%</td></tr>
+            <tr><td>距離ラベル位置</td><td>縦線の左側、Link区間の中央付近</td></tr>
+            <tr><td>距離ラベルスタイル</td><td>縦書き / 9px / W700 / #2E9E6B</td></tr>
+            <tr><td>Mark カード</td><td>白 / 角丸8px / 上ボーダー3px #2B7A9B / shadow-sm</td></tr>
+            <tr><td>Link カード</td><td>#EDFAF4 / 角丸6px / 1px border #D4F0E4</td></tr>
+          </tbody>
+        </table>
+
+        <div class="color-swatches">
+          <div class="swatch"><div class="swatch-dot" style="background:#2B7A9B;"></div>Mark Primary</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#2E9E6B;"></div>Link Primary</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#D0EBF5;"></div>Mark Tint</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#EDFAF4;"></div>Link Tint Light</div>
+        </div>
+
+        <div style="background:#FFF8E1;border:1px solid #FFD54F;border-radius:8px;padding:12px 14px;">
+          <p style="font-size:12px;color:#7C5A00;"><strong>注:</strong> 縦書きテキストはモバイルUI上では一般的でなく、読みにくい可能性がある。短い距離（3〜5文字以内）なら許容範囲だが、他バリエーションと比較検討を推奨。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- C-2 -->
+  <div class="variant-block">
+    <div class="variant-label-row">
+      <span class="variant-badge recommended">C-2</span>
+      <span class="variant-name">中央フローティングバッジ型</span>
+      <span class="variant-rec-tag">推奨</span>
+    </div>
+    <p class="variant-desc">
+      Mark→Mark を結ぶ縦線の中央に距離バッジを「浮かせて」配置。縦線はLink区間を太く(4px)して視覚的な重みを持たせ、バッジは小さな丸み角のラベルで存在感を与える。カードは角丸を強め（Mark:16px / Link:12px）にしてやわらかい印象。
+    </p>
+
+    <div class="variant-main">
+      <!-- Mock -->
+      <div>
+        <div class="mock-frame">
+          <div class="mock-screen">
+            <div class="mock-statusbar">
+              <span>9:41</span><span>●●●</span>
+            </div>
+            <div class="mock-appbar">MichiInfo — ドライブ記録</div>
+            <div class="mock-content">
+
+              <!-- C-2 Timeline -->
+              <div style="position:relative; padding-left: 52px;">
+
+                <!-- 縦線: Mark→Link間 (Teal細) -->
+                <div style="
+                  position:absolute;
+                  left: 24px;
+                  top: 22px;
+                  height: 42px;
+                  width: 2px;
+                  background: #2B7A9B;
+                  opacity: 0.4;
+                "></div>
+                <!-- 縦線: Link区間 (Emerald太) -->
+                <div style="
+                  position:absolute;
+                  left: 22px;
+                  top: 64px;
+                  height: 60px;
+                  width: 6px;
+                  background: linear-gradient(to bottom, #2E9E6B, #1A7A52);
+                  border-radius: 3px;
+                  opacity: 0.85;
+                "></div>
+                <!-- 縦線: Link→Mark間 (Teal細) -->
+                <div style="
+                  position:absolute;
+                  left: 24px;
+                  top: 124px;
+                  height: 42px;
+                  width: 2px;
+                  background: #2B7A9B;
+                  opacity: 0.4;
+                "></div>
+
+                <!-- 距離バッジ: 縦線(Emerald)の中央に浮かせ -->
+                <div style="
+                  position: absolute;
+                  left: 5px;
+                  top: 84px;
+                  background: #2E9E6B;
+                  color: white;
+                  font-size: 9px;
+                  font-weight: 700;
+                  padding: 2px 5px;
+                  border-radius: 6px;
+                  white-space: nowrap;
+                  box-shadow: 0 2px 6px rgba(46,158,107,0.4);
+                  letter-spacing: 0.3px;
+                ">50 km</div>
+
+                <!-- Mark A ドット (大円) -->
+                <div style="
+                  position: absolute;
+                  left: 14px;
+                  top: 12px;
+                  width: 20px;
+                  height: 20px;
+                  background: #2B7A9B;
+                  border-radius: 50%;
+                  border: 3px solid white;
+                  box-shadow: 0 0 0 2px #2B7A9B, 0 2px 8px rgba(43,122,155,0.3);
+                "></div>
+                <!-- 水平コネクタ -->
+                <div style="position:absolute;left:34px;top:21px;width:18px;height:2px;background:#2B7A9B;"></div>
+
+                <!-- Mark A カード -->
+                <div style="
+                  background: white;
+                  border-radius: 16px;
+                  border-top: 3px solid #2B7A9B;
+                  padding: 9px 12px;
+                  margin-bottom: 6px;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+                ">
+                  <div style="font-size: 13px; font-weight: 700; color: #1A1A2E;">SA 足柄</div>
+                  <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+                    <span style="font-size:11px; color:#2B7A9B; font-weight:600;">10,240 km</span>
+                    <span style="font-size:9px; background:#D0EBF5; color:#1A4A5E; padding:1px 6px; border-radius:5px; font-weight:600;">departure</span>
+                  </div>
+                </div>
+
+                <!-- Link ドット (角丸矩形) -->
+                <div style="
+                  position: absolute;
+                  left: 17px;
+                  top: 68px;
+                  width: 14px;
+                  height: 14px;
+                  background: #2E9E6B;
+                  border-radius: 4px;
+                  box-shadow: 0 1px 4px rgba(46,158,107,0.4);
+                "></div>
+                <!-- 水平コネクタ -->
+                <div style="position:absolute;left:32px;top:74px;width:20px;height:1.5px;background:#2E9E6B;opacity:0.6;"></div>
+
+                <!-- Link カード -->
+                <div style="
+                  background: #EDFAF4;
+                  border-radius: 12px;
+                  border: 1.5px solid #C3EBD8;
+                  padding: 8px 12px;
+                  margin-bottom: 6px;
+                ">
+                  <div style="font-size: 12px; font-weight: 600; color: #1A1A2E;">東名高速 走行</div>
+                  <div style="font-size: 10px; color: #6C757D; margin-top:3px;">drive · 田中, 鈴木</div>
+                </div>
+
+                <!-- Mark B ドット -->
+                <div style="
+                  position: absolute;
+                  left: 14px;
+                  top: 128px;
+                  width: 20px;
+                  height: 20px;
+                  background: #2B7A9B;
+                  border-radius: 50%;
+                  border: 3px solid white;
+                  box-shadow: 0 0 0 2px #2B7A9B, 0 2px 8px rgba(43,122,155,0.3);
+                "></div>
+                <!-- 水平コネクタ -->
+                <div style="position:absolute;left:34px;top:137px;width:18px;height:2px;background:#2B7A9B;"></div>
+
+                <!-- Mark B カード -->
+                <div style="
+                  background: white;
+                  border-radius: 16px;
+                  border-top: 3px solid #2B7A9B;
+                  padding: 9px 12px;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+                ">
+                  <div style="font-size: 13px; font-weight: 700; color: #1A1A2E;">PA 大井松田</div>
+                  <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+                    <span style="font-size:11px; color:#2B7A9B; font-weight:600;">10,290 km</span>
+                    <span style="font-size:9px; background:#D0EBF5; color:#1A4A5E; padding:1px 6px; border-radius:5px; font-weight:600;">stop</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--text-tertiary);margin-top:10px;text-align:center;">距離バッジ: Link区間縦線の中央に浮かせ</p>
+      </div>
+
+      <!-- Spec -->
+      <div class="spec-panel">
+        <p class="spec-section-title">特徴・デザインポイント</p>
+        <ul class="point-list">
+          <li>距離バッジ「50 km」を Emerald 色の小ラベルで Link 縦線中央に浮かせる。視認性が高く「線の情報」であることが直感的に伝わる。</li>
+          <li>Link 区間の縦線を太く(6px・グラデーション)することで「区間の重み」を表現。Mark 区間の細い縦線との対比で情報密度が明確。</li>
+          <li>カードの角丸を強め(Mark:16px / Link:12px)にすることでモバイルアプリらしい親しみやすさを演出。</li>
+          <li>距離バッジに小さな影(box-shadow)を添え、縦線と重なった際でも読みやすく浮き上がって見える。</li>
+          <li>距離と区間が視覚的に一体化しており「50km 走った」というナラティブが伝わりやすい。</li>
+        </ul>
+
+        <p class="spec-section-title">デザイン仕様</p>
+        <table class="spec-table">
+          <thead>
+            <tr><th>要素</th><th>仕様</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>縦線 (Mark区間)</td><td>2px / #2B7A9B 40%透明</td></tr>
+            <tr><td>縦線 (Link区間)</td><td>6px / グラデーション (#2E9E6B→#1A7A52) / 角丸3px</td></tr>
+            <tr><td>Mark ドット</td><td>円形 20dp / #2B7A9B / 白枠3dp / 二重glow</td></tr>
+            <tr><td>Link ドット</td><td>角丸矩形 14dp / #2E9E6B / 角丸4dp / shadow</td></tr>
+            <tr><td>距離バッジ位置</td><td>Link縦線の中央左寄り</td></tr>
+            <tr><td>距離バッジスタイル</td><td>9px / W700 / 白文字 / #2E9E6B背景 / 角丸6px / shadow</td></tr>
+            <tr><td>Mark カード</td><td>白 / 角丸16px / 上ボーダー3px / shadow-md</td></tr>
+            <tr><td>Link カード</td><td>#EDFAF4 / 角丸12px / 1.5px border #C3EBD8</td></tr>
+          </tbody>
+        </table>
+
+        <div class="color-swatches">
+          <div class="swatch"><div class="swatch-dot" style="background:#2B7A9B;"></div>Mark Primary</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#2E9E6B;"></div>Link Primary</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#1A7A52;"></div>Link Dark</div>
+          <div class="swatch"><div class="swatch-dot" style="background:#EDFAF4;border:1px solid #D4F0E4;"></div>Link Tint Light</div>
+        </div>
+
+        <div style="background:#E8F7F2;border:2px solid #2E9E6B;border-radius:8px;padding:12px 14px;">
+          <p style="font-size:12px;color:#1A7A52;"><strong>推奨理由:</strong> 距離情報が「線の情報」であることが最も直感的に伝わる配置。太い Link 縦線と距離バッジが一体化し、視覚的なナラティブ（SA足柄から50km走って大井松田）を自然に読み取れる。モバイルでの可読性も高い。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- C-3 -->
+  <div class="variant-block">
+    <div class="variant-label-row">
+      <span class="variant-badge">C-3</span>
+      <span class="variant-name">インライン区切り型 — 距離を線間のセパレータに</span>
+    </div>
+    <p class="variant-desc">
+      Mark と Link カードの間に「距離セパレータ行」を独立したUIとして挿入するアプローチ。縦線を点線にすることで「移動中=不連続」な雰囲気を演出。距離は縦線上の独立コンポーネントとして扱う。
+    </p>
+
+    <div class="variant-main">
+      <!-- Mock -->
+      <div>
+        <div class="mock-frame">
+          <div class="mock-screen">
+            <div class="mock-statusbar">
+              <span>9:41</span><span>●●●</span>
+            </div>
+            <div class="mock-appbar">MichiInfo — ドライブ記録</div>
+            <div class="mock-content">
+
+              <!-- C-3 Timeline -->
+              <div style="position:relative; padding-left: 44px;">
+
+                <!-- Mark A ドット (塗りなし・枠だけ) -->
+                <div style="
+                  position: absolute;
+                  left: 13px;
+                  top: 10px;
+                  width: 18px;
+                  height: 18px;
+                  background: white;
+                  border-radius: 50%;
+                  border: 3px solid #2B7A9B;
+                  box-shadow: 0 0 0 3px rgba(43,122,155,0.15);
+                "></div>
+                <!-- 水平コネクタ -->
+                <div style="position:absolute;left:31px;top:18px;width:13px;height:2px;background:#2B7A9B;opacity:0.5;"></div>
+
+                <!-- Mark A カード (左ボーダー型) -->
+                <div style="
+                  background: white;
+                  border-radius: 10px;
+                  border-left: 4px solid #2B7A9B;
+                  padding: 9px 12px;
+                  margin-bottom: 0;
+                  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+                ">
+                  <div style="font-size: 13px; font-weight: 700; color: #1A1A2E;">SA 足柄</div>
+                  <div style="display:flex; align-items:center; gap:6px; margin-top:3px;">
+                    <span style="font-size:11px; color:#2B7A9B; font-weight:600;">10,240 km</span>
+                    <span style="font-size:9px; background:#D0EBF5; color:#1A4A5E; padding:1px 5px; border-radius:4px; font-weight:600;">departure</span>
+                  </div>
+                </div>
+
+                <!-- 点線縦線 -->
+                <div style="
+                  position: absolute;
+                  left: 21px;
+                  top: 62px;
+                  width: 2px;
+                  height: 44px;
+                  background: repeating-linear-gradient(
+                    to bottom,
+                    #2E9E6B 0px,
+                    #2E9E6B 4px,
+                    transparent 4px,
+                    transparent 8px
+                  );
+                "></div>
+
+                <!-- 距離セパレータ行 -->
+                <div style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  margin: 6px 0;
+                  padding: 0 0 0 0;
+                ">
+                  <!-- 左の小横線 -->
+                  <div style="width: 8px; height: 1px; background: #2E9E6B; opacity:0.4; flex-shrink:0;"></div>
+                  <!-- 距離テキスト -->
+                  <div style="
+                    font-size: 10px;
+                    font-weight: 700;
+                    color: #2E9E6B;
+                    background: rgba(46,158,107,0.08);
+                    border: 1px dashed rgba(46,158,107,0.4);
+                    padding: 2px 8px;
+                    border-radius: 4px;
+                    letter-spacing: 0.3px;
+                    white-space: nowrap;
+                  ">--- 50 km ---</div>
+                </div>
+
+                <!-- 点線縦線 下部 -->
+                <div style="
+                  position: absolute;
+                  left: 21px;
+                  top: 104px;
+                  width: 2px;
+                  height: 28px;
+                  background: repeating-linear-gradient(
+                    to bottom,
+                    #2E9E6B 0px,
+                    #2E9E6B 4px,
+                    transparent 4px,
+                    transparent 8px
+                  );
+                "></div>
+
+                <!-- Link ドット (小さい四角) -->
+                <div style="
+                  position: absolute;
+                  left: 17px;
+                  top: 106px;
+                  width: 10px;
+                  height: 10px;
+                  background: #2E9E6B;
+                  border-radius: 2px;
+                "></div>
+                <!-- 水平コネクタ -->
+                <div style="position:absolute;left:28px;top:110px;width:16px;height:1px;background:#2E9E6B;opacity:0.5;"></div>
+
+                <!-- Link カード (左ボーダー薄・背景なし) -->
+                <div style="
+                  background: transparent;
+                  border-radius: 8px;
+                  border: 1px solid rgba(46,158,107,0.3);
+                  padding: 7px 10px;
+                  margin-bottom: 0;
+                ">
+                  <div style="font-size: 12px; font-weight: 600; color: #1A1A2E;">東名高速 走行</div>
+                  <div style="font-size: 10px; color: #6C757D; margin-top:2px;">drive · 田中, 鈴木</div>
+                </div>
+
+                <!-- 縦線 続き -->
+                <div style="
+                  position: absolute;
+                  left: 21px;
+                  top: 154px;
+                  width: 2px;
+                  height: 20px;
+                  background: #2B7A9B;
+                  opacity: 0.3;
+                "></div>
+
+                <!-- Mark B ドット -->
+                <div style="
+                  position: absolute;
+                  left: 13px;
+                  top: 170px;
+                  width: 18px;
+                  height: 18px;
+                  background: white;
+                  border-radius: 50%;
+                  border: 3px solid #2B7A9B;
+                  box-shadow: 0 0 0 3px rgba(43,122,155,0.15);
+                "></div>
+                <!-- 水平コネクタ -->
+                <div style="position:absolute;left:31px;top:178px;width:13px;height:2px;background:#2B7A9B;opacity:0.5;"></div>
+
+                <!-- Mark B カード -->
+                <div style="
+                  background: white;
+                  border-radius: 10px;
+                  border-left: 4px solid #2B7A9B;
+                  padding: 9px 12px;
+                  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+                  margin-top: 16px;
+                ">
+                  <div style="font-size: 13px; font-weight: 700; color: #1A1A2E;">PA 大井松田</div>
+                  <div style="display:flex; align-items:center; gap:6px; margin-top:3px;">
+                    <span style="font-size:11px; color:#2B7A9B; font-weight:600;">10,290 km</span>
+                    <span style="font-size:9px; background:#D0EBF5; color:#1A4A5E; padding:1px 5px; border-radius:4px; font-weight:600;">stop</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--text-tertiary);margin-top:10px;text-align:center;">点線縦線 + 距離セパレータ行</p>
+      </div>
+
+      <!-- Spec -->
+      <div class="spec-panel">
+        <p class="spec-section-title">特徴・デザインポイント</p>
+        <ul class="point-list">
+          <li>距離情報を「セパレータ行」として独立したUI要素に昇格。「--- 50 km ---」表記で「移動中の距離」であることを明示的に示す。</li>
+          <li>縦線を点線(dashed)にすることで「区間=移動中=非静止」の雰囲気を視覚的に表現。Mark の実線とのコントラストが区別を強調。</li>
+          <li>Mark ドットを「枠のみ（塗りなし）」にすることで、Linkとの対比をより強くしつつ、落ち着いた雰囲気を演出。</li>
+          <li>Mark カードを左ボーダー型(border-left:4px)に変更。上ボーダー型よりも「縦線との連続感」が高い。</li>
+          <li>距離セパレータの破線ボーダーが点線縦線と視覚的に呼応し、デザインに統一感をもたらす。</li>
+        </ul>
+
+        <p class="spec-section-title">デザイン仕様</p>
+        <table class="spec-table">
+          <thead>
+            <tr><th>要素</th><th>仕様</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>縦線 (Mark区間)</td><td>2px / #2B7A9B 30%透明</td></tr>
+            <tr><td>縦線 (Link区間)</td><td>2px / #2E9E6B 点線 (4px on / 4px off)</td></tr>
+            <tr><td>Mark ドット</td><td>円形 18dp / 白塗り / 枠3px #2B7A9B / 外glow</td></tr>
+            <tr><td>Link ドット</td><td>角丸矩形 10dp / 塗り #2E9E6B / 角丸2px</td></tr>
+            <tr><td>距離セパレータ</td><td>独立行 / 「--- 50 km ---」/ 10px W700 #2E9E6B / 破線ボーダー</td></tr>
+            <tr><td>Mark カード</td><td>白 / 角丸10px / 左ボーダー4px #2B7A9B / shadow-sm</td></tr>
+            <tr><td>Link カード</td><td>透明背景 / 角丸8px / 1px border rgba(Emerald,0.3)</td></tr>
+          </tbody>
+        </table>
+
+        <div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:8px;padding:12px 14px;">
+          <p style="font-size:12px;color:#7C4D00;"><strong>注意点:</strong> 距離セパレータ行がリストに挿入されることで、スクロール時の視点の流れが一度止まる効果がある。密度の高いタイムラインでは情報量が増えすぎる可能性があり、Mark/Link 数が多い場合の検討が必要。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- C-4 -->
+  <div class="variant-block">
+    <div class="variant-label-row">
+      <span class="variant-badge">C-4</span>
+      <span class="variant-name">ルート地図型 — 縦線を太く・距離を沿道テキストで</span>
+    </div>
+    <p class="variant-desc">
+      縦線を道路のように太くし、その右脇に小さな距離テキストを水平で添えるアプローチ。「道路地図の縮小版」のような視覚体験を目指す。カードは影を強め(shadow-lg)に、輪郭をはっきりさせたデザイン。Mark と Link は縦線の太さで差別化（Mark=細・Link=太）。
+    </p>
+
+    <div class="variant-main">
+      <!-- Mock -->
+      <div>
+        <div class="mock-frame">
+          <div class="mock-screen">
+            <div class="mock-statusbar">
+              <span>9:41</span><span>●●●</span>
+            </div>
+            <div class="mock-appbar">MichiInfo — ドライブ記録</div>
+            <div class="mock-content">
+
+              <!-- C-4 Timeline -->
+              <div style="position:relative; padding-left: 56px;">
+
+                <!-- 縦線: Mark区間(上) 細 -->
+                <div style="
+                  position:absolute;
+                  left: 25px;
+                  top: 22px;
+                  height: 40px;
+                  width: 3px;
+                  background: #2B7A9B;
+                  border-radius: 2px;
+                "></div>
+                <!-- 縦線: Link区間 極太 -->
+                <div style="
+                  position:absolute;
+                  left: 21px;
+                  top: 62px;
+                  height: 62px;
+                  width: 11px;
+                  background: #2E9E6B;
+                  border-radius: 4px;
+                "></div>
+                <!-- 縦線: Mark区間(下) 細 -->
+                <div style="
+                  position:absolute;
+                  left: 25px;
+                  top: 124px;
+                  height: 42px;
+                  width: 3px;
+                  background: #2B7A9B;
+                  border-radius: 2px;
+                "></div>
+
+                <!-- 距離テキスト: Link縦線の右脇 -->
+                <div style="
+                  position: absolute;
+                  left: 35px;
+                  top: 83px;
+                  font-size: 10px;
+                  font-weight: 700;
+                  color: #1A7A52;
+                  background: rgba(255,255,255,0.9);
+                  padding: 1px 5px;
+                  border-radius: 4px;
+                  white-space: nowrap;
+                  border: 1px solid rgba(46,158,107,0.3);
+                ">50 km</div>
+
+                <!-- Mark A ドット (塗り+外枠) -->
+                <div style="
+                  position: absolute;
+                  left: 15px;
+                  top: 12px;
+                  width: 21px;
+                  height: 21px;
+                  background: white;
+                  border-radius: 50%;
+                  border: 3px solid #2B7A9B;
+                  box-shadow: 0 0 0 2px rgba(43,122,155,0.2), 0 2px 8px rgba(43,122,155,0.2);
+                "></div>
+                <div style="
+                  position: absolute;
+                  left: 21px;
+                  top: 18px;
+                  width: 9px;
+                  height: 9px;
+                  background: #2B7A9B;
+                  border-radius: 50%;
+                "></div>
+                <!-- 水平コネクタ -->
+                <div style="position:absolute;left:36px;top:21px;width:20px;height:2px;background:#2B7A9B;opacity:0.6;"></div>
+
+                <!-- Mark A カード (右影強め) -->
+                <div style="
+                  background: white;
+                  border-radius: 12px;
+                  padding: 10px 12px;
+                  margin-bottom: 6px;
+                  box-shadow: 0 4px 12px rgba(0,0,0,0.12), -2px 0 0 0 #2B7A9B;
+                ">
+                  <div style="font-size: 13px; font-weight: 700; color: #1A1A2E;">SA 足柄</div>
+                  <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+                    <span style="font-size:11px; color:#2B7A9B; font-weight:600;">10,240 km</span>
+                    <span style="font-size:9px; background:#D0EBF5; color:#1A4A5E; padding:1px 5px; border-radius:4px; font-weight:600;">departure</span>
+                  </div>
+                </div>
+
+                <!-- Link ドット (六角形風 = 角丸多めの四角) -->
+                <div style="
+                  position: absolute;
+                  left: 18px;
+                  top: 66px;
+                  width: 15px;
+                  height: 15px;
+                  background: white;
+                  border-radius: 50%;
+                  border: 2.5px solid #2E9E6B;
+                "></div>
+                <!-- 水平コネクタ -->
+                <div style="position:absolute;left:34px;top:73px;width:22px;height:1.5px;background:#2E9E6B;opacity:0.7;"></div>
+
+                <!-- Link カード -->
+                <div style="
+                  background: #F0FBF7;
+                  border-radius: 10px;
+                  border: 1px solid #C3EBD8;
+                  padding: 8px 12px;
+                  margin-bottom: 6px;
+                  box-shadow: 0 2px 8px rgba(46,158,107,0.1);
+                ">
+                  <div style="font-size: 12px; font-weight: 600; color: #1A1A2E;">東名高速 走行</div>
+                  <div style="font-size: 10px; color: #6C757D; margin-top:2px;">drive · 田中, 鈴木</div>
+                </div>
+
+                <!-- Mark B ドット -->
+                <div style="
+                  position: absolute;
+                  left: 15px;
+                  top: 128px;
+                  width: 21px;
+                  height: 21px;
+                  background: white;
+                  border-radius: 50%;
+                  border: 3px solid #2B7A9B;
+                  box-shadow: 0 0 0 2px rgba(43,122,155,0.2), 0 2px 8px rgba(43,122,155,0.2);
+                "></div>
+                <div style="
+                  position: absolute;
+                  left: 21px;
+                  top: 134px;
+                  width: 9px;
+                  height: 9px;
+                  background: #2B7A9B;
+                  border-radius: 50%;
+                "></div>
+                <!-- 水平コネクタ -->
+                <div style="position:absolute;left:36px;top:137px;width:20px;height:2px;background:#2B7A9B;opacity:0.6;"></div>
+
+                <!-- Mark B カード -->
+                <div style="
+                  background: white;
+                  border-radius: 12px;
+                  padding: 10px 12px;
+                  box-shadow: 0 4px 12px rgba(0,0,0,0.12), -2px 0 0 0 #2B7A9B;
+                  margin-top: 8px;
+                ">
+                  <div style="font-size: 13px; font-weight: 700; color: #1A1A2E;">PA 大井松田</div>
+                  <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+                    <span style="font-size:11px; color:#2B7A9B; font-weight:600;">10,290 km</span>
+                    <span style="font-size:9px; background:#D0EBF5; color:#1A4A5E; padding:1px 5px; border-radius:4px; font-weight:600;">stop</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--text-tertiary);margin-top:10px;text-align:center;">極太Link縦線 + 沿道テキスト配置</p>
+      </div>
+
+      <!-- Spec -->
+      <div class="spec-panel">
+        <p class="spec-section-title">特徴・デザインポイント</p>
+        <ul class="point-list">
+          <li>Link 区間縦線を極太(11px)にして「道路」を表現。距離テキストを縦線の右脇に水平で添えることで「沿道の距離標識」のような体験を演出。</li>
+          <li>Mark ドットを「外枠のみ＋内側の小円」の二重構造にすることで、地図ピンのようなリッチな印象を付与。</li>
+          <li>Mark カードの左端に極細カラーライン(box-shadow left)を追加し、タイムライン縦線との視覚的つながりを強調。</li>
+          <li>縦線の太さで Mark区間(3px)とLink区間(11px)を劇的に差別化。色だけでなく太さでも文脈が伝わる。</li>
+          <li>「道路地図」メタファーが最も強いデザイン。MichiMarkのコンセプトを最も視覚的に体現する。</li>
+        </ul>
+
+        <p class="spec-section-title">デザイン仕様</p>
+        <table class="spec-table">
+          <thead>
+            <tr><th>要素</th><th>仕様</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>縦線 (Mark区間)</td><td>3px / #2B7A9B / 角丸2px</td></tr>
+            <tr><td>縦線 (Link区間)</td><td>11px / #2E9E6B / 角丸4px</td></tr>
+            <tr><td>Mark ドット</td><td>外枠円21dp / 内塗り円9dp / #2B7A9B / 二重構造</td></tr>
+            <tr><td>Link ドット</td><td>円形 15dp / 白塗り / 枠2.5px #2E9E6B</td></tr>
+            <tr><td>距離テキスト位置</td><td>Link縦線の右脇・中央高さ</td></tr>
+            <tr><td>距離テキストスタイル</td><td>10px / W700 / #1A7A52 / 白背景角丸 / Emerald薄枠</td></tr>
+            <tr><td>Mark カード</td><td>白 / 角丸12px / 左影ライン(-2px 0 0 0 #2B7A9B) / shadow-md</td></tr>
+            <tr><td>Link カード</td><td>#F0FBF7 / 角丸10px / 1px border #C3EBD8 / shadow-sm Emerald</td></tr>
+          </tbody>
+        </table>
+
+        <div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:8px;padding:12px 14px;">
+          <p style="font-size:12px;color:#7C4D00;"><strong>注意点:</strong> 縦線(11px)が太いため、タイムライン列の幅が広くなりカードの表示幅が若干狭くなる。コンテンツが多いMarkカードではタイトル折り返しに注意が必要。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== RECOMMENDATION ===== -->
+  <div id="rationale">
+    <div class="section-header">
+      <h2>推奨バリエーションと理由</h2>
+      <p>4つのバリエーションを比較し、総合評価から推奨を判定します。</p>
+    </div>
+
+    <div class="comparison-grid" style="margin-bottom:40px;">
+      <div class="comparison-card">
+        <h4>C-1: サイドラベル型</h4>
+        <ul>
+          <li>縦書き距離: 視認性やや低</li>
+          <li>実装コスト: 低</li>
+          <li>直感性: 中</li>
+          <li>菱形ドット: 新鮮な差別化</li>
+        </ul>
+      </div>
+      <div class="comparison-card recommended">
+        <span class="rec-badge-sm">RECOMMENDED</span>
+        <h4>C-2: 中央バッジ型</h4>
+        <ul>
+          <li>距離バッジが最も直感的</li>
+          <li>太い縦線と距離が一体化</li>
+          <li>実装コスト: 中</li>
+          <li>可読性: 高</li>
+        </ul>
+      </div>
+      <div class="comparison-card">
+        <h4>C-3: セパレータ型</h4>
+        <ul>
+          <li>距離の独立性が最も高い</li>
+          <li>点線が移動感を演出</li>
+          <li>実装コスト: 中</li>
+          <li>密なリストでは重い可能性</li>
+        </ul>
+      </div>
+      <div class="comparison-card">
+        <h4>C-4: ルート地図型</h4>
+        <ul>
+          <li>道路メタファーが最強</li>
+          <li>太い縦線で画面幅を消費</li>
+          <li>実装コスト: 中〜高</li>
+          <li>コンテンツ幅に注意</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rec-banner">
+      <div class="rec-banner-icon">&#9989;</div>
+      <div>
+        <h3>推奨: C-2（中央フローティングバッジ型）</h3>
+        <p>距離情報の「カード外配置」制約を最も自然に満たしながら、可読性・視覚的直感性・実装バランスが優れているのが C-2 です。</p>
+        <ul class="rec-reason-list">
+          <li>距離バッジが Link 縦線の中央に浮かびつつカードに干渉しないため、「線の情報=距離」というメンタルモデルが最も伝わりやすい</li>
+          <li>Emerald グリーンの太い縦線(6px)と距離バッジが色・位置ともに一体化し、「SA足柄→50km走行→大井松田」のナラティブがひと目で読み取れる</li>
+          <li>カード角丸を強め(Mark:16px / Link:12px)にすることでモバイルネイティブらしいやわらかい印象を実現</li>
+          <li>縦書き(C-1)・セパレータ行挿入(C-3)・極太縦線(C-4)と比べ、実装の複雑度と視覚的効果のバランスが最良</li>
+        </ul>
+        <p style="margin-top:12px;font-size:13px;color:#1A7A52;"><strong>参照ファイル:</strong> /Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/docs/Design/2026-04-07_marklink_card_c_variants.html</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== COLOR PALETTE ===== -->
+  <section id="color-palette" style="margin-bottom:72px;">
+    <div class="section-header">
+      <h2>使用カラーパレット</h2>
+      <p>今回のバリエーション全体で使用するカラーの定義。既存ブランドカラーを踏襲。</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+      <div style="background:white;border-radius:12px;overflow:hidden;border:1px solid var(--border-light);">
+        <div style="height:64px;background:#2B7A9B;"></div>
+        <div style="padding:12px;">
+          <div style="font-size:13px;font-weight:700;">Mark Primary</div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">#2B7A9B</div>
+          <div style="font-size:11px;color:var(--text-tertiary);">ドット・コネクタ・ボーダー</div>
+        </div>
+      </div>
+      <div style="background:white;border-radius:12px;overflow:hidden;border:1px solid var(--border-light);">
+        <div style="height:64px;background:#2E9E6B;"></div>
+        <div style="padding:12px;">
+          <div style="font-size:13px;font-weight:700;">Link Primary</div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">#2E9E6B</div>
+          <div style="font-size:11px;color:var(--text-tertiary);">ドット・縦線・距離バッジ</div>
+        </div>
+      </div>
+      <div style="background:white;border-radius:12px;overflow:hidden;border:1px solid var(--border-light);">
+        <div style="height:64px;background:#1A7A52;"></div>
+        <div style="padding:12px;">
+          <div style="font-size:13px;font-weight:700;">Link Dark</div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">#1A7A52</div>
+          <div style="font-size:11px;color:var(--text-tertiary);">グラデーション終点・テキスト</div>
+        </div>
+      </div>
+      <div style="background:white;border-radius:12px;overflow:hidden;border:1px solid var(--border-light);">
+        <div style="height:64px;background:#EDFAF4;border-bottom:1px solid #D4F0E4;"></div>
+        <div style="padding:12px;">
+          <div style="font-size:13px;font-weight:700;">Link Tint Light</div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">#EDFAF4</div>
+          <div style="font-size:11px;color:var(--text-tertiary);">Linkカード背景</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TYPOGRAPHY ===== -->
+  <section id="typography" style="margin-bottom:72px;">
+    <div class="section-header">
+      <h2>タイポグラフィ</h2>
+      <p>カード内テキスト要素の定義。</p>
+    </div>
+    <table class="spec-table" style="background:white;border-radius:12px;overflow:hidden;border:1px solid var(--border-light);">
+      <thead>
+        <tr><th>要素</th><th>サイズ</th><th>ウェイト</th><th>カラー</th><th>用途</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Mark タイトル</td><td>13px</td><td>700</td><td>#1A1A2E</td><td>地点名（例: SA 足柄）</td></tr>
+        <tr><td>Mark メーター値</td><td>11px</td><td>600</td><td>#2B7A9B</td><td>走行距離（例: 10,240 km）</td></tr>
+        <tr><td>Mark タグ</td><td>9px</td><td>600</td><td>#1A4A5E</td><td>アクションラベル（departure等）</td></tr>
+        <tr><td>Link タイトル</td><td>12px</td><td>600</td><td>#1A1A2E</td><td>区間名（例: 東名高速 走行）</td></tr>
+        <tr><td>Link メタ情報</td><td>10px</td><td>500</td><td>#6C757D</td><td>種別・メンバー（drive · 田中, 鈴木）</td></tr>
+        <tr><td>距離ラベル (C-2推奨)</td><td>9px</td><td>700</td><td>#FFFFFF</td><td>Link縦線バッジ（50 km）</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== COMPONENT PREVIEW ===== -->
+  <section id="component-preview" style="margin-bottom:72px;">
+    <div class="section-header">
+      <h2>コンポーネント要素一覧</h2>
+      <p>パターンC共通のコンポーネント要素をまとめて確認。</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+      <!-- Mark Card -->
+      <div style="background:white;border-radius:12px;padding:20px;border:1px solid var(--border-light);">
+        <p style="font-size:11px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Mark カード（C-2スタイル）</p>
+        <div style="background:white;border-radius:16px;border-top:3px solid #2B7A9B;padding:10px 12px;box-shadow:0 2px 8px rgba(0,0,0,0.09);">
+          <div style="font-size:13px;font-weight:700;color:#1A1A2E;">SA 足柄</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+            <span style="font-size:11px;color:#2B7A9B;font-weight:600;">10,240 km</span>
+            <span style="font-size:9px;background:#D0EBF5;color:#1A4A5E;padding:1px 6px;border-radius:5px;font-weight:600;">departure</span>
+          </div>
+        </div>
+      </div>
+      <!-- Link Card -->
+      <div style="background:white;border-radius:12px;padding:20px;border:1px solid var(--border-light);">
+        <p style="font-size:11px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Link カード（C-2スタイル）</p>
+        <div style="background:#EDFAF4;border-radius:12px;border:1.5px solid #C3EBD8;padding:9px 12px;">
+          <div style="font-size:12px;font-weight:600;color:#1A1A2E;">東名高速 走行</div>
+          <div style="font-size:10px;color:#6C757D;margin-top:3px;">drive · 田中, 鈴木</div>
+        </div>
+      </div>
+      <!-- Distance Badge -->
+      <div style="background:white;border-radius:12px;padding:20px;border:1px solid var(--border-light);">
+        <p style="font-size:11px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">距離バッジ（C-2推奨）</p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:6px;height:60px;background:linear-gradient(to bottom,#2E9E6B,#1A7A52);border-radius:3px;position:relative;">
+            <div style="
+              position:absolute;
+              left:10px;
+              top:50%;
+              transform:translateY(-50%);
+              background:#2E9E6B;
+              color:white;
+              font-size:9px;
+              font-weight:700;
+              padding:2px 5px;
+              border-radius:6px;
+              white-space:nowrap;
+              box-shadow:0 2px 6px rgba(46,158,107,0.4);
+            ">50 km</div>
+          </div>
+          <p style="font-size:11px;color:var(--text-secondary);margin-left:24px;">縦線中央に<br>浮かせ配置</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div style="max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-weight:700;margin-bottom:4px;">MichiMark Design System</div>
+      <div style="opacity:0.6;">Pattern C Deep Dive · 2026-04-07 · designer</div>
+    </div>
+    <div style="opacity:0.6;text-align:right;">
+      <div>参照元: 2026-04-07_marklink_card_design_proposal.html</div>
+      <div>次ステップ: product-manager レビュー → 要件書格納</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
