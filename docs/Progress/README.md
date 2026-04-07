@@ -55,3 +55,4 @@
 | [2026-04-07_xcode_build_fix.md](./2026-04-07_xcode_build_fix.md) | Xcode ビルドエラー調査（integration_test 削除・xcscheme 修正） |
 | [2026-04-07_marklink_card_design.md](./2026-04-07_marklink_card_design.md) | MarkLink カードデザイン提案（C-2採用・FAB型挿入UI）・タスクボードPhase 6追加 |
 | [2026-04-07_michi_info_timeline_redesign.md](./2026-04-07_michi_info_timeline_redesign.md) | MichiInfo タイムライン UI 再設計 v3.0（罫線接続・スパン矢印距離表示・B案 CustomScrollView 採用） |
+| [2026-04-07_marklink_card_c2_design.md](./2026-04-07_marklink_card_c2_design.md) | MarkLink カード C-2 デザイン実装（MichiInfo v4.0: Teal/Emerald カラー・Link 34dp コンパクト） |

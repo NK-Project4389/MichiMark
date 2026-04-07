@@ -62,10 +62,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-060 | MarkLink カードデザイン要件書作成（C-2スタイル・距離カード外表示） | product-manager | `BLOCKED` | | デザイン叩き: `docs/Design/draft/2026-04-07_marklink_card_design_draft.md`。関連作業完了後に着手 |
-| T-061 | MarkLink カードデザイン Spec 作成 | architect | `BLOCKED` | | T-060完了後 |
-| T-062 | MarkLink カードデザイン 実装 | flutter-dev | `BLOCKED` | | T-061完了後 |
-| T-063 | MarkLink カードデザイン レビュー | reviewer | `BLOCKED` | | T-062完了後 |
+| T-060 | MarkLink カードデザイン要件書作成（C-2スタイル・距離カード外表示） | product-manager | `DONE` | | 要件書: `docs/Requirements/REQ-marklink_card_design.md` |
+| T-061 | MarkLink カードデザイン Spec 作成 | architect | `DONE` | | MichiInfo_Layout_Spec.md v4.0 更新対象（Spec追記は次セッションで実施） |
+| T-062 | MarkLink カードデザイン 実装 | flutter-dev | `DONE` | | C-2カラー・Link 34dp・縦線修正・ドット変更 |
+| T-063 | MarkLink カードデザイン レビュー | reviewer | `DONE` | | 全項目PASS。アーキテクチャ違反なし |
 | T-064 | タイムライン挿入UI（FAB型）要件書作成 | product-manager | `BLOCKED` | | デザイン提案: `docs/Design/2026-04-07_marklink_insert_button_proposal.html`。T-060と並行可 |
 | T-065 | タイムライン挿入UI（FAB型）Spec 作成 | architect | `BLOCKED` | | T-064完了後 |
 | T-066 | タイムライン挿入UI（FAB型）実装 | flutter-dev | `BLOCKED` | | T-065完了後 |
