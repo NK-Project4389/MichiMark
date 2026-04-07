@@ -46,6 +46,14 @@
 ---
 
 ## 完了した作業
+- chore: テスト全件パス後に進捗登録+push をセットで行う運用ルール追加 (c913a73)
+- docs: MichiInfo タイムライン再設計の進捗更新（罫線見た目課題・次回タスク追記） (7f36d85)
+- feat: MichiInfo タイムライン UI 再設計 v3.0（罫線接続・スパン矢印・B案 CustomScrollView） (d8ca2b4)
+- docs: MarkLinkカードデザイン提案・タイムライン挿入UIデザイン・Phase6タスク追加 (b21964b)
+- chore: NSLocationWhenInUseUsageDescription を Info.plist に追加（ITMS-90683対応） (846b1b4)
+- chore: 輸出コンプライアンス設定を Info.plist に追加（ITSAppUsesNonExemptEncryption=false） (a73affb)
+- docs: MichiInfo Stack+CustomPainter実装・TestFlight初回アップロードの進捗記録追加 (b2165c7)
+- test: MichiInfo Canvas/Stack レイアウト Integration Test 追加・iOS シミュレーター対応 (425a8a8)
 - feat: MichiInfo レイアウトを統合 CustomPainter + Stack overlay 型に変更（Spec v2.0） (746e82c)
 - docs: 進捗記録更新・MichiCanvasLayout 要件書・Spec追加 (8f0a725)
 - fix: Xcodeビルドエラー対応（integration_test削除・xcscheme修正） (1e1dd24)
