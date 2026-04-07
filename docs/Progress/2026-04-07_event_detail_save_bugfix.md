@@ -46,6 +46,7 @@
 ---
 
 ## 完了した作業
+- docs: 進捗記録更新・MichiCanvasLayout 要件書・Spec追加 (8f0a725)
 - fix: Xcodeビルドエラー対応（integration_test削除・xcscheme修正） (1e1dd24)
 - feat: testerエージェント追加・Integration Test基盤整備 (202578e)
 - feat: 割り勘メンバー選択で支払者を常にON固定・非活性化 (9667daa)
@@ -71,6 +72,18 @@
 
 ---
 
+### feat: MichiInfo レイアウト変更 Spec v2.0 実装
+
+- `michi_info_view.dart` を統合 CustomPainter + Stack overlay 型に全面置き換え
+- `_MarkGroup` / `_TimelineGroupConnector` / `_BubbleCardPainter` / `_LinkCard` / `_MarkCard` 廃止
+- `_TimelineItem` + `_MichiTimelinePainter`（統合 CustomPainter）追加
+- `_cardHeight = 72.0` 定数導入・全描画座標を基準値から算出
+- 太線判定ロジックを ListView.builder の index から導出
+- `_MarkActionButtons` / `_DistanceLegend` / `_DistanceColumn` は維持
+- dart analyze エラー・警告 0 確認
+
+---
+
 ## 未完了
 
 - Drift実装への切り替え（DI は InMemory のまま）
@@ -79,7 +92,8 @@
 
 ## 次回セッションで最初にやること
 
-1. **動作確認**: タグ追加・削除→保存が正しく動くか実機/シミュレータで確認
-2. **T-010 Phase2動作確認** の継続
+1. **動作確認**: MichiInfo タイムライン表示が正しく見えるか実機/シミュレータで確認
+2. **タグ追加・削除→保存** が正しく動くか実機/シミュレータで確認
+3. **T-010 Phase2動作確認** の継続
 
 ---

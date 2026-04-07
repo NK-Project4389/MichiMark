@@ -15,6 +15,17 @@ import '../bloc/michi_info_bloc.dart';
 import '../bloc/michi_info_event.dart';
 import '../bloc/michi_info_state.dart';
 
+// ────────────────────────────────────────────────────────
+// 定数
+// ────────────────────────────────────────────────────────
+
+/// 1カードの固定高さ。全描画座標の基準値
+const double _cardHeight = 72.0;
+
+// ────────────────────────────────────────────────────────
+// MichiInfoView
+// ────────────────────────────────────────────────────────
+
 class MichiInfoView extends StatefulWidget {
   const MichiInfoView({super.key});
 
@@ -103,60 +114,6 @@ class _MichiInfoViewState extends State<MichiInfoView> {
 }
 
 // ────────────────────────────────────────────────────────
-// グループデータ
-// ────────────────────────────────────────────────────────
-
-class _GroupData {
-  final MarkLinkItemProjection mark;
-  final List<MarkLinkItemProjection> links;
-
-  /// 次の Mark との累積メーター差分（次の Mark の displayMeterDiff）
-  final String? meterDiff;
-
-  const _GroupData({
-    required this.mark,
-    required this.links,
-    required this.meterDiff,
-  });
-}
-
-/// items をスキャンして各 Mark とその後続 Links をグループ化する
-List<_GroupData> _buildGroups(List<MarkLinkItemProjection> items) {
-  final groups = <_GroupData>[];
-
-  int i = 0;
-  while (i < items.length) {
-    if (items[i].markLinkType != MarkOrLink.mark) {
-      // Mark 以外で始まるケースは Skip（通常発生しないが安全策）
-      i++;
-      continue;
-    }
-
-    final mark = items[i];
-    final links = <MarkLinkItemProjection>[];
-
-    int j = i + 1;
-    while (j < items.length && items[j].markLinkType == MarkOrLink.link) {
-      links.add(items[j]);
-      j++;
-    }
-
-    // 次の Mark の displayMeterDiff を meterDiff として使用
-    final String? meterDiff;
-    if (j < items.length && items[j].markLinkType == MarkOrLink.mark) {
-      meterDiff = items[j].displayMeterDiff;
-    } else {
-      meterDiff = null;
-    }
-
-    groups.add(_GroupData(mark: mark, links: links, meterDiff: meterDiff));
-    i = j;
-  }
-
-  return groups;
-}
-
-// ────────────────────────────────────────────────────────
 // _MichiInfoList
 // ────────────────────────────────────────────────────────
 
@@ -183,24 +140,47 @@ class _MichiInfoList extends StatelessWidget {
       );
     }
 
-    final groups = _buildGroups(projection.items);
+    final items = projection.items;
 
     return Scaffold(
       body: Stack(
         children: [
-          SingleChildScrollView(
+          ListView.builder(
             padding: const EdgeInsets.only(top: 48, bottom: 80),
-            child: Column(
-              children: [
-                for (int i = 0; i < groups.length; i++)
-                  _MarkGroup(
-                    group: groups[i],
-                    isFirst: i == 0,
-                    isLast: i == groups.length - 1,
-                    markActionItems: markActionItems,
-                  ),
-              ],
-            ),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              final isFirst = index == 0;
+              final isLast = index == items.length - 1;
+
+              // 太線判定:
+              // - Link 行: isLinkActive = true
+              // - Mark 行: 前後いずれかが Link なら isLinkActive = true
+              final bool isLinkActive;
+              if (item.markLinkType == MarkOrLink.link) {
+                isLinkActive = true;
+              } else {
+                final prevIsLink = !isFirst &&
+                    items[index - 1].markLinkType == MarkOrLink.link;
+                final nextIsLink = !isLast &&
+                    items[index + 1].markLinkType == MarkOrLink.link;
+                isLinkActive = prevIsLink || nextIsLink;
+              }
+
+              return _TimelineItem(
+                item: item,
+                isFirst: isFirst,
+                isLast: isLast,
+                isLinkActive: isLinkActive,
+                onTap: () => context.read<MichiInfoBloc>().add(
+                      MichiInfoItemTapped(
+                        markLinkId: item.id,
+                        type: item.markLinkType,
+                      ),
+                    ),
+                markActionItems: markActionItems,
+              );
+            },
           ),
           const Positioned(
             top: 8,
@@ -252,314 +232,388 @@ class _MichiInfoList extends StatelessWidget {
 }
 
 // ────────────────────────────────────────────────────────
-// _MarkGroup
+// _TimelineItem
 // ────────────────────────────────────────────────────────
 
-class _MarkGroup extends StatelessWidget {
-  final _GroupData group;
+class _TimelineItem extends StatelessWidget {
+  final MarkLinkItemProjection item;
   final bool isFirst;
   final bool isLast;
+  final bool isLinkActive;
+  final VoidCallback onTap;
   final List<ActionItemProjection> markActionItems;
 
-  const _MarkGroup({
-    required this.group,
+  const _TimelineItem({
+    required this.item,
     required this.isFirst,
     required this.isLast,
+    required this.isLinkActive,
+    required this.onTap,
     required this.markActionItems,
   });
 
   @override
   Widget build(BuildContext context) {
-    final hasLinks = group.links.isNotEmpty;
+    final colorScheme = Theme.of(context).colorScheme;
+    final isMark = item.markLinkType == MarkOrLink.mark;
 
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(
-            width: 40,
-            child: _TimelineGroupConnector(
-              isFirst: isFirst,
-              isLast: isLast,
-              hasLinks: hasLinks,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _MarkCard(
-                          item: group.mark,
-                          onTap: () => context.read<MichiInfoBloc>().add(
-                                MichiInfoItemTapped(
-                                  markLinkId: group.mark.id,
-                                  type: group.mark.markLinkType,
-                                ),
-                              ),
+    final cardBgColor = isMark
+        ? colorScheme.surfaceContainerHighest
+        : colorScheme.surfaceContainerLow;
+    final lineColor = colorScheme.onSurface;
+
+    final hasActionButtons = isMark && markActionItems.isNotEmpty;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(
+          height: _cardHeight,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // タイムライン軸 + カード本体
+              Expanded(
+                child: Stack(
+                  children: [
+                    // 全ビジュアル要素を1つの CustomPainter で描画
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: _MichiTimelinePainter(
+                          markLinkType: item.markLinkType,
+                          isFirst: isFirst,
+                          isLast: isLast,
+                          isLinkActive: isLinkActive,
+                          cardBgColor: cardBgColor,
+                          lineColor: lineColor,
                         ),
-                        if (markActionItems.isNotEmpty)
-                          _MarkActionButtons(
-                            markLinkId: group.mark.id,
-                            actions: markActionItems,
-                          ),
-                      ],
-                    ),
-                  ),
-                  for (final link in group.links)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: _LinkCard(
-                        item: link,
-                        onTap: () => context.read<MichiInfoBloc>().add(
-                              MichiInfoItemTapped(
-                                markLinkId: link.id,
-                                type: link.markLinkType,
-                              ),
-                            ),
                       ),
                     ),
-                ],
+                    // テキスト・タップ領域のオーバーレイ
+                    _TimelineItemOverlay(
+                      item: item,
+                      onTap: onTap,
+                      colorScheme: colorScheme,
+                    ),
+                  ],
+                ),
               ),
-            ),
+              // 距離表示列
+              SizedBox(
+                width: 72,
+                child: _DistanceColumn(item: item),
+              ),
+            ],
           ),
-          SizedBox(
-            width: 72,
-            child: _GroupDistanceArrows(
-              meterDiff: group.meterDiff,
-              links: group.links,
-            ),
+        ),
+        // 地点アクションボタン
+        if (hasActionButtons)
+          _MarkActionButtons(
+            markLinkId: item.id,
+            actions: markActionItems,
           ),
-        ],
-      ),
+      ],
     );
   }
 }
 
 // ────────────────────────────────────────────────────────
-// _TimelineGroupConnector (CustomPaint)
+// _MichiTimelinePainter (統合 CustomPainter)
 // ────────────────────────────────────────────────────────
 
-class _TimelineGroupConnector extends StatelessWidget {
-  final bool isFirst;
-  final bool isLast;
-  final bool hasLinks;
-
-  const _TimelineGroupConnector({
-    required this.isFirst,
-    required this.isLast,
-    required this.hasLinks,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.onSurface;
-    return CustomPaint(
-      painter: _TimelineGroupConnectorPainter(
-        isFirst: isFirst,
-        isLast: isLast,
-        hasLinks: hasLinks,
-        color: color,
-      ),
-    );
-  }
-}
-
-class _TimelineGroupConnectorPainter extends CustomPainter {
+class _MichiTimelinePainter extends CustomPainter {
   static const double _normalWidth = 1.5;
   static const double _thickWidth = 6.0;
   static const double _dotRadius = 6.0;
 
-  /// Mark カード1行の標準高さ（padding 6 + card ~44 + padding 6 = ~56）
-  static const double _markRowHeight = 56.0;
+  /// タイムライン軸の中心 X 座標（左端からの距離）
+  static const double _axisX = 20.0;
 
+  /// カード左端の X 座標（タイムライン軸 + 余白）
+  static const double _cardLeft = 40.0;
+
+  /// カード右端の余白
+  static const double _cardRight = 8.0;
+
+  /// カード角丸
+  static const double _cornerRadius = 8.0;
+
+  /// 三角ポインターの幅（先端からボディ左端まで）
+  static const double _pointerWidth = 20.0;
+
+  /// 三角ポインターの高さ（上下幅）
+  static const double _pointerHeight = 14.0;
+
+  /// Link カードの水平接続線の長さ（タイムライン軸からカード左端まで）
+  static const double _connectorLineLength = 20.0;
+
+  final MarkOrLink markLinkType;
   final bool isFirst;
   final bool isLast;
-  final bool hasLinks;
-  final Color color;
+  final bool isLinkActive;
+  final Color cardBgColor;
+  final Color lineColor;
 
-  const _TimelineGroupConnectorPainter({
+  const _MichiTimelinePainter({
+    required this.markLinkType,
     required this.isFirst,
     required this.isLast,
-    required this.hasLinks,
-    required this.color,
+    required this.isLinkActive,
+    required this.cardBgColor,
+    required this.lineColor,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final cx = size.width / 2;
-
-    // Mark のドット中心 Y は Mark 行の中央（padding 6 + card高さの半分）
-    // IntrinsicHeight を使っているので Mark 行の高さを推定する
-    final dotY = _markRowHeight / 2;
+    final centerY = size.height / 2;
+    final isMark = markLinkType == MarkOrLink.mark;
 
     final normalPaint = Paint()
-      ..color = color
+      ..color = lineColor
       ..strokeWidth = _normalWidth
       ..strokeCap = StrokeCap.butt;
 
     final thickPaint = Paint()
-      ..color = color
+      ..color = lineColor
       ..strokeWidth = _thickWidth
       ..strokeCap = StrokeCap.butt;
 
-    // 上半分の線（先頭グループは省略）
+    // ──────────────────────────────
+    // タイムライン縦線（上半分）
+    // ──────────────────────────────
     if (!isFirst) {
+      final topLineEnd = isMark ? centerY - _dotRadius : centerY;
+      final topPaint = isLinkActive ? thickPaint : normalPaint;
       canvas.drawLine(
-        Offset(cx, 0),
-        Offset(cx, dotY - _dotRadius),
+        Offset(_axisX, 0),
+        Offset(_axisX, topLineEnd),
+        topPaint,
+      );
+    }
+
+    // ──────────────────────────────
+    // タイムライン縦線（下半分）
+    // ──────────────────────────────
+    if (!isLast) {
+      final bottomLineStart = isMark ? centerY + _dotRadius : centerY;
+      final bottomPaint = isLinkActive ? thickPaint : normalPaint;
+      canvas.drawLine(
+        Offset(_axisX, bottomLineStart),
+        Offset(_axisX, size.height),
+        bottomPaint,
+      );
+    }
+
+    // ──────────────────────────────
+    // カード背景
+    // ──────────────────────────────
+    final cardPaint = Paint()
+      ..color = cardBgColor
+      ..style = PaintingStyle.fill;
+
+    if (isMark) {
+      // バブルカード（三角ポインター付き）
+      final cardBodyLeft = _cardLeft + _pointerWidth;
+      final rect = Rect.fromLTWH(
+        cardBodyLeft,
+        0,
+        size.width - cardBodyLeft - _cardRight,
+        size.height,
+      );
+      final rrect =
+          RRect.fromRectAndRadius(rect, const Radius.circular(_cornerRadius));
+
+      final pointerTipX = _cardLeft;
+      final path = Path()
+        ..addRRect(rrect)
+        ..moveTo(cardBodyLeft, centerY - _pointerHeight / 2)
+        ..lineTo(pointerTipX, centerY)
+        ..lineTo(cardBodyLeft, centerY + _pointerHeight / 2)
+        ..close();
+
+      canvas.drawPath(path, cardPaint);
+    } else {
+      // Link カード（角丸矩形）
+      final rect = Rect.fromLTWH(
+        _cardLeft,
+        0,
+        size.width - _cardLeft - _cardRight,
+        size.height,
+      );
+      final rrect =
+          RRect.fromRectAndRadius(rect, const Radius.circular(_cornerRadius));
+      canvas.drawRRect(rrect, cardPaint);
+
+      // 水平接続線（タイムライン軸からカード左端まで）
+      canvas.drawLine(
+        Offset(_axisX, centerY),
+        Offset(_axisX + _connectorLineLength, centerY),
         normalPaint,
       );
     }
 
-    // ドット
-    final dotPaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(cx, dotY), _dotRadius, dotPaint);
-
-    // ドット下〜グループ下端の線
-    if (!isLast) {
-      final linePaint = hasLinks ? thickPaint : normalPaint;
-      canvas.drawLine(
-        Offset(cx, dotY + _dotRadius),
-        Offset(cx, size.height),
-        linePaint,
-      );
+    // ──────────────────────────────
+    // ドット（Mark のみ）
+    // ──────────────────────────────
+    if (isMark) {
+      final dotPaint = Paint()
+        ..color = lineColor
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(Offset(_axisX, centerY), _dotRadius, dotPaint);
     }
   }
 
   @override
-  bool shouldRepaint(_TimelineGroupConnectorPainter old) =>
+  bool shouldRepaint(_MichiTimelinePainter old) =>
+      markLinkType != old.markLinkType ||
       isFirst != old.isFirst ||
       isLast != old.isLast ||
-      hasLinks != old.hasLinks ||
-      color != old.color;
+      isLinkActive != old.isLinkActive ||
+      cardBgColor != old.cardBgColor ||
+      lineColor != old.lineColor;
 }
 
 // ────────────────────────────────────────────────────────
-// _GroupDistanceArrows (距離矢印表示)
+// _TimelineItemOverlay
 // ────────────────────────────────────────────────────────
 
-class _GroupDistanceArrows extends StatelessWidget {
-  final String? meterDiff;
-  final List<MarkLinkItemProjection> links;
+class _TimelineItemOverlay extends StatelessWidget {
+  final MarkLinkItemProjection item;
+  final VoidCallback onTap;
+  final ColorScheme colorScheme;
 
-  const _GroupDistanceArrows({
-    required this.meterDiff,
-    required this.links,
+  /// タイムライン軸 + ポインター幅分のオフセット
+  static const double _axisX = 20.0;
+  static const double _cardLeft = 40.0;
+  static const double _pointerWidth = 20.0;
+
+  const _TimelineItemOverlay({
+    required this.item,
+    required this.onTap,
+    required this.colorScheme,
   });
 
   @override
   Widget build(BuildContext context) {
-    final hasMeterDiff = meterDiff != null;
-    final linkDistances = links
-        .where((l) => l.displayDistanceValue != null)
-        .toList();
-    final hasLinkDist = linkDistances.isNotEmpty;
+    final isMark = item.markLinkType == MarkOrLink.mark;
+    final name =
+        item.markLinkName.isEmpty ? '（名称未設定）' : item.markLinkName;
 
-    if (!hasMeterDiff && !hasLinkDist) {
-      return const SizedBox.shrink();
-    }
+    // Mark はポインター分の左余白を加算
+    final leftPadding =
+        isMark ? _axisX + _pointerWidth * 2 : _cardLeft + 8.0;
 
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    final outline = Theme.of(context).colorScheme.outline;
-
-    // 重複ありの場合: 2列（meterDiff 左寄せ、link距離 右寄せ）
-    if (hasMeterDiff && hasLinkDist) {
-      return Row(
-        children: [
-          Expanded(
-            child: _ArrowWithText(
-              text: meterDiff!,
-              color: onSurface,
-              isBold: true,
-            ),
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (final link in linkDistances)
-                  Expanded(
-                    child: _ArrowWithText(
-                      text: link.displayDistanceValue!,
-                      color: outline,
-                      isBold: false,
-                    ),
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.translucent,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: leftPadding,
+          right: 12,
+          top: 8,
+          bottom: 8,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    name,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurface,
+                          fontWeight: isMark
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-              ],
+                  if (isMark && item.displayMeterValue != null)
+                    Text(
+                      item.displayMeterValue!,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: colorScheme.outline,
+                          ),
+                    ),
+                  if (!isMark && item.displayDistanceValue != null)
+                    Text(
+                      item.displayDistanceValue!,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: colorScheme.outline,
+                          ),
+                    ),
+                ],
+              ),
             ),
-          ),
-        ],
-      );
-    }
-
-    // meterDiff のみ
-    if (hasMeterDiff) {
-      return _ArrowWithText(
-        text: meterDiff!,
-        color: onSurface,
-        isBold: true,
-      );
-    }
-
-    // link距離のみ
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        for (final link in linkDistances)
-          Expanded(
-            child: _ArrowWithText(
-              text: link.displayDistanceValue!,
-              color: outline,
-              isBold: false,
-            ),
-          ),
-      ],
+            if (item.isFuel)
+              Icon(
+                Icons.local_gas_station,
+                size: 16,
+                color: colorScheme.primary,
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
 
-/// 縦矢印（↕）とテキストを縦に並べたウィジェット
-class _ArrowWithText extends StatelessWidget {
-  final String text;
-  final Color color;
-  final bool isBold;
+// ────────────────────────────────────────────────────────
+// _DistanceColumn (距離表示列)
+// ────────────────────────────────────────────────────────
 
-  const _ArrowWithText({
-    required this.text,
-    required this.color,
-    required this.isBold,
-  });
+class _DistanceColumn extends StatelessWidget {
+  final MarkLinkItemProjection item;
+
+  const _DistanceColumn({required this.item});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CustomPaint(
-          size: const Size(16, 24),
-          painter: _VerticalArrowPainter(color: color),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          text,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontSize: 11,
-                color: color,
-                fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-              ),
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+    final isMark = item.markLinkType == MarkOrLink.mark;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final outline = Theme.of(context).colorScheme.outline;
+
+    // Mark: displayMeterDiff を表示
+    // Link: displayDistanceValue を表示
+    final String? displayText;
+    final Color textColor;
+    final bool isBold;
+
+    if (isMark) {
+      displayText = item.displayMeterDiff;
+      textColor = onSurface;
+      isBold = true;
+    } else {
+      displayText = item.displayDistanceValue;
+      textColor = outline;
+      isBold = false;
+    }
+
+    if (displayText == null) return const SizedBox.shrink();
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CustomPaint(
+            size: const Size(16, 24),
+            painter: _VerticalArrowPainter(color: textColor),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            displayText,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: 11,
+                  color: textColor,
+                  fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+                ),
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -580,18 +634,15 @@ class _VerticalArrowPainter extends CustomPainter {
     final cx = size.width / 2;
     const arrowSize = 5.0;
 
-    // 縦線
     canvas.drawLine(
       Offset(cx, arrowSize),
       Offset(cx, size.height - arrowSize),
       paint,
     );
 
-    // 上向き矢印
     canvas.drawLine(Offset(cx, 0), Offset(cx - arrowSize / 2, arrowSize), paint);
     canvas.drawLine(Offset(cx, 0), Offset(cx + arrowSize / 2, arrowSize), paint);
 
-    // 下向き矢印
     canvas.drawLine(
       Offset(cx, size.height),
       Offset(cx - arrowSize / 2, size.height - arrowSize),
@@ -624,7 +675,7 @@ class _MarkActionButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 28, top: 6),
+      padding: const EdgeInsets.only(left: 28, top: 6, bottom: 6),
       child: Wrap(
         spacing: 8,
         children: actions
@@ -638,175 +689,6 @@ class _MarkActionButtons extends StatelessWidget {
                   child: Text(action.actionName),
                 ))
             .toList(),
-      ),
-    );
-  }
-}
-
-// ────────────────────────────────────────────────────────
-// _MarkCard (CustomPaint バブルカード)
-// ────────────────────────────────────────────────────────
-
-class _MarkCard extends StatelessWidget {
-  final MarkLinkItemProjection item;
-  final VoidCallback onTap;
-
-  const _MarkCard({required this.item, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final bgColor = Theme.of(context).colorScheme.surfaceContainerHighest;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    final primary = Theme.of(context).colorScheme.primary;
-    final name = item.markLinkName.isEmpty ? '（名称未設定）' : item.markLinkName;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: CustomPaint(
-        painter: _BubbleCardPainter(bgColor: bgColor),
-        child: Padding(
-          // 左側に三角ポインター分のスペースを確保
-          padding: const EdgeInsets.only(left: 28, right: 8, top: 8, bottom: 8),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      name,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: onSurface,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    if (item.displayMeterValue != null)
-                      Text(
-                        item.displayMeterValue!,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
-                      ),
-                  ],
-                ),
-              ),
-              if (item.isFuel)
-                Icon(
-                  Icons.local_gas_station,
-                  size: 16,
-                  color: primary,
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _BubbleCardPainter extends CustomPainter {
-  /// 三角ポインターの幅（先端からボディ左端まで）
-  static const double _pointerWidth = 20.0;
-
-  /// 三角ポインターの高さ（上下幅）
-  static const double _pointerHeight = 14.0;
-  static const double _cornerRadius = 8.0;
-
-  final Color bgColor;
-
-  const _BubbleCardPainter({required this.bgColor});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = bgColor
-      ..style = PaintingStyle.fill;
-
-    final rect = Rect.fromLTWH(
-      _pointerWidth,
-      0,
-      size.width - _pointerWidth,
-      size.height,
-    );
-    final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(_cornerRadius));
-
-    final pointerY = size.height / 2;
-    final path = Path()
-      ..addRRect(rrect)
-      ..moveTo(_pointerWidth, pointerY - _pointerHeight / 2)
-      ..lineTo(0, pointerY)
-      ..lineTo(_pointerWidth, pointerY + _pointerHeight / 2)
-      ..close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(_BubbleCardPainter old) => bgColor != old.bgColor;
-}
-
-// ────────────────────────────────────────────────────────
-// _LinkCard
-// ────────────────────────────────────────────────────────
-
-class _LinkCard extends StatelessWidget {
-  final MarkLinkItemProjection item;
-  final VoidCallback onTap;
-
-  const _LinkCard({required this.item, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final bgColor = Theme.of(context).colorScheme.surfaceContainerLow;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-    final outline = Theme.of(context).colorScheme.outline;
-    final primary = Theme.of(context).colorScheme.primary;
-    final name = item.markLinkName.isEmpty ? '（名称未設定）' : item.markLinkName;
-
-    return Card(
-      elevation: 0,
-      color: bgColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      name,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: onSurface,
-                          ),
-                    ),
-                    if (item.displayDistanceValue != null)
-                      Text(
-                        item.displayDistanceValue!,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: outline,
-                            ),
-                      ),
-                  ],
-                ),
-              ),
-              if (item.isFuel)
-                Icon(
-                  Icons.local_gas_station,
-                  size: 16,
-                  color: primary,
-                ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -858,3 +740,4 @@ class _DistanceLegend extends StatelessWidget {
     );
   }
 }
+
