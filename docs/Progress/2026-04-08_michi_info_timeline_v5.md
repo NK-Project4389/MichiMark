@@ -5,6 +5,8 @@
 ---
 
 ## 完了した作業
+- fix: マスター選択UI改善・保存バグ修正・燃費自動設定・メンバー制限 (7ad570e)
+- docs: CLAUDE.md最適化を進捗ファイルに反映 (ceddfc2)
 - chore: CLAUDE.md最適化（31行に圧縮・詳細ルールを.claude/rules/に分離） (d242a72)
 - feat: EventDetail 概要タブ再設計（タブ3つ・インライン編集・即DB保存） (bee087a)
 - feat: EventDetail 概要タブ再設計（T-091） (a9ab061)
@@ -221,6 +223,18 @@
 - `flutter/lib/features/michi_info/bloc/michi_info_event.dart`
 - `flutter/lib/features/michi_info/bloc/michi_info_bloc.dart`
 - `flutter/lib/features/michi_info/view/michi_info_view.dart`
+
+---
+
+## 追加実装（2026-04-08 第6セッション）
+
+### fix: マスター選択UI改善・保存バグ修正・燃費自動設定・メンバー制限 (7ad570e)
+
+1. **保存ボタンバグ修正**: `MarkDetailPage`/`LinkDetailPage` の `SavedDelegate` から `context.read<MichiInfoBloc>()` を削除し `context.pop()` のみに。`MichiInfoView` は push 後に `MichiInfoReloadRequested` で DB リロード。
+2. **選択行全体タップ**: `_SelectionRow` を `InkWell` で囲んで行全体が反応するように。
+3. **単一選択で即確定**: `SelectionBloc._onItemToggled` で `single` モード時に即 `SelectionConfirmedDelegate` を emit。
+4. **交通手段選択で燃費自動設定**: `BasicInfoBloc._onTransSelected` で `trans.kmPerGas` を `kmPerGasInput` に反映。
+5. **Mark/Link メンバー選択をイベントメンバーに限定**: `MichiInfoLoaded.eventMembers` キャッシュ → 各デリゲートに伝播 → `LinkDetailLoaded.availableMembers` → `SelectionArgs.candidateMembers`。
 
 ---
 
