@@ -2,13 +2,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/transaction/mark_link/mark_link_domain.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../repository/event_repository.dart';
+import '../../../repository/trans_repository.dart';
 import '../draft/mark_detail_draft.dart';
 import 'mark_detail_event.dart';
 import 'mark_detail_state.dart';
 
 class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
-  MarkDetailBloc({required EventRepository eventRepository})
-      : _eventRepository = eventRepository,
+  MarkDetailBloc({
+    required EventRepository eventRepository,
+    required TransRepository transRepository,
+  })  : _eventRepository = eventRepository,
+        _transRepository = transRepository,
         super(const MarkDetailLoading()) {
     on<MarkDetailStarted>(_onStarted);
     on<MarkDetailDismissPressed>(_onDismissPressed);
@@ -27,6 +31,7 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
   }
 
   final EventRepository _eventRepository;
+  final TransRepository _transRepository;
   String _eventId = '';
   String _markLinkId = '';
 
@@ -255,6 +260,19 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
           updatedAt: now,
         );
         await _eventRepository.save(updated);
+
+        // REQ-MAD-005: 保存したメーター値がTrans側より大きければTransを更新する
+        if (meterValue != null) {
+          final trans = existing.trans;
+          if (trans != null) {
+            final currentMax = trans.meterValue ?? 0;
+            if (meterValue > currentMax) {
+              await _transRepository.save(
+                trans.copyWith(meterValue: meterValue, updatedAt: now),
+              );
+            }
+          }
+        }
 
         emit(current.copyWith(
           isSaving: false,

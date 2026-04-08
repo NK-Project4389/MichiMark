@@ -93,6 +93,7 @@ final router = GoRouter(
         return BlocProvider(
           create: (_) => MarkDetailBloc(
             eventRepository: getIt<EventRepository>(),
+            transRepository: getIt<TransRepository>(),
           )..add(MarkDetailStarted(
               eventId: eventId,
               markLinkId: markId,

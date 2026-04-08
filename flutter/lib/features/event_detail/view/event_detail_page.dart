@@ -152,7 +152,7 @@ class _EventDetailScaffold extends StatelessWidget {
 }
 
 /// 子Blocが利用可能になったスコープ内でEventDetailBlocのDelegateを処理する。
-class _EventDetailScaffoldInner extends StatelessWidget {
+class _EventDetailScaffoldInner extends StatefulWidget {
   final EventDetailProjection projection;
   final EventDetailDraft draft;
   final TopicThemeColor? topicThemeColor;
@@ -165,12 +165,37 @@ class _EventDetailScaffoldInner extends StatelessWidget {
     this.topicDisplayName,
   });
 
+  @override
+  State<_EventDetailScaffoldInner> createState() =>
+      _EventDetailScaffoldInnerState();
+}
+
+class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
+  @override
+  void initState() {
+    super.initState();
+    // 初回ロード時に概要タブが選択済みの場合、BlocListenerは
+    // Loading→Loaded の遷移をキャッチできないため postFrameCallback で発火する。
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final eventDetailState = context.read<EventDetailBloc>().state;
+      if (eventDetailState is! EventDetailLoaded) return;
+      if (eventDetailState.draft.selectedTab != EventDetailTab.overview) return;
+      final cachedEvent = eventDetailState.cachedEvent;
+      if (cachedEvent == null) return;
+      context.read<EventDetailOverviewBloc>().add(OverviewStarted(
+            event: cachedEvent,
+            topicConfig: eventDetailState.topicConfig,
+          ));
+    });
+  }
+
   AppBar _buildAppBar(BuildContext context) {
-    final themeColor = topicThemeColor;
-    final displayName = topicDisplayName;
-    final eventName = projection.basicInfo.eventName.isEmpty
+    final themeColor = widget.topicThemeColor;
+    final displayName = widget.topicDisplayName;
+    final eventName = widget.projection.basicInfo.eventName.isEmpty
         ? 'イベント詳細'
-        : projection.basicInfo.eventName;
+        : widget.projection.basicInfo.eventName;
 
     if (themeColor == null) {
       // Topic未設定: デフォルトのAppBar表示
@@ -300,9 +325,9 @@ class _EventDetailScaffoldInner extends StatelessWidget {
         appBar: _buildAppBar(context),
         body: Column(
           children: [
-            Expanded(child: _tabContent(context, draft, projection)),
+            Expanded(child: _tabContent(context, widget.draft, widget.projection)),
             const Divider(height: 1),
-            _TabBar(selectedTab: draft.selectedTab),
+            _TabBar(selectedTab: widget.draft.selectedTab),
           ],
         ),
       ),

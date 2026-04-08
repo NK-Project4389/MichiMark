@@ -353,9 +353,12 @@ class _DateRow extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: Text(
-            dateFormat.format(date),
-            style: Theme.of(context).textTheme.bodyMedium,
+          child: GestureDetector(
+            onTap: () => _pickDate(context),
+            child: Text(
+              dateFormat.format(date),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
           ),
         ),
         IconButton(
