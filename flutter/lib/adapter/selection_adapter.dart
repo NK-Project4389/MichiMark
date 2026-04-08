@@ -18,6 +18,7 @@ class SelectionAdapter {
       title: type.title,
       mode: type.mode,
       items: items
+          .where((t) => t.isVisible)
           .map((t) => SelectionItemProjection(
                 id: t.id,
                 label: t.transName,
@@ -37,6 +38,7 @@ class SelectionAdapter {
       title: type.title,
       mode: type.mode,
       items: items
+          .where((m) => m.isVisible || fixedSelectedIds.contains(m.id))
           .map((m) => SelectionItemProjection(
                 id: m.id,
                 label: m.memberName,
@@ -57,6 +59,7 @@ class SelectionAdapter {
       title: type.title,
       mode: type.mode,
       items: items
+          .where((t) => t.isVisible)
           .map((t) => SelectionItemProjection(
                 id: t.id,
                 label: t.tagName,
@@ -75,6 +78,7 @@ class SelectionAdapter {
       title: type.title,
       mode: type.mode,
       items: items
+          .where((a) => a.isVisible)
           .map((a) => SelectionItemProjection(
                 id: a.id,
                 label: a.actionName,
@@ -93,6 +97,7 @@ class SelectionAdapter {
       title: type.title,
       mode: type.mode,
       items: items
+          .where((t) => t.isVisible)
           .map((t) => SelectionItemProjection(
                 id: t.id,
                 label: t.topicName,
