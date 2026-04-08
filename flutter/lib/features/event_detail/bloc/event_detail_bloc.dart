@@ -6,6 +6,7 @@ import '../../../domain/topic/topic_theme_color.dart';
 import '../../../domain/transaction/event/event_domain.dart';
 import '../../../repository/event_repository.dart';
 import '../../../repository/repository_error.dart';
+import '../../../repository/topic_repository.dart';
 import '../draft/event_detail_draft.dart';
 import 'event_detail_event.dart';
 import 'event_detail_state.dart';
@@ -13,7 +14,9 @@ import 'event_detail_state.dart';
 class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
   EventDetailBloc({
     required EventRepository eventRepository,
+    required TopicRepository topicRepository,
   })  : _eventRepository = eventRepository,
+        _topicRepository = topicRepository,
         super(const EventDetailLoading()) {
     on<EventDetailStarted>(_onStarted);
     on<EventDetailTabSelected>(_onTabSelected);
@@ -27,6 +30,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
   }
 
   final EventRepository _eventRepository;
+  final TopicRepository _topicRepository;
 
   Future<void> _onStarted(
     EventDetailStarted event,
@@ -40,9 +44,15 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
       } on NotFoundError {
         // 新規作成モード: 空ドメインを生成してRepositoryに保存
         final now = DateTime.now();
+        // initialTopicTypeが指定されている場合はtopicも初期保存する（戻ったときにカードグレー化を防ぐ）
+        TopicDomain? initialTopic;
+        if (event.initialTopicType != null) {
+          initialTopic = await _topicRepository.fetchByType(event.initialTopicType!);
+        }
         final newDomain = EventDomain(
           id: event.eventId,
           eventName: '',
+          topic: initialTopic,
           createdAt: now,
           updatedAt: now,
         );

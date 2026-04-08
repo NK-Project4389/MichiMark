@@ -40,6 +40,7 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
     on<BasicInfoEditModeEntered>(_onEditModeEntered);
     on<BasicInfoSavePressed>(_onSavePressed);
     on<BasicInfoEditCancelled>(_onEditCancelled);
+    on<BasicInfoDelegateConsumed>(_onDelegateConsumed);
   }
 
   final EventRepository _eventRepository;
@@ -420,6 +421,15 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
           draft: current.draft.copyWith(isEditing: false),
         ));
       }
+    }
+  }
+
+  Future<void> _onDelegateConsumed(
+    BasicInfoDelegateConsumed event,
+    Emitter<BasicInfoState> emit,
+  ) async {
+    if (state case final BasicInfoLoaded current) {
+      emit(current.copyWith(delegate: null));
     }
   }
 }

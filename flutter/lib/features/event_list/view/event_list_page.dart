@@ -102,7 +102,7 @@ class _EventListPageState extends State<EventListPage> {
           bloc.add(const EventListStarted());
         });
       case OpenSettingsDelegate():
-        context.go('/settings');
+        context.push('/settings');
     }
   }
 }

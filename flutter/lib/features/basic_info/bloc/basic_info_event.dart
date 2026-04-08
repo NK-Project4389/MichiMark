@@ -175,3 +175,11 @@ class BasicInfoEditCancelled extends BasicInfoEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// delegateを消費したとき（再タップを有効にするためdelegateをnullにリセット）
+class BasicInfoDelegateConsumed extends BasicInfoEvent {
+  const BasicInfoDelegateConsumed();
+
+  @override
+  List<Object?> get props => [];
+}

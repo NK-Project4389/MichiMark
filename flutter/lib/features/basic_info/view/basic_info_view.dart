@@ -56,6 +56,10 @@ class _BasicInfoViewState extends State<BasicInfoView> {
     BasicInfoDelegate delegate,
     BasicInfoDraft draft,
   ) async {
+    // delegateを消費してnullにリセット（再タップを有効にする）
+    if (!mounted) return;
+    context.read<BasicInfoBloc>().add(const BasicInfoDelegateConsumed());
+
     switch (delegate) {
       case BasicInfoOpenTransSelectionDelegate():
         final result = await context.push<SelectionResult>(
@@ -145,7 +149,7 @@ class _BasicInfoReadView extends StatelessWidget {
         ListView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+          padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
           children: [
             _ReadRow(label: 'イベント名', value: draft.eventName.isEmpty ? '未設定' : draft.eventName),
             const SizedBox(height: 12),
@@ -191,12 +195,12 @@ class _BasicInfoReadView extends StatelessWidget {
           ],
         ),
         Positioned(
-          right: 16,
-          bottom: 16,
-          child: FloatingActionButton.extended(
-            onPressed: () => context.read<BasicInfoBloc>().add(const BasicInfoEditModeEntered()),
+          right: 8,
+          top: 4,
+          child: IconButton(
             icon: const Icon(Icons.edit),
-            label: const Text('編集'),
+            tooltip: '編集',
+            onPressed: () => context.read<BasicInfoBloc>().add(const BasicInfoEditModeEntered()),
           ),
         ),
       ],
@@ -552,29 +556,32 @@ class _SelectionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-          ),
+    return InkWell(
+      onTap: onEditPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 120,
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                value,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+            const Icon(Icons.chevron_right),
+          ],
         ),
-        Expanded(
-          child: Text(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.chevron_right),
-          onPressed: onEditPressed,
-        ),
-      ],
+      ),
     );
   }
 }
