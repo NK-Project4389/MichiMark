@@ -103,6 +103,9 @@ class _TimelineData {
   /// スパンに含まれない Link の単独距離テキスト（centerRelY, text）
   final List<(double, String)> standaloneLinkDistances;
 
+  /// スパンに含まれない Link のスパン列縦線（startY, endY）
+  final List<(double, double)> standaloneLinkLines;
+
   const _TimelineData({
     required this.spans,
     required this.linkSegments,
@@ -110,6 +113,7 @@ class _TimelineData {
     required this.verticalLineStartRelY,
     required this.verticalLineEndRelY,
     required this.standaloneLinkDistances,
+    required this.standaloneLinkLines,
   });
 }
 
@@ -281,6 +285,7 @@ class _MichiInfoListState extends State<_MichiInfoList> {
         verticalLineStartRelY: 0,
         verticalLineEndRelY: 0,
         standaloneLinkDistances: [],
+        standaloneLinkLines: [],
       );
     }
 
@@ -371,8 +376,9 @@ class _MichiInfoListState extends State<_MichiInfoList> {
       }
     }
 
-    // スパンに含まれない Link（先頭・末尾・孤立）の Emerald 線と距離テキストを収集
+    // スパンに含まれない Link（先頭・末尾・孤立）の Emerald 線・スパン列線・距離テキストを収集
     final standaloneLinkDistances = <(double, String)>[];
+    final standaloneLinkLines = <(double, double)>[];
     for (var k = 0; k < items.length; k++) {
       if (items[k].markLinkType != MarkOrLink.link) continue;
       if (coveredLinkIndices.contains(k)) continue;
@@ -381,6 +387,8 @@ class _MichiInfoListState extends State<_MichiInfoList> {
         startY: yOffsets[k],
         endY: yOffsets[k] + _linkCardHeight,
       ));
+      // スパン列縦線（矢印なし・区間の存在を示す）
+      standaloneLinkLines.add((yOffsets[k], yOffsets[k] + _linkCardHeight));
       final dist = items[k].displayDistanceValue;
       if (dist != null) {
         standaloneLinkDistances.add((yOffsets[k] + _linkCardHeight / 2, dist));
@@ -394,6 +402,7 @@ class _MichiInfoListState extends State<_MichiInfoList> {
       verticalLineStartRelY: verticalLineStartRelY,
       verticalLineEndRelY: verticalLineEndRelY,
       standaloneLinkDistances: standaloneLinkDistances,
+      standaloneLinkLines: standaloneLinkLines,
     );
   }
 
@@ -431,6 +440,7 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                   spans: timelineData.spans,
                   linkSegments: timelineData.linkSegments,
                   standaloneLinkDistances: timelineData.standaloneLinkDistances,
+                  standaloneLinkLines: timelineData.standaloneLinkLines,
                   verticalLineStartRelY: timelineData.verticalLineStartRelY,
                   verticalLineEndRelY: timelineData.verticalLineEndRelY,
                   scrollOffset: scrollOffset,
@@ -524,6 +534,7 @@ class _MichiTimelineCanvas extends CustomPainter {
   final List<SpanArrowData> spans;
   final List<LinkSegmentData> linkSegments;
   final List<(double, String)> standaloneLinkDistances;
+  final List<(double, double)> standaloneLinkLines;
   final double verticalLineStartRelY;
   final double verticalLineEndRelY;
   final double scrollOffset;
@@ -541,6 +552,7 @@ class _MichiTimelineCanvas extends CustomPainter {
     required this.spans,
     required this.linkSegments,
     required this.standaloneLinkDistances,
+    required this.standaloneLinkLines,
     required this.verticalLineStartRelY,
     required this.verticalLineEndRelY,
     required this.scrollOffset,
@@ -685,6 +697,22 @@ class _MichiTimelineCanvas extends CustomPainter {
         Offset(textX, drawCenterY - standalonePainter.height / 2),
       );
     }
+
+    // ── 5. スパン外 Link のスパン列縦線（矢印なし）─────────────
+    final standaloneLinkPaint = Paint()
+      ..color = _linkPrimaryColor
+      ..strokeWidth = _arrowStrokeWidth
+      ..strokeCap = StrokeCap.round;
+    for (final (startRelY, endRelY) in standaloneLinkLines) {
+      final drawStartY = _topPadding + startRelY - scrollOffset;
+      final drawEndY = _topPadding + endRelY - scrollOffset;
+      if (drawEndY < 0 || drawStartY > size.height) continue;
+      canvas.drawLine(
+        Offset(arrowX, drawStartY),
+        Offset(arrowX, drawEndY),
+        standaloneLinkPaint,
+      );
+    }
   }
 
   @override
@@ -692,6 +720,7 @@ class _MichiTimelineCanvas extends CustomPainter {
       spans != old.spans ||
       linkSegments != old.linkSegments ||
       standaloneLinkDistances != old.standaloneLinkDistances ||
+      standaloneLinkLines != old.standaloneLinkLines ||
       verticalLineStartRelY != old.verticalLineStartRelY ||
       verticalLineEndRelY != old.verticalLineEndRelY ||
       scrollOffset != old.scrollOffset;
