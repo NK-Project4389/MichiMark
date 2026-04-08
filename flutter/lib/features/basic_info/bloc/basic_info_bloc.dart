@@ -193,15 +193,7 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
     if (state is! BasicInfoLoaded) return;
     final current = state as BasicInfoLoaded;
     final input = event.input.trim();
-    if (input.isEmpty) {
-      emit(current.copyWith(tagSuggestions: []));
-      return;
-    }
-    final lower = input.toLowerCase();
-    final suggestions = current.allTags
-        .where((t) => t.tagName.toLowerCase().contains(lower))
-        .where((t) => !current.draft.selectedTags.any((s) => s.id == t.id))
-        .toList();
+    final suggestions = _buildSuggestions(current, input);
     emit(current.copyWith(tagSuggestions: suggestions));
   }
 
@@ -211,11 +203,39 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
   ) async {
     if (state is! BasicInfoLoaded) return;
     final current = state as BasicInfoLoaded;
-    final newTags = [...current.draft.selectedTags, event.tag];
+
+    // 選択タグの updatedAt を更新してマスタ側に「最近使った」日時を記録する
+    final now = DateTime.now();
+    final updatedTag = event.tag.copyWith(updatedAt: now);
+    await _tagRepository.save(updatedTag);
+    final updatedAllTags = current.allTags
+        .map((t) => t.id == updatedTag.id ? updatedTag : t)
+        .toList();
+
+    final newTags = [...current.draft.selectedTags, updatedTag];
+    final suggestions = _buildSuggestions(
+      current.copyWith(allTags: updatedAllTags, draft: current.draft.copyWith(selectedTags: newTags)),
+      '',
+    );
     emit(current.copyWith(
+      allTags: updatedAllTags,
       draft: current.draft.copyWith(selectedTags: newTags),
-      tagSuggestions: [],
+      tagSuggestions: suggestions,
     ));
+  }
+
+  /// サジェストリストを構築する。
+  /// input が空の場合は全マスタタグ（未選択）を updatedAt 降順で返す。
+  /// input がある場合は部分一致フィルタをかける。
+  List<TagDomain> _buildSuggestions(BasicInfoLoaded current, String input) {
+    final selectedIds = current.draft.selectedTags.map((t) => t.id).toSet();
+    final candidates = current.allTags
+        .where((t) => !selectedIds.contains(t.id))
+        .toList()
+      ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    if (input.isEmpty) return candidates;
+    final lower = input.toLowerCase();
+    return candidates.where((t) => t.tagName.toLowerCase().contains(lower)).toList();
   }
 
   Future<void> _onTagInputConfirmed(
@@ -334,9 +354,16 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
   ) async {
     if (state is BasicInfoLoaded) {
       final current = state as BasicInfoLoaded;
+      final enteredDraft = current.draft.copyWith(isEditing: true);
+      // 編集モード開始時に全マスタタグをレコメンドとして設定する
+      final suggestions = _buildSuggestions(
+        current.copyWith(draft: enteredDraft),
+        '',
+      );
       emit(current.copyWith(
         originalDraft: current.draft,
-        draft: current.draft.copyWith(isEditing: true),
+        draft: enteredDraft,
+        tagSuggestions: suggestions,
       ));
     }
   }

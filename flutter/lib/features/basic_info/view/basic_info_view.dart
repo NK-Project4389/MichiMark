@@ -511,6 +511,13 @@ class _TagInputSectionState extends State<_TagInputSection> {
           },
         ),
         if (widget.tagSuggestions.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Text(
+            'レコメンド',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
           const SizedBox(height: 4),
           Container(
             decoration: BoxDecoration(
