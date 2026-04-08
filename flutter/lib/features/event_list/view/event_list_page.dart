@@ -206,6 +206,16 @@ class _EventListItem extends StatelessWidget {
                                 item.eventName,
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
+                              if (item.topicName != null) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  item.topicName!,
+                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                        color: item.themeColor?.primaryColor
+                                            ?? Theme.of(context).colorScheme.onSurfaceVariant,
+                                      ),
+                                ),
+                              ],
                               if (item.displayFromDate.isNotEmpty) ...[
                                 const SizedBox(height: 4),
                                 Text(

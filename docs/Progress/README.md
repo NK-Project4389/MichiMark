@@ -62,3 +62,4 @@
 | [2026-04-08_settings_bugfix_and_visibility.md](./2026-04-08_settings_bugfix_and_visibility.md) | 設定ページ戻るバグ修正・非表示セクションヘッダー・選択リスト非表示フィルター |
 | [2026-04-08_mark_addition_defaults_test.md](./2026-04-08_mark_addition_defaults_test.md) | T-076完了：地点追加初期値・引き継ぎ Integration Test 全8件PASS |
 | [2026-04-08_event_detail_overview_redesign.md](./2026-04-08_event_detail_overview_redesign.md) | EventDetail 概要タブ再設計（タブ3つ・インライン編集・即DB保存・テスト12 PASS）|
+| [2026-04-08_seed_topic_payer_filter.md](./2026-04-08_seed_topic_payer_filter.md) | シードデータトピック追加・支払者参加者制限・イベント一覧トピック名表示 |

@@ -94,7 +94,8 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
         case SelectionType.gasPayMember:
         case SelectionType.payMember:
         case SelectionType.splitMembers:
-          final items = await _memberRepository.fetchAll();
+          final items =
+              _candidateMembers ?? await _memberRepository.fetchAll();
           final projection = SelectionAdapter.fromMembers(
             type: _type,
             items: items,

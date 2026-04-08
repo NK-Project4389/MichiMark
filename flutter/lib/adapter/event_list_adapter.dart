@@ -37,6 +37,7 @@ class EventListAdapter {
       displayFromDate: firstDate,
       displayToDate: lastDate,
       themeColor: themeColor,
+      topicName: event.topic?.topicName,
     );
   }
 }

@@ -27,14 +27,18 @@ class EventSummaryItemProjection extends Equatable {
   /// Topicのテーマカラー。Topic未設定時は null（左ボーダーはグレー表示）
   final TopicThemeColor? themeColor;
 
+  /// Topic名。Topic未設定時は null
+  final String? topicName;
+
   const EventSummaryItemProjection({
     required this.id,
     required this.eventName,
     required this.displayFromDate,
     required this.displayToDate,
     this.themeColor,
+    this.topicName,
   });
 
   @override
-  List<Object?> get props => [id, eventName, displayFromDate, displayToDate, themeColor];
+  List<Object?> get props => [id, eventName, displayFromDate, displayToDate, themeColor, topicName];
 }
