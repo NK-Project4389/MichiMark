@@ -43,6 +43,14 @@ class BasicInfoSavedDelegate extends BasicInfoDelegate {
   List<Object?> get props => [];
 }
 
+/// 保存完了 + 画面を閉じる意図（「保存して戻る」）
+class BasicInfoSavedAndDismissDelegate extends BasicInfoDelegate {
+  const BasicInfoSavedAndDismissDelegate();
+
+  @override
+  List<Object?> get props => [];
+}
+
 // ---------------------------------------------------------------------------
 
 sealed class BasicInfoState extends Equatable {

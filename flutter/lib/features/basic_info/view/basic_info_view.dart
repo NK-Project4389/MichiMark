@@ -130,6 +130,10 @@ class _BasicInfoViewState extends State<BasicInfoView> {
       case BasicInfoSavedDelegate():
         // 保存完了: 特に画面遷移なし（isEditingがfalseになっているので参照モードに戻る）
         break;
+
+      case BasicInfoSavedAndDismissDelegate():
+        // 「保存して戻る」: EventDetailPageのBlocListenerで画面を閉じる
+        break;
     }
   }
 }

@@ -222,6 +222,10 @@ class _MichiInfoViewState extends State<MichiInfoView> {
         if (mounted) {
           context.read<MichiInfoBloc>().add(const MichiInfoReloadRequested());
         }
+
+      case MichiInfoReloadedDelegate():
+        // 再読込完了: EventDetailPageのBlocListenerでcachedEventを更新する
+        break;
     }
   }
 }
@@ -497,9 +501,10 @@ class _MichiInfoListState extends State<_MichiInfoList> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddMenu(context),
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text('追加'),
       ),
     );
   }

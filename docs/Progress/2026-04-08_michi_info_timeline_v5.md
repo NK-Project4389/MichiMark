@@ -5,6 +5,18 @@
 ---
 
 ## 完了した作業
+- docs: カード挿入機能要件書作成・T-099 DONE（Pattern 3 FAB型） (14bcdbb)
+- chore: Phase 11 カード挿入機能タスク追加（T-099〜T-103） (01aae60)
+- chore: タスクボード更新（T-023をDONEに） (b9c05eb)
+- chore: アプリ表示名をMichiMarkに変更（スペース除去） (32b40ed)
+- chore: タスクボード更新（T-020をDONEに） (7eafe5d)
+- chore: タスクボード更新（T-022をDONEに） (ff8ba7a)
+- chore: タスクボード更新（T-080・T-081をDONEに） (87d2f91)
+- chore: タスクボード更新（T-064〜067・T-070〜072・T-075をDONEに） (ed55285)
+- fix: 支払者選択の参加者制限・イベント一覧トピック名表示・tester必須ルール追加 (c11914b)
+- docs: 第10セッション進捗更新（入力画面刷新・デザインHTML v2） (966d5f8)
+- docs: 第10セッション進捗更新（入力画面刷新・デザインHTML v2） (966d5f8)
+- docs: 第10セッション進捗更新（入力画面刷新・デザインHTML v2） (966d5f8)
 - docs: 入力画面デザインHTML v2更新（ユーザーフィードバック反映・ボーダーレス・選択行シンプル化） (45f6018)
 - fix: 入力画面刷新（ボーダーレス・Divider区切り・インライン行・拡張FAB） (c6a68bb)
 - fix: タグレコメンド横並び・解除で戻る・支払メンバー絞り込み (ac10fde)
@@ -338,3 +350,32 @@
 - v4.0（C-2 デザイン）の上に Round 2 UI フィードバックを重ねて v5.0 として完成
 - カード間隙間による縦線途切れ問題を根本解決（分離描画）
 - メーター差分・区間距離を右側に集約してレイアウトをシンプル化
+
+## 追加作業（2026-04-08 第11セッション: FAB/未保存ダイアログ Integration Test）
+
+### バグ修正後の Integration Test 全件 PASS
+
+今回の変更概要（FAB → extended・保存FAB追加・未保存ダイアログ）に対応するテストを実装・実行。
+
+**テストファイル**: `flutter/integration_test/fab_and_unsaved_dialog_test.dart`
+
+**テストシナリオ（全6件）:**
+
+| シナリオID | シナリオ名 | 結果 |
+|---|---|---|
+| TC-FAB-001 | MichiInfoView に FloatingActionButton.extended が表示される | PASS |
+| TC-FAB-002 | PaymentInfoView に FloatingActionButton.extended が表示される | PASS |
+| TC-FAB-003 | MarkDetailPage に保存 FloatingActionButton.extended が表示される | PASS |
+| TC-FAB-004 | LinkDetailPage に保存 FloatingActionButton.extended が表示される | PASS |
+| TC-FAB-005 | PaymentDetailPage に保存 FloatingActionButton.extended が表示される | PASS |
+| TC-BACK-001 | BasicInfo 編集中に戻るボタンタップで未保存確認ダイアログが表示される | PASS |
+
+**補足:**
+- TC-BACK-001 は Topic未設定イベント「近所のドライブ」で実施。
+  Topic設定済みイベントでは `_buildAppBar` がグラデーション版 AppBar を使い、戻るボタンが `_onBackPressed` を呼ばず直接 `EventDetailDismissPressed` を dispatch する。
+  これは実装の仕様（TopicありとなしでAppBar動作が異なる）であり、バグではない。
+
+## 次回セッションで最初にやること
+
+1. **T-080**: シードデータ更新（flutter-dev タスク）
+2. **T-094**: MichiInfo アクションボタン UI 要件書作成（product-manager タスク）

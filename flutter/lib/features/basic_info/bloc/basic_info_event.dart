@@ -161,11 +161,13 @@ class BasicInfoEditModeEntered extends BasicInfoEvent {
 }
 
 /// 保存ボタンが押されたとき（DB保存）
+/// [withDismiss] が true の場合、保存後に画面を閉じる（「保存して戻る」）
 class BasicInfoSavePressed extends BasicInfoEvent {
-  const BasicInfoSavePressed();
+  final bool withDismiss;
+  const BasicInfoSavePressed({this.withDismiss = false});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [withDismiss];
 }
 
 /// 編集がキャンセルされたとき

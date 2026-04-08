@@ -61,6 +61,10 @@ class _PaymentInfoViewState extends State<PaymentInfoView> {
         );
         if (!context.mounted) return;
         context.read<PaymentInfoBloc>().add(const PaymentInfoReloadRequested());
+
+      case PaymentInfoReloadedDelegate():
+        // 再読込完了: EventDetailPageのBlocListenerでcachedEventを更新する
+        break;
     }
   }
 }
@@ -107,11 +111,12 @@ class _PaymentInfoList extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context
             .read<PaymentInfoBloc>()
             .add(const PaymentInfoPlusButtonTapped()),
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text('追加'),
       ),
     );
   }

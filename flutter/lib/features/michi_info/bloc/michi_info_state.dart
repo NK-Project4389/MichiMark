@@ -81,6 +81,14 @@ class MichiInfoAddMarkDelegate extends MichiInfoDelegate {
       ];
 }
 
+/// Mark/Link 保存後の再読込完了を EventDetail に通知するデリゲート
+class MichiInfoReloadedDelegate extends MichiInfoDelegate {
+  const MichiInfoReloadedDelegate();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// 新規リンク追加画面へ遷移
 class MichiInfoAddLinkDelegate extends MichiInfoDelegate {
   final String eventId;

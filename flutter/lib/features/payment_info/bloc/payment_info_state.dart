@@ -14,6 +14,14 @@ class PaymentInfoOpenNewPaymentDelegate extends PaymentInfoDelegate {
   List<Object?> get props => [];
 }
 
+/// Payment 保存後の再読込完了を EventDetail に通知するデリゲート
+class PaymentInfoReloadedDelegate extends PaymentInfoDelegate {
+  const PaymentInfoReloadedDelegate();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// 既存PaymentのPaymentDetailを開く要求
 class PaymentInfoOpenPaymentByIdDelegate extends PaymentInfoDelegate {
   final String paymentId;

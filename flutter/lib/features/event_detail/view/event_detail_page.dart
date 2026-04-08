@@ -14,12 +14,14 @@ import '../../basic_info/bloc/basic_info_state.dart';
 import '../../basic_info/view/basic_info_view.dart';
 import '../../michi_info/bloc/michi_info_bloc.dart';
 import '../../michi_info/bloc/michi_info_event.dart';
+import '../../michi_info/bloc/michi_info_state.dart';
 import '../../michi_info/view/michi_info_view.dart';
 import '../../overview/bloc/overview_bloc.dart';
 import '../../overview/bloc/overview_event.dart';
 import '../../overview/view/event_detail_overview_page.dart';
 import '../../payment_info/bloc/payment_info_bloc.dart';
 import '../../payment_info/bloc/payment_info_event.dart';
+import '../../payment_info/bloc/payment_info_state.dart';
 import '../../payment_info/view/payment_info_view.dart';
 import '../bloc/event_detail_bloc.dart';
 import '../bloc/event_detail_event.dart';
@@ -202,9 +204,7 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
       return AppBar(
         leading: IconButton(
           icon: const Icon(Icons.chevron_left),
-          onPressed: () => context
-              .read<EventDetailBloc>()
-              .add(const EventDetailDismissPressed()),
+          onPressed: () => _onBackPressed(context),
         ),
         title: Text(eventName),
         centerTitle: true,
@@ -248,6 +248,54 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
           ),
         ),
       ),
+    );
+  }
+
+  void _onBackPressed(BuildContext context) {
+    final basicInfoState = context.read<BasicInfoBloc>().state;
+    final isEditing =
+        basicInfoState is BasicInfoLoaded && basicInfoState.draft.isEditing;
+    if (isEditing) {
+      _showUnsavedChangesForBack(context);
+    } else {
+      context.read<EventDetailBloc>().add(const EventDetailDismissPressed());
+    }
+  }
+
+  void _showUnsavedChangesForBack(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('保存していません'),
+          content: const Text('編集内容を保存しますか？'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('編集に戻る'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                context.read<BasicInfoBloc>().add(const BasicInfoEditCancelled());
+                context
+                    .read<EventDetailBloc>()
+                    .add(const EventDetailDismissPressed());
+              },
+              child: const Text('破棄して戻る'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                context
+                    .read<BasicInfoBloc>()
+                    .add(const BasicInfoSavePressed(withDismiss: true));
+              },
+              child: const Text('保存して戻る'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -318,6 +366,61 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
             context
                 .read<EventDetailBloc>()
                 .add(const EventDetailCachedEventUpdateRequested());
+          },
+        ),
+        // BasicInfoSavedAndDismissDelegate受信後にcachedEvent更新 + 画面を閉じる
+        BlocListener<BasicInfoBloc, BasicInfoState>(
+          listenWhen: (prev, curr) =>
+              curr is BasicInfoLoaded &&
+              curr.delegate is BasicInfoSavedAndDismissDelegate,
+          listener: (context, state) {
+            context
+                .read<EventDetailBloc>()
+                .add(const EventDetailCachedEventUpdateRequested());
+            context
+                .read<EventDetailBloc>()
+                .add(const EventDetailDismissPressed());
+          },
+        ),
+        // MichiInfoReloadedDelegate受信後にcachedEventを更新する（給油情報など集計反映のため）
+        BlocListener<MichiInfoBloc, MichiInfoState>(
+          listenWhen: (prev, curr) =>
+              curr is MichiInfoLoaded &&
+              curr.delegate is MichiInfoReloadedDelegate,
+          listener: (context, state) {
+            context
+                .read<EventDetailBloc>()
+                .add(const EventDetailCachedEventUpdateRequested());
+          },
+        ),
+        // PaymentInfoReloadedDelegate受信後にcachedEventを更新する（概要タブ集計反映のため）
+        BlocListener<PaymentInfoBloc, PaymentInfoState>(
+          listenWhen: (prev, curr) =>
+              curr is PaymentInfoLoaded &&
+              curr.delegate is PaymentInfoReloadedDelegate,
+          listener: (context, state) {
+            context
+                .read<EventDetailBloc>()
+                .add(const EventDetailCachedEventUpdateRequested());
+          },
+        ),
+        // cachedEvent更新時に概要タブを再集計する
+        BlocListener<EventDetailBloc, EventDetailState>(
+          listenWhen: (prev, curr) {
+            if (prev is! EventDetailLoaded || curr is! EventDetailLoaded) {
+              return false;
+            }
+            return !identical(prev.cachedEvent, curr.cachedEvent) &&
+                curr.draft.selectedTab == EventDetailTab.overview;
+          },
+          listener: (context, state) {
+            if (state is! EventDetailLoaded) return;
+            final cachedEvent = state.cachedEvent;
+            if (cachedEvent == null) return;
+            context.read<EventDetailOverviewBloc>().add(OverviewStarted(
+                  event: cachedEvent,
+                  topicConfig: state.topicConfig,
+                ));
           },
         ),
       ],

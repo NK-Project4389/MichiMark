@@ -420,7 +420,9 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
       emit(current.copyWith(
         isSaving: false,
         draft: draft.copyWith(isEditing: false),
-        delegate: const BasicInfoSavedDelegate(),
+        delegate: event.withDismiss
+            ? const BasicInfoSavedAndDismissDelegate()
+            : const BasicInfoSavedDelegate(),
       ));
     } on Exception catch (e) {
       if (state case BasicInfoLoaded loaded) {

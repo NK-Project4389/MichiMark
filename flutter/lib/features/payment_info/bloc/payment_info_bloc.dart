@@ -40,6 +40,7 @@ class PaymentInfoBloc extends Bloc<PaymentInfoEvent, PaymentInfoState> {
       emit(PaymentInfoLoaded(
         projection: projection,
         eventId: _eventId,
+        delegate: const PaymentInfoReloadedDelegate(),
       ));
     } on Exception {
       // リロード失敗は無視（現在の状態を維持）

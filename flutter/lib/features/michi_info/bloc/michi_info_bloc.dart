@@ -294,6 +294,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
         emit(current.copyWith(
           projection: projection,
           eventMembers: domain.members,
+          delegate: const MichiInfoReloadedDelegate(),
         ));
       } on Exception {
         // サイレント失敗（既存の projection を維持）

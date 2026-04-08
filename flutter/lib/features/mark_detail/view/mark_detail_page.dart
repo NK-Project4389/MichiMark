@@ -136,29 +136,26 @@ class _MarkDetailScaffold extends StatelessWidget {
           draft.markLinkName.isEmpty ? '地点詳細' : draft.markLinkName,
         ),
         centerTitle: true,
-        actions: [
-          if (isSaving)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            )
-          else
-            TextButton(
-              onPressed: () => context
-                  .read<MarkDetailBloc>()
-                  .add(const MarkDetailSaveTapped()),
-              child: const Text('保存'),
-            ),
-        ],
       ),
       body: _MarkDetailForm(
         draft: draft,
         topicConfig: topicConfig,
         dateFormat: dateFormat,
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: isSaving
+            ? null
+            : () => context
+                .read<MarkDetailBloc>()
+                .add(const MarkDetailSaveTapped()),
+        icon: isSaving
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+              )
+            : const Icon(Icons.save_outlined),
+        label: Text(isSaving ? '保存中' : '保存'),
       ),
     );
   }
