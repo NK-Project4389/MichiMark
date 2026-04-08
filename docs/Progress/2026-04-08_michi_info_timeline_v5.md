@@ -5,6 +5,8 @@
 ---
 
 ## 完了した作業
+- docs: 入力画面デザインHTML v2更新（ユーザーフィードバック反映・ボーダーレス・選択行シンプル化） (45f6018)
+- fix: 入力画面刷新（ボーダーレス・Divider区切り・インライン行・拡張FAB） (c6a68bb)
 - fix: タグレコメンド横並び・解除で戻る・支払メンバー絞り込み (ac10fde)
 - docs: 第8セッション進捗更新（バグ3件修正・タグレコメンド実装） (8c1dd46)
 - feat: タグレコメンド常時表示・最近使った順ソート（REQ-tag_recommend_display） (25cfaa3)
@@ -313,6 +315,15 @@
 - `flutter/lib/features/michi_info/view/michi_info_view.dart`
 
 **dart analyze**: 17 issues（既存 info/warning のみ・新規エラーなし）
+
+## 追加作業（2026-04-08 第10セッション: デザインHTML v2更新）
+
+- `docs/Design/draft/2026-04-08_input_screen_redesign.html` をユーザーフィードバック反映版（v2）に更新
+  - テキストフィールド: OutlineInputBorder → ボーダーレス・インライン行プレビューに変更
+  - 選択行: 背景色＋枠線デザイン → chevron_right アイコンのみのシンプルな表現に変更
+  - ラベル名: 「最近使用したタグ」「新しいタグを追加」に更新
+  - 変更履歴セクション追加（v1/v2 差分を REMOVED / CHANGED / KEPT で整理）
+  - Flutter 実装と HTML が整合した状態に
 
 ## 次回セッションで最初にやること
 
