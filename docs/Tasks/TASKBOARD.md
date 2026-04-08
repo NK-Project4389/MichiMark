@@ -114,8 +114,8 @@
 |---|---|---|---|---|---|
 | T-090 | EventDetail 概要タブ再設計 Spec作成 | architect | `DONE` | | REQ-event_detail_overview_redesign 対応 |
 | T-091 | EventDetail 概要タブ再設計 実装 | flutter-dev | `DONE` | | T-090完了後 |
-| T-092 | EventDetail 概要タブ再設計 レビュー | reviewer | `TODO` | | T-091完了後 |
-| T-093 | EventDetail 概要タブ再設計 テスト | tester | `BLOCKED` | | T-092完了後 |
+| T-092 | EventDetail 概要タブ再設計 レビュー | reviewer | `DONE` | | T-091完了後 |
+| T-093 | EventDetail 概要タブ再設計 テスト | tester | `DONE` | | 12 PASS / 3 SKIP（シードデータ未整備）/ 0 FAIL |
 
 ---
 

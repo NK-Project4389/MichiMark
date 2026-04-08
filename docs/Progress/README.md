@@ -61,3 +61,4 @@
 | [2026-04-08_michi_info_date_separator_design.md](./2026-04-08_michi_info_date_separator_design.md) | MichiInfo 日付セパレーター デザイン提案・要件書作成（T-068〜069完了） |
 | [2026-04-08_settings_bugfix_and_visibility.md](./2026-04-08_settings_bugfix_and_visibility.md) | 設定ページ戻るバグ修正・非表示セクションヘッダー・選択リスト非表示フィルター |
 | [2026-04-08_mark_addition_defaults_test.md](./2026-04-08_mark_addition_defaults_test.md) | T-076完了：地点追加初期値・引き継ぎ Integration Test 全8件PASS |
+| [2026-04-08_event_detail_overview_redesign.md](./2026-04-08_event_detail_overview_redesign.md) | EventDetail 概要タブ再設計（タブ3つ・インライン編集・即DB保存・テスト12 PASS）|

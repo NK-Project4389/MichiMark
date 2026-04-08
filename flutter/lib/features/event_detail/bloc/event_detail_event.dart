@@ -78,3 +78,11 @@ class EventDetailCachedEventUpdateRequested extends EventDetailEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// delegateを消費済みにする（nullリセット）
+class EventDetailDelegateConsumed extends EventDetailEvent {
+  const EventDetailDelegateConsumed();
+
+  @override
+  List<Object?> get props => [];
+}

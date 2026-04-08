@@ -20,19 +20,11 @@ class BasicInfoView extends StatefulWidget {
 }
 
 class _BasicInfoViewState extends State<BasicInfoView> {
-  /// BasicInfoBlocが属するEventDetailのeventIdを保持するフィールド
-  /// （BasicInfoSavePressedに渡すため）
-  String? _eventId;
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<BasicInfoBloc, BasicInfoState>(
       listener: (context, state) async {
         if (state is BasicInfoLoaded) {
-          // eventIdを保持する
-          _eventId ??= context.read<BasicInfoBloc>().state is BasicInfoLoaded
-              ? null
-              : null;
           if (state.delegate != null) {
             await _handleDelegate(state.delegate!, state.draft);
           }
@@ -151,6 +143,8 @@ class _BasicInfoReadView extends StatelessWidget {
     return Stack(
       children: [
         ListView(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
           children: [
             _ReadRow(label: 'イベント名', value: draft.eventName.isEmpty ? '未設定' : draft.eventName),
@@ -264,6 +258,8 @@ class _BasicInfoForm extends StatelessWidget {
     return Stack(
       children: [
         ListView(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
           children: [
             _EventNameField(value: draft.eventName),

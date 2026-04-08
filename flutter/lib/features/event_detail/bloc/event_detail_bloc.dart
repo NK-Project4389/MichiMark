@@ -23,6 +23,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     on<EventDetailOpenPaymentRequested>(_onOpenPaymentRequested);
     on<EventDetailAddMarkLinkRequested>(_onAddMarkLinkRequested);
     on<EventDetailCachedEventUpdateRequested>(_onCachedEventUpdateRequested);
+    on<EventDetailDelegateConsumed>(_onDelegateConsumed);
   }
 
   final EventRepository _eventRepository;
@@ -159,6 +160,15 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
   String? _resolveDisplayName(TopicDomain? topic) {
     if (topic == null) return null;
     return TopicConfig.forType(topic.topicType).displayName;
+  }
+
+  Future<void> _onDelegateConsumed(
+    EventDetailDelegateConsumed event,
+    Emitter<EventDetailState> emit,
+  ) async {
+    if (state case final EventDetailLoaded current) {
+      emit(current.copyWith(delegate: null));
+    }
   }
 
   Future<void> _onCachedEventUpdateRequested(

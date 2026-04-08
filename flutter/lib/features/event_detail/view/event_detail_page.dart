@@ -241,6 +241,7 @@ class _EventDetailScaffoldInner extends StatelessWidget {
 
             switch (delegate) {
               case EventDetailTopicConfigPropagateDelegate(:final topicConfig):
+                if (!context.mounted) return;
                 context
                     .read<MichiInfoBloc>()
                     .add(MichiInfoTopicConfigUpdated(topicConfig));
@@ -254,6 +255,10 @@ class _EventDetailScaffoldInner extends StatelessWidget {
                         ),
                       );
                 }
+                // delegateをnullにリセット
+                context
+                    .read<EventDetailBloc>()
+                    .add(const EventDetailDelegateConsumed());
 
               default:
                 break;
@@ -270,6 +275,7 @@ class _EventDetailScaffoldInner extends StatelessWidget {
                 curr.draft.selectedTab == EventDetailTab.overview;
           },
           listener: (context, state) {
+            if (!context.mounted) return;
             if (state is! EventDetailLoaded) return;
             final cachedEvent = state.cachedEvent;
             if (cachedEvent == null) return;
@@ -374,24 +380,37 @@ class _TabButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSelected = tab == selectedTab;
-    return TextButton(
-      onPressed: () => _onTabPressed(context),
-      child: Text(
-        _label,
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: isSelected
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurfaceVariant,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
-      ),
+    // BasicInfoBlocのisEditingを購読してonPressedで参照できるようにする
+    return BlocBuilder<BasicInfoBloc, BasicInfoState>(
+      buildWhen: (prev, curr) {
+        final prevEditing =
+            prev is BasicInfoLoaded ? prev.draft.isEditing : false;
+        final currEditing =
+            curr is BasicInfoLoaded ? curr.draft.isEditing : false;
+        return prevEditing != currEditing;
+      },
+      builder: (context, basicInfoState) {
+        final isEditing =
+            basicInfoState is BasicInfoLoaded && basicInfoState.draft.isEditing;
+        return TextButton(
+          onPressed: () => _onTabPressed(context, isEditing),
+          child: Text(
+            _label,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+          ),
+        );
+      },
     );
   }
 
-  void _onTabPressed(BuildContext context) {
+  void _onTabPressed(BuildContext context, bool isEditing) {
     // 編集中チェック
-    final basicInfoState = context.read<BasicInfoBloc>().state;
-    if (basicInfoState is BasicInfoLoaded && basicInfoState.draft.isEditing) {
+    if (isEditing) {
       _showUnsavedChangesDialog(context);
       return;
     }
@@ -404,12 +423,12 @@ class _TabButton extends StatelessWidget {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('未保存の変更があります'),
+          title: const Text('保存していません'),
           content: const Text('編集内容を保存しますか？'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('キャンセル'),
+              child: const Text('編集に戻る'),
             ),
             TextButton(
               onPressed: () {

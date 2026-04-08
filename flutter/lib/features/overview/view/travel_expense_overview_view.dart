@@ -14,6 +14,8 @@ class TravelExpenseOverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16),
       children: [
         _SectionTitle(title: '経費合計'),
