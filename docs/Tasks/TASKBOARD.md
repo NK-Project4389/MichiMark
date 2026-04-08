@@ -117,6 +117,16 @@
 | T-092 | EventDetail 概要タブ再設計 レビュー | reviewer | `DONE` | | T-091完了後 |
 | T-093 | EventDetail 概要タブ再設計 テスト | tester | `DONE` | | 12 PASS / 3 SKIP（シードデータ未整備）/ 0 FAIL |
 
+## Phase 10: MichiInfo アクションボタン UI
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-094 | MichiInfo アクションボタン UI 要件書作成 | product-manager | `TODO` | | ActionTime Bloc/Repo は実装済み。地点カードへのボタン表示 UI の要件定義 |
+| T-095 | MichiInfo アクションボタン UI Spec作成 | architect | `BLOCKED` | | T-094完了後 |
+| T-096 | MichiInfo アクションボタン UI 実装 | flutter-dev | `BLOCKED` | | T-095完了後 |
+| T-097 | MichiInfo アクションボタン UI レビュー | reviewer | `BLOCKED` | | T-096完了後 |
+| T-098 | MichiInfo アクションボタン UI テスト | tester | `BLOCKED` | | T-097完了後 |
+
 ---
 
 ## 完了済みタスク（アーカイブ）
