@@ -89,8 +89,8 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-080 | シードデータ更新（トピック設定・Overview確認データ・MichiInfoパターン） | flutter-dev | `TODO` | | REQ-seed_data_update対応 |
-| T-081 | シードデータ更新 レビュー | reviewer | `BLOCKED` | | T-080完了後 |
+| T-080 | シードデータ更新（トピック設定・Overview確認データ・MichiInfoパターン） | flutter-dev | `DONE` | | |
+| T-081 | シードデータ更新 レビュー | reviewer | `DONE` | | |
 
 ---
 
