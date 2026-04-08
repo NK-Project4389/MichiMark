@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../draft/payment_detail_draft.dart';
 
 /// PaymentDetailの遷移意図（BlocListenerがNavigation処理）
@@ -62,26 +63,32 @@ class PaymentDetailLoaded extends PaymentDetailState {
   final PaymentDetailDelegate? delegate;
   final bool isSaving;
 
+  /// 概要（BasicInfo）の参加メンバー。支払者・割り勘の選択肢を絞り込むために使用する。
+  final List<MemberDomain> availableMembers;
+
   const PaymentDetailLoaded({
     required this.draft,
     this.delegate,
     this.isSaving = false,
+    this.availableMembers = const [],
   });
 
   PaymentDetailLoaded copyWith({
     PaymentDetailDraft? draft,
     PaymentDetailDelegate? delegate,
     bool? isSaving,
+    List<MemberDomain>? availableMembers,
   }) {
     return PaymentDetailLoaded(
       draft: draft ?? this.draft,
       delegate: delegate,
       isSaving: isSaving ?? this.isSaving,
+      availableMembers: availableMembers ?? this.availableMembers,
     );
   }
 
   @override
-  List<Object?> get props => [draft, delegate, isSaving];
+  List<Object?> get props => [draft, delegate, isSaving, availableMembers];
 }
 
 class PaymentDetailError extends PaymentDetailState {

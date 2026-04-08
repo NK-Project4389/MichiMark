@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../features/selection/selection_args.dart';
 import '../../../features/selection/selection_result.dart';
 import '../bloc/payment_detail_bloc.dart';
@@ -21,7 +22,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
     return BlocConsumer<PaymentDetailBloc, PaymentDetailState>(
       listener: (context, state) async {
         if (state is PaymentDetailLoaded && state.delegate != null) {
-          await _handleDelegate(context, state.delegate!, state.draft);
+          await _handleDelegate(context, state.delegate!, state.draft, state.availableMembers);
         }
       },
       builder: (context, state) {
@@ -43,6 +44,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
     BuildContext context,
     PaymentDetailDelegate delegate,
     PaymentDetailDraft draft,
+    List<MemberDomain> availableMembers,
   ) async {
     switch (delegate) {
       case PaymentDetailDismissDelegate():
@@ -67,6 +69,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
             selectedIds: draft.paymentMember != null
                 ? {draft.paymentMember!.id}
                 : const {},
+            candidateMembers: availableMembers.isEmpty ? null : availableMembers,
           ),
         );
         if (!context.mounted) return;
@@ -87,6 +90,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
             fixedSelectedIds: draft.paymentMember != null
                 ? {draft.paymentMember!.id}
                 : const {},
+            candidateMembers: availableMembers.isEmpty ? null : availableMembers,
           ),
         );
         if (!context.mounted) return;

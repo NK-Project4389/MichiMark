@@ -519,30 +519,20 @@ class _TagInputSectionState extends State<_TagInputSection> {
                 ),
           ),
           const SizedBox(height: 4),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Theme.of(context).colorScheme.outline),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.tagSuggestions.length,
-              separatorBuilder: (_, _) => const Divider(height: 1),
-              itemBuilder: (context, index) {
-                final tag = widget.tagSuggestions[index];
-                return ListTile(
-                  dense: true,
-                  title: Text(tag.tagName),
-                  onTap: () {
-                    context
-                        .read<BasicInfoBloc>()
-                        .add(BasicInfoTagSuggestionSelected(tag));
-                    _clearInput();
-                  },
-                );
-              },
-            ),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: widget.tagSuggestions
+                .map((tag) => ActionChip(
+                      label: Text(tag.tagName),
+                      onPressed: () {
+                        context
+                            .read<BasicInfoBloc>()
+                            .add(BasicInfoTagSuggestionSelected(tag));
+                        _clearInput();
+                      },
+                    ))
+                .toList(),
           ),
         ],
       ],

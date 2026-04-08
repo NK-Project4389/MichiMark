@@ -32,17 +32,19 @@ class PaymentDetailBloc
     _eventId = event.eventId;
     emit(const PaymentDetailLoading());
     try {
+      final domain = await _eventRepository.fetch(event.eventId);
+      final availableMembers = domain.members;
+
       if (event.paymentId == null) {
         // 新規作成: 初期Draftを生成
         final draft = PaymentDetailDraft(
           id: const Uuid().v4(),
           paymentSeq: 0,
         );
-        emit(PaymentDetailLoaded(draft: draft));
+        emit(PaymentDetailLoaded(draft: draft, availableMembers: availableMembers));
         return;
       }
       // 既存編集: Repositoryからデータ取得
-      final domain = await _eventRepository.fetch(event.eventId);
       final payment = domain.payments
           .where((p) => p.id == event.paymentId && !p.isDeleted)
           .firstOrNull;
@@ -58,7 +60,7 @@ class PaymentDetailBloc
         splitMembers: payment.splitMembers,
         paymentMemo: payment.paymentMemo ?? '',
       );
-      emit(PaymentDetailLoaded(draft: draft));
+      emit(PaymentDetailLoaded(draft: draft, availableMembers: availableMembers));
     } on Exception catch (e) {
       emit(PaymentDetailError(message: e.toString()));
     }

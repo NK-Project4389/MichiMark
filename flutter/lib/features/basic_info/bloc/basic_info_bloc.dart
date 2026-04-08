@@ -295,8 +295,15 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
     final newTags = current.draft.selectedTags
         .where((t) => t.id != event.tag.id)
         .toList();
+    final newDraft = current.draft.copyWith(selectedTags: newTags);
+    // 解除したタグをレコメンドに戻す（入力中テキストでフィルタ済みの状態を維持）
+    final suggestions = _buildSuggestions(
+      current.copyWith(draft: newDraft),
+      '', // 現在の入力テキストは_TagInputSectionが管理しているためBlocでは空扱い
+    );
     emit(current.copyWith(
-      draft: current.draft.copyWith(selectedTags: newTags),
+      draft: newDraft,
+      tagSuggestions: suggestions,
     ));
   }
 
