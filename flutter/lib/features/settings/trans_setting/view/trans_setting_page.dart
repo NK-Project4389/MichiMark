@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../bloc/trans_setting_bloc.dart';
 import '../bloc/trans_setting_event.dart';
 import '../bloc/trans_setting_state.dart';
+import '../../../../features/shared/projection/trans_item_projection.dart';
 
 class TransSettingPage extends StatelessWidget {
   const TransSettingPage({super.key});
@@ -44,27 +45,57 @@ class TransSettingPage extends StatelessWidget {
               ),
               body: items.isEmpty
                   ? const Center(child: Text('交通手段がありません'))
-                  : ListView.separated(
-                      itemCount: items.length,
-                      separatorBuilder: (context, index) => const Divider(height: 1),
-                      itemBuilder: (context, index) {
-                        final item = items[index];
-                        return ListTile(
-                          title: Text(item.transName),
-                          subtitle: Text(
-                            '燃費: ${item.displayKmPerGas}　メーター: ${item.displayMeterValue}'
-                            '${item.isVisible ? '' : '　非表示'}',
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () => context
-                              .read<TransSettingBloc>()
-                              .add(TransSettingItemSelected(item.id)),
-                        );
-                      },
-                    ),
+                  : _buildList(context, items),
             ),
         };
       },
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<TransItemProjection> items) {
+    final visibleItems = items.where((e) => e.isVisible).toList();
+    final hiddenItems = items.where((e) => !e.isVisible).toList();
+    return ListView(
+      children: [
+        for (int i = 0; i < visibleItems.length; i++) ...[
+          _buildTile(context, visibleItems[i]),
+          if (i < visibleItems.length - 1 || hiddenItems.isNotEmpty)
+            const Divider(height: 1),
+        ],
+        if (hiddenItems.isNotEmpty) ...[
+          _buildSectionHeader(context),
+          for (int i = 0; i < hiddenItems.length; i++) ...[
+            _buildTile(context, hiddenItems[i]),
+            if (i < hiddenItems.length - 1) const Divider(height: 1),
+          ],
+        ],
+      ],
+    );
+  }
+
+  Widget _buildTile(BuildContext context, TransItemProjection item) {
+    return ListTile(
+      title: Text(item.transName),
+      subtitle: Text('燃費: ${item.displayKmPerGas}　メーター: ${item.displayMeterValue}'),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => context
+          .read<TransSettingBloc>()
+          .add(TransSettingItemSelected(item.id)),
+    );
+  }
+
+  Widget _buildSectionHeader(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      child: Text(
+        '非表示',
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
+      ),
     );
   }
 

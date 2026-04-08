@@ -14,7 +14,7 @@ class SettingsPage extends StatelessWidget {
       listener: (context, state) {
         switch (state.delegate) {
           case SettingsNavigateToEventsDelegate():
-            context.go('/events');
+            context.go('/');
           case null:
             break;
         }
