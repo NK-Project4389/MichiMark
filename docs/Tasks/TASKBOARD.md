@@ -70,6 +70,11 @@
 | T-065 | タイムライン挿入UI（FAB型）Spec 作成 | architect | `BLOCKED` | | T-064完了後 |
 | T-066 | タイムライン挿入UI（FAB型）実装 | flutter-dev | `BLOCKED` | | T-065完了後 |
 | T-067 | タイムライン挿入UI（FAB型）レビュー | reviewer | `BLOCKED` | | T-066完了後 |
+| T-068 | MichiInfo 日付セパレーター デザイン提案 | designer | `DONE` | | デザイン提案: `docs/Design/draft/2026-04-08_michi_info_date_placement.html` |
+| T-069 | MichiInfo 日付セパレーター 要件書作成 | product-manager | `DONE` | | 要件書: `docs/Requirements/REQ-michi_info_date_separator.md` |
+| T-070 | MichiInfo 日付セパレーター Spec 作成 | architect | `TODO` | | T-069完了後。`MarkLinkItemProjection` に日付フィールド要確認 |
+| T-071 | MichiInfo 日付セパレーター 実装 | flutter-dev | `BLOCKED` | | T-070完了後 |
+| T-072 | MichiInfo 日付セパレーター レビュー | reviewer | `BLOCKED` | | T-071完了後 |
 
 ---
 

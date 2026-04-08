@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark — MichiInfo 日付配置デザイン提案 2026-04-08</title>
+  <style>
+    :root {
+      --teal:           #4ECDC4;
+      --teal-dark:      #2D6A6A;
+      --teal-mid:       #3AADA5;
+      --teal-tint:      #E0F7F5;
+      --teal-tint2:     #F0FAFA;
+
+      --green-bg:       #E8F5E9;
+      --green-dot:      #2E9E6B;
+      --green-dark:     #1B7A52;
+      --green-border:   #A5D6A7;
+
+      --mark-dot:       #2D6A6A;
+      --mark-card-bg:   #FFFFFF;
+      --timeline-line:  #B2DFDB;
+
+      --text-primary:   #1A1A2E;
+      --text-secondary: #5C7070;
+      --text-tertiary:  #9BB5B3;
+      --text-teal:      #4ECDC4;
+
+      --bg-page:        #F4F8F8;
+      --bg-card:        #FFFFFF;
+      --border-light:   #E0EEEC;
+
+      --date-badge-bg:      #F0FAFA;
+      --date-badge-border:  #4ECDC4;
+      --date-badge-text:    #2D6A6A;
+
+      --separator-bg:   #EAF5F4;
+      --separator-text: #2D6A6A;
+      --separator-line: #B2DFDB;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #1A4A4A 0%, #2D6A6A 50%, #4ECDC4 100%);
+      color: white;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .page-header .subtitle {
+      font-size: 16px;
+      opacity: 0.8;
+    }
+    .page-header .meta {
+      display: flex;
+      gap: 20px;
+      margin-top: 24px;
+      font-size: 13px;
+      opacity: 0.75;
+    }
+    .page-header .meta span { display: flex; align-items: center; gap: 6px; }
+
+    /* ===== SECTION ===== */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+    section {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .section-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      max-width: 680px;
+      line-height: 1.8;
+    }
+
+    /* ===== COMPARISON GRID ===== */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-bottom: 40px;
+    }
+    .comparison-grid.three-col {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .candidate-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-light);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .candidate-card.recommended {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(78,205,196,0.15), 0 8px 32px rgba(45,106,106,0.12);
+    }
+    .candidate-card:hover {
+      box-shadow: 0 6px 24px rgba(45,106,106,0.1);
+    }
+
+    .candidate-header {
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .candidate-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--teal-tint);
+      color: var(--teal-dark);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .candidate-card.recommended .candidate-num {
+      background: var(--teal);
+      color: white;
+    }
+    .candidate-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      flex: 1;
+    }
+    .rec-badge {
+      background: var(--teal);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 3px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    .candidate-preview {
+      padding: 20px;
+      background: var(--bg-page);
+      min-height: 260px;
+    }
+
+    /* ===== MOCK PHONE ===== */
+    .phone-mock {
+      width: 220px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 28px;
+      border: 2px solid #D0D8D8;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .phone-mock.tall { /* no change */ }
+
+    .phone-nav {
+      background: white;
+      padding: 10px 14px 8px;
+      border-bottom: 1px solid #EAEAEA;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .phone-nav .back-btn {
+      color: var(--teal);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .phone-nav .title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1A1A2E;
+    }
+    .phone-nav .check-btn {
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .phone-toggle-row {
+      padding: 6px 14px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      border-bottom: 1px solid #F0F0F0;
+    }
+    .toggle-pill {
+      background: var(--teal-tint);
+      color: var(--teal-dark);
+      font-size: 9px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 10px;
+    }
+    .toggle-pill.active {
+      background: var(--teal);
+      color: white;
+    }
+
+    .phone-body {
+      padding: 8px 0 8px 0;
+      min-height: 320px;
+    }
+
+    /* ===== TIMELINE MOCK ===== */
+    .tl-row {
+      display: flex;
+      align-items: flex-start;
+      position: relative;
+      padding: 0 10px;
+    }
+
+    /* date separator */
+    .tl-date-separator {
+      display: flex;
+      align-items: center;
+      padding: 5px 10px 4px 10px;
+      gap: 6px;
+    }
+    .tl-date-separator .ds-line {
+      flex: 1;
+      height: 1px;
+      background: var(--separator-line);
+    }
+    .tl-date-separator .ds-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--separator-text);
+      background: var(--separator-bg);
+      padding: 2px 7px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    /* mark row */
+    .tl-mark-row {
+      display: flex;
+      align-items: flex-start;
+      padding: 4px 10px;
+      gap: 8px;
+    }
+    .tl-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 16px;
+      flex-shrink: 0;
+    }
+    .tl-dot-mark {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--mark-dot);
+      border: 2px solid white;
+      box-shadow: 0 0 0 2px var(--mark-dot);
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+    .tl-line {
+      width: 2px;
+      flex: 1;
+      background: var(--timeline-line);
+      min-height: 28px;
+    }
+    .tl-card-mark {
+      flex: 1;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 5px 8px;
+    }
+    .tl-card-mark .cm-name {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .tl-card-mark .cm-meter {
+      font-size: 9px;
+      color: var(--text-teal);
+      font-weight: 600;
+      margin-top: 1px;
+    }
+    .tl-card-mark .cm-date {
+      font-size: 8px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .tl-card-mark .cm-date-badge {
+      display: inline-block;
+      font-size: 8px;
+      color: var(--teal-dark);
+      background: var(--teal-tint);
+      border-radius: 4px;
+      padding: 1px 5px;
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    /* link row */
+    .tl-link-row {
+      display: flex;
+      align-items: center;
+      padding: 2px 10px 2px 18px;
+      gap: 6px;
+    }
+    .tl-dot-link {
+      width: 8px; height: 8px;
+      background: var(--green-dot);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+    .tl-card-link {
+      flex: 1;
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      border-radius: 6px;
+      padding: 3px 7px;
+    }
+    .tl-card-link .cl-name {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--green-dark);
+    }
+
+    /* distance arrow */
+    .tl-distance-row {
+      display: flex;
+      justify-content: flex-end;
+      padding: 2px 14px 2px 0;
+      font-size: 9px;
+      color: var(--teal);
+      font-weight: 600;
+    }
+
+    /* inline date in header area */
+    .phone-event-header {
+      background: linear-gradient(135deg, var(--teal-dark), var(--teal-mid));
+      color: white;
+      padding: 8px 14px;
+    }
+    .phone-event-header .eh-name {
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .phone-event-header .eh-date {
+      font-size: 9px;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    /* top of card date */
+    .tl-card-mark.with-date-top .cm-date-top {
+      font-size: 8px;
+      color: var(--teal-dark);
+      font-weight: 700;
+      margin-bottom: 2px;
+      opacity: 0.8;
+    }
+
+    /* ===== PROS CONS TABLE ===== */
+    .pros-cons {
+      padding: 14px 18px;
+      border-top: 1px solid var(--border-light);
+    }
+    .pros-cons-row {
+      display: flex;
+      gap: 16px;
+    }
+    .pros, .cons {
+      flex: 1;
+    }
+    .pros-cons h4 {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .pros h4 { color: #2E9E6B; }
+    .cons h4 { color: #E57373; }
+    .pros-cons ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .pros-cons li {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      padding-left: 14px;
+      position: relative;
+    }
+    .pros li::before {
+      content: '+';
+      position: absolute; left: 0;
+      color: #2E9E6B;
+      font-weight: 700;
+    }
+    .cons li::before {
+      content: '−';
+      position: absolute; left: 0;
+      color: #E57373;
+      font-weight: 700;
+    }
+
+    /* ===== RECOMMENDATION SECTION ===== */
+    .rec-section {
+      background: linear-gradient(135deg, var(--teal-tint2) 0%, var(--teal-tint) 100%);
+      border: 2px solid var(--teal);
+      border-radius: 20px;
+      padding: 32px 36px;
+      margin-top: 8px;
+    }
+    .rec-section h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .rec-section h3 .star {
+      width: 32px; height: 32px;
+      background: var(--teal);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-size: 16px;
+    }
+    .rec-section p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.9;
+      margin-bottom: 16px;
+    }
+    .rec-section p:last-child { margin-bottom: 0; }
+    .rec-section strong { color: var(--teal-dark); }
+
+    /* ===== FULL MOCK PREVIEW ===== */
+    .full-mock-wrap {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .full-mock-phone {
+      width: 280px;
+      flex-shrink: 0;
+    }
+    .full-mock-phone .phone-mock {
+      width: 100%;
+    }
+    .full-mock-notes {
+      flex: 1;
+      min-width: 260px;
+    }
+    .note-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      align-items: flex-start;
+    }
+    .note-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .note-text h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .note-text p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ===== RATIONALE ===== */
+    .rationale-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin-top: 8px;
+    }
+    .rationale-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .rationale-card .rc-icon {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .rationale-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 8px;
+    }
+    .rationale-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ===== COLOR SWATCH ===== */
+    #color-palette .swatch-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .swatch-dot {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .swatch-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+    .swatch-hex {
+      font-size: 9px;
+      color: var(--text-tertiary);
+      font-family: monospace;
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    #typography .type-row {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .type-item {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+    }
+    .type-item .type-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      width: 180px;
+      flex-shrink: 0;
+      font-family: monospace;
+    }
+    .type-sample-date {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--teal-dark);
+      background: var(--teal-tint);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .type-sample-sep {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      letter-spacing: 0.03em;
+    }
+    .type-sample-inline {
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+
+    /* ===== FOOTER ===== */
+    .page-footer {
+      background: #1A2A2A;
+      color: rgba(255,255,255,0.6);
+      padding: 32px 48px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .page-footer .footer-brand {
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    /* ===== NAV TABS ===== */
+    .tab-bar {
+      display: flex;
+      border-top: 1px solid #EAEAEA;
+      background: white;
+    }
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      padding: 6px 0 4px;
+      font-size: 7px;
+      color: #AAA;
+    }
+    .tab-item.active {
+      color: var(--teal);
+    }
+    .tab-icon {
+      font-size: 13px;
+      display: block;
+    }
+
+    /* variant C specific: date badge on mark card */
+    .cm-date-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 8px;
+      font-weight: 600;
+      color: var(--teal-dark);
+      background: var(--teal-tint);
+      border: 1px solid rgba(78,205,196,0.3);
+      border-radius: 4px;
+      padding: 1px 5px;
+      margin-top: 2px;
+    }
+
+    /* variant D: event header with date range */
+    .event-header-date-range {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 9px;
+      color: rgba(255,255,255,0.85);
+      margin-top: 3px;
+    }
+    .event-header-date-range .date-icon { font-size: 9px; }
+
+    @media (max-width: 768px) {
+      .comparison-grid { grid-template-columns: 1fr; }
+      .comparison-grid.three-col { grid-template-columns: 1fr; }
+      .rationale-grid { grid-template-columns: 1fr; }
+      .page-header { padding: 36px 24px 28px; }
+      .container { padding: 0 20px; }
+      .full-mock-wrap { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== PAGE HEADER ===== -->
+<header class="page-header">
+  <div class="container">
+    <div class="badge">Designer Report — MichiInfo</div>
+    <h1>日付配置デザイン提案</h1>
+    <p class="subtitle">MichiInfo タイムライン一覧画面（ミチタブ）に「日付」をどう配置するか</p>
+    <div class="meta">
+      <span>2026-04-08</span>
+      <span>4候補 比較</span>
+      <span>推奨案: 候補 B — 日付セパレーター方式</span>
+    </div>
+  </div>
+</header>
+
+<!-- ===== COLOR PALETTE ===== -->
+<section id="color-palette">
+  <div class="container">
+    <p class="section-label">Color Palette</p>
+    <h2 class="section-title">日付表示に使用するカラー</h2>
+    <p class="section-desc">
+      既存の Teal カラーシステムを拡張して日付要素を表現する。
+      メインの Mark/Link カラーと干渉しない、落ち着いたトーンを使用。
+    </p>
+    <div class="swatch-row">
+      <div class="swatch">
+        <div class="swatch-dot" style="background:#4ECDC4;"></div>
+        <span class="swatch-label">Teal<br>アクセント</span>
+        <span class="swatch-hex">#4ECDC4</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-dot" style="background:#2D6A6A;"></div>
+        <span class="swatch-label">Teal Dark<br>Mark ドット</span>
+        <span class="swatch-hex">#2D6A6A</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-dot" style="background:#E0F7F5;"></div>
+        <span class="swatch-label">Teal Tint<br>日付バッジ背景</span>
+        <span class="swatch-hex">#E0F7F5</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-dot" style="background:#EAF5F4; border:1px solid #B2DFDB;"></div>
+        <span class="swatch-label">Separator BG<br>日付セパレーター</span>
+        <span class="swatch-hex">#EAF5F4</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-dot" style="background:#B2DFDB;"></div>
+        <span class="swatch-label">Timeline Line<br>縦線・区切り線</span>
+        <span class="swatch-hex">#B2DFDB</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-dot" style="background:#5C7070;"></div>
+        <span class="swatch-label">Text Secondary<br>サブ情報</span>
+        <span class="swatch-hex">#5C7070</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TYPOGRAPHY ===== -->
+<section id="typography">
+  <div class="container">
+    <p class="section-label">Typography</p>
+    <h2 class="section-title">日付テキストのスタイル定義</h2>
+    <p class="section-desc">
+      日付はメインコンテンツ（Mark名・距離）より低い視覚優先度に置く。
+      過度に目立たせず、必要なときに読める「セカンダリ情報」として扱う。
+    </p>
+    <div class="type-row">
+      <div class="type-item">
+        <span class="type-label">日付セパレーター ラベル<br>font: 11px / 700 / teal-dark<br>背景: teal-tint / radius: 8px</span>
+        <span class="type-sample-sep">4月6日（日）</span>
+      </div>
+      <div class="type-item">
+        <span class="type-label">Mark カード内 日付バッジ<br>font: 10px / 600 / teal-dark<br>背景: teal-tint / radius: 4px</span>
+        <span class="type-sample-date">4月6日</span>
+      </div>
+      <div class="type-item">
+        <span class="type-label">Mark カード内 インライン日付<br>font: 11px / 400 / text-secondary<br>色: #5C7070</span>
+        <span class="type-sample-inline">4月6日（日）</span>
+      </div>
+      <div class="type-item">
+        <span class="type-label">イベントヘッダー サブテキスト<br>font: 12px / 400 / white 85%</span>
+        <span style="font-size:12px; color:#5C7070;">4月6日 - 4月8日</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMPONENT PREVIEW: 4 CANDIDATES ===== -->
+<section id="component-preview">
+  <div class="container">
+    <p class="section-label">Component Preview</p>
+    <h2 class="section-title">4つの配置候補 比較</h2>
+    <p class="section-desc">
+      日付をどこに配置するか、4つのアプローチを比較する。
+      各候補は実際のタイムライン UIをモックで示す。
+    </p>
+
+    <div class="comparison-grid">
+
+      <!-- ===== 候補 A: Markカード内インライン ===== -->
+      <div class="candidate-card">
+        <div class="candidate-header">
+          <div class="candidate-num">A</div>
+          <span class="candidate-title">Markカード内 インライン表示</span>
+        </div>
+        <div class="candidate-preview">
+          <div class="phone-mock">
+            <div class="phone-nav">
+              <span class="back-btn">＜ 戻る</span>
+              <span class="title">富士五湖キャンプ</span>
+              <span class="check-btn">✓</span>
+            </div>
+            <div class="phone-toggle-row">
+              <span class="toggle-pill active">メーター差分</span>
+              <span class="toggle-pill">区間距離</span>
+            </div>
+            <div class="phone-body">
+              <!-- Mark 1 -->
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-line"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">自宅出発</div>
+                  <div class="cm-meter">12,340 km</div>
+                  <div class="cm-date">4月6日（日）</div>
+                </div>
+              </div>
+              <!-- Link -->
+              <div class="tl-link-row">
+                <div class="tl-dot-link"></div>
+                <div class="tl-card-link"><span class="cl-name">東名高速</span></div>
+              </div>
+              <div class="tl-distance-row">▲ 89 km</div>
+              <!-- Mark 2 -->
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-line"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">河口湖キャンプ場</div>
+                  <div class="cm-meter">12,429 km</div>
+                  <div class="cm-date">4月6日（日）</div>
+                </div>
+              </div>
+              <!-- Link 2 -->
+              <div class="tl-link-row">
+                <div class="tl-dot-link"></div>
+                <div class="tl-card-link"><span class="cl-name">河口湖周遊</span></div>
+              </div>
+              <div class="tl-distance-row">▲ 15 km</div>
+              <!-- Mark 3 -->
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">富士山五合目</div>
+                  <div class="cm-meter">12,444 km</div>
+                  <div class="cm-date">4月7日（月）</div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-bar">
+              <div class="tab-item"><span class="tab-icon">📋</span>基本</div>
+              <div class="tab-item active"><span class="tab-icon">🗺</span>ミチ</div>
+              <div class="tab-item"><span class="tab-icon">💴</span>支払</div>
+              <div class="tab-item"><span class="tab-icon">📊</span>振返</div>
+            </div>
+          </div>
+        </div>
+        <div class="pros-cons">
+          <div class="pros-cons-row">
+            <div class="pros">
+              <h4>PROS</h4>
+              <ul>
+                <li>各Markが独自の日付を持ち、ズレが見やすい</li>
+                <li>実装がシンプル（カード内フィールド追加のみ）</li>
+                <li>日付が異なるMarkが1画面に混在しても追える</li>
+              </ul>
+            </div>
+            <div class="cons">
+              <h4>CONS</h4>
+              <ul>
+                <li>同日のMarkが続くと同じ日付が何度も繰り返され冗長</li>
+                <li>カードの縦幅が増え、1画面に表示できる情報量が減る</li>
+                <li>「日付が変わった」タイミングが視覚的に目立たない</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 候補 B: 日付セパレーター（推奨）===== -->
+      <div class="candidate-card recommended">
+        <div class="candidate-header">
+          <div class="candidate-num">B</div>
+          <span class="candidate-title">日付セパレーター（日付変わり目に挿入）</span>
+          <span class="rec-badge">推奨</span>
+        </div>
+        <div class="candidate-preview">
+          <div class="phone-mock">
+            <div class="phone-nav">
+              <span class="back-btn">＜ 戻る</span>
+              <span class="title">富士五湖キャンプ</span>
+              <span class="check-btn">✓</span>
+            </div>
+            <div class="phone-toggle-row">
+              <span class="toggle-pill active">メーター差分</span>
+              <span class="toggle-pill">区間距離</span>
+            </div>
+            <div class="phone-body">
+              <!-- Date separator: 4/6 -->
+              <div class="tl-date-separator">
+                <div class="ds-line"></div>
+                <div class="ds-label">4月6日（日）</div>
+                <div class="ds-line"></div>
+              </div>
+              <!-- Mark 1 -->
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-line"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">自宅出発</div>
+                  <div class="cm-meter">12,340 km</div>
+                </div>
+              </div>
+              <!-- Link -->
+              <div class="tl-link-row">
+                <div class="tl-dot-link"></div>
+                <div class="tl-card-link"><span class="cl-name">東名高速</span></div>
+              </div>
+              <div class="tl-distance-row">▲ 89 km</div>
+              <!-- Mark 2 -->
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-line"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">河口湖キャンプ場</div>
+                  <div class="cm-meter">12,429 km</div>
+                </div>
+              </div>
+              <!-- Link 2 -->
+              <div class="tl-link-row">
+                <div class="tl-dot-link"></div>
+                <div class="tl-card-link"><span class="cl-name">河口湖周遊</span></div>
+              </div>
+              <div class="tl-distance-row">▲ 15 km</div>
+              <!-- Date separator: 4/7 -->
+              <div class="tl-date-separator" style="margin-top:4px;">
+                <div class="ds-line"></div>
+                <div class="ds-label">4月7日（月）</div>
+                <div class="ds-line"></div>
+              </div>
+              <!-- Mark 3 -->
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">富士山五合目</div>
+                  <div class="cm-meter">12,444 km</div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-bar">
+              <div class="tab-item"><span class="tab-icon">📋</span>基本</div>
+              <div class="tab-item active"><span class="tab-icon">🗺</span>ミチ</div>
+              <div class="tab-item"><span class="tab-icon">💴</span>支払</div>
+              <div class="tab-item"><span class="tab-icon">📊</span>振返</div>
+            </div>
+          </div>
+        </div>
+        <div class="pros-cons">
+          <div class="pros-cons-row">
+            <div class="pros">
+              <h4>PROS</h4>
+              <ul>
+                <li>日付変わり目が一目で分かる（旅程の「節目」が明確）</li>
+                <li>同日の繰り返し表示がなくスッキリ</li>
+                <li>Markカードの縦幅を増やさず情報密度を維持</li>
+                <li>iOS「セクション区切り」パターンで直感的</li>
+                <li>日帰り・1泊2日・複数日どのケースにも対応</li>
+              </ul>
+            </div>
+            <div class="cons">
+              <h4>CONS</h4>
+              <ul>
+                <li>日付が1日のみのイベントはセパレーターが1つだけになりやや余白が増える</li>
+                <li>タイムライン縦線とセパレーターの視覚的整合を要設計</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 候補 C: Markカード内バッジ ===== -->
+      <div class="candidate-card">
+        <div class="candidate-header">
+          <div class="candidate-num">C</div>
+          <span class="candidate-title">Markカード内 日付バッジ（チップ型）</span>
+        </div>
+        <div class="candidate-preview">
+          <div class="phone-mock">
+            <div class="phone-nav">
+              <span class="back-btn">＜ 戻る</span>
+              <span class="title">富士五湖キャンプ</span>
+              <span class="check-btn">✓</span>
+            </div>
+            <div class="phone-toggle-row">
+              <span class="toggle-pill active">メーター差分</span>
+              <span class="toggle-pill">区間距離</span>
+            </div>
+            <div class="phone-body">
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-line"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">自宅出発</div>
+                  <div class="cm-meter">12,340 km</div>
+                  <div class="cm-date-chip">4月6日</div>
+                </div>
+              </div>
+              <div class="tl-link-row">
+                <div class="tl-dot-link"></div>
+                <div class="tl-card-link"><span class="cl-name">東名高速</span></div>
+              </div>
+              <div class="tl-distance-row">▲ 89 km</div>
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-line"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">河口湖キャンプ場</div>
+                  <div class="cm-meter">12,429 km</div>
+                  <div class="cm-date-chip">4月6日</div>
+                </div>
+              </div>
+              <div class="tl-link-row">
+                <div class="tl-dot-link"></div>
+                <div class="tl-card-link"><span class="cl-name">河口湖周遊</span></div>
+              </div>
+              <div class="tl-distance-row">▲ 15 km</div>
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">富士山五合目</div>
+                  <div class="cm-meter">12,444 km</div>
+                  <div class="cm-date-chip" style="background:#FFF3E0; color:#E65100; border-color:rgba(230,81,0,0.3);">4月7日</div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-bar">
+              <div class="tab-item"><span class="tab-icon">📋</span>基本</div>
+              <div class="tab-item active"><span class="tab-icon">🗺</span>ミチ</div>
+              <div class="tab-item"><span class="tab-icon">💴</span>支払</div>
+              <div class="tab-item"><span class="tab-icon">📊</span>振返</div>
+            </div>
+          </div>
+        </div>
+        <div class="pros-cons">
+          <div class="pros-cons-row">
+            <div class="pros">
+              <h4>PROS</h4>
+              <ul>
+                <li>日付の違いを色で区別できる（バッジ色を日付ごとに変える）</li>
+                <li>各Markの日付が独立して分かる</li>
+              </ul>
+            </div>
+            <div class="cons">
+              <h4>CONS</h4>
+              <ul>
+                <li>バッジがカードに増えることでビジー感が出やすい</li>
+                <li>同日のMarkが続くと同じバッジが繰り返され冗長</li>
+                <li>日付ごとに色を変えるとメインのTeal/Greenカラーと競合する</li>
+                <li>カードの縦幅が増える点はAと同様</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 候補 D: イベントヘッダーに日付範囲 ===== -->
+      <div class="candidate-card">
+        <div class="candidate-header">
+          <div class="candidate-num">D</div>
+          <span class="candidate-title">イベントヘッダーに日付範囲表示</span>
+        </div>
+        <div class="candidate-preview">
+          <div class="phone-mock">
+            <div class="phone-nav">
+              <span class="back-btn">＜ 戻る</span>
+              <span class="title">富士五湖キャンプ</span>
+              <span class="check-btn">✓</span>
+            </div>
+            <!-- Extended header with date range -->
+            <div class="phone-event-header">
+              <div class="eh-name">富士五湖キャンプ</div>
+              <div class="event-header-date-range">
+                <span class="date-icon">📅</span>
+                <span>4月6日（日）— 4月8日（火）</span>
+              </div>
+            </div>
+            <div class="phone-toggle-row">
+              <span class="toggle-pill active">メーター差分</span>
+              <span class="toggle-pill">区間距離</span>
+            </div>
+            <div class="phone-body">
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-line"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">自宅出発</div>
+                  <div class="cm-meter">12,340 km</div>
+                </div>
+              </div>
+              <div class="tl-link-row">
+                <div class="tl-dot-link"></div>
+                <div class="tl-card-link"><span class="cl-name">東名高速</span></div>
+              </div>
+              <div class="tl-distance-row">▲ 89 km</div>
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-line"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">河口湖キャンプ場</div>
+                  <div class="cm-meter">12,429 km</div>
+                </div>
+              </div>
+              <div class="tl-link-row">
+                <div class="tl-dot-link"></div>
+                <div class="tl-card-link"><span class="cl-name">河口湖周遊</span></div>
+              </div>
+              <div class="tl-distance-row">▲ 15 km</div>
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">富士山五合目</div>
+                  <div class="cm-meter">12,444 km</div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-bar">
+              <div class="tab-item"><span class="tab-icon">📋</span>基本</div>
+              <div class="tab-item active"><span class="tab-icon">🗺</span>ミチ</div>
+              <div class="tab-item"><span class="tab-icon">💴</span>支払</div>
+              <div class="tab-item"><span class="tab-icon">📊</span>振返</div>
+            </div>
+          </div>
+        </div>
+        <div class="pros-cons">
+          <div class="pros-cons-row">
+            <div class="pros">
+              <h4>PROS</h4>
+              <ul>
+                <li>タイムラインをスッキリ保てる（カード追加なし）</li>
+                <li>イベント全体の日付範囲がひと目で分かる</li>
+                <li>既存のナビバー拡張で実現できる</li>
+              </ul>
+            </div>
+            <div class="cons">
+              <h4>CONS</h4>
+              <ul>
+                <li>Markごとの日付（「どのMarkが何日か」）が分からない</li>
+                <li>日帰りイベントは「4月6日 — 4月6日」と冗長</li>
+                <li>スクロールで上部が隠れると日付が見えなくなる</li>
+                <li>日付情報がサマリーのみで詳細把握には不向き</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /comparison-grid -->
+
+    <!-- ===== 推奨案 フルモック ===== -->
+    <div style="margin-top: 48px;">
+      <p class="section-label">推奨案 詳細プレビュー</p>
+      <h2 class="section-title" style="margin-bottom:32px;">候補 B — 日付セパレーター方式</h2>
+
+      <div class="full-mock-wrap">
+        <div class="full-mock-phone">
+          <div class="phone-mock">
+            <div class="phone-nav">
+              <span class="back-btn">＜ イベント一覧</span>
+              <span class="title">富士五湖キャンプ</span>
+              <span class="check-btn">✓</span>
+            </div>
+            <div class="phone-toggle-row">
+              <span class="toggle-pill active">メーター差分</span>
+              <span class="toggle-pill">区間距離</span>
+            </div>
+            <div class="phone-body" style="min-height:500px;">
+              <!-- Day 1 Separator -->
+              <div class="tl-date-separator" style="margin-top:6px;">
+                <div class="ds-line"></div>
+                <div class="ds-label">4月6日（日）Day 1</div>
+                <div class="ds-line"></div>
+              </div>
+              <!-- Mark 1 -->
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-line" style="min-height:36px;"></div>
+                </div>
+                <div class="tl-card-mark" style="margin-bottom:2px;">
+                  <div class="cm-name">自宅出発</div>
+                  <div class="cm-meter">12,340 km</div>
+                </div>
+              </div>
+              <!-- Link 1 -->
+              <div class="tl-link-row">
+                <div class="tl-dot-link"></div>
+                <div class="tl-card-link"><span class="cl-name">東名高速</span></div>
+              </div>
+              <div class="tl-distance-row">▲ 89 km</div>
+              <!-- Mark 2 -->
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-line" style="min-height:36px;"></div>
+                </div>
+                <div class="tl-card-mark" style="margin-bottom:2px;">
+                  <div class="cm-name">河口湖キャンプ場</div>
+                  <div class="cm-meter">12,429 km</div>
+                </div>
+              </div>
+              <!-- Link 2 -->
+              <div class="tl-link-row">
+                <div class="tl-dot-link"></div>
+                <div class="tl-card-link"><span class="cl-name">河口湖周遊</span></div>
+              </div>
+              <div class="tl-distance-row">▲ 15 km</div>
+              <!-- Mark 3 -->
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-line" style="min-height:24px;"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">道の駅・富士</div>
+                  <div class="cm-meter">12,444 km</div>
+                </div>
+              </div>
+              <!-- Day 2 Separator -->
+              <div class="tl-date-separator" style="margin-top:6px;">
+                <div class="ds-line"></div>
+                <div class="ds-label">4月7日（月）Day 2</div>
+                <div class="ds-line"></div>
+              </div>
+              <!-- Mark 4 -->
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                  <div class="tl-line" style="min-height:36px;"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">富士山五合目</div>
+                  <div class="cm-meter">12,505 km</div>
+                </div>
+              </div>
+              <!-- Link 3 -->
+              <div class="tl-link-row">
+                <div class="tl-dot-link"></div>
+                <div class="tl-card-link"><span class="cl-name">富士スバルライン</span></div>
+              </div>
+              <div class="tl-distance-row">▲ 61 km</div>
+              <!-- Mark 5 -->
+              <div class="tl-mark-row">
+                <div class="tl-left">
+                  <div class="tl-dot-mark"></div>
+                </div>
+                <div class="tl-card-mark">
+                  <div class="cm-name">精進湖 展望台</div>
+                  <div class="cm-meter">12,520 km</div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-bar">
+              <div class="tab-item"><span class="tab-icon">📋</span>基本</div>
+              <div class="tab-item active"><span class="tab-icon">🗺</span>ミチ</div>
+              <div class="tab-item"><span class="tab-icon">💴</span>支払</div>
+              <div class="tab-item"><span class="tab-icon">📊</span>振返</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="full-mock-notes">
+          <div class="note-item">
+            <div class="note-num">1</div>
+            <div class="note-text">
+              <h4>日付セパレーターの挿入ルール</h4>
+              <p>
+                タイムラインを上から走査して、<code>markLinkDate</code> が前のMarkと異なる値（日付の変わり目）のときにセパレーターを挿入する。
+                最初のMarkの前には必ずセパレーターが入る。
+              </p>
+            </div>
+          </div>
+          <div class="note-item">
+            <div class="note-num">2</div>
+            <div class="note-text">
+              <h4>デザイントークン</h4>
+              <p>
+                背景: <code>#EAF5F4</code>（Teal Tint）、ラベル: <code>#2D6A6A</code>（Teal Dark）、
+                区切り線: <code>#B2DFDB</code>（Timeline Line）。
+                既存カラーシステムを使い回すため追加トークン不要。
+              </p>
+            </div>
+          </div>
+          <div class="note-item">
+            <div class="note-num">3</div>
+            <div class="note-text">
+              <h4>日付フォーマット</h4>
+              <p>
+                「4月6日（日）」形式を推奨。複数年に渡る場合は「2026年4月6日（日）」に切替。
+                オプションで Day カウント（Day 1 / Day 2）を末尾に添えると旅程感が出る。
+              </p>
+            </div>
+          </div>
+          <div class="note-item">
+            <div class="note-num">4</div>
+            <div class="note-text">
+              <h4>縦線との接続</h4>
+              <p>
+                セパレーター行では縦線を表示しない（または薄くフェードアウト）。
+                次のMarkドットから新しい縦線を開始することで「節目」を視覚的に表現する。
+              </p>
+            </div>
+          </div>
+          <div class="note-item">
+            <div class="note-num">5</div>
+            <div class="note-text">
+              <h4>日帰りイベントの扱い</h4>
+              <p>
+                日付が1種類のみの場合、セパレーターは1行だけになる。
+                画面先頭に1回だけ表示されるため、冗長感はなくシンプルに収まる。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== RATIONALE ===== -->
+<section id="rationale">
+  <div class="container">
+    <p class="section-label">Rationale</p>
+    <h2 class="section-title">候補 B を推奨する理由</h2>
+    <p class="section-desc">
+      MichiMark のミチタブは「ドライブの旅程を時系列で振り返る」画面。
+      「いつ出発してどこに泊まり、翌日どこへ行ったか」という物語の節目を
+      自然に見せるのが最重要課題。
+    </p>
+
+    <div class="rationale-grid">
+      <div class="rationale-card">
+        <div class="rc-icon">🗓</div>
+        <h4>旅程の「節目」を可視化</h4>
+        <p>
+          日付セパレーターはカレンダーや旅行記アプリで確立されたパターン。
+          ユーザーは「ここから翌日」とスキャンするだけで旅程全体を把握できる。
+          各Markカードに日付を押し込む案（A・C）より認知コストが低い。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <div class="rc-icon">📐</div>
+        <h4>情報密度を維持</h4>
+        <p>
+          Markカードの縦幅を増やさないため、1画面に表示できるMarkの数が変わらない。
+          タイムラインが長くなりやすいドライブ記録では、
+          スクロール量を増やさないことが重要。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <div class="rc-icon">🎨</div>
+        <h4>既存カラーシステムと整合</h4>
+        <p>
+          セパレーターに使うトークン（Teal Tint・Teal Dark・Timeline Line）は
+          すべて既存パレットから流用できる。
+          新しい色を追加せず、Mark ドット（青緑）・Link カード（グリーン）との
+          3色系統の整合を保てる。
+        </p>
+      </div>
+    </div>
+
+    <div class="rec-section" style="margin-top: 36px;">
+      <h3>
+        <span class="star">★</span>
+        推奨案まとめ
+      </h3>
+      <p>
+        <strong>候補 B「日付セパレーター方式」</strong>を推奨する。
+        タイムラインに「4月6日（日）」のような水平区切り行を、日付が変わるタイミングに挿入するデザイン。
+        ドライブ記録という性質上、複数日に渡るイベントが多く、旅程の「翌朝感」を視覚で表現することが重要。
+      </p>
+      <p>
+        セパレーター行は既存の Teal カラーで統一し、Mark/Link カードの情報量を変えずに済む。
+        iOS の標準 List セクションヘッダーに近いため、ユーザーの習熟コストも最小限。
+        日帰りイベントでも「Day 1 の始まり」として自然に機能する。
+      </p>
+      <p>
+        <strong>候補 A（インライン）・候補 C（バッジ）</strong>は同日Markが繰り返し表示されるため冗長。
+        <strong>候補 D（ヘッダー日付範囲）</strong>はMarkごとの日付詳細が失われる点で情報不足。
+        スクロールで隠れる問題もあり、Bとの組み合わせで補完的に使うのが最適。
+      </p>
+    </div>
+
+    <!-- B + D ハイブリッド案 -->
+    <div style="margin-top: 36px; padding: 28px 32px; background: white; border: 1px solid var(--border-light); border-radius: 16px;">
+      <h3 style="font-size:18px; font-weight:700; color:var(--text-primary); margin-bottom:12px;">
+        補足: B + D ハイブリッド案（将来拡張として）
+      </h3>
+      <p style="font-size:14px; color:var(--text-secondary); line-height:1.8;">
+        ナビゲーションバーのサブタイトル行（タイトル下の小テキスト）に
+        <strong>イベント全体の日付範囲「4月6日 — 4月8日」</strong>を常時表示しながら、
+        タイムライン内には候補 B のセパレーターを置く組み合わせも有効。
+        ユーザーはスクロール位置に関わらず旅程全体の期間を把握でき、
+        かつ個別Markの日付も確認できる。
+        ただしナビバー拡張は BasicInfo（基本タブ）の設計との整合が必要なため、
+        Phase 2 以降の拡張案として検討を推奨する。
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="page-footer">
+  <span><span class="footer-brand">MichiMark</span> Design Report</span>
+  <span>2026-04-08 — designer</span>
+</footer>
+
+</body>
+</html>

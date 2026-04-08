@@ -58,3 +58,4 @@
 | [2026-04-07_marklink_card_c2_design.md](./2026-04-07_marklink_card_c2_design.md) | MarkLink カード C-2 デザイン実装（MichiInfo v4.0: Teal/Emerald カラー・Link 34dp コンパクト） |
 - [2026-04-08](./2026-04-08_feat__MichiInfo_v4_0_C_2_デザイン実.md)
 | [2026-04-08_michi_info_timeline_v5.md](./2026-04-08_michi_info_timeline_v5.md) | MichiInfo タイムライン UI v5.0（縦線分離・矢印位置・距離右配置・Mark-Mark間隔） |
+| [2026-04-08_michi_info_date_separator_design.md](./2026-04-08_michi_info_date_separator_design.md) | MichiInfo 日付セパレーター デザイン提案・要件書作成（T-068〜069完了） |
