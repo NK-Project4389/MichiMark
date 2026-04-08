@@ -6,8 +6,7 @@ import '../../../features/fuel_detail/bloc/fuel_detail_bloc.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_event.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_state.dart';
 import '../../../features/fuel_detail/view/fuel_detail_widget.dart';
-import '../../../features/michi_info/bloc/michi_info_bloc.dart';
-import '../../../features/michi_info/bloc/michi_info_event.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../features/selection/selection_args.dart';
 import '../../../features/selection/selection_result.dart';
 import '../bloc/link_detail_bloc.dart';
@@ -28,7 +27,12 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
     return BlocConsumer<LinkDetailBloc, LinkDetailState>(
       listener: (context, state) async {
         if (state is LinkDetailLoaded && state.delegate != null) {
-          await _handleDelegate(context, state.delegate!, state.draft);
+          await _handleDelegate(
+            context,
+            state.delegate!,
+            state.draft,
+            state.availableMembers,
+          );
         }
       },
       builder: (context, state) {
@@ -50,6 +54,7 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
     BuildContext context,
     LinkDetailDelegate delegate,
     LinkDetailDraft draft,
+    List<MemberDomain> availableMembers,
   ) async {
     switch (delegate) {
       case LinkDetailDismissDelegate():
@@ -62,6 +67,7 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
           extra: SelectionArgs(
             type: SelectionType.linkMembers,
             selectedIds: draft.selectedMembers.map((m) => m.id).toSet(),
+            candidateMembers: availableMembers.isNotEmpty ? availableMembers : null,
           ),
         );
         if (!context.mounted) return;
@@ -86,11 +92,8 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
               .add(LinkDetailActionsSelected(selected));
         }
 
-      case LinkDetailSavedDelegate(:final markLinkId, :final draft):
+      case LinkDetailSavedDelegate():
         if (!context.mounted) return;
-        context.read<MichiInfoBloc>().add(
-              MichiInfoLinkSaved(markLinkId: markLinkId, draft: draft),
-            );
         context.pop();
 
       case LinkDetailSaveErrorDelegate(:final message):
@@ -380,29 +383,29 @@ class _SelectionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+    return InkWell(
+      onTap: onEditPressed,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
           ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium,
+          Expanded(
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
           ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.chevron_right),
-          onPressed: onEditPressed,
-        ),
-      ],
+          const Icon(Icons.chevron_right),
+        ],
+      ),
     );
   }
 }

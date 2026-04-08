@@ -166,7 +166,14 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
         current: current.projection,
         selectedIds: newDraft.selectedIds,
       );
-      emit(current.copyWith(draft: newDraft, projection: newProjection));
+      final updatedState = current.copyWith(draft: newDraft, projection: newProjection);
+      // 単一選択モードはタップ即確定
+      if (current.projection.mode == SelectionMode.single) {
+        final result = _buildResult(updatedState);
+        emit(updatedState.copyWith(delegate: SelectionConfirmedDelegate(result)));
+      } else {
+        emit(updatedState);
+      }
     }
   }
 

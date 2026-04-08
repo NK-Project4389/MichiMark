@@ -113,6 +113,7 @@ final router = GoRouter(
         final args = state.extra;
         final eventId = args is LinkDetailArgs ? args.eventId : (args as String? ?? '');
         final topicConfig = args is LinkDetailArgs ? args.topicConfig : null;
+        final eventMembers = args is LinkDetailArgs ? args.eventMembers : const <MemberDomain>[];
         return BlocProvider(
           create: (_) => LinkDetailBloc(
             eventRepository: getIt<EventRepository>(),
@@ -120,6 +121,7 @@ final router = GoRouter(
               eventId: eventId,
               markLinkId: linkId,
               topicConfig: topicConfig,
+              eventMembers: eventMembers,
             )),
           child: const LinkDetailPage(),
         );

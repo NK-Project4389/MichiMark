@@ -92,3 +92,11 @@ class MichiInfoDelegateConsumed extends MichiInfoEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// Mark/Link 詳細から戻ったとき DB からリロードするとき（ローディング表示なし）
+class MichiInfoReloadRequested extends MichiInfoEvent {
+  const MichiInfoReloadRequested();
+
+  @override
+  List<Object?> get props => [];
+}

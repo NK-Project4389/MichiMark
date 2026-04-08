@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../draft/link_detail_draft.dart';
 
@@ -64,11 +65,15 @@ class LinkDetailLoaded extends LinkDetailState {
   final TopicConfig topicConfig;
   final bool isSaving;
 
+  /// メンバー選択 UI に表示する候補一覧（イベントメンバーに限定）
+  final List<MemberDomain> availableMembers;
+
   const LinkDetailLoaded({
     required this.draft,
     this.delegate,
     TopicConfig? topicConfig,
     this.isSaving = false,
+    this.availableMembers = const [],
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -85,17 +90,19 @@ class LinkDetailLoaded extends LinkDetailState {
     LinkDetailDelegate? delegate,
     TopicConfig? topicConfig,
     bool? isSaving,
+    List<MemberDomain>? availableMembers,
   }) {
     return LinkDetailLoaded(
       draft: draft ?? this.draft,
       delegate: delegate,
       topicConfig: topicConfig ?? this.topicConfig,
       isSaving: isSaving ?? this.isSaving,
+      availableMembers: availableMembers ?? this.availableMembers,
     );
   }
 
   @override
-  List<Object?> get props => [draft, delegate, topicConfig, isSaving];
+  List<Object?> get props => [draft, delegate, topicConfig, isSaving, availableMembers];
 }
 
 class LinkDetailError extends LinkDetailState {

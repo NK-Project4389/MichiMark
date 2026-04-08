@@ -15,14 +15,16 @@ class MichiInfoOpenMarkDelegate extends MichiInfoDelegate {
   final String eventId;
   final String markLinkId;
   final TopicConfig topicConfig;
+  final List<MemberDomain> eventMembers;
   const MichiInfoOpenMarkDelegate({
     required this.eventId,
     required this.markLinkId,
     required this.topicConfig,
+    this.eventMembers = const [],
   });
 
   @override
-  List<Object?> get props => [eventId, markLinkId, topicConfig];
+  List<Object?> get props => [eventId, markLinkId, topicConfig, eventMembers];
 }
 
 /// リンク詳細へ遷移
@@ -30,14 +32,16 @@ class MichiInfoOpenLinkDelegate extends MichiInfoDelegate {
   final String eventId;
   final String markLinkId;
   final TopicConfig topicConfig;
+  final List<MemberDomain> eventMembers;
   const MichiInfoOpenLinkDelegate({
     required this.eventId,
     required this.markLinkId,
     required this.topicConfig,
+    this.eventMembers = const [],
   });
 
   @override
-  List<Object?> get props => [eventId, markLinkId, topicConfig];
+  List<Object?> get props => [eventId, markLinkId, topicConfig, eventMembers];
 }
 
 /// 新規マーク追加画面へ遷移
@@ -81,10 +85,13 @@ class MichiInfoAddMarkDelegate extends MichiInfoDelegate {
 class MichiInfoAddLinkDelegate extends MichiInfoDelegate {
   final String eventId;
   final TopicConfig topicConfig;
-  const MichiInfoAddLinkDelegate(this.eventId, this.topicConfig);
+  final List<MemberDomain> eventMembers;
+  const MichiInfoAddLinkDelegate(this.eventId, this.topicConfig, {
+    this.eventMembers = const [],
+  });
 
   @override
-  List<Object?> get props => [eventId, topicConfig];
+  List<Object?> get props => [eventId, topicConfig, eventMembers];
 }
 
 // ---------------------------------------------------------------------------
@@ -109,12 +116,16 @@ class MichiInfoLoaded extends MichiInfoState {
   /// 地点（マーク）に表示するアクションボタン一覧（TopicConfig.markActions から生成）
   final List<ActionItemProjection> markActionItems;
 
+  /// イベントのメンバー一覧（Mark/Link のメンバー選択候補として使用）
+  final List<MemberDomain> eventMembers;
+
   const MichiInfoLoaded({
     required this.projection,
     required this.draft,
     this.delegate,
     TopicConfig? topicConfig,
     this.markActionItems = const [],
+    this.eventMembers = const [],
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -132,6 +143,7 @@ class MichiInfoLoaded extends MichiInfoState {
     MichiInfoDelegate? delegate,
     TopicConfig? topicConfig,
     List<ActionItemProjection>? markActionItems,
+    List<MemberDomain>? eventMembers,
   }) {
     return MichiInfoLoaded(
       projection: projection ?? this.projection,
@@ -139,11 +151,12 @@ class MichiInfoLoaded extends MichiInfoState {
       delegate: delegate,
       topicConfig: topicConfig ?? this.topicConfig,
       markActionItems: markActionItems ?? this.markActionItems,
+      eventMembers: eventMembers ?? this.eventMembers,
     );
   }
 
   @override
-  List<Object?> get props => [projection, draft, delegate, topicConfig, markActionItems];
+  List<Object?> get props => [projection, draft, delegate, topicConfig, markActionItems, eventMembers];
 }
 
 class MichiInfoError extends MichiInfoState {

@@ -8,8 +8,6 @@ import '../../../features/fuel_detail/bloc/fuel_detail_bloc.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_event.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_state.dart';
 import '../../../features/fuel_detail/view/fuel_detail_widget.dart';
-import '../../../features/michi_info/bloc/michi_info_bloc.dart';
-import '../../../features/michi_info/bloc/michi_info_event.dart';
 import '../../../features/selection/selection_args.dart';
 import '../../../features/selection/selection_result.dart';
 import '../bloc/mark_detail_bloc.dart';
@@ -98,11 +96,8 @@ class _MarkDetailPageState extends State<MarkDetailPage> {
           context.read<MarkDetailBloc>().add(MarkDetailActionsSelected(selected));
         }
 
-      case MarkDetailSavedDelegate(:final markLinkId, :final draft):
+      case MarkDetailSavedDelegate():
         if (!context.mounted) return;
-        context.read<MichiInfoBloc>().add(
-              MichiInfoMarkSaved(markLinkId: markLinkId, draft: draft),
-            );
         context.pop();
 
       case MarkDetailSaveErrorDelegate(:final message):
@@ -398,29 +393,29 @@ class _SelectionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+    return InkWell(
+      onTap: onEditPressed,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
           ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium,
+          Expanded(
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
           ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.chevron_right),
-          onPressed: onEditPressed,
-        ),
-      ],
+          const Icon(Icons.chevron_right),
+        ],
+      ),
     );
   }
 }

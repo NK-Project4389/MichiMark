@@ -159,17 +159,31 @@ class _MichiInfoViewState extends State<MichiInfoView> {
 
   Future<void> _handleDelegate(MichiInfoDelegate delegate) async {
     switch (delegate) {
-      case MichiInfoOpenMarkDelegate(:final eventId, :final markLinkId, :final topicConfig):
+      case MichiInfoOpenMarkDelegate(:final eventId, :final markLinkId, :final topicConfig, :final eventMembers):
         await context.push<void>(
           '/event/mark/$markLinkId',
-          extra: MarkDetailArgs(eventId: eventId, topicConfig: topicConfig),
+          extra: MarkDetailArgs(
+            eventId: eventId,
+            topicConfig: topicConfig,
+            eventMembers: eventMembers,
+          ),
         );
+        if (mounted) {
+          context.read<MichiInfoBloc>().add(const MichiInfoReloadRequested());
+        }
 
-      case MichiInfoOpenLinkDelegate(:final eventId, :final markLinkId, :final topicConfig):
+      case MichiInfoOpenLinkDelegate(:final eventId, :final markLinkId, :final topicConfig, :final eventMembers):
         await context.push<void>(
           '/event/link/$markLinkId',
-          extra: LinkDetailArgs(eventId: eventId, topicConfig: topicConfig),
+          extra: LinkDetailArgs(
+            eventId: eventId,
+            topicConfig: topicConfig,
+            eventMembers: eventMembers,
+          ),
         );
+        if (mounted) {
+          context.read<MichiInfoBloc>().add(const MichiInfoReloadRequested());
+        }
 
       case MichiInfoAddMarkDelegate(
           :final eventId,
@@ -191,13 +205,23 @@ class _MichiInfoViewState extends State<MichiInfoView> {
             eventMembers: eventMembers,
           ),
         );
+        if (mounted) {
+          context.read<MichiInfoBloc>().add(const MichiInfoReloadRequested());
+        }
 
-      case MichiInfoAddLinkDelegate(:final eventId, :final topicConfig):
+      case MichiInfoAddLinkDelegate(:final eventId, :final topicConfig, :final eventMembers):
         final linkId = const Uuid().v4();
         await context.push<void>(
           '/event/link/$linkId',
-          extra: LinkDetailArgs(eventId: eventId, topicConfig: topicConfig),
+          extra: LinkDetailArgs(
+            eventId: eventId,
+            topicConfig: topicConfig,
+            eventMembers: eventMembers,
+          ),
         );
+        if (mounted) {
+          context.read<MichiInfoBloc>().add(const MichiInfoReloadRequested());
+        }
     }
   }
 }

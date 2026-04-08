@@ -12,10 +12,15 @@ class LinkDetailStarted extends LinkDetailEvent {
   final String eventId;
   final String markLinkId;
   final TopicConfig topicConfig;
+
+  /// メンバー選択候補（基本情報のメンバーのみを表示するために使用）
+  final List<MemberDomain> eventMembers;
+
   const LinkDetailStarted({
     required this.eventId,
     required this.markLinkId,
     TopicConfig? topicConfig,
+    this.eventMembers = const [],
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -28,7 +33,7 @@ class LinkDetailStarted extends LinkDetailEvent {
         );
 
   @override
-  List<Object?> get props => [eventId, markLinkId, topicConfig];
+  List<Object?> get props => [eventId, markLinkId, topicConfig, eventMembers];
 }
 
 /// 戻るボタンが押されたとき

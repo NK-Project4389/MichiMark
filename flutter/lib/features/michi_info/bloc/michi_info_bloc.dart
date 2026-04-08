@@ -35,6 +35,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     on<MichiInfoTopicConfigUpdated>(_onTopicConfigUpdated);
     on<MichiInfoMarkActionPressed>(_onMarkActionPressed);
     on<MichiInfoDelegateConsumed>(_onDelegateConsumed);
+    on<MichiInfoReloadRequested>(_onReloadRequested);
   }
 
   final EventRepository _eventRepository;
@@ -57,6 +58,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       emit(MichiInfoLoaded(
         projection: projection,
         draft: const MichiInfoDraft(),
+        eventMembers: domain.members,
       ));
     } on Exception catch (e) {
       emit(MichiInfoError(message: e.toString()));
@@ -74,11 +76,13 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
             eventId: _eventId,
             markLinkId: event.markLinkId,
             topicConfig: current.topicConfig,
+            eventMembers: current.eventMembers,
           ),
         MarkOrLink.link => MichiInfoOpenLinkDelegate(
             eventId: _eventId,
             markLinkId: event.markLinkId,
             topicConfig: current.topicConfig,
+            eventMembers: current.eventMembers,
           ),
       };
       emit(current.copyWith(delegate: delegate));
@@ -150,7 +154,11 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     if (state is MichiInfoLoaded) {
       final current = state as MichiInfoLoaded;
       emit(current.copyWith(
-        delegate: MichiInfoAddLinkDelegate(_eventId, current.topicConfig),
+        delegate: MichiInfoAddLinkDelegate(
+          _eventId,
+          current.topicConfig,
+          eventMembers: current.eventMembers,
+        ),
       ));
     }
   }
@@ -271,6 +279,25 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
   ) async {
     if (state case MichiInfoLoaded current) {
       emit(current.copyWith());
+    }
+  }
+
+  /// Mark/Link 詳細から戻ったとき DB から projection をリロードする（ローディング表示なし）
+  Future<void> _onReloadRequested(
+    MichiInfoReloadRequested event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (state case MichiInfoLoaded current) {
+      try {
+        final domain = await _eventRepository.fetch(_eventId);
+        final projection = EventDetailAdapter.toProjection(domain).michiInfo;
+        emit(current.copyWith(
+          projection: projection,
+          eventMembers: domain.members,
+        ));
+      } on Exception {
+        // サイレント失敗（既存の projection を維持）
+      }
     }
   }
 
