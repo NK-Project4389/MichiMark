@@ -48,13 +48,6 @@ class EventDetailAddMarkLinkDelegate extends EventDetailDelegate {
   List<Object?> get props => [];
 }
 
-class EventDetailSavedDelegate extends EventDetailDelegate {
-  const EventDetailSavedDelegate();
-
-  @override
-  List<Object?> get props => [];
-}
-
 /// TopicConfig変更を子Blocへ伝播するようPageに通知する（起動時の一方向初期化用）
 class EventDetailTopicConfigPropagateDelegate extends EventDetailDelegate {
   final TopicConfig topicConfig;
@@ -81,8 +74,6 @@ class EventDetailLoaded extends EventDetailState {
   final EventDetailProjection projection;
   final EventDetailDraft draft;
   final EventDetailDelegate? delegate;
-  final bool isSaving;
-  final String? saveErrorMessage;
   final TopicConfig topicConfig;
   /// OverviewBlocにEventDomainを渡すためにキャッシュする
   final EventDomain? cachedEvent;
@@ -95,8 +86,6 @@ class EventDetailLoaded extends EventDetailState {
     required this.projection,
     required this.draft,
     this.delegate,
-    this.isSaving = false,
-    this.saveErrorMessage,
     TopicConfig? topicConfig,
     this.cachedEvent,
     this.topicThemeColor,
@@ -116,8 +105,6 @@ class EventDetailLoaded extends EventDetailState {
     EventDetailProjection? projection,
     EventDetailDraft? draft,
     EventDetailDelegate? delegate,
-    bool? isSaving,
-    String? saveErrorMessage,
     TopicConfig? topicConfig,
     EventDomain? cachedEvent,
     TopicThemeColor? topicThemeColor,
@@ -129,8 +116,6 @@ class EventDetailLoaded extends EventDetailState {
       projection: projection ?? this.projection,
       draft: draft ?? this.draft,
       delegate: delegate,
-      isSaving: isSaving ?? this.isSaving,
-      saveErrorMessage: saveErrorMessage,
       topicConfig: topicConfig ?? this.topicConfig,
       cachedEvent: cachedEvent ?? this.cachedEvent,
       topicThemeColor: clearTopicThemeColor ? null : (topicThemeColor ?? this.topicThemeColor),
@@ -143,8 +128,6 @@ class EventDetailLoaded extends EventDetailState {
         projection,
         draft,
         delegate,
-        isSaving,
-        saveErrorMessage,
         topicConfig,
         cachedEvent,
         topicThemeColor,

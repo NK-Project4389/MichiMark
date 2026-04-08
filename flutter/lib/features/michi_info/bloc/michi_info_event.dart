@@ -43,11 +43,11 @@ class MichiInfoAddLinkPressed extends MichiInfoEvent {
   List<Object?> get props => [];
 }
 
-/// MarkDetail画面からDraftが反映されて戻ってきたとき
-class MichiInfoMarkDraftApplied extends MichiInfoEvent {
+/// MarkDetail画面でDBへの保存が完了して戻ってきたとき
+class MichiInfoMarkSaved extends MichiInfoEvent {
   final String markLinkId;
   final MarkDetailDraft draft;
-  const MichiInfoMarkDraftApplied({required this.markLinkId, required this.draft});
+  const MichiInfoMarkSaved({required this.markLinkId, required this.draft});
 
   @override
   List<Object?> get props => [markLinkId, draft];
@@ -62,11 +62,11 @@ class MichiInfoTopicConfigUpdated extends MichiInfoEvent {
   List<Object?> get props => [config];
 }
 
-/// LinkDetail画面からDraftが反映されて戻ってきたとき
-class MichiInfoLinkDraftApplied extends MichiInfoEvent {
+/// LinkDetail画面でDBへの保存が完了して戻ってきたとき
+class MichiInfoLinkSaved extends MichiInfoEvent {
   final String markLinkId;
   final LinkDetailDraft draft;
-  const MichiInfoLinkDraftApplied({required this.markLinkId, required this.draft});
+  const MichiInfoLinkSaved({required this.markLinkId, required this.draft});
 
   @override
   List<Object?> get props => [markLinkId, draft];

@@ -151,3 +151,27 @@ class BasicInfoPricePerGasChanged extends BasicInfoEvent {
   @override
   List<Object?> get props => [input];
 }
+
+/// 編集モードに入ったとき
+class BasicInfoEditModeEntered extends BasicInfoEvent {
+  const BasicInfoEditModeEntered();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 保存ボタンが押されたとき（DB保存）
+class BasicInfoSavePressed extends BasicInfoEvent {
+  const BasicInfoSavePressed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 編集がキャンセルされたとき
+class BasicInfoEditCancelled extends BasicInfoEvent {
+  const BasicInfoEditCancelled();
+
+  @override
+  List<Object?> get props => [];
+}

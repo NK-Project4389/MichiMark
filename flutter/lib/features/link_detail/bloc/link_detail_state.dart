@@ -28,12 +28,21 @@ class LinkDetailOpenActionsSelectionDelegate extends LinkDetailDelegate {
   List<Object?> get props => [];
 }
 
-class LinkDetailSaveDraftDelegate extends LinkDetailDelegate {
+class LinkDetailSavedDelegate extends LinkDetailDelegate {
+  final String markLinkId;
   final LinkDetailDraft draft;
-  const LinkDetailSaveDraftDelegate(this.draft);
+  const LinkDetailSavedDelegate({required this.markLinkId, required this.draft});
 
   @override
-  List<Object?> get props => [draft];
+  List<Object?> get props => [markLinkId, draft];
+}
+
+class LinkDetailSaveErrorDelegate extends LinkDetailDelegate {
+  final String message;
+  const LinkDetailSaveErrorDelegate(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }
 
 // ---------------------------------------------------------------------------
@@ -53,11 +62,13 @@ class LinkDetailLoaded extends LinkDetailState {
   final LinkDetailDraft draft;
   final LinkDetailDelegate? delegate;
   final TopicConfig topicConfig;
+  final bool isSaving;
 
   const LinkDetailLoaded({
     required this.draft,
     this.delegate,
     TopicConfig? topicConfig,
+    this.isSaving = false,
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -73,16 +84,18 @@ class LinkDetailLoaded extends LinkDetailState {
     LinkDetailDraft? draft,
     LinkDetailDelegate? delegate,
     TopicConfig? topicConfig,
+    bool? isSaving,
   }) {
     return LinkDetailLoaded(
       draft: draft ?? this.draft,
       delegate: delegate,
       topicConfig: topicConfig ?? this.topicConfig,
+      isSaving: isSaving ?? this.isSaving,
     );
   }
 
   @override
-  List<Object?> get props => [draft, delegate, topicConfig];
+  List<Object?> get props => [draft, delegate, topicConfig, isSaving];
 }
 
 class LinkDetailError extends LinkDetailState {

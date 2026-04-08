@@ -43,3 +43,11 @@ class PaymentInfoDelegateConsumed extends PaymentInfoEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// PaymentDetail から戻ってきてリロードを要求するとき
+class PaymentInfoReloadRequested extends PaymentInfoEvent {
+  const PaymentInfoReloadRequested();
+
+  @override
+  List<Object?> get props => [];
+}

@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 import '../../../domain/master/tag/tag_domain.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../domain/topic/topic_domain.dart';
+import '../../../domain/transaction/event/event_domain.dart';
 import '../../../repository/event_repository.dart';
 import '../../../repository/repository_error.dart';
 import '../../../repository/tag_repository.dart';
@@ -36,16 +37,21 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
     on<BasicInfoPayMemberSelected>(_onPayMemberSelected);
     on<BasicInfoKmPerGasChanged>(_onKmPerGasChanged);
     on<BasicInfoPricePerGasChanged>(_onPricePerGasChanged);
+    on<BasicInfoEditModeEntered>(_onEditModeEntered);
+    on<BasicInfoSavePressed>(_onSavePressed);
+    on<BasicInfoEditCancelled>(_onEditCancelled);
   }
 
   final EventRepository _eventRepository;
   final TopicRepository _topicRepository;
   final TagRepository _tagRepository;
+  String _eventId = '';
 
   Future<void> _onStarted(
     BasicInfoStarted event,
     Emitter<BasicInfoState> emit,
   ) async {
+    _eventId = event.eventId;
     emit(const BasicInfoLoading());
     try {
       final domain = await _eventRepository.fetch(event.eventId);
@@ -310,6 +316,102 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
       emit(current.copyWith(
         draft: current.draft.copyWith(pricePerGasInput: event.input),
       ));
+    }
+  }
+
+  Future<void> _onEditModeEntered(
+    BasicInfoEditModeEntered event,
+    Emitter<BasicInfoState> emit,
+  ) async {
+    if (state is BasicInfoLoaded) {
+      final current = state as BasicInfoLoaded;
+      emit(current.copyWith(
+        originalDraft: current.draft,
+        draft: current.draft.copyWith(isEditing: true),
+      ));
+    }
+  }
+
+  Future<void> _onSavePressed(
+    BasicInfoSavePressed event,
+    Emitter<BasicInfoState> emit,
+  ) async {
+    if (state is! BasicInfoLoaded) return;
+    final current = state as BasicInfoLoaded;
+
+    emit(current.copyWith(isSaving: true));
+    try {
+      final existing = await _eventRepository.fetch(_eventId);
+      final draft = current.draft;
+
+      final kmPerGas = draft.kmPerGasInput.isEmpty
+          ? null
+          : (double.tryParse(draft.kmPerGasInput) != null
+              ? (double.parse(draft.kmPerGasInput) * 10).round()
+              : null);
+
+      final pricePerGas = draft.pricePerGasInput.isEmpty
+          ? null
+          : int.tryParse(draft.pricePerGasInput);
+
+      final updated = EventDomain(
+        id: existing.id,
+        eventName: draft.eventName,
+        trans: draft.selectedTrans,
+        members: draft.selectedMembers,
+        tags: draft.selectedTags,
+        kmPerGas: kmPerGas,
+        pricePerGas: pricePerGas,
+        payMember: draft.selectedPayMember,
+        topic: draft.selectedTopic,
+        markLinks: existing.markLinks,
+        payments: existing.payments,
+        actionTimeLogs: existing.actionTimeLogs,
+        isDeleted: existing.isDeleted,
+        createdAt: existing.createdAt,
+        updatedAt: DateTime.now(),
+      );
+
+      await _eventRepository.save(updated);
+
+      emit(current.copyWith(
+        isSaving: false,
+        draft: draft.copyWith(isEditing: false),
+        delegate: const BasicInfoSavedDelegate(),
+      ));
+    } on Exception catch (e) {
+      if (state case BasicInfoLoaded loaded) {
+        emit(BasicInfoLoaded(
+          draft: loaded.draft,
+          delegate: null,
+          topicConfig: loaded.topicConfig,
+          allTags: loaded.allTags,
+          tagSuggestions: loaded.tagSuggestions,
+          isSaving: false,
+          originalDraft: loaded.originalDraft,
+        ));
+        emit(BasicInfoError(message: e.toString()));
+      }
+    }
+  }
+
+  Future<void> _onEditCancelled(
+    BasicInfoEditCancelled event,
+    Emitter<BasicInfoState> emit,
+  ) async {
+    if (state is BasicInfoLoaded) {
+      final current = state as BasicInfoLoaded;
+      final original = current.originalDraft;
+      if (original != null) {
+        emit(current.copyWith(
+          draft: original.copyWith(isEditing: false),
+          originalDraft: original,
+        ));
+      } else {
+        emit(current.copyWith(
+          draft: current.draft.copyWith(isEditing: false),
+        ));
+      }
     }
   }
 }

@@ -10,7 +10,7 @@ import '../bloc/basic_info_event.dart';
 import '../bloc/basic_info_state.dart';
 import '../draft/basic_info_draft.dart';
 
-/// BasicInfo タブの編集View。
+/// BasicInfo タブの表示・編集View。
 /// await context.push を使うため StatefulWidget とする（mounted チェック必須）。
 class BasicInfoView extends StatefulWidget {
   const BasicInfoView({super.key});
@@ -20,12 +20,22 @@ class BasicInfoView extends StatefulWidget {
 }
 
 class _BasicInfoViewState extends State<BasicInfoView> {
+  /// BasicInfoBlocが属するEventDetailのeventIdを保持するフィールド
+  /// （BasicInfoSavePressedに渡すため）
+  String? _eventId;
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<BasicInfoBloc, BasicInfoState>(
       listener: (context, state) async {
-        if (state is BasicInfoLoaded && state.delegate != null) {
-          await _handleDelegate(state.delegate!, state.draft);
+        if (state is BasicInfoLoaded) {
+          // eventIdを保持する
+          _eventId ??= context.read<BasicInfoBloc>().state is BasicInfoLoaded
+              ? null
+              : null;
+          if (state.delegate != null) {
+            await _handleDelegate(state.delegate!, state.draft);
+          }
         }
       },
       builder: (context, state) {
@@ -33,8 +43,18 @@ class _BasicInfoViewState extends State<BasicInfoView> {
           BasicInfoLoading() =>
             const Center(child: CircularProgressIndicator()),
           BasicInfoError(:final message) => Center(child: Text(message)),
-          BasicInfoLoaded(:final draft, :final topicConfig, :final tagSuggestions) =>
-            _BasicInfoForm(draft: draft, topicConfig: topicConfig, tagSuggestions: tagSuggestions),
+          BasicInfoLoaded(:final draft, :final topicConfig, :final tagSuggestions, :final isSaving) =>
+            draft.isEditing
+                ? _BasicInfoForm(
+                    draft: draft,
+                    topicConfig: topicConfig,
+                    tagSuggestions: tagSuggestions,
+                    isSaving: isSaving,
+                  )
+                : _BasicInfoReadView(
+                    draft: draft,
+                    topicConfig: topicConfig,
+                  ),
         };
       },
     );
@@ -107,7 +127,117 @@ class _BasicInfoViewState extends State<BasicInfoView> {
               .read<BasicInfoBloc>()
               .add(BasicInfoPayMemberSelected(selected.firstOrNull));
         }
+
+      case BasicInfoSavedDelegate():
+        // 保存完了: 特に画面遷移なし（isEditingがfalseになっているので参照モードに戻る）
+        break;
     }
+  }
+}
+
+// ── 参照モード ────────────────────────────────────────────────────────────
+
+class _BasicInfoReadView extends StatelessWidget {
+  final BasicInfoDraft draft;
+  final TopicConfig topicConfig;
+
+  const _BasicInfoReadView({
+    required this.draft,
+    required this.topicConfig,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        ListView(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+          children: [
+            _ReadRow(label: 'イベント名', value: draft.eventName.isEmpty ? '未設定' : draft.eventName),
+            const SizedBox(height: 12),
+            _ReadRow(
+              label: '交通手段',
+              value: draft.selectedTrans?.transName ?? '未選択',
+            ),
+            if (topicConfig.showKmPerGas) ...[
+              const SizedBox(height: 12),
+              _ReadRow(
+                label: '燃費',
+                value: draft.kmPerGasInput.isEmpty ? '未設定' : '${draft.kmPerGasInput} km/L',
+              ),
+            ],
+            if (topicConfig.showPricePerGas) ...[
+              const SizedBox(height: 12),
+              _ReadRow(
+                label: 'ガソリン単価',
+                value: draft.pricePerGasInput.isEmpty ? '未設定' : '${draft.pricePerGasInput} 円/L',
+              ),
+            ],
+            const SizedBox(height: 12),
+            _ReadRow(
+              label: 'メンバー',
+              value: draft.selectedMembers.isEmpty
+                  ? '未選択'
+                  : draft.selectedMembers.map((m) => m.memberName).join('、'),
+            ),
+            const SizedBox(height: 12),
+            _ReadRow(
+              label: 'タグ',
+              value: draft.selectedTags.isEmpty
+                  ? '未設定'
+                  : draft.selectedTags.map((t) => t.tagName).join('、'),
+            ),
+            if (topicConfig.showPayMember) ...[
+              const SizedBox(height: 12),
+              _ReadRow(
+                label: 'ガソリン支払者',
+                value: draft.selectedPayMember?.memberName ?? '未選択',
+              ),
+            ],
+          ],
+        ),
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: FloatingActionButton.extended(
+            onPressed: () => context.read<BasicInfoBloc>().add(const BasicInfoEditModeEntered()),
+            icon: const Icon(Icons.edit),
+            label: const Text('編集'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ReadRow extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _ReadRow({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 120,
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -115,72 +245,114 @@ class _BasicInfoForm extends StatelessWidget {
   final BasicInfoDraft draft;
   final TopicConfig topicConfig;
   final List<TagDomain> tagSuggestions;
+  final bool isSaving;
 
   const _BasicInfoForm({
     required this.draft,
     required this.topicConfig,
     required this.tagSuggestions,
+    required this.isSaving,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
+    // eventIdをBlocのstateから取得するのが難しいため、
+    // BasicInfoSavePressedのeventIdは空文字を渡し、Blocが_eventIdを使用する
+    // ただしSpecにはeventIdを渡す設計なので、ここではBasicInfoBlocのstateから参照する
+    // BasicInfoBlocは_onStartedでeventIdを受け取っているため、BasicInfoSavePressedのeventIdは
+    // BasicInfoBloc内で_eventIdとして保持する必要がある
+    return Stack(
       children: [
-        _EventNameField(value: draft.eventName),
-        const SizedBox(height: 16),
-        _SelectionRow(
-          label: '交通手段',
-          value: draft.selectedTrans?.transName ?? '未選択',
-          onEditPressed: () => context
-              .read<BasicInfoBloc>()
-              .add(const BasicInfoEditTransPressed()),
+        ListView(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+          children: [
+            _EventNameField(value: draft.eventName),
+            const SizedBox(height: 16),
+            _SelectionRow(
+              label: '交通手段',
+              value: draft.selectedTrans?.transName ?? '未選択',
+              onEditPressed: () => context
+                  .read<BasicInfoBloc>()
+                  .add(const BasicInfoEditTransPressed()),
+            ),
+            if (topicConfig.showKmPerGas) ...[
+              const SizedBox(height: 16),
+              _NumberInputField(
+                label: '燃費 (km/L)',
+                value: draft.kmPerGasInput,
+                onChanged: (input) => context
+                    .read<BasicInfoBloc>()
+                    .add(BasicInfoKmPerGasChanged(input)),
+              ),
+            ],
+            if (topicConfig.showPricePerGas) ...[
+              const SizedBox(height: 16),
+              _NumberInputField(
+                label: 'ガソリン単価 (円/L)',
+                value: draft.pricePerGasInput,
+                onChanged: (input) => context
+                    .read<BasicInfoBloc>()
+                    .add(BasicInfoPricePerGasChanged(input)),
+              ),
+            ],
+            const SizedBox(height: 16),
+            _SelectionRow(
+              label: 'メンバー',
+              value: draft.selectedMembers.isEmpty
+                  ? '未選択'
+                  : draft.selectedMembers.map((m) => m.memberName).join('、'),
+              onEditPressed: () => context
+                  .read<BasicInfoBloc>()
+                  .add(const BasicInfoEditMembersPressed()),
+            ),
+            const SizedBox(height: 16),
+            _TagInputSection(
+              selectedTags: draft.selectedTags,
+              tagSuggestions: tagSuggestions,
+            ),
+            if (topicConfig.showPayMember) ...[
+              const SizedBox(height: 16),
+              _SelectionRow(
+                label: 'ガソリン支払者',
+                value: draft.selectedPayMember?.memberName ?? '未選択',
+                onEditPressed: () => context
+                    .read<BasicInfoBloc>()
+                    .add(const BasicInfoEditPayMemberPressed()),
+              ),
+            ],
+          ],
         ),
-        if (topicConfig.showKmPerGas) ...[
-          const SizedBox(height: 16),
-          _NumberInputField(
-            label: '燃費 (km/L)',
-            value: draft.kmPerGasInput,
-            onChanged: (input) => context
-                .read<BasicInfoBloc>()
-                .add(BasicInfoKmPerGasChanged(input)),
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton(
+                onPressed: isSaving
+                    ? null
+                    : () => context
+                        .read<BasicInfoBloc>()
+                        .add(const BasicInfoEditCancelled()),
+                child: const Text('キャンセル'),
+              ),
+              const SizedBox(width: 8),
+              if (isSaving)
+                const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              else
+                ElevatedButton(
+                  onPressed: () => context
+                      .read<BasicInfoBloc>()
+                      .add(const BasicInfoSavePressed()),
+                  child: const Text('保存'),
+                ),
+            ],
           ),
-        ],
-        if (topicConfig.showPricePerGas) ...[
-          const SizedBox(height: 16),
-          _NumberInputField(
-            label: 'ガソリン単価 (円/L)',
-            value: draft.pricePerGasInput,
-            onChanged: (input) => context
-                .read<BasicInfoBloc>()
-                .add(BasicInfoPricePerGasChanged(input)),
-          ),
-        ],
-        const SizedBox(height: 16),
-        _SelectionRow(
-          label: 'メンバー',
-          value: draft.selectedMembers.isEmpty
-              ? '未選択'
-              : draft.selectedMembers.map((m) => m.memberName).join('、'),
-          onEditPressed: () => context
-              .read<BasicInfoBloc>()
-              .add(const BasicInfoEditMembersPressed()),
         ),
-        const SizedBox(height: 16),
-        _TagInputSection(
-          selectedTags: draft.selectedTags,
-          tagSuggestions: tagSuggestions,
-        ),
-        if (topicConfig.showPayMember) ...[
-          const SizedBox(height: 16),
-          _SelectionRow(
-            label: 'ガソリン支払者',
-            value: draft.selectedPayMember?.memberName ?? '未選択',
-            onEditPressed: () => context
-                .read<BasicInfoBloc>()
-                .add(const BasicInfoEditPayMemberPressed()),
-          ),
-        ],
       ],
     );
   }

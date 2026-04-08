@@ -36,6 +36,13 @@ class BasicInfoOpenPayMemberSelectionDelegate extends BasicInfoDelegate {
   List<Object?> get props => [];
 }
 
+class BasicInfoSavedDelegate extends BasicInfoDelegate {
+  const BasicInfoSavedDelegate();
+
+  @override
+  List<Object?> get props => [];
+}
+
 // ---------------------------------------------------------------------------
 
 sealed class BasicInfoState extends Equatable {
@@ -62,12 +69,20 @@ class BasicInfoLoaded extends BasicInfoState {
   /// 現在表示中のタグサジェスト一覧
   final List<TagDomain> tagSuggestions;
 
+  /// DB保存処理中フラグ
+  final bool isSaving;
+
+  /// キャンセル時に戻すための元のDraft（編集開始時に保持）
+  final BasicInfoDraft? originalDraft;
+
   const BasicInfoLoaded({
     required this.draft,
     this.delegate,
     required this.topicConfig,
     this.allTags = const [],
     this.tagSuggestions = const [],
+    this.isSaving = false,
+    this.originalDraft,
   });
 
   BasicInfoLoaded copyWith({
@@ -76,6 +91,8 @@ class BasicInfoLoaded extends BasicInfoState {
     TopicConfig? topicConfig,
     List<TagDomain>? allTags,
     List<TagDomain>? tagSuggestions,
+    bool? isSaving,
+    BasicInfoDraft? originalDraft,
   }) {
     return BasicInfoLoaded(
       draft: draft ?? this.draft,
@@ -83,11 +100,13 @@ class BasicInfoLoaded extends BasicInfoState {
       topicConfig: topicConfig ?? this.topicConfig,
       allTags: allTags ?? this.allTags,
       tagSuggestions: tagSuggestions ?? this.tagSuggestions,
+      isSaving: isSaving ?? this.isSaving,
+      originalDraft: originalDraft ?? this.originalDraft,
     );
   }
 
   @override
-  List<Object?> get props => [draft, delegate, topicConfig, allTags, tagSuggestions];
+  List<Object?> get props => [draft, delegate, topicConfig, allTags, tagSuggestions, isSaving, originalDraft];
 }
 
 class BasicInfoError extends BasicInfoState {

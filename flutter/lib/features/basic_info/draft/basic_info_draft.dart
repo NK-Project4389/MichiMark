@@ -31,6 +31,9 @@ class BasicInfoDraft extends Equatable {
   /// 選択中のTopic（null = 未設定）。読み取り専用表示用（REQ-001）
   final TopicDomain? selectedTopic;
 
+  /// 編集モードフラグ（false = 参照モード、true = 編集モード）
+  final bool isEditing;
+
   const BasicInfoDraft({
     this.eventName = '',
     this.selectedTrans,
@@ -40,6 +43,7 @@ class BasicInfoDraft extends Equatable {
     this.kmPerGasInput = '',
     this.pricePerGasInput = '',
     this.selectedTopic,
+    this.isEditing = false,
   });
 
   BasicInfoDraft copyWith({
@@ -52,6 +56,7 @@ class BasicInfoDraft extends Equatable {
     String? pricePerGasInput,
     TopicDomain? selectedTopic,
     bool clearSelectedTopic = false,
+    bool? isEditing,
   }) {
     return BasicInfoDraft(
       eventName: eventName ?? this.eventName,
@@ -62,6 +67,7 @@ class BasicInfoDraft extends Equatable {
       kmPerGasInput: kmPerGasInput ?? this.kmPerGasInput,
       pricePerGasInput: pricePerGasInput ?? this.pricePerGasInput,
       selectedTopic: clearSelectedTopic ? null : (selectedTopic ?? this.selectedTopic),
+      isEditing: isEditing ?? this.isEditing,
     );
   }
 
@@ -75,5 +81,6 @@ class BasicInfoDraft extends Equatable {
         kmPerGasInput,
         pricePerGasInput,
         selectedTopic,
+        isEditing,
       ];
 }

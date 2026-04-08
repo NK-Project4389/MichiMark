@@ -6,12 +6,20 @@ sealed class PaymentDetailDelegate extends Equatable {
   const PaymentDetailDelegate();
 }
 
-class PaymentDetailSaveDraftDelegate extends PaymentDetailDelegate {
+class PaymentDetailSavedDelegate extends PaymentDetailDelegate {
   final PaymentDetailDraft draft;
-  const PaymentDetailSaveDraftDelegate(this.draft);
+  const PaymentDetailSavedDelegate(this.draft);
 
   @override
   List<Object?> get props => [draft];
+}
+
+class PaymentDetailSaveErrorDelegate extends PaymentDetailDelegate {
+  final String message;
+  const PaymentDetailSaveErrorDelegate(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }
 
 class PaymentDetailDismissDelegate extends PaymentDetailDelegate {
@@ -52,24 +60,28 @@ class PaymentDetailLoading extends PaymentDetailState {
 class PaymentDetailLoaded extends PaymentDetailState {
   final PaymentDetailDraft draft;
   final PaymentDetailDelegate? delegate;
+  final bool isSaving;
 
   const PaymentDetailLoaded({
     required this.draft,
     this.delegate,
+    this.isSaving = false,
   });
 
   PaymentDetailLoaded copyWith({
     PaymentDetailDraft? draft,
     PaymentDetailDelegate? delegate,
+    bool? isSaving,
   }) {
     return PaymentDetailLoaded(
       draft: draft ?? this.draft,
       delegate: delegate,
+      isSaving: isSaving ?? this.isSaving,
     );
   }
 
   @override
-  List<Object?> get props => [draft, delegate];
+  List<Object?> get props => [draft, delegate, isSaving];
 }
 
 class PaymentDetailError extends PaymentDetailState {

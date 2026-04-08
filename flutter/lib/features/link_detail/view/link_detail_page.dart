@@ -6,6 +6,8 @@ import '../../../features/fuel_detail/bloc/fuel_detail_bloc.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_event.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_state.dart';
 import '../../../features/fuel_detail/view/fuel_detail_widget.dart';
+import '../../../features/michi_info/bloc/michi_info_bloc.dart';
+import '../../../features/michi_info/bloc/michi_info_event.dart';
 import '../../../features/selection/selection_args.dart';
 import '../../../features/selection/selection_result.dart';
 import '../bloc/link_detail_bloc.dart';
@@ -26,7 +28,7 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
     return BlocConsumer<LinkDetailBloc, LinkDetailState>(
       listener: (context, state) async {
         if (state is LinkDetailLoaded && state.delegate != null) {
-          await _handleDelegate(state.delegate!, state.draft);
+          await _handleDelegate(context, state.delegate!, state.draft);
         }
       },
       builder: (context, state) {
@@ -37,20 +39,21 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
           LinkDetailError(:final message) => Scaffold(
               body: Center(child: Text(message)),
             ),
-          LinkDetailLoaded(:final draft, :final topicConfig) =>
-            _LinkDetailScaffold(draft: draft, topicConfig: topicConfig),
+          LinkDetailLoaded(:final draft, :final topicConfig, :final isSaving) =>
+            _LinkDetailScaffold(draft: draft, topicConfig: topicConfig, isSaving: isSaving),
         };
       },
     );
   }
 
   Future<void> _handleDelegate(
+    BuildContext context,
     LinkDetailDelegate delegate,
     LinkDetailDraft draft,
   ) async {
     switch (delegate) {
       case LinkDetailDismissDelegate():
-        if (!mounted) return;
+        if (!context.mounted) return;
         context.pop();
 
       case LinkDetailOpenMembersSelectionDelegate():
@@ -61,7 +64,7 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
             selectedIds: draft.selectedMembers.map((m) => m.id).toSet(),
           ),
         );
-        if (!mounted) return;
+        if (!context.mounted) return;
         if (result case MembersSelectionResult(:final selected)) {
           context
               .read<LinkDetailBloc>()
@@ -76,16 +79,25 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
             selectedIds: draft.selectedActions.map((a) => a.id).toSet(),
           ),
         );
-        if (!mounted) return;
+        if (!context.mounted) return;
         if (result case ActionsSelectionResult(:final selected)) {
           context
               .read<LinkDetailBloc>()
               .add(LinkDetailActionsSelected(selected));
         }
 
-      case LinkDetailSaveDraftDelegate(:final draft):
-        if (!mounted) return;
-        context.pop(draft);
+      case LinkDetailSavedDelegate(:final markLinkId, :final draft):
+        if (!context.mounted) return;
+        context.read<MichiInfoBloc>().add(
+              MichiInfoLinkSaved(markLinkId: markLinkId, draft: draft),
+            );
+        context.pop();
+
+      case LinkDetailSaveErrorDelegate(:final message):
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
     }
   }
 }
@@ -93,10 +105,12 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
 class _LinkDetailScaffold extends StatelessWidget {
   final LinkDetailDraft draft;
   final TopicConfig topicConfig;
+  final bool isSaving;
 
   const _LinkDetailScaffold({
     required this.draft,
     required this.topicConfig,
+    required this.isSaving,
   });
 
   @override
@@ -114,12 +128,22 @@ class _LinkDetailScaffold extends StatelessWidget {
         ),
         centerTitle: true,
         actions: [
-          TextButton(
-            onPressed: () => context
-                .read<LinkDetailBloc>()
-                .add(const LinkDetailSaveTapped()),
-            child: const Text('反映'),
-          ),
+          if (isSaving)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
+          else
+            TextButton(
+              onPressed: () => context
+                  .read<LinkDetailBloc>()
+                  .add(const LinkDetailSaveTapped()),
+              child: const Text('保存'),
+            ),
         ],
       ),
       body: _LinkDetailForm(draft: draft, topicConfig: topicConfig),

@@ -41,12 +41,6 @@ class EventDetailPage extends StatelessWidget {
           if (delegate != null) {
             _handleDelegate(context, delegate, state);
           }
-          final errorMessage = state.saveErrorMessage;
-          if (errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(errorMessage)),
-            );
-          }
         }
       },
       builder: (context, state) {
@@ -60,14 +54,12 @@ class EventDetailPage extends StatelessWidget {
           EventDetailLoaded(
             :final projection,
             :final draft,
-            :final isSaving,
             :final topicThemeColor,
             :final topicDisplayName,
           ) =>
             _EventDetailScaffold(
               projection: projection,
               draft: draft,
-              isSaving: isSaving,
               topicThemeColor: topicThemeColor,
               topicDisplayName: topicDisplayName,
               initialTopicType: initialTopicType,
@@ -93,10 +85,6 @@ class EventDetailPage extends StatelessWidget {
         context.go('/event/payment/$paymentId');
       case EventDetailAddMarkLinkDelegate():
         context.go('/event/mark-link/add');
-      case EventDetailSavedDelegate():
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('保存しました')),
-        );
       case EventDetailTopicConfigPropagateDelegate():
         // 子BlocへTopicConfigを伝播する。
         // 子BlocはEventDetailScaffoldのMultiBlocProvider内にある。
@@ -109,7 +97,6 @@ class EventDetailPage extends StatelessWidget {
 class _EventDetailScaffold extends StatelessWidget {
   final EventDetailProjection projection;
   final EventDetailDraft draft;
-  final bool isSaving;
   final TopicThemeColor? topicThemeColor;
   final String? topicDisplayName;
   final TopicType? initialTopicType;
@@ -117,7 +104,6 @@ class _EventDetailScaffold extends StatelessWidget {
   const _EventDetailScaffold({
     required this.projection,
     required this.draft,
-    required this.isSaving,
     this.topicThemeColor,
     this.topicDisplayName,
     this.initialTopicType,
@@ -142,8 +128,9 @@ class _EventDetailScaffold extends StatelessWidget {
           )..add(MichiInfoStarted(eventId)),
         ),
         BlocProvider(
-          create: (_) => PaymentInfoBloc()
-            ..add(PaymentInfoStarted(
+          create: (_) => PaymentInfoBloc(
+            eventRepository: getIt<EventRepository>(),
+          )..add(PaymentInfoStarted(
               eventId: projection.eventId,
               projection: projection.paymentInfo,
             )),
@@ -157,7 +144,6 @@ class _EventDetailScaffold extends StatelessWidget {
       child: _EventDetailScaffoldInner(
         projection: projection,
         draft: draft,
-        isSaving: isSaving,
         topicThemeColor: topicThemeColor,
         topicDisplayName: topicDisplayName,
       ),
@@ -169,14 +155,12 @@ class _EventDetailScaffold extends StatelessWidget {
 class _EventDetailScaffoldInner extends StatelessWidget {
   final EventDetailProjection projection;
   final EventDetailDraft draft;
-  final bool isSaving;
   final TopicThemeColor? topicThemeColor;
   final String? topicDisplayName;
 
   const _EventDetailScaffoldInner({
     required this.projection,
     required this.draft,
-    required this.isSaving,
     this.topicThemeColor,
     this.topicDisplayName,
   });
@@ -187,22 +171,6 @@ class _EventDetailScaffoldInner extends StatelessWidget {
     final eventName = projection.basicInfo.eventName.isEmpty
         ? 'イベント詳細'
         : projection.basicInfo.eventName;
-
-    final saveAction = BlocBuilder<BasicInfoBloc, BasicInfoState>(
-      builder: (context, basicInfoState) {
-        return IconButton(
-          icon: const Icon(Icons.check),
-          onPressed: basicInfoState is BasicInfoLoaded
-              ? () => context.read<EventDetailBloc>().add(
-                    EventDetailSaveRequested(
-                      eventId: projection.basicInfo.eventId,
-                      basicInfoDraft: basicInfoState.draft,
-                    ),
-                  )
-              : null,
-        );
-      },
-    );
 
     if (themeColor == null) {
       // Topic未設定: デフォルトのAppBar表示
@@ -215,19 +183,6 @@ class _EventDetailScaffoldInner extends StatelessWidget {
         ),
         title: Text(eventName),
         centerTitle: true,
-        actions: [
-          if (isSaving)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            )
-          else
-            saveAction,
-        ],
       );
     }
 
@@ -268,22 +223,6 @@ class _EventDetailScaffoldInner extends StatelessWidget {
           ),
         ),
       ),
-      actions: [
-        if (isSaving)
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white,
-              ),
-            ),
-          )
-        else
-          saveAction,
-      ],
     );
   }
 
@@ -340,6 +279,16 @@ class _EventDetailScaffoldInner extends StatelessWidget {
                 ));
           },
         ),
+        // BasicInfoSavedDelegate受信後にcachedEventを更新する
+        BlocListener<BasicInfoBloc, BasicInfoState>(
+          listenWhen: (prev, curr) =>
+              curr is BasicInfoLoaded && curr.delegate is BasicInfoSavedDelegate,
+          listener: (context, state) {
+            context
+                .read<EventDetailBloc>()
+                .add(const EventDetailCachedEventUpdateRequested());
+          },
+        ),
       ],
       child: Scaffold(
         appBar: _buildAppBar(context),
@@ -360,11 +309,33 @@ class _EventDetailScaffoldInner extends StatelessWidget {
     EventDetailProjection projection,
   ) {
     return switch (draft.selectedTab) {
-      EventDetailTab.basicInfo => const BasicInfoView(),
+      EventDetailTab.overview => _OverviewTabContent(
+          eventId: projection.basicInfo.eventId,
+        ),
       EventDetailTab.michiInfo => const MichiInfoView(),
       EventDetailTab.paymentInfo => const PaymentInfoView(),
-      EventDetailTab.overview => const EventDetailOverviewPage(),
     };
+  }
+}
+
+/// 概要タブのコンテンツ（BasicInfoView + EventDetailOverviewPage の縦並び）
+class _OverviewTabContent extends StatelessWidget {
+  final String eventId;
+
+  const _OverviewTabContent({required this.eventId});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          BasicInfoView(),
+          Divider(height: 1),
+          EventDetailOverviewPage(),
+        ],
+      ),
+    );
   }
 }
 
@@ -395,19 +366,16 @@ class _TabButton extends StatelessWidget {
   const _TabButton({required this.tab, required this.selectedTab});
 
   String get _label => switch (tab) {
-        EventDetailTab.basicInfo => '基本',
+        EventDetailTab.overview => '概要',
         EventDetailTab.michiInfo => 'ミチ',
         EventDetailTab.paymentInfo => '支払',
-        EventDetailTab.overview => '振り返り',
       };
 
   @override
   Widget build(BuildContext context) {
     final isSelected = tab == selectedTab;
     return TextButton(
-      onPressed: () => context
-          .read<EventDetailBloc>()
-          .add(EventDetailTabSelected(tab)),
+      onPressed: () => _onTabPressed(context),
       child: Text(
         _label,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
@@ -417,6 +385,70 @@ class _TabButton extends StatelessWidget {
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
       ),
+    );
+  }
+
+  void _onTabPressed(BuildContext context) {
+    // 編集中チェック
+    final basicInfoState = context.read<BasicInfoBloc>().state;
+    if (basicInfoState is BasicInfoLoaded && basicInfoState.draft.isEditing) {
+      _showUnsavedChangesDialog(context);
+      return;
+    }
+    context.read<EventDetailBloc>().add(EventDetailTabSelected(tab));
+  }
+
+  void _showUnsavedChangesDialog(BuildContext context) {
+    final targetTab = tab;
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('未保存の変更があります'),
+          content: const Text('編集内容を保存しますか？'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('キャンセル'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                context
+                    .read<BasicInfoBloc>()
+                    .add(const BasicInfoEditCancelled());
+                context
+                    .read<EventDetailBloc>()
+                    .add(EventDetailTabSelected(targetTab));
+              },
+              child: const Text('破棄して移動'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                // 保存後にタブ切り替えを行うため、BasicInfoSavedDelegateを
+                // BasicInfoBlocListenerで受け取ってタブ切り替えを実行する
+                // ここでは保存のみ発火し、タブ切り替えはEventDetailBlocListenerで行う
+                context
+                    .read<BasicInfoBloc>()
+                    .add(const BasicInfoSavePressed());
+                // 保存完了後にタブ切り替え（BlocListenerで処理）
+                // EventDetailBlocにタブ遷移先を伝えるため、直接切り替えを予約する
+                // BasicInfoSavedDelegateがemitされた後にlistenerが動くため
+                // ここではタブ切り替えをBlocListenerに委譲
+                // 実装上、保存成功後は自動でisEditing=falseになるため
+                // 次のフレームでタブ切り替えを行う
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  context
+                      .read<EventDetailBloc>()
+                      .add(EventDetailTabSelected(targetTab));
+                });
+              },
+              child: const Text('保存して移動'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

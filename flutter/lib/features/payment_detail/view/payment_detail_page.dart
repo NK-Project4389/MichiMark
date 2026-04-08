@@ -21,7 +21,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
     return BlocConsumer<PaymentDetailBloc, PaymentDetailState>(
       listener: (context, state) async {
         if (state is PaymentDetailLoaded && state.delegate != null) {
-          await _handleDelegate(state.delegate!, state.draft);
+          await _handleDelegate(context, state.delegate!, state.draft);
         }
       },
       builder: (context, state) {
@@ -32,25 +32,32 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
           PaymentDetailError(:final message) => Scaffold(
               body: Center(child: Text(message)),
             ),
-          PaymentDetailLoaded(:final draft) =>
-            _PaymentDetailScaffold(draft: draft),
+          PaymentDetailLoaded(:final draft, :final isSaving) =>
+            _PaymentDetailScaffold(draft: draft, isSaving: isSaving),
         };
       },
     );
   }
 
   Future<void> _handleDelegate(
+    BuildContext context,
     PaymentDetailDelegate delegate,
     PaymentDetailDraft draft,
   ) async {
     switch (delegate) {
       case PaymentDetailDismissDelegate():
-        if (!mounted) return;
+        if (!context.mounted) return;
         context.pop();
 
-      case PaymentDetailSaveDraftDelegate():
-        if (!mounted) return;
+      case PaymentDetailSavedDelegate():
+        if (!context.mounted) return;
         context.pop(draft);
+
+      case PaymentDetailSaveErrorDelegate(:final message):
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
 
       case PaymentDetailOpenMemberSelectionDelegate():
         final result = await context.push<SelectionResult>(
@@ -62,7 +69,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
                 : const {},
           ),
         );
-        if (!mounted) return;
+        if (!context.mounted) return;
         if (result case MembersSelectionResult(:final selected)) {
           if (selected.isNotEmpty) {
             context
@@ -82,7 +89,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
                 : const {},
           ),
         );
-        if (!mounted) return;
+        if (!context.mounted) return;
         if (result case MembersSelectionResult(:final selected)) {
           context
               .read<PaymentDetailBloc>()
@@ -96,8 +103,9 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
 
 class _PaymentDetailScaffold extends StatelessWidget {
   final PaymentDetailDraft draft;
+  final bool isSaving;
 
-  const _PaymentDetailScaffold({required this.draft});
+  const _PaymentDetailScaffold({required this.draft, required this.isSaving});
 
   @override
   Widget build(BuildContext context) {
@@ -112,12 +120,22 @@ class _PaymentDetailScaffold extends StatelessWidget {
         title: const Text('支払詳細'),
         centerTitle: true,
         actions: [
-          TextButton(
-            onPressed: () => context
-                .read<PaymentDetailBloc>()
-                .add(const PaymentDetailSaveTapped()),
-            child: const Text('反映'),
-          ),
+          if (isSaving)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
+          else
+            TextButton(
+              onPressed: () => context
+                  .read<PaymentDetailBloc>()
+                  .add(const PaymentDetailSaveTapped()),
+              child: const Text('保存'),
+            ),
         ],
       ),
       body: _PaymentDetailForm(draft: draft),

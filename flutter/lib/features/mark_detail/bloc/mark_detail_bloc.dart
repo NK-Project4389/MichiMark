@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../domain/transaction/mark_link/mark_link_domain.dart';
+import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../repository/event_repository.dart';
 import '../draft/mark_detail_draft.dart';
 import 'mark_detail_event.dart';
@@ -25,11 +27,15 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
   }
 
   final EventRepository _eventRepository;
+  String _eventId = '';
+  String _markLinkId = '';
 
   Future<void> _onStarted(
     MarkDetailStarted event,
     Emitter<MarkDetailState> emit,
   ) async {
+    _eventId = event.eventId;
+    _markLinkId = event.markLinkId;
     emit(const MarkDetailLoading());
     try {
       final domain = await _eventRepository.fetch(event.eventId);
@@ -186,9 +192,82 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
     Emitter<MarkDetailState> emit,
   ) async {
     if (state case MarkDetailLoaded current) {
-      emit(current.copyWith(
-        delegate: MarkDetailSaveDraftDelegate(current.draft),
-      ));
+      emit(current.copyWith(isSaving: true));
+      try {
+        final existing = await _eventRepository.fetch(_eventId);
+        final draft = current.draft;
+
+        // markLinkSeq の算出
+        final activeMarkLinks = existing.markLinks.where((ml) => !ml.isDeleted).toList();
+        final existingMarkLink = activeMarkLinks.where((ml) => ml.id == _markLinkId).firstOrNull;
+        final int seq;
+        if (existingMarkLink != null) {
+          seq = existingMarkLink.markLinkSeq;
+        } else {
+          seq = activeMarkLinks.isEmpty
+              ? 0
+              : activeMarkLinks.map((ml) => ml.markLinkSeq).reduce((a, b) => a > b ? a : b) + 1;
+        }
+
+        final meterValue = draft.meterValueInput.isEmpty
+            ? null
+            : int.tryParse(draft.meterValueInput);
+
+        final pricePerGas = draft.pricePerGasInput.isEmpty
+            ? null
+            : int.tryParse(draft.pricePerGasInput);
+
+        final gasQuantity = draft.gasQuantityInput.isEmpty
+            ? null
+            : (double.tryParse(draft.gasQuantityInput) != null
+                ? (double.parse(draft.gasQuantityInput) * 10).round()
+                : null);
+
+        final gasPrice = draft.gasPriceInput.isEmpty
+            ? null
+            : int.tryParse(draft.gasPriceInput);
+
+        final now = DateTime.now();
+        final newMarkLink = MarkLinkDomain(
+          id: _markLinkId,
+          markLinkSeq: seq,
+          markLinkType: MarkOrLink.mark,
+          markLinkDate: draft.markLinkDate,
+          markLinkName: draft.markLinkName.isEmpty ? null : draft.markLinkName,
+          members: draft.selectedMembers,
+          meterValue: meterValue,
+          actions: draft.selectedActions,
+          memo: draft.memo.isEmpty ? null : draft.memo,
+          isFuel: draft.isFuel,
+          pricePerGas: pricePerGas,
+          gasQuantity: gasQuantity,
+          gasPrice: gasPrice,
+          createdAt: existingMarkLink?.createdAt ?? now,
+          updatedAt: now,
+        );
+
+        final updatedMarkLinks = List<MarkLinkDomain>.from(
+          existing.markLinks.where((ml) => ml.id != _markLinkId),
+        )..add(newMarkLink);
+
+        final updated = existing.copyWith(
+          markLinks: updatedMarkLinks,
+          updatedAt: now,
+        );
+        await _eventRepository.save(updated);
+
+        emit(current.copyWith(
+          isSaving: false,
+          delegate: MarkDetailSavedDelegate(markLinkId: _markLinkId, draft: draft),
+        ));
+      } on Exception catch (e) {
+        if (state case MarkDetailLoaded loaded) {
+          emit(loaded.copyWith(
+            isSaving: false,
+            delegate: MarkDetailSaveErrorDelegate(e.toString()),
+          ));
+        }
+      }
     }
   }
 

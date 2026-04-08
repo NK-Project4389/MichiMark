@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../domain/transaction/mark_link/mark_link_domain.dart';
+import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../repository/event_repository.dart';
 import '../draft/link_detail_draft.dart';
 import 'link_detail_event.dart';
@@ -24,11 +26,15 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
   }
 
   final EventRepository _eventRepository;
+  String _eventId = '';
+  String _markLinkId = '';
 
   Future<void> _onStarted(
     LinkDetailStarted event,
     Emitter<LinkDetailState> emit,
   ) async {
+    _eventId = event.eventId;
+    _markLinkId = event.markLinkId;
     emit(const LinkDetailLoading());
     try {
       final domain = await _eventRepository.fetch(event.eventId);
@@ -161,9 +167,82 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
     Emitter<LinkDetailState> emit,
   ) async {
     if (state case LinkDetailLoaded current) {
-      emit(current.copyWith(
-        delegate: LinkDetailSaveDraftDelegate(current.draft),
-      ));
+      emit(current.copyWith(isSaving: true));
+      try {
+        final existing = await _eventRepository.fetch(_eventId);
+        final draft = current.draft;
+
+        // markLinkSeq の算出
+        final activeMarkLinks = existing.markLinks.where((ml) => !ml.isDeleted).toList();
+        final existingMarkLink = activeMarkLinks.where((ml) => ml.id == _markLinkId).firstOrNull;
+        final int seq;
+        if (existingMarkLink != null) {
+          seq = existingMarkLink.markLinkSeq;
+        } else {
+          seq = activeMarkLinks.isEmpty
+              ? 0
+              : activeMarkLinks.map((ml) => ml.markLinkSeq).reduce((a, b) => a > b ? a : b) + 1;
+        }
+
+        final distanceValue = draft.distanceValueInput.isEmpty
+            ? null
+            : int.tryParse(draft.distanceValueInput);
+
+        final pricePerGas = draft.pricePerGasInput.isEmpty
+            ? null
+            : int.tryParse(draft.pricePerGasInput);
+
+        final gasQuantity = draft.gasQuantityInput.isEmpty
+            ? null
+            : (double.tryParse(draft.gasQuantityInput) != null
+                ? (double.parse(draft.gasQuantityInput) * 10).round()
+                : null);
+
+        final gasPrice = draft.gasPriceInput.isEmpty
+            ? null
+            : int.tryParse(draft.gasPriceInput);
+
+        final now = DateTime.now();
+        final newMarkLink = MarkLinkDomain(
+          id: _markLinkId,
+          markLinkSeq: seq,
+          markLinkType: MarkOrLink.link,
+          markLinkDate: draft.markLinkDate,
+          markLinkName: draft.markLinkName.isEmpty ? null : draft.markLinkName,
+          members: draft.selectedMembers,
+          distanceValue: distanceValue,
+          actions: draft.selectedActions,
+          memo: draft.memo.isEmpty ? null : draft.memo,
+          isFuel: draft.isFuel,
+          pricePerGas: pricePerGas,
+          gasQuantity: gasQuantity,
+          gasPrice: gasPrice,
+          createdAt: existingMarkLink?.createdAt ?? now,
+          updatedAt: now,
+        );
+
+        final updatedMarkLinks = List<MarkLinkDomain>.from(
+          existing.markLinks.where((ml) => ml.id != _markLinkId),
+        )..add(newMarkLink);
+
+        final updated = existing.copyWith(
+          markLinks: updatedMarkLinks,
+          updatedAt: now,
+        );
+        await _eventRepository.save(updated);
+
+        emit(current.copyWith(
+          isSaving: false,
+          delegate: LinkDetailSavedDelegate(markLinkId: _markLinkId, draft: draft),
+        ));
+      } on Exception catch (e) {
+        if (state case LinkDetailLoaded loaded) {
+          emit(loaded.copyWith(
+            isSaving: false,
+            delegate: LinkDetailSaveErrorDelegate(e.toString()),
+          ));
+        }
+      }
     }
   }
 

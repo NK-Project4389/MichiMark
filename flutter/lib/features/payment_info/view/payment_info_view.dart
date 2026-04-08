@@ -8,15 +8,21 @@ import '../bloc/payment_info_bloc.dart';
 import '../bloc/payment_info_event.dart';
 import '../bloc/payment_info_state.dart';
 
-class PaymentInfoView extends StatelessWidget {
+class PaymentInfoView extends StatefulWidget {
   const PaymentInfoView({super.key});
 
   @override
+  State<PaymentInfoView> createState() => _PaymentInfoViewState();
+}
+
+class _PaymentInfoViewState extends State<PaymentInfoView> {
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<PaymentInfoBloc, PaymentInfoState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is PaymentInfoLoaded && state.delegate != null) {
-          _handleDelegate(context, state.delegate!, state.eventId);
+          await _handleDelegate(context, state.delegate!, state.eventId);
+          if (!context.mounted) return;
           context
               .read<PaymentInfoBloc>()
               .add(const PaymentInfoDelegateConsumed());
@@ -34,22 +40,27 @@ class PaymentInfoView extends StatelessWidget {
     );
   }
 
-  void _handleDelegate(
+  Future<void> _handleDelegate(
     BuildContext context,
     PaymentInfoDelegate delegate,
     String eventId,
-  ) {
+  ) async {
     switch (delegate) {
       case PaymentInfoOpenNewPaymentDelegate():
-        context.push(
+        await context.push(
           '/event/payment',
           extra: PaymentDetailArgs(eventId: eventId),
         );
+        if (!context.mounted) return;
+        context.read<PaymentInfoBloc>().add(const PaymentInfoReloadRequested());
+
       case PaymentInfoOpenPaymentByIdDelegate(:final paymentId):
-        context.push(
+        await context.push(
           '/event/payment',
           extra: PaymentDetailArgs(eventId: eventId, paymentId: paymentId),
         );
+        if (!context.mounted) return;
+        context.read<PaymentInfoBloc>().add(const PaymentInfoReloadRequested());
     }
   }
 }

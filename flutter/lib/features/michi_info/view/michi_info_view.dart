@@ -5,9 +5,7 @@ import 'package:uuid/uuid.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../features/event_detail/projection/michi_info_list_projection.dart';
-import '../../../features/link_detail/draft/link_detail_draft.dart';
 import '../../../features/link_detail/link_detail_args.dart';
-import '../../../features/mark_detail/draft/mark_detail_draft.dart';
 import '../../../features/mark_detail/mark_detail_args.dart';
 import '../../../features/shared/projection/action_item_projection.dart';
 import '../../../features/shared/projection/mark_link_item_projection.dart';
@@ -162,28 +160,16 @@ class _MichiInfoViewState extends State<MichiInfoView> {
   Future<void> _handleDelegate(MichiInfoDelegate delegate) async {
     switch (delegate) {
       case MichiInfoOpenMarkDelegate(:final eventId, :final markLinkId, :final topicConfig):
-        final result = await context.push<MarkDetailDraft>(
+        await context.push<void>(
           '/event/mark/$markLinkId',
           extra: MarkDetailArgs(eventId: eventId, topicConfig: topicConfig),
         );
-        if (!mounted) return;
-        if (result != null) {
-          context.read<MichiInfoBloc>().add(
-                MichiInfoMarkDraftApplied(markLinkId: markLinkId, draft: result),
-              );
-        }
 
       case MichiInfoOpenLinkDelegate(:final eventId, :final markLinkId, :final topicConfig):
-        final result = await context.push<LinkDetailDraft>(
+        await context.push<void>(
           '/event/link/$markLinkId',
           extra: LinkDetailArgs(eventId: eventId, topicConfig: topicConfig),
         );
-        if (!mounted) return;
-        if (result != null) {
-          context.read<MichiInfoBloc>().add(
-                MichiInfoLinkDraftApplied(markLinkId: markLinkId, draft: result),
-              );
-        }
 
       case MichiInfoAddMarkDelegate(
           :final eventId,
@@ -194,7 +180,7 @@ class _MichiInfoViewState extends State<MichiInfoView> {
           :final eventMembers,
         ):
         final markId = const Uuid().v4();
-        final result = await context.push<MarkDetailDraft>(
+        await context.push<void>(
           '/event/mark/$markId',
           extra: MarkDetailArgs(
             eventId: eventId,
@@ -205,25 +191,13 @@ class _MichiInfoViewState extends State<MichiInfoView> {
             eventMembers: eventMembers,
           ),
         );
-        if (!mounted) return;
-        if (result != null) {
-          context.read<MichiInfoBloc>().add(
-                MichiInfoMarkDraftApplied(markLinkId: markId, draft: result),
-              );
-        }
 
       case MichiInfoAddLinkDelegate(:final eventId, :final topicConfig):
         final linkId = const Uuid().v4();
-        final result = await context.push<LinkDetailDraft>(
+        await context.push<void>(
           '/event/link/$linkId',
           extra: LinkDetailArgs(eventId: eventId, topicConfig: topicConfig),
         );
-        if (!mounted) return;
-        if (result != null) {
-          context.read<MichiInfoBloc>().add(
-                MichiInfoLinkDraftApplied(markLinkId: linkId, draft: result),
-              );
-        }
     }
   }
 }

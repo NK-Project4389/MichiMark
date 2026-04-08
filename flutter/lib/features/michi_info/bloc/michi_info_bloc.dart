@@ -30,8 +30,8 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     on<MichiInfoItemTapped>(_onItemTapped);
     on<MichiInfoAddMarkPressed>(_onAddMarkPressed);
     on<MichiInfoAddLinkPressed>(_onAddLinkPressed);
-    on<MichiInfoMarkDraftApplied>(_onMarkDraftApplied);
-    on<MichiInfoLinkDraftApplied>(_onLinkDraftApplied);
+    on<MichiInfoMarkSaved>(_onMarkSaved);
+    on<MichiInfoLinkSaved>(_onLinkSaved);
     on<MichiInfoTopicConfigUpdated>(_onTopicConfigUpdated);
     on<MichiInfoMarkActionPressed>(_onMarkActionPressed);
     on<MichiInfoDelegateConsumed>(_onDelegateConsumed);
@@ -155,8 +155,8 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     }
   }
 
-  Future<void> _onMarkDraftApplied(
-    MichiInfoMarkDraftApplied event,
+  Future<void> _onMarkSaved(
+    MichiInfoMarkSaved event,
     Emitter<MichiInfoState> emit,
   ) async {
     if (state case MichiInfoLoaded current) {
@@ -169,8 +169,8 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     }
   }
 
-  Future<void> _onLinkDraftApplied(
-    MichiInfoLinkDraftApplied event,
+  Future<void> _onLinkSaved(
+    MichiInfoLinkSaved event,
     Emitter<MichiInfoState> emit,
   ) async {
     if (state case MichiInfoLoaded current) {

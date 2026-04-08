@@ -149,7 +149,6 @@ final router = GoRouter(
         return BlocProvider(
           create: (_) => EventDetailBloc(
             eventRepository: getIt<EventRepository>(),
-            transRepository: getIt<TransRepository>(),
           )..add(EventDetailStarted(eventId, initialTopicType: args?.initialTopicType)),
           child: EventDetailPage(initialTopicType: args?.initialTopicType),
         );

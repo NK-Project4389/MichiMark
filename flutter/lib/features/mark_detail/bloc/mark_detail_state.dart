@@ -29,12 +29,21 @@ class MarkDetailOpenActionsSelectionDelegate extends MarkDetailDelegate {
   List<Object?> get props => [];
 }
 
-class MarkDetailSaveDraftDelegate extends MarkDetailDelegate {
+class MarkDetailSavedDelegate extends MarkDetailDelegate {
+  final String markLinkId;
   final MarkDetailDraft draft;
-  const MarkDetailSaveDraftDelegate(this.draft);
+  const MarkDetailSavedDelegate({required this.markLinkId, required this.draft});
 
   @override
-  List<Object?> get props => [draft];
+  List<Object?> get props => [markLinkId, draft];
+}
+
+class MarkDetailSaveErrorDelegate extends MarkDetailDelegate {
+  final String message;
+  const MarkDetailSaveErrorDelegate(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }
 
 // ---------------------------------------------------------------------------
@@ -54,6 +63,7 @@ class MarkDetailLoaded extends MarkDetailState {
   final MarkDetailDraft draft;
   final MarkDetailDelegate? delegate;
   final TopicConfig topicConfig;
+  final bool isSaving;
 
   /// メンバー選択 UI に表示する候補一覧（イベントメンバーに限定）
   final List<MemberDomain> availableMembers;
@@ -62,6 +72,7 @@ class MarkDetailLoaded extends MarkDetailState {
     required this.draft,
     this.delegate,
     TopicConfig? topicConfig,
+    this.isSaving = false,
     this.availableMembers = const [],
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
@@ -78,18 +89,20 @@ class MarkDetailLoaded extends MarkDetailState {
     MarkDetailDraft? draft,
     MarkDetailDelegate? delegate,
     TopicConfig? topicConfig,
+    bool? isSaving,
     List<MemberDomain>? availableMembers,
   }) {
     return MarkDetailLoaded(
       draft: draft ?? this.draft,
       delegate: delegate,
       topicConfig: topicConfig ?? this.topicConfig,
+      isSaving: isSaving ?? this.isSaving,
       availableMembers: availableMembers ?? this.availableMembers,
     );
   }
 
   @override
-  List<Object?> get props => [draft, delegate, topicConfig, availableMembers];
+  List<Object?> get props => [draft, delegate, topicConfig, isSaving, availableMembers];
 }
 
 class MarkDetailError extends MarkDetailState {

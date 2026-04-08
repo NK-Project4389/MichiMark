@@ -5,6 +5,7 @@
 ---
 
 ## 完了した作業
+- docs: 本日セッション進捗最終更新（T-073〜076完了・次回やること更新） (5f4c6e1)
 - docs: T-073〜T-076完了を進捗ファイルに反映 (1651982)
 - test: T-076 地点追加初期値・引き継ぎ Integration Test 全8件PASS (2ee1afd)
 - feat: 地点追加初期値・引き継ぎ・メンバー制限・メーター同期実装（T-074 / REQ-MAD-001〜005） (aab7a49)
@@ -174,10 +175,59 @@
 
 ---
 
+## 追加実装（2026-04-08 第5セッション）
+
+### T-091: EventDetail 概要タブ再設計 実装
+
+**実装内容:**
+
+- **Mark/Link/Payment の DB 直接保存化**: `MarkDetailBloc` / `LinkDetailBloc` / `PaymentDetailBloc` が `EventRepository.save()` を直接呼び出す。`MarkDetailSavedDelegate` / `LinkDetailSavedDelegate` / `PaymentDetailSavedDelegate` を emit してページに通知。
+- **BasicInfo インライン編集モード**: `BasicInfoDraft.isEditing` フラグ追加。参照モード（`_BasicInfoReadView`）と編集モード（`_BasicInfoForm`）を切り替え。編集モードで保存・キャンセルの FloatingButton 表示。`BasicInfoSavePressed` イベントで DB 保存 → `BasicInfoSavedDelegate` emit。
+- **EventDetailTab 3タブ化**: `EventDetailTab` を `{ overview, michiInfo, paymentInfo }` に変更（旧 `basicInfo` タブを削除）。
+- **概要タブ**: `BasicInfoView` + `EventDetailOverviewPage` を縦並びで `SingleChildScrollView` に表示する `_OverviewTabContent`。
+- **タブ切り替え保護**: `BasicInfoLoaded.draft.isEditing == true` の場合にタブ切り替えをブロックし、未保存変更ダイアログを表示（キャンセル / 破棄して移動 / 保存して移動）。
+- **EventDetailBloc 簡素化**: `TransRepository` 依存と `EventDetailSaveRequested` ハンドラーを削除。`EventDetailCachedEventUpdateRequested` を追加（BasicInfo 保存後に cachedEvent を再フェッチ）。
+- **MichiInfoView**: `context.push` 後の draft 戻り値処理を削除（DB 保存は MarkDetailBloc/LinkDetailBloc 側が担当）。
+
+**dart analyze**: 0 errors
+
+**対応ファイル:**
+- `flutter/lib/app/router.dart`
+- `flutter/lib/features/basic_info/draft/basic_info_draft.dart`
+- `flutter/lib/features/basic_info/bloc/basic_info_event.dart`
+- `flutter/lib/features/basic_info/bloc/basic_info_state.dart`
+- `flutter/lib/features/basic_info/bloc/basic_info_bloc.dart`
+- `flutter/lib/features/basic_info/view/basic_info_view.dart`
+- `flutter/lib/features/event_detail/draft/event_detail_draft.dart`
+- `flutter/lib/features/event_detail/bloc/event_detail_event.dart`
+- `flutter/lib/features/event_detail/bloc/event_detail_state.dart`
+- `flutter/lib/features/event_detail/bloc/event_detail_bloc.dart`
+- `flutter/lib/features/event_detail/view/event_detail_page.dart`
+- `flutter/lib/features/mark_detail/bloc/mark_detail_state.dart`
+- `flutter/lib/features/mark_detail/bloc/mark_detail_bloc.dart`
+- `flutter/lib/features/mark_detail/view/mark_detail_page.dart`
+- `flutter/lib/features/link_detail/bloc/link_detail_state.dart`
+- `flutter/lib/features/link_detail/bloc/link_detail_bloc.dart`
+- `flutter/lib/features/link_detail/view/link_detail_page.dart`
+- `flutter/lib/features/payment_detail/bloc/payment_detail_state.dart`
+- `flutter/lib/features/payment_detail/bloc/payment_detail_bloc.dart`
+- `flutter/lib/features/payment_detail/view/payment_detail_page.dart`
+- `flutter/lib/features/payment_info/bloc/payment_info_event.dart`
+- `flutter/lib/features/payment_info/bloc/payment_info_bloc.dart`
+- `flutter/lib/features/payment_info/view/payment_info_view.dart`
+- `flutter/lib/features/michi_info/bloc/michi_info_event.dart`
+- `flutter/lib/features/michi_info/bloc/michi_info_bloc.dart`
+- `flutter/lib/features/michi_info/view/michi_info_view.dart`
+
+---
+
 ## 未完了・次回やること
 
 - [x] **T-075**: T-074 レビュー PASS
 - [x] **T-076**: Integration Test 全8件PASS（TC-MAD-001〜008）
+- [x] **T-091**: EventDetail 概要タブ再設計 実装完了
+- [ ] **T-092**: EventDetail 概要タブ再設計 レビュー
+- [ ] **T-093**: EventDetail 概要タブ再設計 テスト
 - [ ] **T-080**: シードデータ更新（トピック設定・Overview確認データ・MichiInfoパターン）
 - [ ] **MichiInfo_Layout_Spec.md v5.0 追記**: v4→v5 変更内容の Spec 反映（architect タスク）
 - [ ] **TS-09 パターン1の検証**: Mark-Mark 直接のシードデータを作って手動確認
@@ -185,9 +235,9 @@
 
 ## 次回セッションで最初にやること
 
-1. **T-080**: シードデータ更新（flutter-dev タスク）
-2. **T-064**: タイムライン挿入UI の要件書作成（product-manager タスク）
-3. **MichiInfo_Layout_Spec.md v5.0 追記**
+1. **T-092**: EventDetail 概要タブ再設計 レビュー（reviewer タスク）
+2. **T-093**: EventDetail 概要タブ再設計 テスト（tester タスク）
+3. **T-080**: シードデータ更新（flutter-dev タスク）
 
 ---
 
