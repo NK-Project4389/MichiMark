@@ -5,6 +5,8 @@
 ---
 
 ## 完了した作業
+- feat: タグレコメンド常時表示・最近使った順ソート（REQ-tag_recommend_display） (25cfaa3)
+- docs: 次回やること更新（動作確認→T-080→T-094） (1766c45)
 - chore: MichiInfoアクションボタンUIタスク追加（Phase 10 / T-094〜T-098） (101bdcc)
 - docs: 第7セッション進捗更新（動作確認フィードバック5件修正・アクションボタン未実装確認） (4d16e6a)
 - fix: 概要編集ボタン右上移動・選択行全行タップ・設定遷移アニメ・トピック初期保存・delegateバグ修正 (6520e6e)
@@ -265,9 +267,27 @@
 
 未実装確認: **MichiInfoアクションボタン**（地点カードへのアクション記録ボタンUI）は未実装。
 
+## 追加修正（2026-04-08 第8セッション: バグ3件修正・タグレコメンド実装）
+
+### バグ修正 3件 (a6ba863)
+
+1. **EventDetail 集計未表示バグ修正**: 初回ロード時に概要タブで `OverviewStarted` が発火されないバグ
+   - `_EventDetailScaffoldInner` を `StatefulWidget` 化し `initState` → `postFrameCallback` で発火
+2. **日付テキストタップで選択画面が開かない**: `_DateRow` の日付テキストに `GestureDetector` 追加
+3. **マークのメーター更新がTrans側に反映されない**: T-091 で誤削除された REQ-MAD-005 ロジックを復活
+   - `MarkDetailBloc` に `TransRepository` を注入し保存時に `trans.meterValue` を更新
+
+### タグレコメンド常時表示・最近使った順ソート (25cfaa3)
+
+- 要件書: `docs/Requirements/REQ-tag_recommend_display.md` 作成
+- 編集モード開始時に全マスタタグをレコメンドとして設定（updatedAt 降順）
+- 空入力時も全マスタタグを表示（入力があればフィルタ）
+- レコメンドから選択時に `updatedAt` を更新してマスタ保存（最近使った順反映）
+- View: レコメンドセクションに「レコメンド」ラベル追加
+
 ## 次回セッションで最初にやること
 
-1. **動作確認**: 今回の修正（編集ボタン右上・行全体タップ・設定遷移アニメ・トピック初期保存・delegate再タップ）を手動確認
+1. **動作確認**: バグ3件修正・タグレコメンドを手動確認
 2. **T-080**: シードデータ更新（flutter-dev タスク）
 3. **T-094**: MichiInfo アクションボタン UI 要件書作成（product-manager タスク）
 
