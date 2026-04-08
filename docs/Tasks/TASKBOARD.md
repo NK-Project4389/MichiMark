@@ -83,7 +83,7 @@
 | T-073 | 地点追加初期値・引き継ぎ Spec作成 | architect | `DONE` | | REQ-mark_addition_defaults（REQ-MAD-001〜005）対応 |
 | T-074 | 地点追加初期値・引き継ぎ 実装 | flutter-dev | `DONE` | | Spec: `docs/Spec/Features/EventDetail/MarkDetail/MarkAdditionDefaults_Spec.md` |
 | T-075 | 地点追加初期値・引き継ぎ レビュー | reviewer | `TODO` | | T-074完了後 |
-| T-076 | 地点追加初期値・引き継ぎ テスト | tester | `BLOCKED` | | T-075完了後 |
+| T-076 | 地点追加初期値・引き継ぎ テスト | tester | `DONE` | | 全8件PASS（TC-MAD-001〜008） |
 
 ## Phase 8: テストデータ更新
 
@@ -107,6 +107,15 @@
 | T-030 | MichiInfo レイアウト変更 Spec作成 | architect | `DONE` | | 要件書: docs/Requirements/REQ-michi_info_layout.md |
 | T-031 | MichiInfo レイアウト変更 実装 | flutter-dev | `DONE` | | T-030完了後 |
 | T-032 | MichiInfo レイアウト変更 レビュー | reviewer | `DONE` | | T-031完了後 |
+
+## Phase 9: EventDetail 概要タブ再設計
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-090 | EventDetail 概要タブ再設計 Spec作成 | architect | `IN_PROGRESS` | 2026-04-08_event_detail_overview_redesign | REQ-event_detail_overview_redesign 対応 |
+| T-091 | EventDetail 概要タブ再設計 実装 | flutter-dev | `BLOCKED` | | T-090完了後 |
+| T-092 | EventDetail 概要タブ再設計 レビュー | reviewer | `BLOCKED` | | T-091完了後 |
+| T-093 | EventDetail 概要タブ再設計 テスト | tester | `BLOCKED` | | T-092完了後 |
 
 ---
 

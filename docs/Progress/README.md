@@ -60,3 +60,4 @@
 | [2026-04-08_michi_info_timeline_v5.md](./2026-04-08_michi_info_timeline_v5.md) | MichiInfo タイムライン UI v5.0（縦線分離・矢印位置・距離右配置・Mark-Mark間隔） |
 | [2026-04-08_michi_info_date_separator_design.md](./2026-04-08_michi_info_date_separator_design.md) | MichiInfo 日付セパレーター デザイン提案・要件書作成（T-068〜069完了） |
 | [2026-04-08_settings_bugfix_and_visibility.md](./2026-04-08_settings_bugfix_and_visibility.md) | 設定ページ戻るバグ修正・非表示セクションヘッダー・選択リスト非表示フィルター |
+| [2026-04-08_mark_addition_defaults_test.md](./2026-04-08_mark_addition_defaults_test.md) | T-076完了：地点追加初期値・引き継ぎ Integration Test 全8件PASS |
