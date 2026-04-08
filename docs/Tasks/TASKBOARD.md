@@ -131,7 +131,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-099 | カード挿入機能 要件書作成 | product-manager | `TODO` | | カードとカードの間に Mark/Link を挿入する UI・UX の要件定義 |
+| T-099 | カード挿入機能 要件書作成 | product-manager | `DONE` | | 要件書: `docs/Requirements/REQ-michi_info_card_insert.md` |
 | T-100 | カード挿入機能 Spec作成 | architect | `BLOCKED` | | T-099完了後 |
 | T-101 | カード挿入機能 実装 | flutter-dev | `BLOCKED` | | T-100完了後 |
 | T-102 | カード挿入機能 レビュー | reviewer | `BLOCKED` | | T-101完了後 |
