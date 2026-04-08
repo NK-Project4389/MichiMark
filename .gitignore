@@ -1,2 +1,5 @@
 # App Store Connect API key config (contains auth credentials)
 .claude/testflight.json
+
+# Claude Code worktrees (temporary isolated branches)
+.claude/worktrees/
