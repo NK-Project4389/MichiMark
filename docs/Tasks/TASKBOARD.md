@@ -32,9 +32,9 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-010 | `flutter run` で全Feature動作確認（イベント一覧・詳細・マーク・リンク・支払） | flutter-dev | `IN_PROGRESS` | 2026-04-03_phase2_verification | |
-| T-011 | 設定Feature動作確認（Trans/Member/Tag/Action） | flutter-dev | `IN_PROGRESS` | 2026-04-03_phase2_verification | T-010と同時着手 |
-| T-012 | drift データ保存・再起動後の永続化確認 | flutter-dev | `IN_PROGRESS` | 2026-04-03_phase2_verification | T-010と同時着手 |
+| T-010 | `flutter run` で全Feature動作確認（イベント一覧・詳細・マーク・リンク・支払） | flutter-dev | `DONE` | | Phase 3〜10 の開発・テストを通じて確認済み |
+| T-011 | 設定Feature動作確認（Trans/Member/Tag/Action） | flutter-dev | `DONE` | | Phase 3〜10 の開発・テストを通じて確認済み |
+| T-012 | drift データ保存・再起動後の永続化確認 | flutter-dev | `DONE` | | Phase 3〜10 の開発・テストを通じて確認済み |
 
 ## Phase 4: Topic / ActionTime / Aggregation / EventDetailOverview 実装
 
@@ -66,15 +66,15 @@
 | T-061 | MarkLink カードデザイン Spec 作成 | architect | `DONE` | | MichiInfo_Layout_Spec.md v4.0 更新対象（Spec追記は次セッションで実施） |
 | T-062 | MarkLink カードデザイン 実装 | flutter-dev | `DONE` | | C-2カラー・Link 34dp・縦線修正・ドット変更 |
 | T-063 | MarkLink カードデザイン レビュー | reviewer | `DONE` | | 全項目PASS。アーキテクチャ違反なし |
-| T-064 | タイムライン挿入UI（FAB型）要件書作成 | product-manager | `BLOCKED` | | デザイン提案: `docs/Design/2026-04-07_marklink_insert_button_proposal.html`。T-060と並行可 |
-| T-065 | タイムライン挿入UI（FAB型）Spec 作成 | architect | `BLOCKED` | | T-064完了後 |
-| T-066 | タイムライン挿入UI（FAB型）実装 | flutter-dev | `BLOCKED` | | T-065完了後 |
-| T-067 | タイムライン挿入UI（FAB型）レビュー | reviewer | `BLOCKED` | | T-066完了後 |
+| T-064 | タイムライン挿入UI（FAB型）要件書作成 | product-manager | `DONE` | | デザイン提案: `docs/Design/2026-04-07_marklink_insert_button_proposal.html`。T-060と並行可 |
+| T-065 | タイムライン挿入UI（FAB型）Spec 作成 | architect | `DONE` | | T-064完了後 |
+| T-066 | タイムライン挿入UI（FAB型）実装 | flutter-dev | `DONE` | | T-065完了後 |
+| T-067 | タイムライン挿入UI（FAB型）レビュー | reviewer | `DONE` | | T-066完了後 |
 | T-068 | MichiInfo 日付セパレーター デザイン提案 | designer | `DONE` | | デザイン提案: `docs/Design/draft/2026-04-08_michi_info_date_placement.html` |
 | T-069 | MichiInfo 日付セパレーター 要件書作成 | product-manager | `DONE` | | 要件書: `docs/Requirements/REQ-michi_info_date_separator.md` |
-| T-070 | MichiInfo 日付セパレーター Spec 作成 | architect | `TODO` | | T-069完了後。`MarkLinkItemProjection` に日付フィールド要確認 |
-| T-071 | MichiInfo 日付セパレーター 実装 | flutter-dev | `BLOCKED` | | T-070完了後 |
-| T-072 | MichiInfo 日付セパレーター レビュー | reviewer | `BLOCKED` | | T-071完了後 |
+| T-070 | MichiInfo 日付セパレーター Spec 作成 | architect | `DONE` | | |
+| T-071 | MichiInfo 日付セパレーター 実装 | flutter-dev | `DONE` | | |
+| T-072 | MichiInfo 日付セパレーター レビュー | reviewer | `DONE` | | |
 
 ## Phase 7: 地点追加初期値・引き継ぎ・メンバー制限・メーター同期
 
@@ -82,7 +82,7 @@
 |---|---|---|---|---|---|
 | T-073 | 地点追加初期値・引き継ぎ Spec作成 | architect | `DONE` | | REQ-mark_addition_defaults（REQ-MAD-001〜005）対応 |
 | T-074 | 地点追加初期値・引き継ぎ 実装 | flutter-dev | `DONE` | | Spec: `docs/Spec/Features/EventDetail/MarkDetail/MarkAdditionDefaults_Spec.md` |
-| T-075 | 地点追加初期値・引き継ぎ レビュー | reviewer | `TODO` | | T-074完了後 |
+| T-075 | 地点追加初期値・引き継ぎ レビュー | reviewer | `DONE` | | |
 | T-076 | 地点追加初期値・引き継ぎ テスト | tester | `DONE` | | 全8件PASS（TC-MAD-001〜008） |
 
 ## Phase 8: テストデータ更新
