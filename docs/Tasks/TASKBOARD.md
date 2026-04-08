@@ -121,7 +121,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-094 | MichiInfo アクションボタン UI 要件書作成 | product-manager | `TODO` | | ActionTime Bloc/Repo は実装済み。地点カードへのボタン表示 UI の要件定義 |
+| T-094 | MichiInfo アクションボタン UI 要件書作成 | product-manager | `DONE` | | 要件書: `docs/Requirements/REQ-michi_info_action_button.md` |
 | T-095 | MichiInfo アクションボタン UI Spec作成 | architect | `BLOCKED` | | T-094完了後 |
 | T-096 | MichiInfo アクションボタン UI 実装 | flutter-dev | `BLOCKED` | | T-095完了後 |
 | T-097 | MichiInfo アクションボタン UI レビュー | reviewer | `BLOCKED` | | T-096完了後 |
