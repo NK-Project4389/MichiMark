@@ -65,12 +65,18 @@ const Color _linkBorderColor = Color(0xFFC3EBD8);
 class SpanArrowData {
   final double startY;
   final double endY;
-  final String distanceText;
+
+  /// メーター差分テキスト（Teal）
+  final String meterDiffText;
+
+  /// 区間距離テキスト群（Emerald）。スパン内 Link ごとに 1 件
+  final List<String> linkDistanceTexts;
 
   const SpanArrowData({
     required this.startY,
     required this.endY,
-    required this.distanceText,
+    required this.meterDiffText,
+    this.linkDistanceTexts = const [],
   });
 }
 
@@ -82,28 +88,28 @@ class LinkSegmentData {
   const LinkSegmentData({required this.startY, required this.endY});
 }
 
-/// Link カードの区間距離テキスト描画データ
-class LinkDistanceData {
-  final double centerY;
-  final String distanceText;
-
-  const LinkDistanceData({required this.centerY, required this.distanceText});
-}
-
 /// タイムライン描画データ一式
 class _TimelineData {
   final List<SpanArrowData> spans;
   final List<LinkSegmentData> linkSegments;
-  final List<LinkDistanceData> linkDistances;
   final List<double> gapAfterItem;
-  final double totalContentHeight;
+
+  /// 縦線の開始 Y（始点アイテムのドット中心・リスト相対）
+  final double verticalLineStartRelY;
+
+  /// 縦線の終了 Y（終点アイテムのドット中心・リスト相対）
+  final double verticalLineEndRelY;
+
+  /// スパンに含まれない Link の単独距離テキスト（centerRelY, text）
+  final List<(double, String)> standaloneLinkDistances;
 
   const _TimelineData({
     required this.spans,
     required this.linkSegments,
-    required this.linkDistances,
     required this.gapAfterItem,
-    required this.totalContentHeight,
+    required this.verticalLineStartRelY,
+    required this.verticalLineEndRelY,
+    required this.standaloneLinkDistances,
   });
 }
 
@@ -265,9 +271,10 @@ class _MichiInfoListState extends State<_MichiInfoList> {
       return const _TimelineData(
         spans: [],
         linkSegments: [],
-        linkDistances: [],
         gapAfterItem: [],
-        totalContentHeight: 0,
+        verticalLineStartRelY: 0,
+        verticalLineEndRelY: 0,
+        standaloneLinkDistances: [],
       );
     }
 
@@ -294,11 +301,20 @@ class _MichiInfoListState extends State<_MichiInfoList> {
       cumulative += cardH + gap;
     }
 
-    final totalContentHeight = yOffsets.last + cardHeightList.last;
+    // 縦線は始点・終点アイテムのドット中心 Y を始終端とする
+    // ドット中心 = カード部分の中心（アクションボタン高は含まない）
+    double dotCenterRelY(int k) {
+      final isMark = items[k].markLinkType == MarkOrLink.mark;
+      return yOffsets[k] + (isMark ? _cardHeight : _linkCardHeight) / 2;
+    }
+
+    final verticalLineStartRelY = dotCenterRelY(0);
+    final verticalLineEndRelY = dotCenterRelY(items.length - 1);
 
     final spans = <SpanArrowData>[];
     final linkSegments = <LinkSegmentData>[];
-    final linkDistances = <LinkDistanceData>[];
+    // スパンに含まれる Link のインデックス（単独表示の重複除外に使用）
+    final coveredLinkIndices = <int>{};
 
     for (var i = 0; i < items.length; i++) {
       if (items[i].markLinkType != MarkOrLink.mark) continue;
@@ -309,12 +325,12 @@ class _MichiInfoListState extends State<_MichiInfoList> {
         // パターン1: Mark-Mark 直接隣接
         final j = i + 1;
         if (j < items.length && items[j].markLinkType == MarkOrLink.mark) {
-          final distanceText = items[j].displayMeterDiff;
-          if (distanceText != null) {
+          final meterDiffText = items[j].displayMeterDiff;
+          if (meterDiffText != null) {
             spans.add(SpanArrowData(
               startY: yOffsets[i] + cardHeightList[i],
               endY: yOffsets[j],
-              distanceText: distanceText,
+              meterDiffText: meterDiffText,
             ));
           }
         }
@@ -323,40 +339,50 @@ class _MichiInfoListState extends State<_MichiInfoList> {
         final endMarkIndex = i + spanCount + 1;
         if (endMarkIndex < items.length &&
             items[endMarkIndex].markLinkType == MarkOrLink.mark) {
-          final distanceText = items[endMarkIndex].displayMeterDiff;
-          if (distanceText != null) {
-            spans.add(SpanArrowData(
-              startY: yOffsets[i] + cardHeightList[i],
-              endY: yOffsets[endMarkIndex],
-              distanceText: distanceText,
-            ));
-            // Link セグメント・区間距離データを収集
+          final meterDiffText = items[endMarkIndex].displayMeterDiff;
+          if (meterDiffText != null) {
+            // Link セグメントと区間距離テキストを収集
+            final linkDistTexts = <String>[];
             for (var k = i + 1; k < endMarkIndex; k++) {
               if (items[k].markLinkType == MarkOrLink.link) {
+                coveredLinkIndices.add(k);
                 linkSegments.add(LinkSegmentData(
                   startY: yOffsets[k],
                   endY: yOffsets[k] + _linkCardHeight,
                 ));
                 final dist = items[k].displayDistanceValue;
-                if (dist != null) {
-                  linkDistances.add(LinkDistanceData(
-                    centerY: yOffsets[k] + _linkCardHeight / 2,
-                    distanceText: dist,
-                  ));
-                }
+                if (dist != null) linkDistTexts.add(dist);
               }
             }
+            spans.add(SpanArrowData(
+              startY: yOffsets[i] + cardHeightList[i],
+              endY: yOffsets[endMarkIndex],
+              meterDiffText: meterDiffText,
+              linkDistanceTexts: linkDistTexts,
+            ));
           }
         }
+      }
+    }
+
+    // スパンに含まれない Link（先頭・末尾・孤立）の距離を単独テキストとして収集
+    final standaloneLinkDistances = <(double, String)>[];
+    for (var k = 0; k < items.length; k++) {
+      if (items[k].markLinkType != MarkOrLink.link) continue;
+      if (coveredLinkIndices.contains(k)) continue;
+      final dist = items[k].displayDistanceValue;
+      if (dist != null) {
+        standaloneLinkDistances.add((yOffsets[k] + _linkCardHeight / 2, dist));
       }
     }
 
     return _TimelineData(
       spans: spans,
       linkSegments: linkSegments,
-      linkDistances: linkDistances,
       gapAfterItem: gapAfterItem,
-      totalContentHeight: totalContentHeight,
+      verticalLineStartRelY: verticalLineStartRelY,
+      verticalLineEndRelY: verticalLineEndRelY,
+      standaloneLinkDistances: standaloneLinkDistances,
     );
   }
 
@@ -385,14 +411,19 @@ class _MichiInfoListState extends State<_MichiInfoList> {
       body: Stack(
         children: [
           // 背景レイヤー: 縦線全体 + スパン矢印 + 距離テキスト
+          // top: 48 でタブ/凡例領域へのはみ出しを防ぎ、ClipRect でさらに安全にクリップ
           Positioned.fill(
-            child: CustomPaint(
-              painter: _MichiTimelineCanvas(
-                spans: timelineData.spans,
-                linkSegments: timelineData.linkSegments,
-                linkDistances: timelineData.linkDistances,
-                totalContentHeight: timelineData.totalContentHeight,
-                scrollOffset: scrollOffset,
+            top: 48,
+            child: ClipRect(
+              child: CustomPaint(
+                painter: _MichiTimelineCanvas(
+                  spans: timelineData.spans,
+                  linkSegments: timelineData.linkSegments,
+                  standaloneLinkDistances: timelineData.standaloneLinkDistances,
+                  verticalLineStartRelY: timelineData.verticalLineStartRelY,
+                  verticalLineEndRelY: timelineData.verticalLineEndRelY,
+                  scrollOffset: scrollOffset,
+                ),
               ),
             ),
           ),
@@ -481,8 +512,9 @@ class _MichiInfoListState extends State<_MichiInfoList> {
 class _MichiTimelineCanvas extends CustomPainter {
   final List<SpanArrowData> spans;
   final List<LinkSegmentData> linkSegments;
-  final List<LinkDistanceData> linkDistances;
-  final double totalContentHeight;
+  final List<(double, String)> standaloneLinkDistances;
+  final double verticalLineStartRelY;
+  final double verticalLineEndRelY;
   final double scrollOffset;
 
   static const double _axisX = 20.0;
@@ -490,25 +522,28 @@ class _MichiTimelineCanvas extends CustomPainter {
   static const double _thickLineWidth = 6.0;
   static const double _arrowHeadSize = 6.0;
   static const double _arrowStrokeWidth = 1.5;
-  static const double _topPadding = 48.0;
+  // canvas は Positioned.fill(top: 48) で配置されるため、
+  // リスト相対 Y と canvas Y のオフセットは 0（scrollOffset のみ考慮）
+  static const double _topPadding = 0.0;
 
   const _MichiTimelineCanvas({
     required this.spans,
     required this.linkSegments,
-    required this.linkDistances,
-    required this.totalContentHeight,
+    required this.standaloneLinkDistances,
+    required this.verticalLineStartRelY,
+    required this.verticalLineEndRelY,
     required this.scrollOffset,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    // ── 1. 細い Teal 縦線（全体背景・途切れなし）────────────────
-    if (totalContentHeight > 0) {
-      final lineStartY = _topPadding - scrollOffset;
-      final lineEndY = _topPadding + totalContentHeight - scrollOffset;
+    // ── 1. 細い Teal 縦線（始点ドット中心〜終点ドット中心）────────
+    if (verticalLineEndRelY > verticalLineStartRelY) {
+      final lineStartY = _topPadding + verticalLineStartRelY - scrollOffset;
+      final lineEndY = _topPadding + verticalLineEndRelY - scrollOffset;
       canvas.drawLine(
-        Offset(_axisX, lineStartY.clamp(0.0, size.height)),
-        Offset(_axisX, lineEndY.clamp(0.0, size.height)),
+        Offset(_axisX, lineStartY),
+        Offset(_axisX, lineEndY),
         Paint()
           ..color = _markPrimaryColor.withValues(alpha: 0.4)
           ..strokeWidth = _thinLineWidth
@@ -585,32 +620,47 @@ class _MichiTimelineCanvas extends CustomPainter {
         arrowPaint,
       );
 
-      // メーター差分テキスト（矢印上端の右側）
-      final meterPainter = TextPainter(
-        text: TextSpan(
-          text: span.distanceText,
+      // メーター差分 + 区間距離を 1 つのテキストブロックにまとめてスパン縦中央に配置
+      final children = <InlineSpan>[
+        TextSpan(
+          text: span.meterDiffText,
           style: const TextStyle(
             fontSize: 11,
             color: _markPrimaryColor,
             fontWeight: FontWeight.bold,
           ),
         ),
+        for (final dist in span.linkDistanceTexts) ...[
+          const TextSpan(text: '\n'),
+          TextSpan(
+            text: dist,
+            style: const TextStyle(
+              fontSize: 11,
+              color: _linkPrimaryColor,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ];
+      final combinedPainter = TextPainter(
+        text: TextSpan(children: children),
         textDirection: TextDirection.ltr,
       )..layout(maxWidth: textMaxWidth);
-      meterPainter.paint(
+      final midY = (drawStartY + drawEndY) / 2;
+      combinedPainter.paint(
         canvas,
-        Offset(textX, drawStartY + 2),
+        Offset(textX, midY - combinedPainter.height / 2),
       );
     }
 
-    // ── 4. Link 区間距離テキスト（スパン列右側・Link カード中心 Y）──
-    for (final ld in linkDistances) {
-      final drawCenterY = ld.centerY - scrollOffset + _topPadding;
+    // ── 4. スパン外 Link の単独区間距離テキスト ─────────────────
+    for (final (centerRelY, text) in standaloneLinkDistances) {
+      final drawCenterY = _topPadding + centerRelY - scrollOffset;
       if (drawCenterY < -20 || drawCenterY > size.height + 20) continue;
 
-      final distPainter = TextPainter(
+      final standalonePainter = TextPainter(
         text: TextSpan(
-          text: ld.distanceText,
+          text: text,
           style: const TextStyle(
             fontSize: 11,
             color: _linkPrimaryColor,
@@ -619,9 +669,9 @@ class _MichiTimelineCanvas extends CustomPainter {
         ),
         textDirection: TextDirection.ltr,
       )..layout(maxWidth: textMaxWidth);
-      distPainter.paint(
+      standalonePainter.paint(
         canvas,
-        Offset(textX, drawCenterY - distPainter.height / 2),
+        Offset(textX, drawCenterY - standalonePainter.height / 2),
       );
     }
   }
@@ -630,8 +680,9 @@ class _MichiTimelineCanvas extends CustomPainter {
   bool shouldRepaint(_MichiTimelineCanvas old) =>
       spans != old.spans ||
       linkSegments != old.linkSegments ||
-      linkDistances != old.linkDistances ||
-      totalContentHeight != old.totalContentHeight ||
+      standaloneLinkDistances != old.standaloneLinkDistances ||
+      verticalLineStartRelY != old.verticalLineStartRelY ||
+      verticalLineEndRelY != old.verticalLineEndRelY ||
       scrollOffset != old.scrollOffset;
 }
 
@@ -689,8 +740,8 @@ class _TimelineItem extends StatelessWidget {
                   ],
                 ),
               ),
-              // スパン矢印列スペース確保（_MichiTimelineCanvas が描画）
-              const SizedBox(width: _spanArrowColumnWidth),
+              // Link 行のみスパン列スペース確保（Mark は右端まで拡張のためスペース不要）
+              if (!isMark) const SizedBox(width: _spanArrowColumnWidth),
             ],
           ),
         ),
