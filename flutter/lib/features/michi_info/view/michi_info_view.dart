@@ -698,7 +698,7 @@ class _MichiTimelineCanvas extends CustomPainter {
       );
     }
 
-    // ── 5. スパン外 Link のスパン列縦線（矢印なし）─────────────
+    // ── 5. スパン外 Link のスパン列縦線（矢印あり）─────────────
     final standaloneLinkPaint = Paint()
       ..color = _linkPrimaryColor
       ..strokeWidth = _arrowStrokeWidth
@@ -707,9 +707,32 @@ class _MichiTimelineCanvas extends CustomPainter {
       final drawStartY = _topPadding + startRelY - scrollOffset;
       final drawEndY = _topPadding + endRelY - scrollOffset;
       if (drawEndY < 0 || drawStartY > size.height) continue;
+      // 縦線
       canvas.drawLine(
         Offset(arrowX, drawStartY),
         Offset(arrowX, drawEndY),
+        standaloneLinkPaint,
+      );
+      // 上向き矢印頭
+      canvas.drawLine(
+        Offset(arrowX, drawStartY),
+        Offset(arrowX - _arrowHeadSize / 2, drawStartY + _arrowHeadSize),
+        standaloneLinkPaint,
+      );
+      canvas.drawLine(
+        Offset(arrowX, drawStartY),
+        Offset(arrowX + _arrowHeadSize / 2, drawStartY + _arrowHeadSize),
+        standaloneLinkPaint,
+      );
+      // 下向き矢印頭
+      canvas.drawLine(
+        Offset(arrowX, drawEndY),
+        Offset(arrowX - _arrowHeadSize / 2, drawEndY - _arrowHeadSize),
+        standaloneLinkPaint,
+      );
+      canvas.drawLine(
+        Offset(arrowX, drawEndY),
+        Offset(arrowX + _arrowHeadSize / 2, drawEndY - _arrowHeadSize),
         standaloneLinkPaint,
       );
     }
