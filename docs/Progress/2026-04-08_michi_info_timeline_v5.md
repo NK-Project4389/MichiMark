@@ -5,6 +5,7 @@
 ---
 
 ## 完了した作業
+- docs: 進捗ファイル更新（スタンドアロンLink線+矢印・delegateバグ修正） (a78022e)
 - fix: 選択リストから非表示マスターを除外（Trans/Member/Tag/Action/Topic） (cda850c)
 - fix: パターン2スタンドアロンLinkのスパン列縦線に矢印頭を追加 (57d9a53)
 - fix: 設定ページ戻るバグ修正（/events→/）・非表示セクションヘッダー追加 (28a5110)
@@ -115,19 +116,34 @@
 
 ---
 
+## 追加修正（2026-04-08 第3セッション）
+
+### EventDetail保存後にEventListが更新されないバグ修正
+
+**原因**: `EventListPage._handleDelegate` で `context.push('/event/$eventId')` 後に `EventListBloc` のリロード処理がなかった。保存はDBに成功しているが、一覧が再フェッチされないため古いデータのまま表示されていた。
+
+**修正**: `context.push(...).then((_) { if (!mounted) return; bloc.add(const EventListStarted()); })` を追加。EventDetailから pop したタイミングで `fetchAll()` を再実行する。
+
+対応ファイル:
+- `flutter/lib/features/event_list/view/event_list_page.dart`
+
+テスト: `flutter/integration_test/event_list_reload_test.dart` 追加（TC-BUG-001・TC-BUG-002）
+- **2 PASS / 0 FAIL**
+
+---
+
 ## 未完了・次回やること
 
-- [ ] **tester**: デリゲートバグ修正 + スタンドアロン Link 線表示の動作確認テスト
 - [ ] **MichiInfo_Layout_Spec.md v5.0 追記**: v4→v5 変更内容の Spec 反映（architect タスク）
 - [ ] **TS-09 パターン1の検証**: Mark-Mark 直接のシードデータを作って手動確認
 - [ ] **T-064〜T-067**: タイムライン挿入UI（FAB型）— 次の大きな機能
+- [ ] **Phase2要件 実装**: 地点追加時初期値ルール・メーター反映・メンバー引き継ぎ・テストデータ見直し
 
 ## 次回セッションで最初にやること
 
-1. **tester に確認テスト依頼**: delegate バグ修正・スタンドアロン Link 線+矢印の動作確認
+1. **Phase2要件 architect**: 地点追加初期値・メーター・メンバー引き継ぎの Spec 作成
 2. **T-064**: タイムライン挿入UI の要件書作成（product-manager タスク）
 3. **MichiInfo_Layout_Spec.md v5.0 追記**
-3. **T-064**: タイムライン挿入UI の要件書作成（product-manager タスク）
 
 ---
 

@@ -87,12 +87,20 @@ class _EventListPageState extends State<EventListPage> {
   void _handleDelegate(BuildContext context, EventListDelegate delegate) {
     switch (delegate) {
       case OpenEventDetailDelegate(:final eventId):
-        context.push('/event/$eventId');
+        final bloc = context.read<EventListBloc>();
+        context.push('/event/$eventId').then((_) {
+          if (!mounted) return;
+          bloc.add(const EventListStarted());
+        });
       case OpenAddEventWithTopicDelegate(:final topicType, :final eventId):
+        final bloc = context.read<EventListBloc>();
         context.push(
           '/event/$eventId',
           extra: EventDetailArgs(initialTopicType: topicType),
-        );
+        ).then((_) {
+          if (!mounted) return;
+          bloc.add(const EventListStarted());
+        });
       case OpenSettingsDelegate():
         context.go('/settings');
     }
