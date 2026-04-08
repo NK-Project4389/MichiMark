@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MichiMark — 入力画面UI刷新デザイン提案 2026-04-08</title>
+  <title>MichiMark — 入力画面UI刷新デザイン提案 2026-04-08 v2</title>
   <style>
     :root {
       /* ===== Brand Colors ===== */
@@ -20,7 +20,6 @@
       --border-light:    #E0EEEC;
       --border-input:    #B2DFDB;
       --border-focus:    #4ECDC4;
-      --border-select:   #3AADA5;
 
       /* ===== Text ===== */
       --text-primary:    #1A1A2E;
@@ -30,9 +29,6 @@
       --text-label:      #3E5A5A;
 
       /* ===== Interactive ===== */
-      --select-bg:       #F0FAFA;
-      --select-border:   #4ECDC4;
-      --select-arrow:    #2D6A6A;
       --btn-primary:     #2D6A6A;
       --btn-primary-h:   #245858;
       --btn-cancel:      #5C7070;
@@ -51,7 +47,6 @@
 
       /* ===== Misc ===== */
       --radius-card:     16px;
-      --radius-input:    10px;
       --radius-chip:     20px;
       --radius-btn:      12px;
       --shadow-card:     0 2px 12px rgba(45,106,106,0.08);
@@ -85,6 +80,20 @@
       font-weight: 600;
       letter-spacing: 0.5px;
       margin-bottom: 18px;
+    }
+    .page-header .badge-v2 {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(78,205,196,0.3);
+      border: 1px solid rgba(78,205,196,0.6);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 18px;
+      margin-left: 8px;
     }
     .page-header h1 {
       font-size: 32px;
@@ -165,6 +174,84 @@
       border-bottom: 1px solid var(--divider);
     }
 
+    /* ========== CHANGELOG ========== */
+    .changelog-card {
+      background: #fff;
+      border-radius: var(--radius-card);
+      border: 2px solid var(--teal-mid);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      margin-bottom: 48px;
+    }
+    .changelog-header {
+      background: linear-gradient(90deg, #2D6A6A, #3AADA5);
+      color: #fff;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .changelog-body {
+      padding: 20px 24px;
+    }
+    .changelog-version {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--divider);
+    }
+    .changelog-version:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .changelog-version-tag {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      height: fit-content;
+    }
+    .changelog-version-tag.v1 {
+      background: #f0f0f0;
+      color: #666;
+      border: 1px solid #ddd;
+    }
+    .changelog-version-tag.v2 {
+      background: var(--teal-tint);
+      color: var(--teal-dark);
+      border: 1px solid var(--teal-mid);
+    }
+    .changelog-version-content { flex: 1; }
+    .changelog-version-date {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .changelog-entry {
+      font-size: 13px;
+      color: var(--text-primary);
+      padding: 4px 0;
+      display: flex;
+      gap: 8px;
+    }
+    .changelog-entry .entry-label {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 10px;
+      height: fit-content;
+      margin-top: 2px;
+    }
+    .entry-label.removed { background: #FDECEA; color: #C0392B; }
+    .entry-label.changed { background: #E8F4FD; color: #2980B9; }
+    .entry-label.kept    { background: #EAFAF1; color: #27AE60; }
+
     /* ========== PHONE FRAME ========== */
     .phone-frame {
       width: 320px;
@@ -185,93 +272,77 @@
     }
     .phone-nav .nav-title { font-size: 15px; font-weight: 700; }
     .phone-nav .nav-action { font-size: 12px; opacity: 0.85; }
-    .phone-body { padding: 0; background: #F4F8F8; }
+    .phone-body { padding: 0; background: #fff; }
 
-    /* ========== FORM PRIMITIVES ========== */
-    /* --- Text Input --- */
-    .form-field {
-      padding: 12px 16px;
+    /* ========== FORM PRIMITIVES (確定版: ボーダーレス・インライン行) ========== */
+
+    /* --- インライン入力行 --- */
+    .form-row {
+      padding: 0 16px;
       background: #fff;
       border-bottom: 1px solid var(--divider);
-    }
-    .form-field:last-child { border-bottom: none; }
-    .field-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-label);
-      margin-bottom: 5px;
-      letter-spacing: 0.3px;
-    }
-    .text-input-wrap {
-      border: 1.5px solid var(--border-input);
-      border-radius: var(--radius-input);
-      padding: 8px 12px;
-      background: #fff;
-      color: var(--text-primary);
-      font-size: 14px;
-      min-height: 38px;
       display: flex;
       align-items: center;
+      min-height: 44px;
     }
-    .text-input-wrap.focused {
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 3px rgba(78,205,196,0.15);
-    }
-    .text-input-wrap.placeholder { color: var(--text-tertiary); }
-    .text-input-wrap .unit {
-      margin-left: auto;
+    .form-row:last-child { border-bottom: none; }
+    .form-row .row-label {
+      width: 90px;
+      flex-shrink: 0;
       font-size: 11px;
       color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .form-row .row-value {
+      flex: 1;
+      font-size: 13px;
+      color: var(--text-primary);
+      padding: 12px 0;
+    }
+    .form-row .row-value.placeholder {
+      color: var(--text-tertiary);
+    }
+    .form-row .row-value .suffix {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-left: 4px;
     }
 
-    /* --- Select Row --- */
-    .select-row {
-      padding: 12px 16px;
-      background: var(--select-bg);
-      border: 1.5px solid var(--select-border);
-      border-radius: var(--radius-input);
-      margin: 8px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-    }
-    .select-row .select-label { font-size: 11px; font-weight: 600; color: var(--text-label); }
-    .select-row .select-value { font-size: 13px; color: var(--text-primary); margin-top: 1px; }
-    .select-row .select-left { display: flex; flex-direction: column; gap: 1px; }
-    .select-row .arrow-icon {
-      font-size: 16px;
-      color: var(--select-arrow);
-      font-weight: 700;
-    }
-    /* Inline select (in form list) */
-    .form-select {
-      padding: 12px 16px;
-      background: var(--select-bg);
+    /* --- 選択行（背景なし・chevron_right のみ） --- */
+    .form-row-select {
+      padding: 0 16px;
+      background: #fff;
       border-bottom: 1px solid var(--divider);
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      min-height: 44px;
       cursor: pointer;
     }
-    .form-select:last-child { border-bottom: none; }
-    .form-select .fs-label { font-size: 13px; color: var(--text-primary); }
-    .form-select .fs-value { font-size: 13px; color: var(--text-secondary); }
-    .form-select .fs-right { display: flex; align-items: center; gap: 6px; }
-    .fs-arrow {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--teal-dark);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .form-row-select:last-child { border-bottom: none; }
+    .form-row-select .row-label {
+      width: 90px;
+      flex-shrink: 0;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .form-row-select .row-value {
+      flex: 1;
+      font-size: 13px;
+      color: var(--text-primary);
+      padding: 12px 0;
+    }
+    .form-row-select .row-value.placeholder {
+      color: var(--text-tertiary);
+    }
+    .chevron-icon {
+      color: var(--text-tertiary);
+      font-size: 18px;
+      font-weight: 300;
+      flex-shrink: 0;
     }
 
-    /* --- Tag Section --- */
+    /* --- タグセクション --- */
     .tag-section {
       padding: 10px 16px 12px;
       background: #fff;
@@ -308,7 +379,7 @@
     .chip .chip-x { color: var(--teal-dark); font-weight: 800; font-size: 10px; }
     .chip .chip-plus { color: var(--text-secondary); font-weight: 800; font-size: 10px; }
 
-    /* --- Buttons --- */
+    /* --- ボタン --- */
     .btn-row {
       display: flex;
       gap: 10px;
@@ -421,6 +492,24 @@
       color: var(--text-secondary);
       line-height: 1.6;
     }
+    .rule-card.deprecated {
+      opacity: 0.45;
+      border-style: dashed;
+      position: relative;
+    }
+    .rule-card.deprecated::after {
+      content: "不採用";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #C0392B;
+      background: #FDECEA;
+      border: 1px solid #E74C3C;
+      border-radius: 8px;
+      padding: 1px 7px;
+    }
 
     /* ========== COLOR PALETTE ========== */
     .palette-row {
@@ -442,6 +531,7 @@
     }
     .swatch-name { font-size: 10px; color: var(--text-secondary); font-weight: 600; text-align: center; }
     .swatch-hex  { font-size: 10px; color: var(--text-tertiary);  text-align: center; font-family: monospace; }
+    .swatch-note { font-size: 9px; color: #C0392B; text-align: center; font-weight: 700; }
 
     /* ========== TYPOGRAPHY ========== */
     .type-table { width: 100%; border-collapse: collapse; }
@@ -523,17 +613,66 @@
 
 <!-- ===== PAGE HEADER ===== -->
 <header class="page-header">
-  <div class="badge">Designer Report — MichiMark</div>
+  <div>
+    <span class="badge">Designer Report — MichiMark</span>
+    <span class="badge-v2">v2 — ユーザーフィードバック反映版</span>
+  </div>
   <h1>入力画面UI刷新デザイン提案</h1>
   <p class="subtitle">BasicInfo / MarkDetail / LinkDetail / PaymentDetail — 入力性・視認性の向上</p>
   <div class="meta">
-    <span>2026-04-08</span>
+    <span>初版: 2026-04-08 / 更新: 2026-04-08 v2</span>
     <span>対象: 入力画面 4画面 + FABボタン</span>
-    <span>フェーズ: デザイン提案 (Draft)</span>
+    <span>フェーズ: 最終確定版（実装済みと整合）</span>
   </div>
 </header>
 
 <div class="container">
+
+  <!-- ========== 変更履歴 ========== -->
+  <div class="changelog-card">
+    <div class="changelog-header">
+      変更履歴
+    </div>
+    <div class="changelog-body">
+      <!-- v2 -->
+      <div class="changelog-version">
+        <div class="changelog-version-tag v2">v2</div>
+        <div class="changelog-version-content">
+          <div class="changelog-version-date">2026-04-08 — ユーザーフィードバック反映・実装済みスタイルと整合</div>
+          <div class="changelog-entry">
+            <span class="entry-label removed">不採用</span>
+            <span>テキストボックスの OutlineInputBorder デザインを廃止。ボーダーレス（border: InputBorder.none）のスタイリッシュなインライン行レイアウトに変更。</span>
+          </div>
+          <div class="changelog-entry">
+            <span class="entry-label removed">不採用</span>
+            <span>選択行の背景色 #F0FAFA + 枠線 #3AADA5 による色分けを廃止。シンプルに chevron_right アイコンのみで「選択行」を示すデザインに変更。</span>
+          </div>
+          <div class="changelog-entry">
+            <span class="entry-label changed">変更</span>
+            <span>タグセクションのラベル名変更: 「レコメンド」→「最近使用したタグ」、「タグを追加」→「新しいタグを追加」</span>
+          </div>
+          <div class="changelog-entry">
+            <span class="entry-label kept">維持</span>
+            <span>拡張 FAB（アイコン＋「追加」テキスト）はそのまま採用。</span>
+          </div>
+          <div class="changelog-entry">
+            <span class="entry-label kept">維持</span>
+            <span>Divider（height: 1）による項目間区切り、インライン行レイアウト（ラベル 120px + フィールド）はそのまま採用。</span>
+          </div>
+        </div>
+      </div>
+      <!-- v1 -->
+      <div class="changelog-version">
+        <div class="changelog-version-tag v1">v1</div>
+        <div class="changelog-version-content">
+          <div class="changelog-version-date">2026-04-08 — 初期提案（Draft）</div>
+          <div class="changelog-entry" style="color: var(--text-secondary);">
+            <span>OutlineInputBorder・選択行背景色 #F0FAFA・タグセクション3層構造・拡張FAB・Divider必須化を提案。product-manager レビュー待ち状態。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ========== 0. 課題サマリー ========== -->
   <section class="section" id="issues">
@@ -541,43 +680,43 @@
       <div class="section-num">0</div>
       <div>
         <div class="section-title">現状の課題</div>
-        <div class="section-desc">ユーザー指摘5点を整理する</div>
+        <div class="section-desc">ユーザー指摘5点と対応方針（v2で確定）</div>
       </div>
     </div>
     <div class="issue-list">
       <div class="issue-item">
         <div class="issue-num">1</div>
         <div>
-          <div class="issue-text">テキストボックスの境界が不明確</div>
-          <div class="issue-sub">枠線がなく、どこが入力エリアか視覚的に判別しにくい</div>
+          <div class="issue-text">テキストボックスの枠を消す</div>
+          <div class="issue-sub">OutlineInputBorder をやめ、ボーダーレス（border: InputBorder.none）のスタイリッシュなインライン行レイアウトに変更。Divider で項目を区切る。[v2で採用]</div>
         </div>
       </div>
       <div class="issue-item">
         <div class="issue-num">2</div>
         <div>
-          <div class="issue-text">マスター選択行のタップ誘導が弱い</div>
-          <div class="issue-sub">右矢印はあるが選択可能であることが伝わりにくい。背景・ボーダーで選択インタラクションを明示する必要がある</div>
+          <div class="issue-text">色で選択行を区別するデザインは微妙</div>
+          <div class="issue-sub">背景 #F0FAFA + 枠線 #3AADA5 は不採用。シンプルに右矢印アイコン（chevron_right）のみで選択行を示す。[v2で変更]</div>
         </div>
       </div>
       <div class="issue-item">
         <div class="issue-num">3</div>
         <div>
-          <div class="issue-text">タグセクションの範囲が不明確</div>
-          <div class="issue-sub">登録済みチップ / レコメンドチップ / 入力フィールドの区分がフラットで混在して見える</div>
+          <div class="issue-text">タグセクションのラベル名を修正</div>
+          <div class="issue-sub">「レコメンド」→「最近使用したタグ」、「タグを追加」→「新しいタグを追加」に変更。[v2で採用]</div>
         </div>
       </div>
       <div class="issue-item">
         <div class="issue-num">4</div>
         <div>
-          <div class="issue-text">保存・キャンセルボタンの統一感がない</div>
-          <div class="issue-sub">ボタン種別・スタイルが画面ごとに異なる。ElevatedButton / TextButton への統一が必要</div>
+          <div class="issue-text">FAB はそのまま採用</div>
+          <div class="issue-sub">拡張FAB（アイコン＋「追加」テキスト）を採用。スクロール時縮小はオプション。[v1から維持]</div>
         </div>
       </div>
       <div class="issue-item">
         <div class="issue-num">5</div>
         <div>
-          <div class="issue-text">各項目間のセパレーターがない</div>
-          <div class="issue-sub">Dividerがなくフォームアイテムの区切りが曖昧。項目数が増えると特に視認性が低下する</div>
+          <div class="issue-text">Divider区切り・インライン行レイアウトはそのまま採用</div>
+          <div class="issue-sub">各フォーム項目間に height: 1 の Divider。ラベル（120px固定幅）+ フィールドのインライン行を全画面共通で統一。[v1から維持]</div>
         </div>
       </div>
     </div>
@@ -589,7 +728,7 @@
       <div class="section-num">1</div>
       <div>
         <div class="section-title">カラーパレット</div>
-        <div class="section-desc">既存のTeal系パレットを入力UIに適合させた拡張定義</div>
+        <div class="section-desc">確定版パレット（v2: 選択行カラーは不採用）</div>
       </div>
     </div>
     <div class="card" style="padding: 24px;">
@@ -620,43 +759,36 @@
           <div class="swatch-name">Teal Tint</div>
           <div class="swatch-hex">#E0F7F5</div>
         </div>
-        <div class="swatch">
-          <div class="swatch-block" style="background:#F0FAFA; border:1px solid #ccc;"></div>
-          <div class="swatch-name">Teal Tint2</div>
-          <div class="swatch-hex">#F0FAFA</div>
-        </div>
       </div>
 
-      <div class="card-label" style="margin: 0 -24px 20px; padding: 10px 24px; background: #F9FCFC; border-top: 1px solid #E0EEEC;">Input / UI Tokens</div>
+      <div class="card-label" style="margin: 0 -24px 20px; padding: 10px 24px; background: #F9FCFC; border-top: 1px solid #E0EEEC;">UI Tokens（確定版）</div>
       <div class="palette-row" style="margin-bottom: 24px;">
-        <div class="swatch">
-          <div class="swatch-block" style="background:#B2DFDB; border:1px solid #aaa;"></div>
-          <div class="swatch-name">Input Border</div>
-          <div class="swatch-hex">#B2DFDB</div>
-        </div>
-        <div class="swatch">
-          <div class="swatch-block" style="background:#4ECDC4; border:1px solid #ccc;"></div>
-          <div class="swatch-name">Focus Ring</div>
-          <div class="swatch-hex">#4ECDC4</div>
-        </div>
-        <div class="swatch">
-          <div class="swatch-block" style="background:#F0FAFA; border:1px solid #ccc;"></div>
-          <div class="swatch-name">Select BG</div>
-          <div class="swatch-hex">#F0FAFA</div>
-        </div>
-        <div class="swatch">
-          <div class="swatch-block" style="background:#3AADA5; border:1px solid #ccc;"></div>
-          <div class="swatch-name">Select Border</div>
-          <div class="swatch-hex">#3AADA5</div>
-        </div>
         <div class="swatch">
           <div class="swatch-block" style="background:#E5F0EE; border:1px solid #ccc;"></div>
           <div class="swatch-name">Divider</div>
           <div class="swatch-hex">#E5F0EE</div>
         </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#B2DFDB; border:1px solid #aaa;"></div>
+          <div class="swatch-name">Divider Strong</div>
+          <div class="swatch-hex">#B2DFDB</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#E0F7F5; border:1px solid #ccc;"></div>
+          <div class="swatch-name">Tag Chip BG</div>
+          <div class="swatch-hex">#E0F7F5</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#F4F8F8; border:1px solid #ccc;"></div>
+          <div class="swatch-name">Tag Rec BG</div>
+          <div class="swatch-hex">#F4F8F8</div>
+        </div>
+      </div>
+      <div style="font-size: 11px; color: #C0392B; padding: 4px 0; font-weight: 600;">
+        v2変更: 選択行用 Select BG (#F0FAFA) および Select Border (#3AADA5) は不採用となり、パレットから除外しました。
       </div>
 
-      <div class="card-label" style="margin: 0 -24px 20px; padding: 10px 24px; background: #F9FCFC; border-top: 1px solid #E0EEEC;">Text</div>
+      <div class="card-label" style="margin: 20px -24px 20px; padding: 10px 24px; background: #F9FCFC; border-top: 1px solid #E0EEEC;">Text</div>
       <div class="palette-row">
         <div class="swatch">
           <div class="swatch-block" style="background:#1A1A2E;"></div>
@@ -688,7 +820,7 @@
       <div class="section-num">2</div>
       <div>
         <div class="section-title">タイポグラフィ</div>
-        <div class="section-desc">入力画面で使用するテキストスタイル一覧</div>
+        <div class="section-desc">入力画面で使用するテキストスタイル一覧（確定版）</div>
       </div>
     </div>
     <div class="card">
@@ -709,38 +841,32 @@
             <td class="type-spec">text-primary</td>
           </tr>
           <tr>
-            <td class="type-role">フィールドラベル</td>
-            <td><span style="font-size:11px; font-weight:600; color:#3E5A5A; text-transform:uppercase; letter-spacing:0.3px;">イベント名</span></td>
-            <td class="type-spec">11px / SemiBold / uppercase</td>
-            <td class="type-spec">text-label</td>
+            <td class="type-role">フィールドラベル（インライン行）</td>
+            <td><span style="font-size:11px; font-weight:500; color:#5C7070;">イベント名</span></td>
+            <td class="type-spec">bodySmall / onSurfaceVariant</td>
+            <td class="type-spec">text-secondary</td>
           </tr>
           <tr>
             <td class="type-role">入力値テキスト</td>
             <td><span style="font-size:14px; color:#1A1A2E;">東京ドライブ2026</span></td>
-            <td class="type-spec">14px / Regular</td>
+            <td class="type-spec">bodyMedium / Regular</td>
             <td class="type-spec">text-primary</td>
           </tr>
           <tr>
             <td class="type-role">プレースホルダー</td>
-            <td><span style="font-size:14px; color:#9BB5B3;">例: 東京ドライブ2026</span></td>
-            <td class="type-spec">14px / Regular</td>
+            <td><span style="font-size:14px; color:#9BB5B3;">任意</span></td>
+            <td class="type-spec">bodyMedium / Regular</td>
             <td class="type-spec">text-tertiary</td>
-          </tr>
-          <tr>
-            <td class="type-role">選択行ラベル（キャプション）</td>
-            <td><span style="font-size:11px; font-weight:600; color:#3E5A5A;">交通手段</span></td>
-            <td class="type-spec">11px / SemiBold</td>
-            <td class="type-spec">text-label</td>
           </tr>
           <tr>
             <td class="type-role">選択行の値</td>
             <td><span style="font-size:13px; color:#1A1A2E;">車</span></td>
-            <td class="type-spec">13px / Regular</td>
+            <td class="type-spec">bodyMedium / Regular</td>
             <td class="type-spec">text-primary</td>
           </tr>
           <tr>
-            <td class="type-role">タグセクション見出し</td>
-            <td><span style="font-size:10px; font-weight:700; color:#2D6A6A; text-transform:uppercase; letter-spacing:0.6px;">登録済みタグ</span></td>
+            <td class="type-role">タグセクション見出し（確定ラベル）</td>
+            <td><span style="font-size:10px; font-weight:700; color:#2D6A6A; text-transform:uppercase; letter-spacing:0.6px;">最近使用したタグ</span></td>
             <td class="type-spec">10px / Bold / uppercase</td>
             <td class="type-spec">text-teal</td>
           </tr>
@@ -751,16 +877,16 @@
             <td class="type-spec">tag-chip-text</td>
           </tr>
           <tr>
-            <td class="type-role">単位テキスト</td>
+            <td class="type-role">単位テキスト（suffixText）</td>
             <td><span style="font-size:11px; color:#5C7070;">km/L</span></td>
             <td class="type-spec">11px / Regular</td>
             <td class="type-spec">text-secondary</td>
           </tr>
           <tr>
-            <td class="type-role">保存ボタン</td>
+            <td class="type-role">保存ボタン（AppBar TextButton）</td>
             <td><span style="font-size:14px; font-weight:700; color:#2D6A6A;">保存</span></td>
             <td class="type-spec">14px / Bold</td>
-            <td class="type-spec">white (on teal-dark)</td>
+            <td class="type-spec">teal-dark</td>
           </tr>
         </tbody>
       </table>
@@ -773,41 +899,41 @@
       <div class="section-num">3</div>
       <div>
         <div class="section-title">コンポーネントプレビュー</div>
-        <div class="section-desc">各画面の刷新後デザインを実寸近似でプレビュー</div>
+        <div class="section-desc">各画面の確定版デザインを実寸近似でプレビュー（v2: 実装済みと整合）</div>
       </div>
     </div>
 
     <!-- 3-1. デザイン原則サマリー -->
     <div class="rule-grid" style="margin-bottom: 32px;">
       <div class="rule-card">
-        <div class="rule-icon">&#9633;</div>
-        <div class="rule-title">OutlineInputBorder</div>
-        <div class="rule-desc">テキスト入力は常に枠線付き。通常は Teal Light (#B2DFDB)、フォーカス時は Teal (#4ECDC4) + 薄いグロー。</div>
-      </div>
-      <div class="rule-card">
-        <div class="rule-icon">&#9656;</div>
-        <div class="rule-title">選択行の明示</div>
-        <div class="rule-desc">選択可能行は背景 #F0FAFA + ボーダー #3AADA5 + 塗りつぶし丸矢印アイコン。テキスト入力と明確に区別。</div>
-      </div>
-      <div class="rule-card">
         <div class="rule-icon">&#9135;</div>
-        <div class="rule-title">Divider必須</div>
-        <div class="rule-desc">各フォーム項目間に #E5F0EE の1px Divider。セクション境界は #B2DFDB の強めDivider。</div>
+        <div class="rule-title">ボーダーレス入力フィールド</div>
+        <div class="rule-desc">テキスト入力は枠線なし（border: InputBorder.none）。Divider（height: 1）による行区切りでシンプルに視覚分離する。フォーカスリングも不使用。</div>
       </div>
       <div class="rule-card">
-        <div class="rule-icon">&#11052;</div>
-        <div class="rule-title">ボタン統一</div>
-        <div class="rule-desc">保存 = ElevatedButton（Teal Dark背景・白テキスト）。キャンセル = TextButton（グレーテキスト・背景なし）。</div>
+        <div class="rule-icon">&#8250;</div>
+        <div class="rule-title">選択行は右矢印のみ</div>
+        <div class="rule-desc">選択可能な行は chevron_right アイコンのみで識別。背景色・枠線による色分けは行わない。InkWell でタップリップルを提供する。</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">&#9724;</div>
+        <div class="rule-title">インライン行レイアウト</div>
+        <div class="rule-desc">全フォーム項目共通: ラベル幅 120px（bodySmall / onSurfaceVariant）+ フィールド（Expanded）の水平レイアウト。padding: 対称 horizontal 16。</div>
       </div>
       <div class="rule-card">
         <div class="rule-icon">&#9654;</div>
         <div class="rule-title">タグ3層構造</div>
-        <div class="rule-desc">登録済みタグ（選択解除可チップ）/ レコメンド（追加可チップ）/ 新規入力フィールドを明確に分離。</div>
+        <div class="rule-desc">選択済みタグ（Chip）/ 最近使用したタグ（ActionChip）/ 新しいタグを追加（ボーダーレス TextField）。各層を見出しラベルで区分。</div>
       </div>
       <div class="rule-card">
         <div class="rule-icon">&#9650;</div>
-        <div class="rule-title">FABデザイン</div>
-        <div class="rule-desc">MichiInfo の FAB は Teal Dark 背景・白アイコン。ラベルあり拡張FABを基本とし、スクロール時はアイコンのみに縮小。</div>
+        <div class="rule-title">FABデザイン（拡張FAB）</div>
+        <div class="rule-desc">MichiInfo の FAB は Teal Dark 背景・白アイコン。アイコン＋「追加」テキストの拡張 FAB を採用。スクロール時縮小はオプション。</div>
+      </div>
+      <div class="rule-card deprecated">
+        <div class="rule-icon">&#9633;</div>
+        <div class="rule-title">OutlineInputBorder</div>
+        <div class="rule-desc">v1提案。通常時 Teal Light (#B2DFDB)、フォーカス時 Teal (#4ECDC4) + グロー。ユーザーフィードバックにより不採用。</div>
       </div>
     </div>
 
@@ -819,74 +945,63 @@
         <div class="screen-name">BasicInfo — 基本情報編集</div>
         <div class="phone-frame">
           <div class="phone-nav">
-            <div class="nav-action">キャンセル</div>
+            <div class="nav-action">&#8249;</div>
             <div class="nav-title">基本情報を編集</div>
             <div class="nav-action" style="color:#4ECDC4; font-weight:700;">保存</div>
           </div>
           <div class="phone-body">
             <!-- イベント名 -->
-            <div class="form-field">
-              <div class="field-label">イベント名</div>
-              <div class="text-input-wrap focused">東京ドライブ2026</div>
+            <div class="form-row">
+              <div class="row-label">イベント名</div>
+              <div class="row-value">東京ドライブ2026</div>
             </div>
-            <!-- 交通手段 -->
-            <div class="form-select">
-              <div class="fs-label">交通手段</div>
-              <div class="fs-right">
-                <div class="fs-value">車</div>
-                <div class="fs-arrow">&#8250;</div>
-              </div>
+            <!-- 交通手段（選択行） -->
+            <div class="form-row-select">
+              <div class="row-label">交通手段</div>
+              <div class="row-value">車</div>
+              <div class="chevron-icon">&#8250;</div>
             </div>
             <!-- 燃費 -->
-            <div class="form-field">
-              <div class="field-label">燃費</div>
-              <div class="text-input-wrap placeholder">
-                <span>未入力</span>
-                <span class="unit">km/L</span>
-              </div>
+            <div class="form-row">
+              <div class="row-label">燃費</div>
+              <div class="row-value placeholder">0 <span class="suffix">km/L</span></div>
             </div>
             <!-- ガソリン単価 -->
-            <div class="form-field">
-              <div class="field-label">ガソリン単価</div>
-              <div class="text-input-wrap">
-                <span>175</span>
-                <span class="unit">円/L</span>
-              </div>
+            <div class="form-row">
+              <div class="row-label">ガソリン単価</div>
+              <div class="row-value">175 <span class="suffix">円/L</span></div>
             </div>
-            <!-- メンバー -->
-            <div class="form-select">
-              <div class="fs-label">メンバー</div>
-              <div class="fs-right">
-                <div class="fs-value">3名</div>
-                <div class="fs-arrow">&#8250;</div>
-              </div>
+            <!-- メンバー（選択行） -->
+            <div class="form-row-select">
+              <div class="row-label">メンバー</div>
+              <div class="row-value">田中、鈴木、佐藤</div>
+              <div class="chevron-icon">&#8250;</div>
             </div>
             <!-- タグ -->
             <div class="tag-section">
-              <div class="tag-section-title">登録済みタグ</div>
               <div class="chip-group">
                 <div class="chip selected"># ドライブ <span class="chip-x">&#10005;</span></div>
                 <div class="chip selected"># 旅行 <span class="chip-x">&#10005;</span></div>
               </div>
             </div>
-            <div class="tag-section" style="background:#F9FCFC; border-bottom: 1px solid var(--divider);">
-              <div class="tag-section-title" style="color:#5C7070;">レコメンド</div>
+            <!-- 新しいタグを追加 -->
+            <div class="form-row" style="border-bottom:none;">
+              <div class="row-label" style="width:auto; padding-right:8px; white-space:nowrap; font-size:10px;">新しいタグを追加</div>
+              <div class="row-value placeholder" style="border-bottom:none;"></div>
+            </div>
+            <!-- 最近使用したタグ -->
+            <div class="tag-section" style="background:#F9FCFC;">
+              <div class="tag-section-title" style="color:#5C7070;">最近使用したタグ</div>
               <div class="chip-group">
                 <div class="chip recommend"># 観光 <span class="chip-plus">+</span></div>
                 <div class="chip recommend"># グルメ <span class="chip-plus">+</span></div>
               </div>
             </div>
-            <div class="form-field">
-              <div class="field-label">タグを追加</div>
-              <div class="text-input-wrap placeholder">新しいタグを入力...</div>
-            </div>
-            <!-- ガソリン支払者 -->
-            <div class="form-select" style="border-bottom:none;">
-              <div class="fs-label">ガソリン支払者</div>
-              <div class="fs-right">
-                <div class="fs-value">田中</div>
-                <div class="fs-arrow">&#8250;</div>
-              </div>
+            <!-- ガソリン支払者（選択行） -->
+            <div class="form-row-select" style="border-top: 1px solid var(--divider); border-bottom: none;">
+              <div class="row-label">ガソリン支払者</div>
+              <div class="row-value">田中</div>
+              <div class="chevron-icon">&#8250;</div>
             </div>
             <!-- ボタン -->
             <div class="btn-row">
@@ -902,57 +1017,44 @@
         <div class="screen-name">MarkDetail — 地点詳細編集</div>
         <div class="phone-frame">
           <div class="phone-nav">
-            <div class="nav-action">キャンセル</div>
-            <div class="nav-title">地点を編集</div>
+            <div class="nav-action">&#8249;</div>
+            <div class="nav-title">地点詳細</div>
             <div class="nav-action" style="color:#4ECDC4; font-weight:700;">保存</div>
           </div>
           <div class="phone-body">
-            <div class="form-field">
-              <div class="field-label">地点名</div>
-              <div class="text-input-wrap">道の駅 富士川</div>
+            <!-- 名称 -->
+            <div class="form-row">
+              <div class="row-label">名称</div>
+              <div class="row-value">道の駅 富士川</div>
             </div>
-            <div class="form-field">
-              <div class="field-label">日付</div>
-              <div class="text-input-wrap">2026-04-08</div>
+            <!-- 日付 -->
+            <div class="form-row">
+              <div class="row-label">日付</div>
+              <div class="row-value">2026/04/08</div>
+              <div style="font-size:14px; color:var(--text-secondary);">&#128197;</div>
             </div>
-            <div class="form-select">
-              <div class="fs-label">メンバー</div>
-              <div class="fs-right">
-                <div class="fs-value">2名</div>
-                <div class="fs-arrow">&#8250;</div>
+            <!-- メンバー（選択行） -->
+            <div class="form-row-select">
+              <div class="row-label">メンバー</div>
+              <div class="row-value">田中、鈴木</div>
+              <div class="chevron-icon">&#8250;</div>
+            </div>
+            <!-- 累積メーター -->
+            <div class="form-row">
+              <div class="row-label">累積メーター</div>
+              <div class="row-value">12450 <span class="suffix">km</span></div>
+            </div>
+            <!-- メモ -->
+            <div class="form-row" style="align-items:flex-start;">
+              <div class="row-label" style="padding-top:12px;">メモ</div>
+              <div class="row-value" style="min-height:56px; padding-top:12px;">富士山がよく見えた</div>
+            </div>
+            <!-- 給油トグル -->
+            <div style="padding:8px 16px; border-top:1px solid var(--divider-strong); display:flex; align-items:center; justify-content:space-between;">
+              <div style="font-size:13px; color:var(--text-primary);">給油</div>
+              <div style="width:28px;height:16px;background:#4ECDC4;border-radius:8px;position:relative;">
+                <div style="width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;right:1px;top:1px;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>
               </div>
-            </div>
-            <div class="form-field">
-              <div class="field-label">メーター</div>
-              <div class="text-input-wrap">
-                <span>12,450</span>
-                <span class="unit">km</span>
-              </div>
-            </div>
-            <div class="form-select">
-              <div class="fs-label">アクション</div>
-              <div class="fs-right">
-                <div class="fs-value">休憩</div>
-                <div class="fs-arrow">&#8250;</div>
-              </div>
-            </div>
-            <div class="form-field">
-              <div class="field-label">メモ</div>
-              <div class="text-input-wrap placeholder" style="min-height:56px; align-items:flex-start; padding-top:10px;">富士山がよく見えた</div>
-            </div>
-            <!-- 燃料情報 -->
-            <div style="padding: 8px 12px; background: #F9FCFC; border-top: 1px solid #B2DFDB; font-size:10px; font-weight:700; color:#2D6A6A; text-transform:uppercase; letter-spacing:0.6px;">燃料情報</div>
-            <div class="form-select" style="border-bottom:none;">
-              <div class="fs-label">給油あり</div>
-              <div class="fs-right">
-                <div style="width:28px;height:16px;background:#4ECDC4;border-radius:8px;position:relative;">
-                  <div style="width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;right:1px;top:1px;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>
-                </div>
-              </div>
-            </div>
-            <div class="btn-row">
-              <div class="btn-text">キャンセル</div>
-              <div class="btn-elevated">保存</div>
             </div>
           </div>
         </div>
@@ -963,40 +1065,37 @@
         <div class="screen-name">LinkDetail — 区間詳細編集</div>
         <div class="phone-frame">
           <div class="phone-nav">
-            <div class="nav-action">キャンセル</div>
-            <div class="nav-title">区間を編集</div>
+            <div class="nav-action">&#8249;</div>
+            <div class="nav-title">区間詳細</div>
             <div class="nav-action" style="color:#4ECDC4; font-weight:700;">保存</div>
           </div>
           <div class="phone-body">
-            <div class="form-field">
-              <div class="field-label">区間名</div>
-              <div class="text-input-wrap">東京 → 富士川</div>
+            <!-- 名称 -->
+            <div class="form-row">
+              <div class="row-label">名称</div>
+              <div class="row-value">東京 → 富士川</div>
             </div>
-            <div class="form-field">
-              <div class="field-label">日付</div>
-              <div class="text-input-wrap">2026-04-08</div>
+            <!-- 日付 -->
+            <div class="form-row">
+              <div class="row-label">日付</div>
+              <div class="row-value">2026/04/08</div>
+              <div style="font-size:14px; color:var(--text-secondary);">&#128197;</div>
             </div>
-            <div class="form-select">
-              <div class="fs-label">メンバー</div>
-              <div class="fs-right">
-                <div class="fs-value">全員</div>
-                <div class="fs-arrow">&#8250;</div>
-              </div>
+            <!-- メンバー（選択行） -->
+            <div class="form-row-select">
+              <div class="row-label">メンバー</div>
+              <div class="row-value">全員</div>
+              <div class="chevron-icon">&#8250;</div>
             </div>
-            <div class="form-field">
-              <div class="field-label">距離</div>
-              <div class="text-input-wrap">
-                <span>142.5</span>
-                <span class="unit">km</span>
-              </div>
+            <!-- 距離 -->
+            <div class="form-row">
+              <div class="row-label">距離</div>
+              <div class="row-value">142.5 <span class="suffix">km</span></div>
             </div>
-            <div class="form-field" style="border-bottom:none;">
-              <div class="field-label">メモ</div>
-              <div class="text-input-wrap placeholder" style="min-height:56px; align-items:flex-start; padding-top:10px;">メモを入力...</div>
-            </div>
-            <div class="btn-row">
-              <div class="btn-text">キャンセル</div>
-              <div class="btn-elevated">保存</div>
+            <!-- メモ -->
+            <div class="form-row" style="align-items:flex-start; border-bottom:none;">
+              <div class="row-label" style="padding-top:12px;">メモ</div>
+              <div class="row-value placeholder" style="min-height:56px; padding-top:12px;">任意</div>
             </div>
           </div>
         </div>
@@ -1007,39 +1106,32 @@
         <div class="screen-name">PaymentDetail — 支払詳細編集</div>
         <div class="phone-frame">
           <div class="phone-nav">
-            <div class="nav-action">キャンセル</div>
-            <div class="nav-title">支払を編集</div>
+            <div class="nav-action" style="font-size:16px;">&#10005;</div>
+            <div class="nav-title">支払詳細</div>
             <div class="nav-action" style="color:#4ECDC4; font-weight:700;">保存</div>
           </div>
           <div class="phone-body">
-            <div class="form-select">
-              <div class="fs-label">支払者</div>
-              <div class="fs-right">
-                <div class="fs-value">田中</div>
-                <div class="fs-arrow">&#8250;</div>
-              </div>
+            <!-- 支払金額 -->
+            <div class="form-row">
+              <div class="row-label">支払金額</div>
+              <div class="row-value">3500 <span class="suffix">円</span></div>
             </div>
-            <div class="form-field">
-              <div class="field-label">金額</div>
-              <div class="text-input-wrap focused">
-                <span>3,500</span>
-                <span class="unit">円</span>
-              </div>
+            <!-- 支払者（選択行） -->
+            <div class="form-row-select">
+              <div class="row-label">支払者</div>
+              <div class="row-value">田中</div>
+              <div class="chevron-icon">&#8250;</div>
             </div>
-            <div class="form-select">
-              <div class="fs-label">割り勘メンバー</div>
-              <div class="fs-right">
-                <div class="fs-value">3名</div>
-                <div class="fs-arrow">&#8250;</div>
-              </div>
+            <!-- 割り勘（選択行） -->
+            <div class="form-row-select">
+              <div class="row-label">割り勘</div>
+              <div class="row-value">田中、鈴木、佐藤</div>
+              <div class="chevron-icon">&#8250;</div>
             </div>
-            <div class="form-field" style="border-bottom:none;">
-              <div class="field-label">メモ</div>
-              <div class="text-input-wrap placeholder" style="min-height:56px; align-items:flex-start; padding-top:10px;">メモを入力...</div>
-            </div>
-            <div class="btn-row">
-              <div class="btn-text">キャンセル</div>
-              <div class="btn-elevated">保存</div>
+            <!-- メモ -->
+            <div class="form-row" style="align-items:flex-start; border-bottom:none;">
+              <div class="row-label" style="padding-top:12px;">メモ</div>
+              <div class="row-value placeholder" style="min-height:56px; padding-top:12px;">任意</div>
             </div>
           </div>
         </div>
@@ -1051,7 +1143,7 @@
     <div class="divider-line" style="margin-top:40px;"></div>
     <div style="margin-top: 32px;">
       <div class="section-header" style="margin-bottom:16px;">
-        <div class="pill">FABデザイン</div>
+        <div class="pill">FABデザイン（採用）</div>
       </div>
       <div style="background:#fff; border-radius:16px; border:1px solid var(--border-light); padding:28px 32px; box-shadow: var(--shadow-card); display:flex; align-items:center; gap:40px; flex-wrap:wrap;">
         <!-- 展開FAB -->
@@ -1065,7 +1157,7 @@
         <!-- 縮小FAB -->
         <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
           <div style="background:#2D6A6A; color:#fff; border-radius:50%; width:52px; height:52px; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:300; box-shadow:0 4px 14px rgba(45,106,106,0.35);">+</div>
-          <div style="font-size:11px; color:var(--text-secondary);">スクロール時（縮小）</div>
+          <div style="font-size:11px; color:var(--text-secondary);">スクロール時（縮小・オプション）</div>
         </div>
         <!-- ホバー状態 -->
         <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
@@ -1073,7 +1165,7 @@
             <span style="font-size:18px; font-weight:400;">+</span>
             <span>追加</span>
           </div>
-          <div style="font-size:11px; color:var(--text-secondary);">タップ時（Hover State）</div>
+          <div style="font-size:11px; color:var(--text-secondary);">タップ時（ダーク）</div>
         </div>
       </div>
     </div>
@@ -1082,48 +1174,81 @@
     <div class="divider-line"></div>
     <div style="margin-top: 0;">
       <div class="section-header" style="margin-bottom:16px;">
-        <div class="pill">選択行 Before / After 比較</div>
+        <div class="pill">選択行デザイン変更: v1 → v2</div>
       </div>
       <div class="compare-grid">
         <div>
-          <div class="compare-label">Before（現状）</div>
+          <div class="compare-label">v1 初期提案（不採用）</div>
           <div class="card">
-            <div style="padding:13px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #f0f0f0; background:#fff;">
-              <div style="font-size:14px; color:#333;">交通手段</div>
+            <!-- v1: 背景色 + 枠線スタイル -->
+            <div style="padding:12px 16px; background:#F0FAFA; border-bottom:1.5px solid #3AADA5; display:flex; align-items:center; justify-content:space-between; margin:8px 12px; border-radius:8px;">
+              <div style="font-size:11px; font-weight:600; color:#3E5A5A;">交通手段</div>
               <div style="display:flex; align-items:center; gap:6px;">
-                <div style="font-size:13px; color:#888;">車</div>
-                <div style="font-size:16px; color:#ccc;">›</div>
+                <div style="font-size:13px; color:#1A1A2E;">車</div>
+                <div style="width:22px;height:22px;border-radius:50%;background:#2D6A6A;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;">&#8250;</div>
               </div>
             </div>
-            <div style="padding:13px 16px; display:flex; align-items:center; justify-content:space-between; background:#fff;">
-              <div style="font-size:14px; color:#333;">メンバー</div>
+            <div style="padding:12px 16px; background:#F0FAFA; border-bottom:1.5px solid #3AADA5; display:flex; align-items:center; justify-content:space-between; margin:0 12px 8px; border-radius:8px;">
+              <div style="font-size:11px; font-weight:600; color:#3E5A5A;">メンバー</div>
               <div style="display:flex; align-items:center; gap:6px;">
-                <div style="font-size:13px; color:#888;">3名</div>
-                <div style="font-size:16px; color:#ccc;">›</div>
+                <div style="font-size:13px; color:#1A1A2E;">3名</div>
+                <div style="width:22px;height:22px;border-radius:50%;background:#2D6A6A;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;">&#8250;</div>
               </div>
             </div>
           </div>
-          <div style="margin-top:8px; font-size:11px; color:var(--text-secondary); padding-left:4px;">矢印が薄くタップ誘導が弱い。背景・ボーダーなし</div>
+          <div style="margin-top:8px; font-size:11px; color:#C0392B; padding-left:4px;">背景 #F0FAFA + 枠線 #3AADA5 → ユーザーが「微妙」と判断。不採用。</div>
         </div>
         <div>
-          <div class="compare-label after">After（提案）</div>
+          <div class="compare-label after">v2 確定版（採用）</div>
           <div class="card">
-            <div class="form-select">
-              <div class="fs-label">交通手段</div>
-              <div class="fs-right">
-                <div class="fs-value">車</div>
-                <div class="fs-arrow">&#8250;</div>
-              </div>
+            <div class="form-row-select">
+              <div class="row-label">交通手段</div>
+              <div class="row-value">車</div>
+              <div class="chevron-icon">&#8250;</div>
             </div>
-            <div class="form-select" style="border-bottom:none;">
-              <div class="fs-label">メンバー</div>
-              <div class="fs-right">
-                <div class="fs-value">3名</div>
-                <div class="fs-arrow">&#8250;</div>
-              </div>
+            <div class="form-row-select" style="border-bottom:none;">
+              <div class="row-label">メンバー</div>
+              <div class="row-value">田中、鈴木、佐藤</div>
+              <div class="chevron-icon">&#8250;</div>
             </div>
           </div>
-          <div style="margin-top:8px; font-size:11px; color:var(--teal-dark); padding-left:4px;">Teal背景 + ボーダー + 塗りつぶし丸矢印で「選択できる」を明示</div>
+          <div style="margin-top:8px; font-size:11px; color:var(--teal-dark); padding-left:4px;">背景なし + chevron_right のみ。シンプルで統一感があり採用。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- テキスト入力 Before/After -->
+    <div class="divider-line"></div>
+    <div>
+      <div class="section-header" style="margin-bottom:16px;">
+        <div class="pill">テキスト入力デザイン変更: v1 → v2</div>
+      </div>
+      <div class="compare-grid">
+        <div>
+          <div class="compare-label">v1 初期提案（不採用）</div>
+          <div class="card" style="padding:14px 16px;">
+            <div style="font-size:11px; font-weight:600; color:#3E5A5A; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:5px;">イベント名</div>
+            <div style="border:1.5px solid #B2DFDB; border-radius:10px; padding:8px 12px; font-size:14px; color:#9BB5B3; min-height:38px; display:flex; align-items:center; margin-bottom:12px;">例: 東京ドライブ2026</div>
+            <div style="font-size:11px; font-weight:600; color:#3E5A5A; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:5px;">燃費</div>
+            <div style="border:1.5px solid #4ECDC4; border-radius:10px; padding:8px 12px; font-size:14px; color:#1A1A2E; min-height:38px; display:flex; align-items:center; box-shadow:0 0 0 3px rgba(78,205,196,0.15);">
+              12.5 <span style="margin-left:auto; font-size:11px; color:#5C7070;">km/L</span>
+            </div>
+          </div>
+          <div style="margin-top:8px; font-size:11px; color:#C0392B; padding-left:4px;">OutlineInputBorder → ユーザーが「枠を消してほしい」と判断。不採用。</div>
+        </div>
+        <div>
+          <div class="compare-label after">v2 確定版（採用）</div>
+          <div class="card">
+            <div class="form-row">
+              <div class="row-label">イベント名</div>
+              <div class="row-value placeholder">任意</div>
+            </div>
+            <div class="form-row" style="border-bottom:none;">
+              <div class="row-label">燃費</div>
+              <div class="row-value">12.5 <span class="suffix">km/L</span></div>
+            </div>
+          </div>
+          <div style="margin-top:8px; font-size:11px; color:var(--teal-dark); padding-left:4px;">枠線なし・Divider区切り・インライン行。スタイリッシュで採用。</div>
         </div>
       </div>
     </div>
@@ -1132,24 +1257,11 @@
     <div class="divider-line"></div>
     <div>
       <div class="section-header" style="margin-bottom:16px;">
-        <div class="pill">タグセクション Before / After 比較</div>
+        <div class="pill">タグセクション変更: v1 → v2（ラベル名変更）</div>
       </div>
       <div class="compare-grid">
         <div>
-          <div class="compare-label">Before（現状）</div>
-          <div class="card" style="padding:14px 16px;">
-            <div style="font-size:13px; color:#333; margin-bottom:8px;">タグ</div>
-            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
-              <div style="background:#e0e0e0; border-radius:20px; padding:4px 10px; font-size:11px; color:#555;">ドライブ ×</div>
-              <div style="background:#e0e0e0; border-radius:20px; padding:4px 10px; font-size:11px; color:#555;">旅行 ×</div>
-              <div style="background:#f5f5f5; border-radius:20px; padding:4px 10px; font-size:11px; color:#888; border:1px solid #ddd;">観光 +</div>
-            </div>
-            <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:8px; padding:8px 12px; font-size:13px; color:#bbb;">タグを追加...</div>
-          </div>
-          <div style="margin-top:8px; font-size:11px; color:var(--text-secondary); padding-left:4px;">登録済み・レコメンド・入力が混在して区別しにくい</div>
-        </div>
-        <div>
-          <div class="compare-label after">After（提案）</div>
+          <div class="compare-label">v1 初期提案（ラベル名変更前）</div>
           <div class="card">
             <div class="tag-section">
               <div class="tag-section-title">登録済みタグ</div>
@@ -1165,12 +1277,35 @@
                 <div class="chip recommend"># グルメ <span class="chip-plus">+</span></div>
               </div>
             </div>
-            <div class="form-field" style="border-bottom:none;">
-              <div class="field-label">タグを追加</div>
-              <div class="text-input-wrap placeholder">新しいタグを入力...</div>
+            <div style="padding:10px 16px 12px; border-top:1px solid var(--divider);">
+              <div style="font-size:10px; font-weight:700; color:#3E5A5A; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:5px;">タグを追加</div>
+              <div style="border:1.5px solid #B2DFDB; border-radius:10px; padding:8px 12px; font-size:13px; color:#9BB5B3;">新しいタグを入力...</div>
             </div>
           </div>
-          <div style="margin-top:8px; font-size:11px; color:var(--teal-dark); padding-left:4px;">3層を背景色 + 見出しラベルで明確に分離</div>
+          <div style="margin-top:8px; font-size:11px; color:#C0392B; padding-left:4px;">「レコメンド」「タグを追加」というラベルをユーザーが変更要望。</div>
+        </div>
+        <div>
+          <div class="compare-label after">v2 確定版（採用）</div>
+          <div class="card">
+            <div class="tag-section">
+              <div class="chip-group">
+                <div class="chip selected"># ドライブ <span class="chip-x">&#10005;</span></div>
+                <div class="chip selected"># 旅行 <span class="chip-x">&#10005;</span></div>
+              </div>
+            </div>
+            <div class="form-row" style="border-top:1px solid var(--divider);">
+              <div class="row-label" style="font-size:10px; color:var(--text-tertiary);">新しいタグを追加</div>
+              <div class="row-value placeholder"></div>
+            </div>
+            <div class="tag-section" style="background:#F9FCFC; border-top:1px solid var(--divider);">
+              <div class="tag-section-title" style="color:#5C7070;">最近使用したタグ</div>
+              <div class="chip-group">
+                <div class="chip recommend"># 観光 <span class="chip-plus">+</span></div>
+                <div class="chip recommend"># グルメ <span class="chip-plus">+</span></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:8px; font-size:11px; color:var(--teal-dark); padding-left:4px;">「最近使用したタグ」「新しいタグを追加」に変更。実装済みと整合。</div>
         </div>
       </div>
     </div>
@@ -1183,40 +1318,36 @@
       <div class="section-num">4</div>
       <div>
         <div class="section-title">デザイン根拠</div>
-        <div class="section-desc">各変更の理由と原則との整合性</div>
+        <div class="section-desc">各変更の理由と原則との整合性（v2確定版）</div>
       </div>
     </div>
     <div class="rationale-list">
       <div class="rationale-item">
-        <div class="r-title">OutlineInputBorder の採用</div>
-        <div class="r-body">Flutter Material3 のデフォルトは UnderlineInputBorder であり、境界が下線のみで視認しにくい。iOS ネイティブ設定画面に近い印象を出すには枠線ありの入力フィールドが適切。通常時は Teal Light (#B2DFDB) の薄い枠でシンプルに抑え、フォーカス時に Teal (#4ECDC4) + グロー (opacity 0.15) に変化させることでフィードバックを明確にする。</div>
+        <div class="r-title">ボーダーレス入力フィールドの採用</div>
+        <div class="r-body">OutlineInputBorder はフォーム感が強く、MichiMark が目指すシンプル・ミニマルなドライブ記録アプリの雰囲気と合わないとユーザーが判断。border: InputBorder.none + Divider（height: 1）の組み合わせは、iOS の設定画面・メモアプリに近い自然なレイアウトを実現する。枠線がない分、コンテンツそのものが前面に出てスタイリッシュな印象になる。</div>
       </div>
       <div class="rationale-item">
-        <div class="r-title">選択行の視覚的差別化</div>
-        <div class="r-body">テキスト入力行と選択行が同じスタイルでは「タップして選ぶ」か「ここに打ち込む」かを判別できない。選択行は背景を #F0FAFA（Teal Tint2）+ ボーダー #3AADA5 に設定し、矢印も Teal Dark (#2D6A6A) の塗りつぶし丸アイコンに強化する。これにより「選択可能な行」が一目でわかる。WCAG AA のコントラスト比（背景 #F0FAFA に対してラベル #3E5A5A は約 6.2:1）を満たす。</div>
+        <div class="r-title">選択行のシンプル化（背景色・枠線廃止）</div>
+        <div class="r-body">v1提案の背景色 #F0FAFA + 枠線 #3AADA5 は「色で選択行を区別する」意図があったが、ユーザーが「微妙」と判断。入力行との差異が過剰で、全体的なシンプルさを損なう。chevron_right アイコン（&#8250;）のみによる識別は iOS のデザインパターンとして広く浸透しており、ユーザーが直感的に「タップして選ぶ」と理解できる。WCAG AA のコントラスト要件はテキスト色と背景白の組み合わせで引き続き満たす。</div>
       </div>
       <div class="rationale-item">
-        <div class="r-title">タグセクションの3層分離</div>
-        <div class="r-body">登録済みタグ（選択解除可）/ レコメンドタグ（追加可）/ 新規入力 フィールドの3層を、背景色と見出しラベルで分離する。登録済みは白背景・Teal枠チップ、レコメンドは #F9FCFC 背景・グレー枠チップ、入力フィールドは通常のテキスト入力。ユーザーが「今どの操作ゾーンにいるか」を視覚的に理解できる。</div>
+        <div class="r-title">タグセクションのラベル名変更</div>
+        <div class="r-body">「レコメンド」は何をレコメンドするのかが曖昧。「最近使用したタグ」とすることで、ユーザーが「過去に使ったタグが出ている」と即座に理解できる。「タグを追加」も「新しいタグを追加」とすることで「既存タグを追加するのか、新規作成するのか」の曖昧さを解消する。実装コードでも hintText: '新しいタグを追加' として反映済み。</div>
       </div>
       <div class="rationale-item">
-        <div class="r-title">ボタン統一 (ElevatedButton / TextButton)</div>
-        <div class="r-body">保存ボタンは ElevatedButton（Teal Dark 背景・白テキスト・角丸 12px）で主アクションを強調。キャンセルは TextButton（グレーテキスト・背景なし）で副次アクションを示す。これにより画面内のアクション優先度が一目で伝わる。ナビゲーションバー内にも同様のテキストアクション（左: キャンセル / 右: 保存）を配置し、スクロールなしでも操作できる。</div>
+        <div class="r-title">Divider 区切りとインライン行レイアウトの維持</div>
+        <div class="r-body">height: 1 の Divider による行区切りは、ボーダーレスのテキストフィールドと組み合わせることで項目境界を明示する唯一の視覚要素となる。ラベル幅 120px（bodySmall / onSurfaceVariant）+ Expanded フィールドのインライン行は全画面統一レイアウトとして維持する。これにより複数画面（BasicInfo / MarkDetail / LinkDetail / PaymentDetail）でスキャン性が統一される。</div>
       </div>
       <div class="rationale-item">
-        <div class="r-title">Divider の必須化</div>
-        <div class="r-body">項目間に #E5F0EE の1px Divider を設けることで、スキャン時の視線の流れを整理する。セクション（燃料情報・タグ等）の境界は #B2DFDB の強めの Divider で更に区別する。余白だけでは項目数が増えた際に境界が曖昧になるため Divider は必須。</div>
-      </div>
-      <div class="rationale-item">
-        <div class="r-title">FAB のスタイル統一</div>
-        <div class="r-body">MichiInfo の FAB は Teal Dark (#2D6A6A) 背景・白アイコン・角丸 16px の拡張 FAB を基本とする。スクロール時は円形 FAB に縮小してコンテンツ領域を確保。タップ時は背景色を #245858（ダーク方向に 5%シフト）にして視覚フィードバックを与える。ブランドカラーと一致し、かつカード群（タイムライン）と視覚的に区別される。</div>
+        <div class="r-title">拡張 FAB の維持</div>
+        <div class="r-body">アイコン＋「追加」テキストの拡張 FAB は「何ができるか」を明示する点でシンプルな丸ボタンより優れている。Teal Dark (#2D6A6A) 背景・白テキスト・角丸 16px のスタイルはブランドカラーと一致し、タイムライン画面上で視認性が高い。ユーザーからもそのまま採用の承認を得ている。</div>
       </div>
     </div>
   </section>
 
   <!-- フッター -->
   <div style="text-align:center; padding-top:16px; font-size:12px; color:var(--text-tertiary);">
-    MichiMark Design Report — 入力画面UI刷新 — 2026-04-08 — Draft (product-manager レビュー待ち)
+    MichiMark Design Report — 入力画面UI刷新 — 2026-04-08 v2（ユーザーフィードバック反映版・実装済みと整合）
   </div>
 
 </div><!-- /container -->
