@@ -5,6 +5,8 @@
 ---
 
 ## 完了した作業
+- fix: 概要編集ボタン右上移動・選択行全行タップ・設定遷移アニメ・トピック初期保存・delegateバグ修正 (6520e6e)
+- docs: 次回やること更新（動作確認→T-092→T-093→T-080） (a39b0e2)
 - docs: 第6セッション進捗更新（UI改善・保存バグ修正・燃費・メンバー制限） (c102153)
 - fix: マスター選択UI改善・保存バグ修正・燃費自動設定・メンバー制限 (7ad570e)
 - docs: CLAUDE.md最適化を進捗ファイルに反映 (ceddfc2)
@@ -244,19 +246,27 @@
 - [x] **T-075**: T-074 レビュー PASS
 - [x] **T-076**: Integration Test 全8件PASS（TC-MAD-001〜008）
 - [x] **T-091**: EventDetail 概要タブ再設計 実装完了
-- [ ] **T-092**: EventDetail 概要タブ再設計 レビュー
-- [ ] **T-093**: EventDetail 概要タブ再設計 テスト
+- [x] **T-092**: EventDetail 概要タブ再設計 レビュー
+- [x] **T-093**: EventDetail 概要タブ再設計 テスト（12 PASS / 3 SKIP）
 - [ ] **T-080**: シードデータ更新（トピック設定・Overview確認データ・MichiInfoパターン）
 - [ ] **MichiInfo_Layout_Spec.md v5.0 追記**: v4→v5 変更内容の Spec 反映（architect タスク）
 - [ ] **TS-09 パターン1の検証**: Mark-Mark 直接のシードデータを作って手動確認
 - [ ] **T-064〜T-067**: タイムライン挿入UI（FAB型）— 次の大きな機能
 
+## 追加修正（2026-04-08 第7セッション: 動作確認フィードバック対応）
+
+1. **概要編集ボタン右上移動**: FAB → `Positioned(top: 4, right: 8)` の `IconButton` に変更
+2. **選択行全行タップ**: `_SelectionRow` を `InkWell` で包んで行全体タップ可能に
+3. **設定遷移アニメ修正**: `context.go('/settings')` → `push`・`context.go('/')` → `pop`
+4. **新規イベントトピック初期保存**: `EventDetailBloc` に `TopicRepository` 追加・新規作成時に topic を DB 保存
+5. **BasicInfo delegate再タップ不可バグ修正**: `BasicInfoDelegateConsumed` 追加・`_handleDelegate` 先頭で即消費
+
+未実装確認: **MichiInfoアクションボタン**（地点カードへのアクション記録ボタンUI）は未実装。
+
 ## 次回セッションで最初にやること
 
-1. **動作確認**: 保存バグ修正・単一選択即確定・燃費自動設定・メンバー制限 を手動確認
-2. **T-092**: EventDetail 概要タブ再設計 レビュー（reviewer タスク）
-3. **T-093**: EventDetail 概要タブ再設計 テスト（tester タスク）
-4. **T-080**: シードデータ更新（flutter-dev タスク）
+1. **T-080**: シードデータ更新（flutter-dev タスク）
+2. **MichiInfoアクションボタン**: 要件定義が必要かユーザーと確認（product-manager）
 
 ---
 
