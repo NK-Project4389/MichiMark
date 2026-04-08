@@ -5,6 +5,9 @@
 ---
 
 ## 完了した作業
+- docs: ActionTimeButton Spec作成・T-095 DONE・T-096 IN_PROGRESS (ac76993)
+- docs: MichiInfoアクションボタンUI要件書・デザイン提案作成・T-094 DONE (50b40ee)
+- test: FAB/未保存ダイアログ Integration Test 全6件 PASS (261e272)
 - docs: カード挿入機能要件書作成・T-099 DONE（Pattern 3 FAB型） (14bcdbb)
 - chore: Phase 11 カード挿入機能タスク追加（T-099〜T-103） (01aae60)
 - chore: タスクボード更新（T-023をDONEに） (b9c05eb)
@@ -379,3 +382,34 @@
 
 1. **T-080**: シードデータ更新（flutter-dev タスク）
 2. **T-094**: MichiInfo アクションボタン UI 要件書作成（product-manager タスク）
+
+## 追加作業（2026-04-08 第12セッション: ActionTimeButton Integration Test）
+
+### T-098: MichiInfo アクションボタン UI テスト 全件 PASS
+
+ActionTimeButton（⚡ ボタン・状態バッジ・ボトムシート）の Integration Test を実装・実行。
+
+**テストファイル**: `flutter/integration_test/action_time_button_test.dart`
+
+**テストシナリオ（全9件）:**
+
+| シナリオID | シナリオ名 | 結果 |
+|---|---|---|
+| TC-MAB-001 | ⚡ ボタンが Mark カードにのみ表示される | PASS |
+| TC-MAB-002 | 状態バッジが Mark カードに常時表示される（初期: 滞留中） | PASS |
+| TC-MAB-003 | ⚡ ボタンタップでボトムシートが表示される | PASS |
+| TC-MAB-004 | ボトムシート内でアクションを記録すると currentStateLabel が更新される | PASS |
+| TC-MAB-005 | 記録完了後にボトムシートが閉じる | PASS |
+| TC-MAB-006 | ボトムシートを閉じた後、Mark カードの状態バッジが更新される | PASS |
+| TC-MAB-007 | ボトムシートをスワイプで閉じられる | SKIP（DraggableScrollableSheet swipe dismiss は integration test で検証不可） |
+| TC-MAB-008 | Link カードに ⚡ ボタン・状態バッジが表示されない | PASS |
+| TC-MAB-009 | 複数の Mark カードで独立した ActionTime を記録できる | PASS |
+
+**PASS: 8件 / SKIP: 1件 / FAIL: 0件**
+
+Phase 10（MichiInfo アクションボタン UI）全タスク（T-094〜T-098）完了。
+
+## 次回セッションで最初にやること
+
+1. **T-100**: カード挿入機能 Spec作成（architect タスク）— Phase 11 の着手
+2. **MichiInfo_Layout_Spec.md v5.0 追記**: v4→v5 変更内容の Spec 反映（architect タスク）

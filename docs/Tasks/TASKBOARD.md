@@ -123,9 +123,9 @@
 |---|---|---|---|---|---|
 | T-094 | MichiInfo アクションボタン UI 要件書作成 | product-manager | `DONE` | | 要件書: `docs/Requirements/REQ-michi_info_action_button.md` |
 | T-095 | MichiInfo アクションボタン UI Spec作成 | architect | `DONE` | | Spec: `docs/Spec/Features/MichiInfo/ActionTimeButton_Spec.md` |
-| T-096 | MichiInfo アクションボタン UI 実装 | flutter-dev | `IN_PROGRESS` | | 2026-04-08_action_button |
-| T-097 | MichiInfo アクションボタン UI レビュー | reviewer | `BLOCKED` | | T-096完了後 |
-| T-098 | MichiInfo アクションボタン UI テスト | tester | `BLOCKED` | | T-097完了後 |
+| T-096 | MichiInfo アクションボタン UI 実装 | flutter-dev | `DONE` | | |
+| T-097 | MichiInfo アクションボタン UI レビュー | reviewer | `DONE` | | 全項目PASS |
+| T-098 | MichiInfo アクションボタン UI テスト | tester | `DONE` | | 全9件（8 PASS / 1 SKIP） |
 
 ## Phase 11: MichiInfo タイムライン カード挿入機能
 
