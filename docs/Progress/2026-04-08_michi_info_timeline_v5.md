@@ -5,6 +5,8 @@
 ---
 
 ## 完了した作業
+- fix: MichiInfo タイムライン 区間距離未表示・縦線タブはみ出し・距離テキスト中央揃え修正 (79b3677)
+- feat: MichiInfo タイムライン UI v5.0（縦線分離・矢印位置・距離右配置・Mark-Mark間隔） (78aa044)
 
 ### Round 2 UI フィードバック 4件を実装
 
@@ -59,6 +61,18 @@
 - **15 PASS / 1 SKIP / 0 FAIL**
 - TS-09（Mark-Mark パターン）: シードデータ起因の SKIP（前回と同様）
 - `dart analyze`: 0 issues
+
+---
+
+## 追加修正（Round 3・同日）
+
+1. **縦線範囲制限**: 始点ドット中心〜終点ドット中心のみ描画
+2. **Mark カード幅を右端まで拡張**: Mark 行の SizedBox を削除
+3. **距離テキスト縦中央揃え + 1 テキストボックス統合**: `linkDistanceTexts` を `SpanArrowData` に内包し、スパン矢印の縦中央に 1 つの TextPainter でまとめて表示
+4. **区間距離未表示バグ修正**: スパン外 Link の距離を `standaloneLinkDistances` で表示
+5. **縦線タブはみ出し修正**: `Positioned.fill(top: 48)` + `ClipRect` でクリップ
+
+テスト: 15 PASS / 1 SKIP / 0 FAIL
 
 ---
 
