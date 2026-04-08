@@ -5,6 +5,8 @@
 ---
 
 ## 完了した作業
+- test: T-076 地点追加初期値・引き継ぎ Integration Test 全8件PASS (2ee1afd)
+- feat: 地点追加初期値・引き継ぎ・メンバー制限・メーター同期実装（T-074 / REQ-MAD-001〜005） (aab7a49)
 - docs: 要件書作成（地点追加初期値・引き継ぎ・メンバー制限・メーター同期・シードデータ更新） (b501b8c)
 - docs: 進捗記録追加（設定バグ修正・非表示フィルター） (1922837)
 - fix: EventDetail保存後にEventListが更新されないバグ修正 (4a1e398)
@@ -173,17 +175,18 @@
 
 ## 未完了・次回やること
 
-- [ ] **T-075**: T-074 レビュー（reviewer タスク）
-- [ ] **T-076**: T-075通過後 Integration Test（tester タスク）
+- [x] **T-075**: T-074 レビュー PASS
+- [x] **T-076**: Integration Test 全8件PASS（TC-MAD-001〜008）
+- [ ] **T-080**: シードデータ更新（トピック設定・Overview確認データ・MichiInfoパターン）
 - [ ] **MichiInfo_Layout_Spec.md v5.0 追記**: v4→v5 変更内容の Spec 反映（architect タスク）
 - [ ] **TS-09 パターン1の検証**: Mark-Mark 直接のシードデータを作って手動確認
 - [ ] **T-064〜T-067**: タイムライン挿入UI（FAB型）— 次の大きな機能
 
 ## 次回セッションで最初にやること
 
-1. **T-075**: 地点追加初期値・引き継ぎ レビュー（reviewer）
-2. **T-076**: Integration Test 実施（tester）
-3. **T-064**: タイムライン挿入UI の要件書作成（product-manager タスク）
+1. **T-080**: シードデータ更新（flutter-dev タスク）
+2. **T-064**: タイムライン挿入UI の要件書作成（product-manager タスク）
+3. **MichiInfo_Layout_Spec.md v5.0 追記**
 
 ---
 
