@@ -127,6 +127,16 @@
 | T-097 | MichiInfo アクションボタン UI レビュー | reviewer | `BLOCKED` | | T-096完了後 |
 | T-098 | MichiInfo アクションボタン UI テスト | tester | `BLOCKED` | | T-097完了後 |
 
+## Phase 11: MichiInfo タイムライン カード挿入機能
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-099 | カード挿入機能 要件書作成 | product-manager | `TODO` | | カードとカードの間に Mark/Link を挿入する UI・UX の要件定義 |
+| T-100 | カード挿入機能 Spec作成 | architect | `BLOCKED` | | T-099完了後 |
+| T-101 | カード挿入機能 実装 | flutter-dev | `BLOCKED` | | T-100完了後 |
+| T-102 | カード挿入機能 レビュー | reviewer | `BLOCKED` | | T-101完了後 |
+| T-103 | カード挿入機能 テスト | tester | `BLOCKED` | | T-102完了後 |
+
 ---
 
 ## 完了済みタスク（アーカイブ）
