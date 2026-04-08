@@ -76,6 +76,22 @@
 | T-071 | MichiInfo 日付セパレーター 実装 | flutter-dev | `BLOCKED` | | T-070完了後 |
 | T-072 | MichiInfo 日付セパレーター レビュー | reviewer | `BLOCKED` | | T-071完了後 |
 
+## Phase 7: 地点追加初期値・引き継ぎ・メンバー制限・メーター同期
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-073 | 地点追加初期値・引き継ぎ Spec作成 | architect | `TODO` | | REQ-mark_addition_defaults（REQ-MAD-001〜005）対応 |
+| T-074 | 地点追加初期値・引き継ぎ 実装 | flutter-dev | `BLOCKED` | | T-073完了後 |
+| T-075 | 地点追加初期値・引き継ぎ レビュー | reviewer | `BLOCKED` | | T-074完了後 |
+| T-076 | 地点追加初期値・引き継ぎ テスト | tester | `BLOCKED` | | T-075完了後 |
+
+## Phase 8: テストデータ更新
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-080 | シードデータ更新（トピック設定・Overview確認データ・MichiInfoパターン） | flutter-dev | `TODO` | | REQ-seed_data_update対応 |
+| T-081 | シードデータ更新 レビュー | reviewer | `BLOCKED` | | T-080完了後 |
+
 ---
 
 ## Phase 3: 機能追加・仕上げ
