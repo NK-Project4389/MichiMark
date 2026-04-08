@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../features/event_detail/projection/michi_info_list_projection.dart';
 import '../../../features/shared/projection/action_item_projection.dart';
@@ -43,10 +44,37 @@ class MichiInfoOpenLinkDelegate extends MichiInfoDelegate {
 class MichiInfoAddMarkDelegate extends MichiInfoDelegate {
   final String eventId;
   final TopicConfig topicConfig;
-  const MichiInfoAddMarkDelegate(this.eventId, this.topicConfig);
+
+  /// REQ-MAD-001: メーター初期値
+  final String initialMeterValueInput;
+
+  /// REQ-MAD-002: メンバー初期値
+  final List<MemberDomain> initialSelectedMembers;
+
+  /// REQ-MAD-003: 日付初期値（null の場合は MarkDetailBloc で DateTime.now() を使用）
+  final DateTime? initialMarkLinkDate;
+
+  /// REQ-MAD-004: メンバー選択候補（イベントメンバー一覧）
+  final List<MemberDomain> eventMembers;
+
+  const MichiInfoAddMarkDelegate(
+    this.eventId,
+    this.topicConfig, {
+    this.initialMeterValueInput = '',
+    this.initialSelectedMembers = const [],
+    this.initialMarkLinkDate,
+    this.eventMembers = const [],
+  });
 
   @override
-  List<Object?> get props => [eventId, topicConfig];
+  List<Object?> get props => [
+        eventId,
+        topicConfig,
+        initialMeterValueInput,
+        initialSelectedMembers,
+        initialMarkLinkDate,
+        eventMembers,
+      ];
 }
 
 /// 新規リンク追加画面へ遷移

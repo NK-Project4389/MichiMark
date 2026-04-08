@@ -12,10 +12,27 @@ class MarkDetailStarted extends MarkDetailEvent {
   final String eventId;
   final String markLinkId;
   final TopicConfig topicConfig;
+
+  /// メーター入力の初期値（新規追加時のみ使用）
+  final String initialMeterValueInput;
+
+  /// メンバーの初期値（前の地点から引き継ぎ。新規追加時のみ使用）
+  final List<MemberDomain> initialSelectedMembers;
+
+  /// 日付の初期値（null の場合は Bloc 側で DateTime.now() を使用）
+  final DateTime? initialMarkLinkDate;
+
+  /// メンバー選択候補（イベントメンバー一覧）
+  final List<MemberDomain> eventMembers;
+
   const MarkDetailStarted({
     required this.eventId,
     required this.markLinkId,
     TopicConfig? topicConfig,
+    this.initialMeterValueInput = '',
+    this.initialSelectedMembers = const [],
+    this.initialMarkLinkDate,
+    this.eventMembers = const [],
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -28,7 +45,15 @@ class MarkDetailStarted extends MarkDetailEvent {
         );
 
   @override
-  List<Object?> get props => [eventId, markLinkId, topicConfig];
+  List<Object?> get props => [
+        eventId,
+        markLinkId,
+        topicConfig,
+        initialMeterValueInput,
+        initialSelectedMembers,
+        initialMarkLinkDate,
+        eventMembers,
+      ];
 }
 
 /// 戻るボタンが押されたとき

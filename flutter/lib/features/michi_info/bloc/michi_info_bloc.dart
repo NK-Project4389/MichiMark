@@ -5,6 +5,7 @@ import '../../../adapter/event_detail_adapter.dart';
 import '../../../adapter/mark_link_draft_adapter.dart';
 import '../../../domain/action_time/action_time_log.dart';
 import '../../../domain/master/action/action_domain.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../features/event_detail/projection/michi_info_list_projection.dart';
@@ -88,11 +89,57 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     MichiInfoAddMarkPressed event,
     Emitter<MichiInfoState> emit,
   ) async {
-    if (state is MichiInfoLoaded) {
-      final current = state as MichiInfoLoaded;
+    if (state is! MichiInfoLoaded) return;
+    final current = state as MichiInfoLoaded;
+
+    try {
+      final domain = await _eventRepository.fetch(_eventId);
+
+      // markLinkSeq 昇順・論理削除除外でフィルタリング
+      final activeMarkLinks = (List.of(domain.markLinks)
+            ..sort((a, b) => a.markLinkSeq.compareTo(b.markLinkSeq)))
+          .where((ml) => !ml.isDeleted)
+          .toList();
+
+      // 最後の Mark を前の地点として特定
+      final markOnlyList = activeMarkLinks
+          .where((ml) => ml.markLinkType == MarkOrLink.mark)
+          .toList();
+      final previousMark =
+          markOnlyList.isNotEmpty ? markOnlyList.last : null;
+
+      // REQ-MAD-001: メーター初期値
+      final String initialMeterValueInput;
+      if (previousMark != null) {
+        final mv = previousMark.meterValue;
+        initialMeterValueInput = mv != null ? mv.toString() : '';
+      } else {
+        final transMv = domain.trans?.meterValue;
+        initialMeterValueInput = transMv != null ? transMv.toString() : '';
+      }
+
+      // REQ-MAD-002: メンバー初期値
+      final List<MemberDomain> initialSelectedMembers =
+          previousMark?.members ?? const [];
+
+      // REQ-MAD-003: 日付初期値
+      final DateTime? initialMarkLinkDate = previousMark?.markLinkDate;
+
+      // REQ-MAD-004: イベントメンバー一覧
+      final List<MemberDomain> eventMembers = domain.members;
+
       emit(current.copyWith(
-        delegate: MichiInfoAddMarkDelegate(_eventId, current.topicConfig),
+        delegate: MichiInfoAddMarkDelegate(
+          _eventId,
+          current.topicConfig,
+          initialMeterValueInput: initialMeterValueInput,
+          initialSelectedMembers: initialSelectedMembers,
+          initialMarkLinkDate: initialMarkLinkDate,
+          eventMembers: eventMembers,
+        ),
       ));
+    } on Exception catch (e) {
+      emit(MichiInfoError(message: e.toString()));
     }
   }
 

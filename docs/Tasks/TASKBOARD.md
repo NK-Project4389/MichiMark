@@ -80,9 +80,9 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-073 | 地点追加初期値・引き継ぎ Spec作成 | architect | `TODO` | | REQ-mark_addition_defaults（REQ-MAD-001〜005）対応 |
-| T-074 | 地点追加初期値・引き継ぎ 実装 | flutter-dev | `BLOCKED` | | T-073完了後 |
-| T-075 | 地点追加初期値・引き継ぎ レビュー | reviewer | `BLOCKED` | | T-074完了後 |
+| T-073 | 地点追加初期値・引き継ぎ Spec作成 | architect | `DONE` | | REQ-mark_addition_defaults（REQ-MAD-001〜005）対応 |
+| T-074 | 地点追加初期値・引き継ぎ 実装 | flutter-dev | `DONE` | | Spec: `docs/Spec/Features/EventDetail/MarkDetail/MarkAdditionDefaults_Spec.md` |
+| T-075 | 地点追加初期値・引き継ぎ レビュー | reviewer | `TODO` | | T-074完了後 |
 | T-076 | 地点追加初期値・引き継ぎ テスト | tester | `BLOCKED` | | T-075完了後 |
 
 ## Phase 8: テストデータ更新

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_bloc.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_event.dart';
@@ -29,7 +30,11 @@ class _MarkDetailPageState extends State<MarkDetailPage> {
     return BlocConsumer<MarkDetailBloc, MarkDetailState>(
       listener: (context, state) async {
         if (state is MarkDetailLoaded && state.delegate != null) {
-          await _handleDelegate(state.delegate!, state.draft);
+          await _handleDelegate(
+            state.delegate!,
+            state.draft,
+            state.availableMembers,
+          );
         }
       },
       builder: (context, state) {
@@ -54,6 +59,7 @@ class _MarkDetailPageState extends State<MarkDetailPage> {
   Future<void> _handleDelegate(
     MarkDetailDelegate delegate,
     MarkDetailDraft draft,
+    List<MemberDomain> availableMembers,
   ) async {
     switch (delegate) {
       case MarkDetailDismissDelegate():
@@ -66,6 +72,7 @@ class _MarkDetailPageState extends State<MarkDetailPage> {
           extra: SelectionArgs(
             type: SelectionType.markMembers,
             selectedIds: draft.selectedMembers.map((m) => m.id).toSet(),
+            candidateMembers: availableMembers.isNotEmpty ? availableMembers : null,
           ),
         );
         if (!mounted) return;

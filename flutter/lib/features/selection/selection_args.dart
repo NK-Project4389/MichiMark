@@ -1,3 +1,5 @@
+import '../../../domain/master/member/member_domain.dart';
+
 /// go_router の extra 経由で選択画面に渡す引数
 class SelectionArgs {
   final SelectionType type;
@@ -8,10 +10,15 @@ class SelectionArgs {
   /// 常にON固定にするIDセット（割り勘の支払者など）
   final Set<String> fixedSelectedIds;
 
+  /// メンバー選択候補（指定した場合は MemberRepository.fetchAll() を使わずこのリストを使用する）
+  /// REQ-MAD-004: MarkDetail のメンバー選択候補をイベントメンバーに限定するために使用
+  final List<MemberDomain>? candidateMembers;
+
   const SelectionArgs({
     required this.type,
     this.selectedIds = const {},
     this.fixedSelectedIds = const {},
+    this.candidateMembers,
   });
 }
 

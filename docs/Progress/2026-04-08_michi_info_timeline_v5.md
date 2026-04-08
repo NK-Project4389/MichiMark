@@ -5,6 +5,9 @@
 ---
 
 ## 完了した作業
+- docs: 要件書作成（地点追加初期値・引き継ぎ・メンバー制限・メーター同期・シードデータ更新） (b501b8c)
+- docs: 進捗記録追加（設定バグ修正・非表示フィルター） (1922837)
+- fix: EventDetail保存後にEventListが更新されないバグ修正 (4a1e398)
 - docs: 進捗ファイル更新（スタンドアロンLink線+矢印・delegateバグ修正） (a78022e)
 - fix: 選択リストから非表示マスターを除外（Trans/Member/Tag/Action/Topic） (cda850c)
 - fix: パターン2スタンドアロンLinkのスパン列縦線に矢印頭を追加 (57d9a53)
@@ -132,18 +135,55 @@
 
 ---
 
+## 追加実装（2026-04-08 第4セッション）
+
+### T-074: 地点追加初期値・引き継ぎ 実装（REQ-MAD-001〜005）
+
+**実装内容:**
+
+- `MarkDetailArgs` に初期値フィールド4件追加（`initialMeterValueInput` / `initialSelectedMembers` / `initialMarkLinkDate` / `eventMembers`）
+- `MarkDetailStarted` に同フィールド追加（デフォルト値あり・後方互換性保持）
+- `MarkDetailLoaded` に `availableMembers` フィールド追加
+- `MarkDetailBloc._onStarted`: 新規作成モードで `args` の初期値を Draft に反映
+- `MichiInfoAddMarkDelegate` に初期値フィールド4件追加
+- `MichiInfoBloc._onAddMarkPressed`: `EventRepository.fetch()` で最新ドメイン取得 → 前の地点から初期値を算出して Delegate に設定（REQ-MAD-001〜004）
+- `MichiInfoView`: `MichiInfoAddMarkDelegate` から全フィールドを受け取り `MarkDetailArgs` 構築
+- `router.dart`: `/event/mark/:markId` ビルダーで `MarkDetailArgs` から初期値を取り出し `MarkDetailStarted` に渡す・`EventDetailBloc` に `TransRepository` 注入追加
+- `SelectionArgs` に `candidateMembers: List<MemberDomain>?` 追加（REQ-MAD-004）
+- `SelectionBloc`: `markMembers` / `linkMembers` タイプのとき `_candidateMembers` を優先使用
+- `MarkDetailPage._handleDelegate`: `availableMembers` を `SelectionArgs.candidateMembers` として渡す
+- `EventDetailBloc`: `TransRepository` 依存追加・`_updateTransMaxMeterValue()` 実装（REQ-MAD-005）
+- `dart analyze`: 0 errors
+
+**対応ファイル:**
+- `flutter/lib/features/mark_detail/mark_detail_args.dart`
+- `flutter/lib/features/mark_detail/bloc/mark_detail_event.dart`
+- `flutter/lib/features/mark_detail/bloc/mark_detail_state.dart`
+- `flutter/lib/features/mark_detail/bloc/mark_detail_bloc.dart`
+- `flutter/lib/features/mark_detail/view/mark_detail_page.dart`
+- `flutter/lib/features/michi_info/bloc/michi_info_state.dart`
+- `flutter/lib/features/michi_info/bloc/michi_info_bloc.dart`
+- `flutter/lib/features/michi_info/view/michi_info_view.dart`
+- `flutter/lib/features/event_detail/bloc/event_detail_bloc.dart`
+- `flutter/lib/features/selection/selection_args.dart`
+- `flutter/lib/features/selection/bloc/selection_bloc.dart`
+- `flutter/lib/app/router.dart`
+
+---
+
 ## 未完了・次回やること
 
+- [ ] **T-075**: T-074 レビュー（reviewer タスク）
+- [ ] **T-076**: T-075通過後 Integration Test（tester タスク）
 - [ ] **MichiInfo_Layout_Spec.md v5.0 追記**: v4→v5 変更内容の Spec 反映（architect タスク）
 - [ ] **TS-09 パターン1の検証**: Mark-Mark 直接のシードデータを作って手動確認
 - [ ] **T-064〜T-067**: タイムライン挿入UI（FAB型）— 次の大きな機能
-- [ ] **Phase2要件 実装**: 地点追加時初期値ルール・メーター反映・メンバー引き継ぎ・テストデータ見直し
 
 ## 次回セッションで最初にやること
 
-1. **Phase2要件 architect**: 地点追加初期値・メーター・メンバー引き継ぎの Spec 作成
-2. **T-064**: タイムライン挿入UI の要件書作成（product-manager タスク）
-3. **MichiInfo_Layout_Spec.md v5.0 追記**
+1. **T-075**: 地点追加初期値・引き継ぎ レビュー（reviewer）
+2. **T-076**: Integration Test 実施（tester）
+3. **T-064**: タイムライン挿入UI の要件書作成（product-manager タスク）
 
 ---
 

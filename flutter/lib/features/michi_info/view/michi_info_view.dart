@@ -185,11 +185,25 @@ class _MichiInfoViewState extends State<MichiInfoView> {
               );
         }
 
-      case MichiInfoAddMarkDelegate(:final eventId, :final topicConfig):
+      case MichiInfoAddMarkDelegate(
+          :final eventId,
+          :final topicConfig,
+          :final initialMeterValueInput,
+          :final initialSelectedMembers,
+          :final initialMarkLinkDate,
+          :final eventMembers,
+        ):
         final markId = const Uuid().v4();
         final result = await context.push<MarkDetailDraft>(
           '/event/mark/$markId',
-          extra: MarkDetailArgs(eventId: eventId, topicConfig: topicConfig),
+          extra: MarkDetailArgs(
+            eventId: eventId,
+            topicConfig: topicConfig,
+            initialMeterValueInput: initialMeterValueInput,
+            initialSelectedMembers: initialSelectedMembers,
+            initialMarkLinkDate: initialMarkLinkDate,
+            eventMembers: eventMembers,
+          ),
         );
         if (!mounted) return;
         if (result != null) {

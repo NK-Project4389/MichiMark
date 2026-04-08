@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../draft/mark_detail_draft.dart';
 
@@ -54,10 +55,14 @@ class MarkDetailLoaded extends MarkDetailState {
   final MarkDetailDelegate? delegate;
   final TopicConfig topicConfig;
 
+  /// メンバー選択 UI に表示する候補一覧（イベントメンバーに限定）
+  final List<MemberDomain> availableMembers;
+
   const MarkDetailLoaded({
     required this.draft,
     this.delegate,
     TopicConfig? topicConfig,
+    this.availableMembers = const [],
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -73,16 +78,18 @@ class MarkDetailLoaded extends MarkDetailState {
     MarkDetailDraft? draft,
     MarkDetailDelegate? delegate,
     TopicConfig? topicConfig,
+    List<MemberDomain>? availableMembers,
   }) {
     return MarkDetailLoaded(
       draft: draft ?? this.draft,
       delegate: delegate,
       topicConfig: topicConfig ?? this.topicConfig,
+      availableMembers: availableMembers ?? this.availableMembers,
     );
   }
 
   @override
-  List<Object?> get props => [draft, delegate, topicConfig];
+  List<Object?> get props => [draft, delegate, topicConfig, availableMembers];
 }
 
 class MarkDetailError extends MarkDetailState {

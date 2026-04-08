@@ -54,6 +54,7 @@ import '../adapter/aggregation_service.dart';
 import '../features/aggregation/bloc/aggregation_bloc.dart';
 import '../features/aggregation/bloc/aggregation_event.dart';
 import '../features/aggregation/view/aggregation_page.dart';
+import '../domain/master/member/member_domain.dart';
 import '../repository/action_repository.dart';
 import '../repository/event_repository.dart';
 import '../repository/member_repository.dart';
@@ -81,6 +82,14 @@ final router = GoRouter(
         final args = state.extra;
         final eventId = args is MarkDetailArgs ? args.eventId : (args as String? ?? '');
         final topicConfig = args is MarkDetailArgs ? args.topicConfig : null;
+        final initialMeterValueInput =
+            args is MarkDetailArgs ? args.initialMeterValueInput : '';
+        final List<MemberDomain> initialSelectedMembers =
+            args is MarkDetailArgs ? args.initialSelectedMembers : const [];
+        final initialMarkLinkDate =
+            args is MarkDetailArgs ? args.initialMarkLinkDate : null;
+        final List<MemberDomain> eventMembers =
+            args is MarkDetailArgs ? args.eventMembers : const [];
         return BlocProvider(
           create: (_) => MarkDetailBloc(
             eventRepository: getIt<EventRepository>(),
@@ -88,6 +97,10 @@ final router = GoRouter(
               eventId: eventId,
               markLinkId: markId,
               topicConfig: topicConfig,
+              initialMeterValueInput: initialMeterValueInput,
+              initialSelectedMembers: initialSelectedMembers,
+              initialMarkLinkDate: initialMarkLinkDate,
+              eventMembers: eventMembers,
             )),
           child: const MarkDetailPage(),
         );
@@ -136,6 +149,7 @@ final router = GoRouter(
         return BlocProvider(
           create: (_) => EventDetailBloc(
             eventRepository: getIt<EventRepository>(),
+            transRepository: getIt<TransRepository>(),
           )..add(EventDetailStarted(eventId, initialTopicType: args?.initialTopicType)),
           child: EventDetailPage(initialTopicType: args?.initialTopicType),
         );
@@ -150,6 +164,7 @@ final router = GoRouter(
             type: args.type,
             selectedIds: args.selectedIds,
             fixedSelectedIds: args.fixedSelectedIds,
+            candidateMembers: args.candidateMembers,
             transRepository: getIt<TransRepository>(),
             memberRepository: getIt<MemberRepository>(),
             tagRepository: getIt<TagRepository>(),

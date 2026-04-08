@@ -4,8 +4,10 @@ import '../../../domain/topic/topic_config.dart';
 import '../../../domain/topic/topic_domain.dart';
 import '../../../domain/topic/topic_theme_color.dart';
 import '../../../domain/transaction/event/event_domain.dart';
+import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../repository/event_repository.dart';
 import '../../../repository/repository_error.dart';
+import '../../../repository/trans_repository.dart';
 import '../draft/event_detail_draft.dart';
 import 'event_detail_event.dart';
 import 'event_detail_state.dart';
@@ -13,7 +15,9 @@ import 'event_detail_state.dart';
 class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
   EventDetailBloc({
     required EventRepository eventRepository,
+    required TransRepository transRepository,
   })  : _eventRepository = eventRepository,
+        _transRepository = transRepository,
         super(const EventDetailLoading()) {
     on<EventDetailStarted>(_onStarted);
     on<EventDetailTabSelected>(_onTabSelected);
@@ -26,6 +30,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
   }
 
   final EventRepository _eventRepository;
+  final TransRepository _transRepository;
 
   Future<void> _onStarted(
     EventDetailStarted event,
@@ -149,6 +154,43 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     }
   }
 
+  /// REQ-MAD-005: EventDetail 保存後に Trans の最大メーター値を更新する。
+  /// 失敗しても保存成功全体に影響を与えない。
+  Future<void> _updateTransMaxMeterValue(EventDomain updated) async {
+    final trans = updated.trans;
+    if (trans == null) return;
+
+    // 論理削除除外・Mark のみ・meterValue != null の件を対象に最大値算出
+    final meterValues = updated.markLinks
+        .where(
+          (ml) =>
+              !ml.isDeleted &&
+              ml.markLinkType == MarkOrLink.mark &&
+              ml.meterValue != null,
+        )
+        .map((ml) => ml.meterValue!)
+        .toList();
+
+    if (meterValues.isEmpty) return;
+
+    final newMax = meterValues.reduce((a, b) => a > b ? a : b);
+
+    // 現在の trans.meterValue より大きい場合のみ更新
+    final currentMeterValue = trans.meterValue;
+    if (currentMeterValue != null && newMax <= currentMeterValue) return;
+
+    try {
+      await _transRepository.save(
+        trans.copyWith(
+          meterValue: newMax,
+          updatedAt: DateTime.now(),
+        ),
+      );
+    } on Exception {
+      // 失敗はログに残すのみ（保存成功フローは継続）
+    }
+  }
+
   /// Topic から TopicThemeColor を解決する。Topic未設定時は null。
   TopicThemeColor? _resolveThemeColor(TopicDomain? topic) {
     if (topic == null) return null;
@@ -203,6 +245,9 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
       );
 
       await _eventRepository.save(updated);
+
+      // REQ-MAD-005: Trans最大メーター値更新（失敗しても保存成功全体に影響しない）
+      await _updateTransMaxMeterValue(updated);
 
       final projection = EventDetailAdapter.toProjection(updated);
       final updatedThemeColor = _resolveThemeColor(updated.topic);

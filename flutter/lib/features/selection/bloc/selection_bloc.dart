@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../adapter/selection_adapter.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../repository/action_repository.dart';
 import '../../../repository/member_repository.dart';
 import '../../../repository/tag_repository.dart';
@@ -16,6 +17,7 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
     required SelectionType type,
     required Set<String> selectedIds,
     Set<String> fixedSelectedIds = const {},
+    List<MemberDomain>? candidateMembers,
     required TransRepository transRepository,
     required MemberRepository memberRepository,
     required TagRepository tagRepository,
@@ -24,6 +26,7 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
   })  : _type = type,
         _selectedIds = selectedIds,
         _fixedSelectedIds = fixedSelectedIds,
+        _candidateMembers = candidateMembers,
         _transRepository = transRepository,
         _memberRepository = memberRepository,
         _tagRepository = tagRepository,
@@ -39,6 +42,10 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
   final SelectionType _type;
   final Set<String> _selectedIds;
   final Set<String> _fixedSelectedIds;
+
+  /// REQ-MAD-004: メンバー選択候補（null の場合は MemberRepository.fetchAll() を使用）
+  final List<MemberDomain>? _candidateMembers;
+
   final TransRepository _transRepository;
   final MemberRepository _memberRepository;
   final TagRepository _tagRepository;
@@ -66,9 +73,24 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
             cachedTrans: items,
           ));
 
-        case SelectionType.eventMembers:
         case SelectionType.markMembers:
         case SelectionType.linkMembers:
+          // REQ-MAD-004: 候補リストが指定されている場合はそちらを優先する
+          final items =
+              _candidateMembers ?? await _memberRepository.fetchAll();
+          final projection = SelectionAdapter.fromMembers(
+            type: _type,
+            items: items,
+            selectedIds: _selectedIds,
+            fixedSelectedIds: _fixedSelectedIds,
+          );
+          emit(SelectionLoaded(
+            projection: projection,
+            draft: draft,
+            cachedMembers: items,
+          ));
+
+        case SelectionType.eventMembers:
         case SelectionType.gasPayMember:
         case SelectionType.payMember:
         case SelectionType.splitMembers:
