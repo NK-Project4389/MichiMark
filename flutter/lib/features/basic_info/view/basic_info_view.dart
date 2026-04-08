@@ -115,6 +115,9 @@ class _BasicInfoViewState extends State<BasicInfoView> {
             selectedIds: draft.selectedPayMember != null
                 ? {draft.selectedPayMember!.id}
                 : {},
+            candidateMembers: draft.selectedMembers.isEmpty
+                ? null
+                : draft.selectedMembers,
           ),
         );
         if (!mounted) return;

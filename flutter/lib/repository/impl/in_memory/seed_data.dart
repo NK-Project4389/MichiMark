@@ -166,6 +166,7 @@ final seedTrans = [
 final _event1 = EventDomain(
   id: 'event-001',
   eventName: '箱根日帰りドライブ',
+  topic: seedTopics[0], // 移動コスト可視化
   trans: seedTrans[0], // マイカー
   members: [seedMembers[0], seedMembers[1]], // 太郎, 花子
   tags: [seedTags[1], seedTags[2]], // 日帰り, 温泉
@@ -268,6 +269,7 @@ final _event1 = EventDomain(
 final _event2 = EventDomain(
   id: 'event-002',
   eventName: '富士五湖キャンプ',
+  topic: seedTopics[1], // 旅費可視化
   trans: seedTrans[0], // マイカー
   members: seedMembers, // 太郎, 花子, 健太
   tags: [seedTags[0]], // 家族旅行
