@@ -6,6 +6,7 @@
 ---
 
 ## 完了した作業
+- feat: PaymentInfo UI 改善 + 支払いごとの精算セクション追加 (c7353e3)
 
 ### 実装（flutter-dev）
 
@@ -37,12 +38,23 @@
 
 ---
 
-## 未完了
+## 未完了 / 要対応
 
-なし
+### 既存テスト失敗（UI変更に伴うテスト更新が必要）
+
+| テストファイル | テストID | 原因 |
+|---|---|---|
+| `mark_addition_defaults_test.dart` | TC-MAD-006 | `IconButton.at(1)` でメンバー追加ボタンを探しているが UI 変更で順番が変わった |
+| `mark_addition_defaults_test.dart` | TC-MAD-007 | AppBar の `Icons.check` 保存ボタンを探しているが概要タブ再設計で FAB に変更済み |
+| `michi_info_layout_test.dart` | TS-03, TS-04 | Mark/Link タップ後の遷移確認テキストが UI 変更で変わった可能性 |
+
+### 「給油計算」バグ
+ユーザーから「給油計算がおかしい」と報告あり。FuelDetail の具体的な問題内容は未確認。
 
 ---
 
 ## 次回セッションで最初にやること
 
-- `docs/Tasks/TASKBOARD.md` を確認してタスクを確認する
+1. `docs/Tasks/TASKBOARD.md` を確認してタスクを確認する
+2. 既存テスト失敗を修正する（TC-MAD-006/007、TS-03/04）
+3. 「給油計算」バグの詳細をユーザーに確認する
