@@ -36,6 +36,13 @@ class TravelExpenseOverviewView extends StatelessWidget {
         ...projection.memberBalances.map(
           (balance) => _BalanceRow(balance: balance),
         ),
+        if (projection.perPaymentSettlements.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          const _SectionTitle(title: '支払いごとの精算'),
+          ...projection.perPaymentSettlements.map(
+            (settlement) => _PerPaymentSettlementCard(settlement: settlement),
+          ),
+        ],
       ],
     );
   }
@@ -86,6 +93,91 @@ class _InfoRow extends StatelessWidget {
               value,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PerPaymentSettlementCard extends StatelessWidget {
+  final PerPaymentSettlementProjection settlement;
+
+  const _PerPaymentSettlementCard({required this.settlement});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ヘッダー行: タイトル + 金額
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      settlement.displayTitle,
+                      style: textTheme.bodyMedium,
+                    ),
+                  ),
+                  Text(
+                    settlement.displayAmount,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: const Color(0xFF2B7A9B),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              // 精算行一覧
+              ...settlement.lines.map(
+                (line) => _SettlementLineRow(line: line),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SettlementLineRow extends StatelessWidget {
+  final SettlementLineProjection line;
+
+  const _SettlementLineRow({required this.line});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        children: [
+          Text(
+            line.payerName,
+            style: textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+          Text(' → ', style: textTheme.bodySmall),
+          Text(
+            line.receiverName,
+            style: textTheme.bodySmall?.copyWith(
+              color: Colors.green.shade700,
+            ),
+          ),
+          Text(
+            ' : ${line.displayAmount}',
+            style: textTheme.bodySmall,
           ),
         ],
       ),

@@ -127,29 +127,123 @@ class _PaymentInfoList extends StatelessWidget {
 class _PaymentListTile extends StatelessWidget {
   final PaymentItemProjection item;
 
+  static const _payerChipColor = Color(0xFF2B7A9B);
+  static const _splitChipColor = Color(0xFF2E9E6B);
+
   const _PaymentListTile({required this.item});
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.payment),
-      title: Text(item.displayAmount),
-      subtitle: Text(_buildSubtitle(item)),
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final memo = item.memo;
+    final hasMemo = memo != null && memo.isNotEmpty;
+
+    return InkWell(
       onTap: () => context
           .read<PaymentInfoBloc>()
           .add(PaymentInfoPaymentTapped(item.id)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 2, right: 16),
+              child: Icon(Icons.payment),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 行1: 金額
+                  Text(
+                    item.displayAmount,
+                    style: textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  // 行2: 支払者チップ
+                  Row(
+                    children: [
+                      Text('支払', style: textTheme.bodySmall),
+                      const SizedBox(width: 6),
+                      _MemberChip(
+                        name: item.payer.memberName,
+                        backgroundColor: _payerChipColor,
+                      ),
+                    ],
+                  ),
+                  // 行3: 割り勘メンバー（存在する場合のみ）
+                  if (item.splitMembers.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 3),
+                          child: Text('割り勘', style: textTheme.bodySmall),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Wrap(
+                            spacing: 4,
+                            runSpacing: 4,
+                            children: item.splitMembers
+                                .map(
+                                  (m) => _MemberChip(
+                                    name: m.memberName,
+                                    backgroundColor: _splitChipColor,
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  // 行4: メモ（存在する場合のみ）
+                  if (hasMemo) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      memo,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
+}
 
-  String _buildSubtitle(PaymentItemProjection item) {
-    final parts = <String>[item.payer.memberName];
-    if (item.splitMembers.isNotEmpty) {
-      final names = item.splitMembers.map((m) => m.memberName).join('・');
-      parts.add('割り勘: $names');
-    }
-    if (item.memo != null && item.memo!.isNotEmpty) {
-      parts.add(item.memo!);
-    }
-    return parts.join('  ');
+class _MemberChip extends StatelessWidget {
+  final String name;
+  final Color backgroundColor;
+
+  const _MemberChip({required this.name, required this.backgroundColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        name,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Colors.white,
+            ),
+      ),
+    );
   }
 }
