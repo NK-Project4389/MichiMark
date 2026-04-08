@@ -178,12 +178,12 @@ class _MarkDetailForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.zero,
       children: [
         _NameField(value: draft.markLinkName),
-        const SizedBox(height: 16),
+        const Divider(height: 1),
         _DateRow(date: draft.markLinkDate, dateFormat: dateFormat),
-        const SizedBox(height: 16),
+        const Divider(height: 1),
         _SelectionRow(
           label: 'メンバー',
           value: draft.selectedMembers.isEmpty
@@ -194,18 +194,13 @@ class _MarkDetailForm extends StatelessWidget {
               .add(const MarkDetailEditMembersPressed()),
         ),
         if (topicConfig.showMeterValue) ...[
-          const SizedBox(height: 16),
+          const Divider(height: 1),
           _MeterValueField(value: draft.meterValueInput),
         ],
-        // アクション行：ミチ情報一覧のボタンに移行したため非表示
-        const Visibility(
-          visible: false,
-          child: SizedBox.shrink(),
-        ),
-        const SizedBox(height: 16),
+        const Divider(height: 1),
         _MemoField(value: draft.memo),
         if (topicConfig.showFuelDetail) ...[
-          const SizedBox(height: 16),
+          const Divider(height: 1),
           _FuelRow(
             isFuel: draft.isFuel,
             pricePerGasInput: draft.pricePerGasInput,
@@ -213,6 +208,7 @@ class _MarkDetailForm extends StatelessWidget {
             gasPriceInput: draft.gasPriceInput,
           ),
         ],
+        const SizedBox(height: 16),
       ],
     );
   }
@@ -245,14 +241,36 @@ class _NameFieldState extends State<_NameField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        labelText: '名称（任意）',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              '名称',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                hintText: '任意',
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
+              onChanged: (v) =>
+                  context.read<MarkDetailBloc>().add(MarkDetailNameChanged(v)),
+            ),
+          ),
+        ],
       ),
-      onChanged: (v) =>
-          context.read<MarkDetailBloc>().add(MarkDetailNameChanged(v)),
     );
   }
 }
@@ -282,15 +300,38 @@ class _MeterValueFieldState extends State<_MeterValueField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        labelText: '累積メーター (km)',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              '累積メーター',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                hintText: '0',
+                suffixText: 'km',
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
+              keyboardType: TextInputType.number,
+              onChanged: (v) =>
+                  context.read<MarkDetailBloc>().add(MarkDetailMeterValueChanged(v)),
+            ),
+          ),
+        ],
       ),
-      keyboardType: TextInputType.number,
-      onChanged: (v) =>
-          context.read<MarkDetailBloc>().add(MarkDetailMeterValueChanged(v)),
     );
   }
 }
@@ -320,15 +361,41 @@ class _MemoFieldState extends State<_MemoField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        labelText: 'メモ',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text(
+                'メモ',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                hintText: '任意',
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
+              maxLines: null,
+              onChanged: (v) =>
+                  context.read<MarkDetailBloc>().add(MarkDetailMemoChanged(v)),
+            ),
+          ),
+        ],
       ),
-      maxLines: 3,
-      onChanged: (v) =>
-          context.read<MarkDetailBloc>().add(MarkDetailMemoChanged(v)),
     );
   }
 }
@@ -341,31 +408,37 @@ class _DateRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            '日付',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-          ),
-        ),
-        Expanded(
-          child: GestureDetector(
-            onTap: () => _pickDate(context),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
             child: Text(
-              dateFormat.format(date),
-              style: Theme.of(context).textTheme.bodyMedium,
+              '日付',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
           ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.calendar_today),
-          onPressed: () => _pickDate(context),
-        ),
-      ],
+          Expanded(
+            child: GestureDetector(
+              onTap: () => _pickDate(context),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  dateFormat.format(date),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.calendar_today),
+            onPressed: () => _pickDate(context),
+          ),
+        ],
+      ),
     );
   }
 
@@ -398,30 +471,38 @@ class _SelectionRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onEditPressed,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 120,
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
             ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodyMedium,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  value,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
             ),
-          ),
-          const Icon(Icons.chevron_right),
-        ],
+            const Icon(Icons.chevron_right),
+          ],
+        ),
       ),
     );
   }
 }
+
+
 
 class _FuelRow extends StatelessWidget {
   final bool isFuel;
@@ -442,7 +523,7 @@ class _FuelRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SwitchListTile(
-          contentPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
           title: const Text('給油'),
           value: isFuel,
           onChanged: (_) =>

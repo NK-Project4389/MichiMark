@@ -264,10 +264,10 @@ class _BasicInfoForm extends StatelessWidget {
         ListView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+          padding: const EdgeInsets.only(bottom: 80),
           children: [
             _EventNameField(value: draft.eventName),
-            const SizedBox(height: 16),
+            const Divider(height: 1),
             _SelectionRow(
               label: '交通手段',
               value: draft.selectedTrans?.transName ?? '未選択',
@@ -276,9 +276,10 @@ class _BasicInfoForm extends StatelessWidget {
                   .add(const BasicInfoEditTransPressed()),
             ),
             if (topicConfig.showKmPerGas) ...[
-              const SizedBox(height: 16),
+              const Divider(height: 1),
               _NumberInputField(
-                label: '燃費 (km/L)',
+                label: '燃費',
+                suffix: 'km/L',
                 value: draft.kmPerGasInput,
                 onChanged: (input) => context
                     .read<BasicInfoBloc>()
@@ -286,16 +287,17 @@ class _BasicInfoForm extends StatelessWidget {
               ),
             ],
             if (topicConfig.showPricePerGas) ...[
-              const SizedBox(height: 16),
+              const Divider(height: 1),
               _NumberInputField(
-                label: 'ガソリン単価 (円/L)',
+                label: 'ガソリン単価',
+                suffix: '円/L',
                 value: draft.pricePerGasInput,
                 onChanged: (input) => context
                     .read<BasicInfoBloc>()
                     .add(BasicInfoPricePerGasChanged(input)),
               ),
             ],
-            const SizedBox(height: 16),
+            const Divider(height: 1),
             _SelectionRow(
               label: 'メンバー',
               value: draft.selectedMembers.isEmpty
@@ -305,13 +307,13 @@ class _BasicInfoForm extends StatelessWidget {
                   .read<BasicInfoBloc>()
                   .add(const BasicInfoEditMembersPressed()),
             ),
-            const SizedBox(height: 16),
+            const Divider(height: 1),
             _TagInputSection(
               selectedTags: draft.selectedTags,
               tagSuggestions: tagSuggestions,
             ),
             if (topicConfig.showPayMember) ...[
-              const SizedBox(height: 16),
+              const Divider(height: 1),
               _SelectionRow(
                 label: 'ガソリン支払者',
                 value: draft.selectedPayMember?.memberName ?? '未選択',
@@ -384,26 +386,50 @@ class _EventNameFieldState extends State<_EventNameField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        labelText: 'イベント名',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              'イベント名',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                hintText: '任意',
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
+              onChanged: (value) => context
+                  .read<BasicInfoBloc>()
+                  .add(BasicInfoEventNameChanged(value)),
+            ),
+          ),
+        ],
       ),
-      onChanged: (value) => context
-          .read<BasicInfoBloc>()
-          .add(BasicInfoEventNameChanged(value)),
     );
   }
 }
 
 class _NumberInputField extends StatefulWidget {
   final String label;
+  final String suffix;
   final String value;
   final ValueChanged<String> onChanged;
 
   const _NumberInputField({
     required this.label,
+    required this.suffix,
     required this.value,
     required this.onChanged,
   });
@@ -429,14 +455,37 @@ class _NumberInputFieldState extends State<_NumberInputField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: InputDecoration(
-        labelText: widget.label,
-        border: const OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              widget.label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                hintText: '0',
+                suffixText: widget.suffix,
+                contentPadding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              onChanged: widget.onChanged,
+            ),
+          ),
+        ],
       ),
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      onChanged: widget.onChanged,
     );
   }
 }
@@ -475,67 +524,73 @@ class _TagInputSectionState extends State<_TagInputSection> {
           color: Theme.of(context).colorScheme.onSurfaceVariant,
         );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('タグ', style: labelStyle),
-        if (widget.selectedTags.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 4,
-            children: widget.selectedTags
-                .map((tag) => Chip(
-                      label: Text(tag.tagName),
-                      onDeleted: () => context
-                          .read<BasicInfoBloc>()
-                          .add(BasicInfoTagRemoved(tag)),
-                    ))
-                .toList(),
-          ),
-        ],
-        const SizedBox(height: 8),
-        TextField(
-          controller: _controller,
-          decoration: const InputDecoration(
-            hintText: 'タグを入力して追加...',
-            border: OutlineInputBorder(),
-            isDense: true,
-          ),
-          onChanged: (input) => context
-              .read<BasicInfoBloc>()
-              .add(BasicInfoTagInputChanged(input)),
-          onSubmitted: (input) {
-            context.read<BasicInfoBloc>().add(BasicInfoTagInputConfirmed(input));
-            _clearInput();
-          },
-        ),
-        if (widget.tagSuggestions.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Text(
-            'レコメンド',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-          ),
-          const SizedBox(height: 4),
-          Wrap(
-            spacing: 8,
-            runSpacing: 4,
-            children: widget.tagSuggestions
-                .map((tag) => ActionChip(
-                      label: Text(tag.tagName),
-                      onPressed: () {
-                        context
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('タグ', style: labelStyle),
+          if (widget.selectedTags.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: widget.selectedTags
+                  .map((tag) => Chip(
+                        label: Text(tag.tagName),
+                        onDeleted: () => context
                             .read<BasicInfoBloc>()
-                            .add(BasicInfoTagSuggestionSelected(tag));
-                        _clearInput();
-                      },
-                    ))
-                .toList(),
+                            .add(BasicInfoTagRemoved(tag)),
+                      ))
+                  .toList(),
+            ),
+          ],
+          const SizedBox(height: 8),
+          TextField(
+            controller: _controller,
+            decoration: const InputDecoration(
+              hintText: '新しいタグを追加',
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(vertical: 4),
+            ),
+            onChanged: (input) => context
+                .read<BasicInfoBloc>()
+                .add(BasicInfoTagInputChanged(input)),
+            onSubmitted: (input) {
+              context.read<BasicInfoBloc>().add(BasicInfoTagInputConfirmed(input));
+              _clearInput();
+            },
           ),
+          if (widget.tagSuggestions.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              '最近使用したタグ',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 4),
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: widget.tagSuggestions
+                  .map((tag) => ActionChip(
+                        label: Text(tag.tagName),
+                        onPressed: () {
+                          context
+                              .read<BasicInfoBloc>()
+                              .add(BasicInfoTagSuggestionSelected(tag));
+                          _clearInput();
+                        },
+                      ))
+                  .toList(),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
@@ -556,7 +611,7 @@ class _SelectionRow extends StatelessWidget {
     return InkWell(
       onTap: onEditPressed,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -570,9 +625,12 @@ class _SelectionRow extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: Text(
-                value,
-                style: Theme.of(context).textTheme.bodyMedium,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  value,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
             ),
             const Icon(Icons.chevron_right),

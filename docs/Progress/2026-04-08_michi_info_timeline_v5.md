@@ -5,6 +5,8 @@
 ---
 
 ## 完了した作業
+- fix: タグレコメンド横並び・解除で戻る・支払メンバー絞り込み (ac10fde)
+- docs: 第8セッション進捗更新（バグ3件修正・タグレコメンド実装） (8c1dd46)
 - feat: タグレコメンド常時表示・最近使った順ソート（REQ-tag_recommend_display） (25cfaa3)
 - docs: 次回やること更新（動作確認→T-080→T-094） (1766c45)
 - chore: MichiInfoアクションボタンUIタスク追加（Phase 10 / T-094〜T-098） (101bdcc)
@@ -285,9 +287,36 @@
 - レコメンドから選択時に `updatedAt` を更新してマスタ保存（最近使った順反映）
 - View: レコメンドセクションに「レコメンド」ラベル追加
 
+## 追加実装（2026-04-08 第9セッション: 入力画面刷新）
+
+### 入力画面 UI 刷新（ユーザー指示: テキストボックス枠なし・Divider 区切り・拡張FAB）
+
+対象 5 ファイルを一括変更。
+
+**変更内容:**
+1. **テキスト入力フィールド**: `OutlineInputBorder` → `InputBorder.none`（ボーダーレス）
+   - 全フィールドをインライン行（ラベル幅120px + TextField）形式に統一
+   - 数値フィールドに suffix テキスト追加（km / 円 / km/L / 円/L）
+2. **Divider**: `SizedBox(height: 16)` → `Divider(height: 1)` で各項目間を iOS 設定スタイルに
+3. **padding**: ListView padding を `EdgeInsets.zero`・各フィールドに `symmetric(horizontal: 16)` を付与
+4. **選択行**: 横 padding 追加・選択値に `vertical: 12` の padding を追加してタップ領域確保
+5. **メモ欄**: maxLines: 3 → null（可変高）に変更
+6. **拡張FAB**: `FloatingActionButton` → `FloatingActionButton.extended`（icon+「追加」テキスト）
+7. **タグラベル変更**: 「レコメンド」→「最近使用したタグ」、入力ヒント「タグを入力して追加...」→「新しいタグを追加」
+8. **タグ入力枠**: `OutlineInputBorder` → `InputBorder.none`
+
+**対応ファイル:**
+- `flutter/lib/features/mark_detail/view/mark_detail_page.dart`
+- `flutter/lib/features/link_detail/view/link_detail_page.dart`
+- `flutter/lib/features/payment_detail/view/payment_detail_page.dart`
+- `flutter/lib/features/basic_info/view/basic_info_view.dart`
+- `flutter/lib/features/michi_info/view/michi_info_view.dart`
+
+**dart analyze**: 17 issues（既存 info/warning のみ・新規エラーなし）
+
 ## 次回セッションで最初にやること
 
-1. **動作確認**: バグ3件修正・タグレコメンドを手動確認
+1. **動作確認**: 入力画面刷新の見た目確認（MarkDetail / LinkDetail / PaymentDetail / BasicInfo / MichiInfo FAB）
 2. **T-080**: シードデータ更新（flutter-dev タスク）
 3. **T-094**: MichiInfo アクションボタン UI 要件書作成（product-manager タスク）
 

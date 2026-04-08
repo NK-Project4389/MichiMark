@@ -426,9 +426,10 @@ class _MichiInfoListState extends State<_MichiInfoList> {
     if (projection.items.isEmpty) {
       return Scaffold(
         body: const Center(child: Text('地点/区間がありません')),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: FloatingActionButton.extended(
           onPressed: () => _showAddMenu(context),
-          child: const Icon(Icons.add),
+          icon: const Icon(Icons.add),
+          label: const Text('追加'),
         ),
       );
     }

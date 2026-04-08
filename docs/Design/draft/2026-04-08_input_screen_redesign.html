@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark — 入力画面UI刷新デザイン提案 2026-04-08</title>
+  <style>
+    :root {
+      /* ===== Brand Colors ===== */
+      --teal:            #4ECDC4;
+      --teal-dark:       #2D6A6A;
+      --teal-mid:        #3AADA5;
+      --teal-tint:       #E0F7F5;
+      --teal-tint2:      #F0FAFA;
+
+      /* ===== Page / Card ===== */
+      --bg-page:         #F4F8F8;
+      --bg-card:         #FFFFFF;
+      --bg-section:      #F9FCFC;
+      --border-light:    #E0EEEC;
+      --border-input:    #B2DFDB;
+      --border-focus:    #4ECDC4;
+      --border-select:   #3AADA5;
+
+      /* ===== Text ===== */
+      --text-primary:    #1A1A2E;
+      --text-secondary:  #5C7070;
+      --text-tertiary:   #9BB5B3;
+      --text-teal:       #2D6A6A;
+      --text-label:      #3E5A5A;
+
+      /* ===== Interactive ===== */
+      --select-bg:       #F0FAFA;
+      --select-border:   #4ECDC4;
+      --select-arrow:    #2D6A6A;
+      --btn-primary:     #2D6A6A;
+      --btn-primary-h:   #245858;
+      --btn-cancel:      #5C7070;
+
+      /* ===== Tag ===== */
+      --tag-chip-bg:     #E0F7F5;
+      --tag-chip-border: #4ECDC4;
+      --tag-chip-text:   #2D6A6A;
+      --tag-rec-bg:      #F4F8F8;
+      --tag-rec-border:  #B2DFDB;
+      --tag-rec-text:    #5C7070;
+
+      /* ===== Divider ===== */
+      --divider:         #E5F0EE;
+      --divider-strong:  #B2DFDB;
+
+      /* ===== Misc ===== */
+      --radius-card:     16px;
+      --radius-input:    10px;
+      --radius-chip:     20px;
+      --radius-btn:      12px;
+      --shadow-card:     0 2px 12px rgba(45,106,106,0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue',
+                   'Hiragino Sans', 'Yu Gothic', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ========== PAGE HEADER ========== */
+    .page-header {
+      background: linear-gradient(135deg, #1A4A4A 0%, #2D6A6A 55%, #4ECDC4 100%);
+      color: #fff;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 18px;
+    }
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .page-header .subtitle {
+      font-size: 15px;
+      opacity: 0.8;
+    }
+    .page-header .meta {
+      margin-top: 24px;
+      display: flex;
+      gap: 24px;
+      font-size: 13px;
+      opacity: 0.7;
+    }
+    .page-header .meta span { display: flex; align-items: center; gap: 6px; }
+
+    /* ========== LAYOUT ========== */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    /* ========== SECTION ========== */
+    .section {
+      margin-bottom: 56px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .section-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--teal-dark);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--teal-dark);
+    }
+    .section-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* ========== CARD ========== */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+    }
+    .card-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-teal);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 10px 16px 6px;
+      background: var(--bg-section);
+      border-bottom: 1px solid var(--divider);
+    }
+
+    /* ========== PHONE FRAME ========== */
+    .phone-frame {
+      width: 320px;
+      background: var(--bg-card);
+      border-radius: 28px;
+      border: 2px solid var(--border-light);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      font-size: 13px;
+    }
+    .phone-nav {
+      background: var(--teal-dark);
+      color: #fff;
+      padding: 12px 16px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .phone-nav .nav-title { font-size: 15px; font-weight: 700; }
+    .phone-nav .nav-action { font-size: 12px; opacity: 0.85; }
+    .phone-body { padding: 0; background: #F4F8F8; }
+
+    /* ========== FORM PRIMITIVES ========== */
+    /* --- Text Input --- */
+    .form-field {
+      padding: 12px 16px;
+      background: #fff;
+      border-bottom: 1px solid var(--divider);
+    }
+    .form-field:last-child { border-bottom: none; }
+    .field-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-label);
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+    }
+    .text-input-wrap {
+      border: 1.5px solid var(--border-input);
+      border-radius: var(--radius-input);
+      padding: 8px 12px;
+      background: #fff;
+      color: var(--text-primary);
+      font-size: 14px;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+    }
+    .text-input-wrap.focused {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(78,205,196,0.15);
+    }
+    .text-input-wrap.placeholder { color: var(--text-tertiary); }
+    .text-input-wrap .unit {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* --- Select Row --- */
+    .select-row {
+      padding: 12px 16px;
+      background: var(--select-bg);
+      border: 1.5px solid var(--select-border);
+      border-radius: var(--radius-input);
+      margin: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .select-row .select-label { font-size: 11px; font-weight: 600; color: var(--text-label); }
+    .select-row .select-value { font-size: 13px; color: var(--text-primary); margin-top: 1px; }
+    .select-row .select-left { display: flex; flex-direction: column; gap: 1px; }
+    .select-row .arrow-icon {
+      font-size: 16px;
+      color: var(--select-arrow);
+      font-weight: 700;
+    }
+    /* Inline select (in form list) */
+    .form-select {
+      padding: 12px 16px;
+      background: var(--select-bg);
+      border-bottom: 1px solid var(--divider);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .form-select:last-child { border-bottom: none; }
+    .form-select .fs-label { font-size: 13px; color: var(--text-primary); }
+    .form-select .fs-value { font-size: 13px; color: var(--text-secondary); }
+    .form-select .fs-right { display: flex; align-items: center; gap: 6px; }
+    .fs-arrow {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--teal-dark);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* --- Tag Section --- */
+    .tag-section {
+      padding: 10px 16px 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--divider);
+    }
+    .tag-section-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-teal);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 7px;
+    }
+    .chip-group { display: flex; flex-wrap: wrap; gap: 5px; }
+    .chip {
+      border-radius: var(--radius-chip);
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .chip.selected {
+      background: var(--tag-chip-bg);
+      border: 1.5px solid var(--tag-chip-border);
+      color: var(--tag-chip-text);
+    }
+    .chip.recommend {
+      background: var(--tag-rec-bg);
+      border: 1.5px solid var(--tag-rec-border);
+      color: var(--tag-rec-text);
+    }
+    .chip .chip-x { color: var(--teal-dark); font-weight: 800; font-size: 10px; }
+    .chip .chip-plus { color: var(--text-secondary); font-weight: 800; font-size: 10px; }
+
+    /* --- Buttons --- */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      padding: 14px 16px;
+      background: #fff;
+      border-top: 1px solid var(--divider-strong);
+    }
+    .btn-elevated {
+      flex: 1;
+      background: var(--btn-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-btn);
+      padding: 11px 0;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+    }
+    .btn-text {
+      flex: 0 0 auto;
+      background: transparent;
+      color: var(--btn-cancel);
+      border: none;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    /* ========== COMPARISON TABLE ========== */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 720px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+      text-align: center;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .compare-label.after { color: var(--teal-dark); }
+
+    /* ========== ISSUE BADGES ========== */
+    .issue-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .issue-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 18px;
+      background: #fff;
+      border-radius: 12px;
+      border-left: 4px solid var(--teal-mid);
+      box-shadow: var(--shadow-card);
+    }
+    .issue-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--teal-tint);
+      border: 1.5px solid var(--teal-mid);
+      color: var(--teal-dark);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .issue-text { font-size: 14px; color: var(--text-primary); }
+    .issue-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* ========== RULE CARDS ========== */
+    .rule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .rule-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-card);
+    }
+    .rule-card .rule-icon {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    .rule-card .rule-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 6px;
+    }
+    .rule-card .rule-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ========== COLOR PALETTE ========== */
+    .palette-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .swatch-block {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .swatch-name { font-size: 10px; color: var(--text-secondary); font-weight: 600; text-align: center; }
+    .swatch-hex  { font-size: 10px; color: var(--text-tertiary);  text-align: center; font-family: monospace; }
+
+    /* ========== TYPOGRAPHY ========== */
+    .type-table { width: 100%; border-collapse: collapse; }
+    .type-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--divider-strong);
+      background: var(--bg-section);
+    }
+    .type-table td {
+      padding: 12px 12px;
+      border-bottom: 1px solid var(--divider);
+      vertical-align: middle;
+    }
+    .type-table tr:last-child td { border-bottom: none; }
+    .type-role { font-size: 12px; color: var(--text-secondary); }
+    .type-spec { font-size: 11px; color: var(--text-tertiary); font-family: monospace; }
+
+    /* ========== RATIONALE ========== */
+    .rationale-list { display: flex; flex-direction: column; gap: 12px; }
+    .rationale-item {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      padding: 16px 20px;
+      box-shadow: var(--shadow-card);
+    }
+    .rationale-item .r-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 5px;
+    }
+    .rationale-item .r-body {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* ========== MISC ========== */
+    .divider-line {
+      height: 1px;
+      background: var(--divider-strong);
+      margin: 32px 0;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--teal-tint);
+      border: 1px solid var(--teal-mid);
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--teal-dark);
+    }
+    .screens-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      align-items: start;
+    }
+    .screen-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .screen-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      letter-spacing: 0.3px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== PAGE HEADER ===== -->
+<header class="page-header">
+  <div class="badge">Designer Report — MichiMark</div>
+  <h1>入力画面UI刷新デザイン提案</h1>
+  <p class="subtitle">BasicInfo / MarkDetail / LinkDetail / PaymentDetail — 入力性・視認性の向上</p>
+  <div class="meta">
+    <span>2026-04-08</span>
+    <span>対象: 入力画面 4画面 + FABボタン</span>
+    <span>フェーズ: デザイン提案 (Draft)</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ========== 0. 課題サマリー ========== -->
+  <section class="section" id="issues">
+    <div class="section-header">
+      <div class="section-num">0</div>
+      <div>
+        <div class="section-title">現状の課題</div>
+        <div class="section-desc">ユーザー指摘5点を整理する</div>
+      </div>
+    </div>
+    <div class="issue-list">
+      <div class="issue-item">
+        <div class="issue-num">1</div>
+        <div>
+          <div class="issue-text">テキストボックスの境界が不明確</div>
+          <div class="issue-sub">枠線がなく、どこが入力エリアか視覚的に判別しにくい</div>
+        </div>
+      </div>
+      <div class="issue-item">
+        <div class="issue-num">2</div>
+        <div>
+          <div class="issue-text">マスター選択行のタップ誘導が弱い</div>
+          <div class="issue-sub">右矢印はあるが選択可能であることが伝わりにくい。背景・ボーダーで選択インタラクションを明示する必要がある</div>
+        </div>
+      </div>
+      <div class="issue-item">
+        <div class="issue-num">3</div>
+        <div>
+          <div class="issue-text">タグセクションの範囲が不明確</div>
+          <div class="issue-sub">登録済みチップ / レコメンドチップ / 入力フィールドの区分がフラットで混在して見える</div>
+        </div>
+      </div>
+      <div class="issue-item">
+        <div class="issue-num">4</div>
+        <div>
+          <div class="issue-text">保存・キャンセルボタンの統一感がない</div>
+          <div class="issue-sub">ボタン種別・スタイルが画面ごとに異なる。ElevatedButton / TextButton への統一が必要</div>
+        </div>
+      </div>
+      <div class="issue-item">
+        <div class="issue-num">5</div>
+        <div>
+          <div class="issue-text">各項目間のセパレーターがない</div>
+          <div class="issue-sub">Dividerがなくフォームアイテムの区切りが曖昧。項目数が増えると特に視認性が低下する</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 1. カラーパレット ========== -->
+  <section class="section" id="color-palette">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div>
+        <div class="section-title">カラーパレット</div>
+        <div class="section-desc">既存のTeal系パレットを入力UIに適合させた拡張定義</div>
+      </div>
+    </div>
+    <div class="card" style="padding: 24px;">
+      <div class="card-label" style="margin: -24px -24px 20px; padding: 10px 24px;">Primary / Brand</div>
+      <div class="palette-row" style="margin-bottom: 24px;">
+        <div class="swatch">
+          <div class="swatch-block" style="background:#2D6A6A;"></div>
+          <div class="swatch-name">Teal Dark</div>
+          <div class="swatch-hex">#2D6A6A</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#3AADA5;"></div>
+          <div class="swatch-name">Teal Mid</div>
+          <div class="swatch-hex">#3AADA5</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#4ECDC4; border:1px solid #ccc;"></div>
+          <div class="swatch-name">Teal</div>
+          <div class="swatch-hex">#4ECDC4</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#B2DFDB; border:1px solid #ccc;"></div>
+          <div class="swatch-name">Teal Light</div>
+          <div class="swatch-hex">#B2DFDB</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#E0F7F5; border:1px solid #ccc;"></div>
+          <div class="swatch-name">Teal Tint</div>
+          <div class="swatch-hex">#E0F7F5</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#F0FAFA; border:1px solid #ccc;"></div>
+          <div class="swatch-name">Teal Tint2</div>
+          <div class="swatch-hex">#F0FAFA</div>
+        </div>
+      </div>
+
+      <div class="card-label" style="margin: 0 -24px 20px; padding: 10px 24px; background: #F9FCFC; border-top: 1px solid #E0EEEC;">Input / UI Tokens</div>
+      <div class="palette-row" style="margin-bottom: 24px;">
+        <div class="swatch">
+          <div class="swatch-block" style="background:#B2DFDB; border:1px solid #aaa;"></div>
+          <div class="swatch-name">Input Border</div>
+          <div class="swatch-hex">#B2DFDB</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#4ECDC4; border:1px solid #ccc;"></div>
+          <div class="swatch-name">Focus Ring</div>
+          <div class="swatch-hex">#4ECDC4</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#F0FAFA; border:1px solid #ccc;"></div>
+          <div class="swatch-name">Select BG</div>
+          <div class="swatch-hex">#F0FAFA</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#3AADA5; border:1px solid #ccc;"></div>
+          <div class="swatch-name">Select Border</div>
+          <div class="swatch-hex">#3AADA5</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#E5F0EE; border:1px solid #ccc;"></div>
+          <div class="swatch-name">Divider</div>
+          <div class="swatch-hex">#E5F0EE</div>
+        </div>
+      </div>
+
+      <div class="card-label" style="margin: 0 -24px 20px; padding: 10px 24px; background: #F9FCFC; border-top: 1px solid #E0EEEC;">Text</div>
+      <div class="palette-row">
+        <div class="swatch">
+          <div class="swatch-block" style="background:#1A1A2E;"></div>
+          <div class="swatch-name">Primary</div>
+          <div class="swatch-hex">#1A1A2E</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#3E5A5A;"></div>
+          <div class="swatch-name">Label</div>
+          <div class="swatch-hex">#3E5A5A</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#5C7070;"></div>
+          <div class="swatch-name">Secondary</div>
+          <div class="swatch-hex">#5C7070</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#9BB5B3; border:1px solid #ccc;"></div>
+          <div class="swatch-name">Placeholder</div>
+          <div class="swatch-hex">#9BB5B3</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 2. タイポグラフィ ========== -->
+  <section class="section" id="typography">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div>
+        <div class="section-title">タイポグラフィ</div>
+        <div class="section-desc">入力画面で使用するテキストスタイル一覧</div>
+      </div>
+    </div>
+    <div class="card">
+      <table class="type-table">
+        <thead>
+          <tr>
+            <th>用途</th>
+            <th>プレビュー</th>
+            <th>サイズ / ウェイト</th>
+            <th>色トークン</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="type-role">ナビゲーションタイトル</td>
+            <td><span style="font-size:17px; font-weight:700; color:#1A1A2E;">基本情報を編集</span></td>
+            <td class="type-spec">17px / Bold</td>
+            <td class="type-spec">text-primary</td>
+          </tr>
+          <tr>
+            <td class="type-role">フィールドラベル</td>
+            <td><span style="font-size:11px; font-weight:600; color:#3E5A5A; text-transform:uppercase; letter-spacing:0.3px;">イベント名</span></td>
+            <td class="type-spec">11px / SemiBold / uppercase</td>
+            <td class="type-spec">text-label</td>
+          </tr>
+          <tr>
+            <td class="type-role">入力値テキスト</td>
+            <td><span style="font-size:14px; color:#1A1A2E;">東京ドライブ2026</span></td>
+            <td class="type-spec">14px / Regular</td>
+            <td class="type-spec">text-primary</td>
+          </tr>
+          <tr>
+            <td class="type-role">プレースホルダー</td>
+            <td><span style="font-size:14px; color:#9BB5B3;">例: 東京ドライブ2026</span></td>
+            <td class="type-spec">14px / Regular</td>
+            <td class="type-spec">text-tertiary</td>
+          </tr>
+          <tr>
+            <td class="type-role">選択行ラベル（キャプション）</td>
+            <td><span style="font-size:11px; font-weight:600; color:#3E5A5A;">交通手段</span></td>
+            <td class="type-spec">11px / SemiBold</td>
+            <td class="type-spec">text-label</td>
+          </tr>
+          <tr>
+            <td class="type-role">選択行の値</td>
+            <td><span style="font-size:13px; color:#1A1A2E;">車</span></td>
+            <td class="type-spec">13px / Regular</td>
+            <td class="type-spec">text-primary</td>
+          </tr>
+          <tr>
+            <td class="type-role">タグセクション見出し</td>
+            <td><span style="font-size:10px; font-weight:700; color:#2D6A6A; text-transform:uppercase; letter-spacing:0.6px;">登録済みタグ</span></td>
+            <td class="type-spec">10px / Bold / uppercase</td>
+            <td class="type-spec">text-teal</td>
+          </tr>
+          <tr>
+            <td class="type-role">チップテキスト</td>
+            <td><span style="font-size:11px; font-weight:600; color:#2D6A6A;"># ドライブ</span></td>
+            <td class="type-spec">11px / SemiBold</td>
+            <td class="type-spec">tag-chip-text</td>
+          </tr>
+          <tr>
+            <td class="type-role">単位テキスト</td>
+            <td><span style="font-size:11px; color:#5C7070;">km/L</span></td>
+            <td class="type-spec">11px / Regular</td>
+            <td class="type-spec">text-secondary</td>
+          </tr>
+          <tr>
+            <td class="type-role">保存ボタン</td>
+            <td><span style="font-size:14px; font-weight:700; color:#2D6A6A;">保存</span></td>
+            <td class="type-spec">14px / Bold</td>
+            <td class="type-spec">white (on teal-dark)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========== 3. コンポーネントプレビュー ========== -->
+  <section class="section" id="component-preview">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div>
+        <div class="section-title">コンポーネントプレビュー</div>
+        <div class="section-desc">各画面の刷新後デザインを実寸近似でプレビュー</div>
+      </div>
+    </div>
+
+    <!-- 3-1. デザイン原則サマリー -->
+    <div class="rule-grid" style="margin-bottom: 32px;">
+      <div class="rule-card">
+        <div class="rule-icon">&#9633;</div>
+        <div class="rule-title">OutlineInputBorder</div>
+        <div class="rule-desc">テキスト入力は常に枠線付き。通常は Teal Light (#B2DFDB)、フォーカス時は Teal (#4ECDC4) + 薄いグロー。</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">&#9656;</div>
+        <div class="rule-title">選択行の明示</div>
+        <div class="rule-desc">選択可能行は背景 #F0FAFA + ボーダー #3AADA5 + 塗りつぶし丸矢印アイコン。テキスト入力と明確に区別。</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">&#9135;</div>
+        <div class="rule-title">Divider必須</div>
+        <div class="rule-desc">各フォーム項目間に #E5F0EE の1px Divider。セクション境界は #B2DFDB の強めDivider。</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">&#11052;</div>
+        <div class="rule-title">ボタン統一</div>
+        <div class="rule-desc">保存 = ElevatedButton（Teal Dark背景・白テキスト）。キャンセル = TextButton（グレーテキスト・背景なし）。</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">&#9654;</div>
+        <div class="rule-title">タグ3層構造</div>
+        <div class="rule-desc">登録済みタグ（選択解除可チップ）/ レコメンド（追加可チップ）/ 新規入力フィールドを明確に分離。</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">&#9650;</div>
+        <div class="rule-title">FABデザイン</div>
+        <div class="rule-desc">MichiInfo の FAB は Teal Dark 背景・白アイコン。ラベルあり拡張FABを基本とし、スクロール時はアイコンのみに縮小。</div>
+      </div>
+    </div>
+
+    <!-- 3-2. 画面プレビュー群 -->
+    <div class="screens-grid">
+
+      <!-- BasicInfo -->
+      <div class="screen-wrapper">
+        <div class="screen-name">BasicInfo — 基本情報編集</div>
+        <div class="phone-frame">
+          <div class="phone-nav">
+            <div class="nav-action">キャンセル</div>
+            <div class="nav-title">基本情報を編集</div>
+            <div class="nav-action" style="color:#4ECDC4; font-weight:700;">保存</div>
+          </div>
+          <div class="phone-body">
+            <!-- イベント名 -->
+            <div class="form-field">
+              <div class="field-label">イベント名</div>
+              <div class="text-input-wrap focused">東京ドライブ2026</div>
+            </div>
+            <!-- 交通手段 -->
+            <div class="form-select">
+              <div class="fs-label">交通手段</div>
+              <div class="fs-right">
+                <div class="fs-value">車</div>
+                <div class="fs-arrow">&#8250;</div>
+              </div>
+            </div>
+            <!-- 燃費 -->
+            <div class="form-field">
+              <div class="field-label">燃費</div>
+              <div class="text-input-wrap placeholder">
+                <span>未入力</span>
+                <span class="unit">km/L</span>
+              </div>
+            </div>
+            <!-- ガソリン単価 -->
+            <div class="form-field">
+              <div class="field-label">ガソリン単価</div>
+              <div class="text-input-wrap">
+                <span>175</span>
+                <span class="unit">円/L</span>
+              </div>
+            </div>
+            <!-- メンバー -->
+            <div class="form-select">
+              <div class="fs-label">メンバー</div>
+              <div class="fs-right">
+                <div class="fs-value">3名</div>
+                <div class="fs-arrow">&#8250;</div>
+              </div>
+            </div>
+            <!-- タグ -->
+            <div class="tag-section">
+              <div class="tag-section-title">登録済みタグ</div>
+              <div class="chip-group">
+                <div class="chip selected"># ドライブ <span class="chip-x">&#10005;</span></div>
+                <div class="chip selected"># 旅行 <span class="chip-x">&#10005;</span></div>
+              </div>
+            </div>
+            <div class="tag-section" style="background:#F9FCFC; border-bottom: 1px solid var(--divider);">
+              <div class="tag-section-title" style="color:#5C7070;">レコメンド</div>
+              <div class="chip-group">
+                <div class="chip recommend"># 観光 <span class="chip-plus">+</span></div>
+                <div class="chip recommend"># グルメ <span class="chip-plus">+</span></div>
+              </div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">タグを追加</div>
+              <div class="text-input-wrap placeholder">新しいタグを入力...</div>
+            </div>
+            <!-- ガソリン支払者 -->
+            <div class="form-select" style="border-bottom:none;">
+              <div class="fs-label">ガソリン支払者</div>
+              <div class="fs-right">
+                <div class="fs-value">田中</div>
+                <div class="fs-arrow">&#8250;</div>
+              </div>
+            </div>
+            <!-- ボタン -->
+            <div class="btn-row">
+              <div class="btn-text">キャンセル</div>
+              <div class="btn-elevated">保存</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MarkDetail -->
+      <div class="screen-wrapper">
+        <div class="screen-name">MarkDetail — 地点詳細編集</div>
+        <div class="phone-frame">
+          <div class="phone-nav">
+            <div class="nav-action">キャンセル</div>
+            <div class="nav-title">地点を編集</div>
+            <div class="nav-action" style="color:#4ECDC4; font-weight:700;">保存</div>
+          </div>
+          <div class="phone-body">
+            <div class="form-field">
+              <div class="field-label">地点名</div>
+              <div class="text-input-wrap">道の駅 富士川</div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">日付</div>
+              <div class="text-input-wrap">2026-04-08</div>
+            </div>
+            <div class="form-select">
+              <div class="fs-label">メンバー</div>
+              <div class="fs-right">
+                <div class="fs-value">2名</div>
+                <div class="fs-arrow">&#8250;</div>
+              </div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">メーター</div>
+              <div class="text-input-wrap">
+                <span>12,450</span>
+                <span class="unit">km</span>
+              </div>
+            </div>
+            <div class="form-select">
+              <div class="fs-label">アクション</div>
+              <div class="fs-right">
+                <div class="fs-value">休憩</div>
+                <div class="fs-arrow">&#8250;</div>
+              </div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">メモ</div>
+              <div class="text-input-wrap placeholder" style="min-height:56px; align-items:flex-start; padding-top:10px;">富士山がよく見えた</div>
+            </div>
+            <!-- 燃料情報 -->
+            <div style="padding: 8px 12px; background: #F9FCFC; border-top: 1px solid #B2DFDB; font-size:10px; font-weight:700; color:#2D6A6A; text-transform:uppercase; letter-spacing:0.6px;">燃料情報</div>
+            <div class="form-select" style="border-bottom:none;">
+              <div class="fs-label">給油あり</div>
+              <div class="fs-right">
+                <div style="width:28px;height:16px;background:#4ECDC4;border-radius:8px;position:relative;">
+                  <div style="width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;right:1px;top:1px;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>
+                </div>
+              </div>
+            </div>
+            <div class="btn-row">
+              <div class="btn-text">キャンセル</div>
+              <div class="btn-elevated">保存</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LinkDetail -->
+      <div class="screen-wrapper">
+        <div class="screen-name">LinkDetail — 区間詳細編集</div>
+        <div class="phone-frame">
+          <div class="phone-nav">
+            <div class="nav-action">キャンセル</div>
+            <div class="nav-title">区間を編集</div>
+            <div class="nav-action" style="color:#4ECDC4; font-weight:700;">保存</div>
+          </div>
+          <div class="phone-body">
+            <div class="form-field">
+              <div class="field-label">区間名</div>
+              <div class="text-input-wrap">東京 → 富士川</div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">日付</div>
+              <div class="text-input-wrap">2026-04-08</div>
+            </div>
+            <div class="form-select">
+              <div class="fs-label">メンバー</div>
+              <div class="fs-right">
+                <div class="fs-value">全員</div>
+                <div class="fs-arrow">&#8250;</div>
+              </div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">距離</div>
+              <div class="text-input-wrap">
+                <span>142.5</span>
+                <span class="unit">km</span>
+              </div>
+            </div>
+            <div class="form-field" style="border-bottom:none;">
+              <div class="field-label">メモ</div>
+              <div class="text-input-wrap placeholder" style="min-height:56px; align-items:flex-start; padding-top:10px;">メモを入力...</div>
+            </div>
+            <div class="btn-row">
+              <div class="btn-text">キャンセル</div>
+              <div class="btn-elevated">保存</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PaymentDetail -->
+      <div class="screen-wrapper">
+        <div class="screen-name">PaymentDetail — 支払詳細編集</div>
+        <div class="phone-frame">
+          <div class="phone-nav">
+            <div class="nav-action">キャンセル</div>
+            <div class="nav-title">支払を編集</div>
+            <div class="nav-action" style="color:#4ECDC4; font-weight:700;">保存</div>
+          </div>
+          <div class="phone-body">
+            <div class="form-select">
+              <div class="fs-label">支払者</div>
+              <div class="fs-right">
+                <div class="fs-value">田中</div>
+                <div class="fs-arrow">&#8250;</div>
+              </div>
+            </div>
+            <div class="form-field">
+              <div class="field-label">金額</div>
+              <div class="text-input-wrap focused">
+                <span>3,500</span>
+                <span class="unit">円</span>
+              </div>
+            </div>
+            <div class="form-select">
+              <div class="fs-label">割り勘メンバー</div>
+              <div class="fs-right">
+                <div class="fs-value">3名</div>
+                <div class="fs-arrow">&#8250;</div>
+              </div>
+            </div>
+            <div class="form-field" style="border-bottom:none;">
+              <div class="field-label">メモ</div>
+              <div class="text-input-wrap placeholder" style="min-height:56px; align-items:flex-start; padding-top:10px;">メモを入力...</div>
+            </div>
+            <div class="btn-row">
+              <div class="btn-text">キャンセル</div>
+              <div class="btn-elevated">保存</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /screens-grid -->
+
+    <!-- FABデザイン -->
+    <div class="divider-line" style="margin-top:40px;"></div>
+    <div style="margin-top: 32px;">
+      <div class="section-header" style="margin-bottom:16px;">
+        <div class="pill">FABデザイン</div>
+      </div>
+      <div style="background:#fff; border-radius:16px; border:1px solid var(--border-light); padding:28px 32px; box-shadow: var(--shadow-card); display:flex; align-items:center; gap:40px; flex-wrap:wrap;">
+        <!-- 展開FAB -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+          <div style="background:#2D6A6A; color:#fff; border-radius:16px; padding:13px 22px; display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; box-shadow:0 4px 14px rgba(45,106,106,0.35);">
+            <span style="font-size:18px; font-weight:400;">+</span>
+            <span>追加</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-secondary);">通常時（拡張FAB）</div>
+        </div>
+        <!-- 縮小FAB -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+          <div style="background:#2D6A6A; color:#fff; border-radius:50%; width:52px; height:52px; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:300; box-shadow:0 4px 14px rgba(45,106,106,0.35);">+</div>
+          <div style="font-size:11px; color:var(--text-secondary);">スクロール時（縮小）</div>
+        </div>
+        <!-- ホバー状態 -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+          <div style="background:#245858; color:#fff; border-radius:16px; padding:13px 22px; display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; box-shadow:0 6px 20px rgba(45,106,106,0.45);">
+            <span style="font-size:18px; font-weight:400;">+</span>
+            <span>追加</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-secondary);">タップ時（Hover State）</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 選択行 Before/After -->
+    <div class="divider-line"></div>
+    <div style="margin-top: 0;">
+      <div class="section-header" style="margin-bottom:16px;">
+        <div class="pill">選択行 Before / After 比較</div>
+      </div>
+      <div class="compare-grid">
+        <div>
+          <div class="compare-label">Before（現状）</div>
+          <div class="card">
+            <div style="padding:13px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #f0f0f0; background:#fff;">
+              <div style="font-size:14px; color:#333;">交通手段</div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <div style="font-size:13px; color:#888;">車</div>
+                <div style="font-size:16px; color:#ccc;">›</div>
+              </div>
+            </div>
+            <div style="padding:13px 16px; display:flex; align-items:center; justify-content:space-between; background:#fff;">
+              <div style="font-size:14px; color:#333;">メンバー</div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <div style="font-size:13px; color:#888;">3名</div>
+                <div style="font-size:16px; color:#ccc;">›</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:8px; font-size:11px; color:var(--text-secondary); padding-left:4px;">矢印が薄くタップ誘導が弱い。背景・ボーダーなし</div>
+        </div>
+        <div>
+          <div class="compare-label after">After（提案）</div>
+          <div class="card">
+            <div class="form-select">
+              <div class="fs-label">交通手段</div>
+              <div class="fs-right">
+                <div class="fs-value">車</div>
+                <div class="fs-arrow">&#8250;</div>
+              </div>
+            </div>
+            <div class="form-select" style="border-bottom:none;">
+              <div class="fs-label">メンバー</div>
+              <div class="fs-right">
+                <div class="fs-value">3名</div>
+                <div class="fs-arrow">&#8250;</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:8px; font-size:11px; color:var(--teal-dark); padding-left:4px;">Teal背景 + ボーダー + 塗りつぶし丸矢印で「選択できる」を明示</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- タグセクション Before/After -->
+    <div class="divider-line"></div>
+    <div>
+      <div class="section-header" style="margin-bottom:16px;">
+        <div class="pill">タグセクション Before / After 比較</div>
+      </div>
+      <div class="compare-grid">
+        <div>
+          <div class="compare-label">Before（現状）</div>
+          <div class="card" style="padding:14px 16px;">
+            <div style="font-size:13px; color:#333; margin-bottom:8px;">タグ</div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
+              <div style="background:#e0e0e0; border-radius:20px; padding:4px 10px; font-size:11px; color:#555;">ドライブ ×</div>
+              <div style="background:#e0e0e0; border-radius:20px; padding:4px 10px; font-size:11px; color:#555;">旅行 ×</div>
+              <div style="background:#f5f5f5; border-radius:20px; padding:4px 10px; font-size:11px; color:#888; border:1px solid #ddd;">観光 +</div>
+            </div>
+            <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:8px; padding:8px 12px; font-size:13px; color:#bbb;">タグを追加...</div>
+          </div>
+          <div style="margin-top:8px; font-size:11px; color:var(--text-secondary); padding-left:4px;">登録済み・レコメンド・入力が混在して区別しにくい</div>
+        </div>
+        <div>
+          <div class="compare-label after">After（提案）</div>
+          <div class="card">
+            <div class="tag-section">
+              <div class="tag-section-title">登録済みタグ</div>
+              <div class="chip-group">
+                <div class="chip selected"># ドライブ <span class="chip-x">&#10005;</span></div>
+                <div class="chip selected"># 旅行 <span class="chip-x">&#10005;</span></div>
+              </div>
+            </div>
+            <div class="tag-section" style="background:#F9FCFC;">
+              <div class="tag-section-title" style="color:#5C7070;">レコメンド</div>
+              <div class="chip-group">
+                <div class="chip recommend"># 観光 <span class="chip-plus">+</span></div>
+                <div class="chip recommend"># グルメ <span class="chip-plus">+</span></div>
+              </div>
+            </div>
+            <div class="form-field" style="border-bottom:none;">
+              <div class="field-label">タグを追加</div>
+              <div class="text-input-wrap placeholder">新しいタグを入力...</div>
+            </div>
+          </div>
+          <div style="margin-top:8px; font-size:11px; color:var(--teal-dark); padding-left:4px;">3層を背景色 + 見出しラベルで明確に分離</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ========== 4. 根拠 ========== -->
+  <section class="section" id="rationale">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div>
+        <div class="section-title">デザイン根拠</div>
+        <div class="section-desc">各変更の理由と原則との整合性</div>
+      </div>
+    </div>
+    <div class="rationale-list">
+      <div class="rationale-item">
+        <div class="r-title">OutlineInputBorder の採用</div>
+        <div class="r-body">Flutter Material3 のデフォルトは UnderlineInputBorder であり、境界が下線のみで視認しにくい。iOS ネイティブ設定画面に近い印象を出すには枠線ありの入力フィールドが適切。通常時は Teal Light (#B2DFDB) の薄い枠でシンプルに抑え、フォーカス時に Teal (#4ECDC4) + グロー (opacity 0.15) に変化させることでフィードバックを明確にする。</div>
+      </div>
+      <div class="rationale-item">
+        <div class="r-title">選択行の視覚的差別化</div>
+        <div class="r-body">テキスト入力行と選択行が同じスタイルでは「タップして選ぶ」か「ここに打ち込む」かを判別できない。選択行は背景を #F0FAFA（Teal Tint2）+ ボーダー #3AADA5 に設定し、矢印も Teal Dark (#2D6A6A) の塗りつぶし丸アイコンに強化する。これにより「選択可能な行」が一目でわかる。WCAG AA のコントラスト比（背景 #F0FAFA に対してラベル #3E5A5A は約 6.2:1）を満たす。</div>
+      </div>
+      <div class="rationale-item">
+        <div class="r-title">タグセクションの3層分離</div>
+        <div class="r-body">登録済みタグ（選択解除可）/ レコメンドタグ（追加可）/ 新規入力 フィールドの3層を、背景色と見出しラベルで分離する。登録済みは白背景・Teal枠チップ、レコメンドは #F9FCFC 背景・グレー枠チップ、入力フィールドは通常のテキスト入力。ユーザーが「今どの操作ゾーンにいるか」を視覚的に理解できる。</div>
+      </div>
+      <div class="rationale-item">
+        <div class="r-title">ボタン統一 (ElevatedButton / TextButton)</div>
+        <div class="r-body">保存ボタンは ElevatedButton（Teal Dark 背景・白テキスト・角丸 12px）で主アクションを強調。キャンセルは TextButton（グレーテキスト・背景なし）で副次アクションを示す。これにより画面内のアクション優先度が一目で伝わる。ナビゲーションバー内にも同様のテキストアクション（左: キャンセル / 右: 保存）を配置し、スクロールなしでも操作できる。</div>
+      </div>
+      <div class="rationale-item">
+        <div class="r-title">Divider の必須化</div>
+        <div class="r-body">項目間に #E5F0EE の1px Divider を設けることで、スキャン時の視線の流れを整理する。セクション（燃料情報・タグ等）の境界は #B2DFDB の強めの Divider で更に区別する。余白だけでは項目数が増えた際に境界が曖昧になるため Divider は必須。</div>
+      </div>
+      <div class="rationale-item">
+        <div class="r-title">FAB のスタイル統一</div>
+        <div class="r-body">MichiInfo の FAB は Teal Dark (#2D6A6A) 背景・白アイコン・角丸 16px の拡張 FAB を基本とする。スクロール時は円形 FAB に縮小してコンテンツ領域を確保。タップ時は背景色を #245858（ダーク方向に 5%シフト）にして視覚フィードバックを与える。ブランドカラーと一致し、かつカード群（タイムライン）と視覚的に区別される。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- フッター -->
+  <div style="text-align:center; padding-top:16px; font-size:12px; color:var(--text-tertiary);">
+    MichiMark Design Report — 入力画面UI刷新 — 2026-04-08 — Draft (product-manager レビュー待ち)
+  </div>
+
+</div><!-- /container -->
+</body>
+</html>

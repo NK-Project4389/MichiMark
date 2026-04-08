@@ -157,10 +157,10 @@ class _PaymentDetailForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.zero,
       children: [
         _AmountField(value: draft.paymentAmount),
-        const SizedBox(height: 16),
+        const Divider(height: 1),
         _SelectionRow(
           label: '支払者',
           value: draft.paymentMember?.memberName ?? '未選択',
@@ -168,7 +168,7 @@ class _PaymentDetailForm extends StatelessWidget {
               .read<PaymentDetailBloc>()
               .add(const PaymentDetailEditMemberPressed()),
         ),
-        const SizedBox(height: 16),
+        const Divider(height: 1),
         _SelectionRow(
           label: '割り勘',
           value: draft.splitMembers.isEmpty
@@ -178,8 +178,9 @@ class _PaymentDetailForm extends StatelessWidget {
               .read<PaymentDetailBloc>()
               .add(const PaymentDetailEditSplitMembersPressed()),
         ),
-        const SizedBox(height: 16),
+        const Divider(height: 1),
         _MemoField(value: draft.paymentMemo),
+        const SizedBox(height: 16),
       ],
     );
   }
@@ -212,16 +213,39 @@ class _AmountFieldState extends State<_AmountField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        labelText: '支払金額（円）',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              '支払金額',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                hintText: '0',
+                suffixText: '円',
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
+              keyboardType: TextInputType.number,
+              onChanged: (v) => context
+                  .read<PaymentDetailBloc>()
+                  .add(PaymentDetailAmountChanged(v)),
+            ),
+          ),
+        ],
       ),
-      keyboardType: TextInputType.number,
-      onChanged: (v) => context
-          .read<PaymentDetailBloc>()
-          .add(PaymentDetailAmountChanged(v)),
     );
   }
 }
@@ -251,16 +275,42 @@ class _MemoFieldState extends State<_MemoField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        labelText: 'メモ',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text(
+                'メモ',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                hintText: '任意',
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
+              maxLines: null,
+              onChanged: (v) => context
+                  .read<PaymentDetailBloc>()
+                  .add(PaymentDetailMemoChanged(v)),
+            ),
+          ),
+        ],
       ),
-      maxLines: 3,
-      onChanged: (v) => context
-          .read<PaymentDetailBloc>()
-          .add(PaymentDetailMemoChanged(v)),
     );
   }
 }
@@ -278,29 +328,35 @@ class _SelectionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+    return InkWell(
+      onTap: onEditPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 120,
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  value,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
-          ),
+              ),
+            ),
+            const Icon(Icons.chevron_right),
+          ],
         ),
-        Expanded(
-          child: Text(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.chevron_right),
-          onPressed: onEditPressed,
-        ),
-      ],
+      ),
     );
   }
 }
