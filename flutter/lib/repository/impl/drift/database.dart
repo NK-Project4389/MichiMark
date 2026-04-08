@@ -44,7 +44,10 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (m) => m.createAll(),
+        onCreate: (m) async {
+          await m.createAll();
+          await _insertSeedActions();
+        },
         onUpgrade: (m, from, to) async {
           if (from < 2) {
             // actions テーブルに ActionState 関連カラムを追加
@@ -86,6 +89,88 @@ class AppDatabase extends _$AppDatabase {
           }
         },
       );
+
+  /// アクションマスタの固定シードデータを投入する（ユーザーが設定変更不可）
+  Future<void> _insertSeedActions() async {
+    final now = DateTime.now();
+    final seedRows = [
+      ActionsCompanion(
+        id: const Value('action-seed-depart'),
+        actionName: const Value('出発'),
+        toState: const Value('moving'),
+        isToggle: const Value(false),
+        needsTransition: const Value(true),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+      ActionsCompanion(
+        id: const Value('action-seed-arrive'),
+        actionName: const Value('到着'),
+        toState: const Value('working'),
+        isToggle: const Value(false),
+        needsTransition: const Value(true),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+      ActionsCompanion(
+        id: const Value('action-001'),
+        actionName: const Value('観光'),
+        isToggle: const Value(false),
+        needsTransition: const Value(false),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+      ActionsCompanion(
+        id: const Value('action-002'),
+        actionName: const Value('食事'),
+        isToggle: const Value(false),
+        needsTransition: const Value(false),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+      ActionsCompanion(
+        id: const Value('action-003'),
+        actionName: const Value('休憩'),
+        isToggle: const Value(false),
+        needsTransition: const Value(false),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+      ActionsCompanion(
+        id: const Value('action-004'),
+        actionName: const Value('買い物'),
+        isToggle: const Value(false),
+        needsTransition: const Value(false),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+      ActionsCompanion(
+        id: const Value('action-005'),
+        actionName: const Value('写真撮影'),
+        isToggle: const Value(false),
+        needsTransition: const Value(false),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+    ];
+    for (final row in seedRows) {
+      await into(actions).insertOnConflictUpdate(row);
+    }
+  }
 }
 
 LazyDatabase _openConnection() {

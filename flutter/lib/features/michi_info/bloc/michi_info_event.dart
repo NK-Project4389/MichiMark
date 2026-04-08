@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
-import '../../../features/mark_detail/draft/mark_detail_draft.dart';
 import '../../../features/link_detail/draft/link_detail_draft.dart';
+import '../../../features/mark_detail/draft/mark_detail_draft.dart';
 
 sealed class MichiInfoEvent extends Equatable {
   const MichiInfoEvent();
@@ -83,6 +83,38 @@ class MichiInfoMarkActionPressed extends MichiInfoEvent {
 
   @override
   List<Object?> get props => [markLinkId, actionId];
+}
+
+/// ⚡ アイコンボタンがタップされたとき（ActionTime ボトムシート表示トリガー）
+class MichiInfoActionButtonPressed extends MichiInfoEvent {
+  final String markLinkId;
+  final String eventId;
+  final TopicConfig topicConfig;
+  final MarkOrLink markOrLink;
+
+  const MichiInfoActionButtonPressed({
+    required this.markLinkId,
+    required this.eventId,
+    required this.topicConfig,
+    this.markOrLink = MarkOrLink.mark,
+  });
+
+  @override
+  List<Object?> get props => [markLinkId, eventId, topicConfig, markOrLink];
+}
+
+/// ボトムシートを閉じた後に状態ラベルを更新するとき
+class MichiInfoActionStateLabelUpdated extends MichiInfoEvent {
+  final String markLinkId;
+  final String currentStateLabel;
+
+  const MichiInfoActionStateLabelUpdated({
+    required this.markLinkId,
+    required this.currentStateLabel,
+  });
+
+  @override
+  List<Object?> get props => [markLinkId, currentStateLabel];
 }
 
 /// delegate を消費してクリアするとき（画面遷移完了後に dispatch）

@@ -215,9 +215,7 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
     return AppBar(
       leading: IconButton(
         icon: const Icon(Icons.chevron_left),
-        onPressed: () => context
-            .read<EventDetailBloc>()
-            .add(const EventDetailDismissPressed()),
+        onPressed: () => _onBackPressed(context),
       ),
       title: Column(
         mainAxisSize: MainAxisSize.min,

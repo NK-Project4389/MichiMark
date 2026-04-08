@@ -81,6 +81,22 @@ class MichiInfoAddMarkDelegate extends MichiInfoDelegate {
       ];
 }
 
+/// ⚡ ボタンタップによる ActionTime ボトムシート表示意図を通知するデリゲート
+class MichiInfoOpenActionTimeDelegate extends MichiInfoDelegate {
+  final String markLinkId;
+  final String eventId;
+  final TopicConfig topicConfig;
+
+  const MichiInfoOpenActionTimeDelegate({
+    required this.markLinkId,
+    required this.eventId,
+    required this.topicConfig,
+  });
+
+  @override
+  List<Object?> get props => [markLinkId, eventId, topicConfig];
+}
+
 /// Mark/Link 保存後の再読込完了を EventDetail に通知するデリゲート
 class MichiInfoReloadedDelegate extends MichiInfoDelegate {
   const MichiInfoReloadedDelegate();
@@ -127,6 +143,13 @@ class MichiInfoLoaded extends MichiInfoState {
   /// イベントのメンバー一覧（Mark/Link のメンバー選択候補として使用）
   final List<MemberDomain> eventMembers;
 
+  /// markLinkId → currentStateLabel のマップ。ボトムシートを閉じた後に更新される。
+  /// 該当エントリが存在しない場合は「滞留中」をデフォルト表示とする。
+  final Map<String, String> markActionStateLabels;
+
+  /// 対象イベントの ID（ActionTimeButton からボトムシートを開く際に使用）
+  final String eventId;
+
   const MichiInfoLoaded({
     required this.projection,
     required this.draft,
@@ -134,6 +157,8 @@ class MichiInfoLoaded extends MichiInfoState {
     TopicConfig? topicConfig,
     this.markActionItems = const [],
     this.eventMembers = const [],
+    this.markActionStateLabels = const {},
+    this.eventId = '',
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -152,6 +177,8 @@ class MichiInfoLoaded extends MichiInfoState {
     TopicConfig? topicConfig,
     List<ActionItemProjection>? markActionItems,
     List<MemberDomain>? eventMembers,
+    Map<String, String>? markActionStateLabels,
+    String? eventId,
   }) {
     return MichiInfoLoaded(
       projection: projection ?? this.projection,
@@ -160,11 +187,13 @@ class MichiInfoLoaded extends MichiInfoState {
       topicConfig: topicConfig ?? this.topicConfig,
       markActionItems: markActionItems ?? this.markActionItems,
       eventMembers: eventMembers ?? this.eventMembers,
+      markActionStateLabels: markActionStateLabels ?? this.markActionStateLabels,
+      eventId: eventId ?? this.eventId,
     );
   }
 
   @override
-  List<Object?> get props => [projection, draft, delegate, topicConfig, markActionItems, eventMembers];
+  List<Object?> get props => [projection, draft, delegate, topicConfig, markActionItems, eventMembers, markActionStateLabels, eventId];
 }
 
 class MichiInfoError extends MichiInfoState {

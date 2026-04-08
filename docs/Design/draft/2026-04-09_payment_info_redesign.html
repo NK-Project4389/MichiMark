@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark — PaymentInfo UI 改善デザイン提案</title>
+  <style>
+    :root {
+      --brand-teal:        #2B7A9B;
+      --brand-teal-dark:   #1A4A5E;
+      --brand-teal-light:  #3A9DC4;
+      --brand-teal-tint:   #D0EBF5;
+      --brand-teal-tint2:  #EAF5FB;
+
+      --emerald:           #2E9E6B;
+      --emerald-dark:      #1A7A52;
+      --emerald-light:     #4DB36B;
+      --emerald-tint:      #D4F0E4;
+      --emerald-tint2:     #EDFAF4;
+
+      --text-primary:      #1A1A2E;
+      --text-secondary:    #6C757D;
+      --text-tertiary:     #ADB5BD;
+      --bg-page:           #F5F7FA;
+      --bg-card:           #FFFFFF;
+      --border-light:      #E9ECEF;
+      --divider:           #DEE2E6;
+
+      --positive:          #2E9E6B;
+      --negative:          #D94F3D;
+      --positive-tint:     #EDFAF4;
+      --negative-tint:     #FDECEA;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #1A4A5E 0%, #2B7A9B 55%, #3A9DC4 100%);
+      color: white;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .page-header p {
+      font-size: 15px;
+      opacity: 0.75;
+      max-width: 620px;
+    }
+    .header-meta {
+      display: flex;
+      gap: 24px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .header-meta span {
+      font-size: 12px;
+      opacity: 0.65;
+    }
+
+    /* ===== NAV ===== */
+    .nav-bar {
+      background: white;
+      border-bottom: 1px solid var(--border-light);
+      padding: 0 48px;
+      display: flex;
+      gap: 32px;
+      overflow-x: auto;
+    }
+    .nav-bar a {
+      display: block;
+      padding: 14px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .nav-bar a:hover { color: var(--brand-teal); }
+
+    /* ===== MAIN LAYOUT ===== */
+    .main { max-width: 1100px; margin: 0 auto; padding: 48px 48px 80px; }
+
+    /* ===== SECTION ===== */
+    .section { margin-bottom: 64px; }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--brand-teal);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      max-width: 680px;
+      margin-bottom: 32px;
+    }
+
+    /* ===== PROBLEM CALLOUT ===== */
+    .problem-box {
+      background: #FFF8E6;
+      border-left: 4px solid #F4A836;
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #7A5000;
+    }
+    .problem-box strong { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; }
+
+    /* ===== CARD ===== */
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .card-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .card-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .card-header p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    .card-body { padding: 24px; }
+
+    /* ===== VARIANT LABEL ===== */
+    .variant-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .variant-tag.recommended {
+      background: var(--emerald-tint);
+      color: var(--emerald-dark);
+    }
+    .variant-tag.standard {
+      background: var(--brand-teal-tint);
+      color: var(--brand-teal-dark);
+    }
+    .variant-tag.minimal {
+      background: #F0F0F5;
+      color: #4A4A6A;
+    }
+
+    /* ===== PHONE MOCKUP ===== */
+    .phone-wrap {
+      display: flex;
+      justify-content: center;
+    }
+    .phone {
+      width: 320px;
+      background: white;
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 8px #1A1A2E, 0 0 0 10px #2A2A3E;
+      overflow: hidden;
+      font-size: 14px;
+    }
+    .phone-notch {
+      background: #1A1A2E;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .phone-notch-pill {
+      width: 100px;
+      height: 24px;
+      background: #1A1A2E;
+      border-radius: 0 0 16px 16px;
+      border: 1px solid #2A2A3E;
+    }
+    .phone-status {
+      background: #F5F7FA;
+      padding: 8px 16px 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .phone-appbar {
+      background: white;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .phone-appbar-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .phone-appbar-action {
+      width: 28px;
+      height: 28px;
+      background: var(--brand-teal-tint);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .phone-content { background: #F5F7FA; }
+    .phone-list { background: white; margin: 0; }
+    .phone-divider {
+      height: 1px;
+      background: var(--border-light);
+      margin-left: 56px;
+    }
+    .phone-total-bar {
+      background: white;
+      border-top: 1px solid var(--divider);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: flex-end;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .phone-fab {
+      position: relative;
+      height: 64px;
+      background: #F5F7FA;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 16px;
+    }
+    .fab-pill {
+      background: var(--brand-teal);
+      color: white;
+      border-radius: 28px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 4px 14px rgba(43,122,155,0.4);
+    }
+
+    /* ===== LIST TILE VARIANTS ===== */
+
+    /* --- Variant A: 3行構成 --- */
+    .tile-a {
+      padding: 12px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .tile-a-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--brand-teal-tint);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--brand-teal);
+      font-size: 16px;
+    }
+    .tile-a-body { flex: 1; min-width: 0; }
+    .tile-a-amount {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+    .tile-a-payer {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tile-a-payer-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--brand-teal);
+      background: var(--brand-teal-tint);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .tile-a-split {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    .tile-a-chip {
+      font-size: 11px;
+      color: var(--emerald-dark);
+      background: var(--emerald-tint);
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    .tile-a-memo {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      font-style: italic;
+    }
+    .tile-a-chevron {
+      color: var(--text-tertiary);
+      font-size: 12px;
+      align-self: center;
+    }
+
+    /* --- Variant B: 2行・コンパクト --- */
+    .tile-b {
+      padding: 10px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .tile-b-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--brand-teal-tint);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--brand-teal);
+      font-size: 18px;
+    }
+    .tile-b-body { flex: 1; min-width: 0; }
+    .tile-b-row1 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .tile-b-amount {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .tile-b-payer-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .tile-b-payer-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--brand-teal);
+      border-radius: 50%;
+    }
+    .tile-b-row2 {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+    .tile-b-split-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+    .tile-b-names {
+      font-size: 12px;
+      color: var(--emerald-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tile-b-memo {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-style: italic;
+    }
+
+    /* --- Variant C: カードスタイル --- */
+    .tile-c {
+      margin: 8px 12px;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .tile-c-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .tile-c-amount {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .tile-c-payer-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--brand-teal-tint);
+      color: var(--brand-teal-dark);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .tile-c-payer-icon { font-size: 12px; }
+    .tile-c-divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 8px 0;
+    }
+    .tile-c-bottom {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .tile-c-split-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+    }
+    .tile-c-chip {
+      font-size: 11px;
+      color: var(--emerald-dark);
+      background: var(--emerald-tint);
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+    .tile-c-memo {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-style: italic;
+      margin-left: auto;
+    }
+
+    /* ===== COMPARISON TABLE ===== */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .comp-col {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .comp-col.recommended {
+      box-shadow: 0 4px 20px rgba(46,158,107,0.2), 0 0 0 2px var(--emerald);
+    }
+    .comp-header {
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .comp-header h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .comp-header p { font-size: 12px; color: var(--text-secondary); }
+    .comp-body { padding: 16px 20px; }
+    .comp-pros, .comp-cons { list-style: none; }
+    .comp-pros li, .comp-cons li {
+      font-size: 13px;
+      padding: 3px 0;
+      display: flex;
+      gap: 6px;
+    }
+    .comp-pros li::before { content: '✓'; color: var(--emerald); font-weight: 700; }
+    .comp-cons li::before { content: '✗'; color: var(--negative); font-weight: 700; }
+    .comp-divider { height: 1px; background: var(--border-light); margin: 12px 0; }
+
+    /* ===== SETTLEMENT SECTION ===== */
+    .settlement-wrap {
+      background: white;
+      border-radius: 0;
+      padding: 0;
+    }
+    .settlement-section-header {
+      padding: 12px 16px 8px;
+      background: white;
+    }
+    .settlement-section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brand-teal);
+      letter-spacing: 0.3px;
+    }
+    .settlement-card {
+      margin: 0 12px 12px;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .settlement-card-header {
+      padding: 10px 14px;
+      background: var(--brand-teal-tint2);
+      border-bottom: 1px solid var(--brand-teal-tint);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .settlement-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--brand-teal-dark);
+    }
+    .settlement-card-amount {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--brand-teal);
+    }
+    .settlement-arrow-row {
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .settlement-arrow-row:last-child { border-bottom: none; }
+    .s-from {
+      color: var(--negative);
+      font-weight: 600;
+      min-width: 60px;
+    }
+    .s-arrow { color: var(--text-tertiary); font-size: 14px; }
+    .s-to {
+      color: var(--emerald-dark);
+      font-weight: 600;
+      min-width: 60px;
+    }
+    .s-amount {
+      margin-left: auto;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* ===== TRAVEL OVERVIEW MOCKUP ===== */
+    .overview-phone {
+      width: 320px;
+      background: white;
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 8px #1A1A2E, 0 0 0 10px #2A2A3E;
+      overflow: hidden;
+      font-size: 14px;
+      margin: 0 auto;
+    }
+    .overview-scroll {
+      background: #F5F7FA;
+      padding: 8px 0 16px;
+    }
+    .ov-section {
+      background: white;
+      margin: 0 0 8px;
+      padding: 0;
+    }
+    .ov-section-header {
+      padding: 10px 16px 6px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .ov-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--brand-teal);
+    }
+    .ov-row {
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 13px;
+    }
+    .ov-row:last-child { border-bottom: none; }
+    .ov-label { color: var(--text-secondary); }
+    .ov-value { font-weight: 600; color: var(--text-primary); }
+    .ov-positive { color: var(--positive); font-weight: 700; }
+    .ov-negative { color: var(--negative); font-weight: 700; }
+
+    /* ===== NEW SETTLEMENT SECTION IN OVERVIEW ===== */
+    .ov-settlement-header {
+      background: var(--brand-teal-tint2);
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--brand-teal-tint);
+    }
+    .ov-settlement-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--brand-teal-dark);
+    }
+    .ov-settlement-card {
+      margin: 8px 12px;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .ov-s-card-head {
+      padding: 7px 12px;
+      background: var(--brand-teal-tint2);
+      border-bottom: 1px solid var(--brand-teal-tint);
+      display: flex;
+      justify-content: space-between;
+    }
+    .ov-s-card-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--brand-teal-dark);
+    }
+    .ov-s-card-amt {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--brand-teal);
+    }
+    .ov-s-row {
+      padding: 5px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .ov-s-row:last-child { border-bottom: none; }
+    .ov-s-from { color: var(--negative); font-weight: 600; min-width: 44px; }
+    .ov-s-arrow { color: var(--text-tertiary); }
+    .ov-s-to { color: var(--emerald-dark); font-weight: 600; min-width: 44px; }
+    .ov-s-amt { margin-left: auto; font-weight: 700; color: var(--text-primary); }
+
+    /* ===== COLOR PALETTE ===== */
+    .palette-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+    }
+    .swatch-block {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .swatch-label { font-size: 10px; text-align: center; color: var(--text-secondary); }
+    .swatch-hex { font-size: 10px; font-weight: 600; text-align: center; color: var(--text-primary); font-family: monospace; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .type-row {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-name { font-size: 11px; color: var(--text-tertiary); margin-bottom: 4px; }
+    .type-spec { font-size: 11px; color: var(--brand-teal); font-family: monospace; margin-bottom: 6px; }
+
+    /* ===== CODE BLOCK ===== */
+    .code-block {
+      background: #1E2530;
+      border-radius: 12px;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #CDD9E5;
+      margin-bottom: 20px;
+    }
+    .code-block .kw  { color: #79C0FF; }
+    .code-block .cl  { color: #FFA657; }
+    .code-block .str { color: #A5D6FF; }
+    .code-block .cmt { color: #8B949E; }
+    .code-block .fn  { color: #D2A8FF; }
+    .code-block .pn  { color: #CDD9E5; }
+
+    /* ===== RATIONALE ===== */
+    .rationale-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .rationale-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .rationale-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--brand-teal-tint);
+    }
+    .rationale-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ===== HIGHLIGHT BOX ===== */
+    .highlight-box {
+      background: var(--emerald-tint2);
+      border-left: 4px solid var(--emerald);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 13px;
+      color: var(--emerald-dark);
+    }
+    .highlight-box strong { font-weight: 700; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: var(--brand-teal-dark);
+      color: rgba(255,255,255,0.6);
+      padding: 32px 48px;
+      font-size: 12px;
+      margin-top: 64px;
+    }
+    .footer p + p { margin-top: 6px; }
+
+    @media (max-width: 768px) {
+      .main { padding: 32px 24px 64px; }
+      .page-header { padding: 36px 24px 32px; }
+      .comparison-grid { grid-template-columns: 1fr; }
+      .rationale-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-header">
+  <div class="badge">Designer — Draft</div>
+  <h1>PaymentInfo UI 改善提案</h1>
+  <p>支払リスト行の情報構造整理と、伝票単位の割り勘収支セクション追加のデザイン案</p>
+  <div class="header-meta">
+    <span>対象機能: PaymentInfo タブ / TravelExpenseOverview</span>
+    <span>作成日: 2026-04-09</span>
+    <span>ステータス: DRAFT — product-manager レビュー待ち</span>
+    <span>カラーパレット: C-2 (Teal + Emerald)</span>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav class="nav-bar">
+  <a href="#color-palette">カラーパレット</a>
+  <a href="#typography">タイポグラフィ</a>
+  <a href="#component-preview">コンポーネント案</a>
+  <a href="#settlement-section">割り勘収支セクション</a>
+  <a href="#overview-preview">集計タブ統合案</a>
+  <a href="#code-snippets">実装イメージ</a>
+  <a href="#rationale">根拠</a>
+</nav>
+
+<main class="main">
+
+  <!-- ===== PROBLEM ===== -->
+  <section class="section">
+    <div class="section-label">現状の問題</div>
+    <div class="section-title">なぜ改善が必要か</div>
+    <div class="section-desc">ユーザーフィードバックをもとに、現在の ListTile が抱える情報構造の問題を整理する。</div>
+
+    <div class="problem-box">
+      <strong>問題 1 — 情報が一行に混在して視認性が悪い</strong>
+      <code>subtitle</code> に「支払者名」「割り勘: メンバーA・メンバーB」「メモ」がスペース区切りで連結されており、
+      どこからどこまでが支払者でどこからが割り勘メンバーかが一目で判断できない。
+    </div>
+    <div class="problem-box">
+      <strong>問題 2 — 割り勘メンバーの文字列が埋没する</strong>
+      「割り勘: 」というプレフィックスがあっても、名前の羅列が支払者名と同じスタイルで続くため視覚的に分離されていない。
+      メンバー数が増えると行が折り返され、どこで区切れているかが不明確になる。
+    </div>
+    <div class="problem-box">
+      <strong>問題 3 — 縦幅の増加は許容されている</strong>
+      ユーザーは「縦幅が増えてもいいから行を分けてほしい」と明示しており、情報密度より可読性を優先する方針。
+    </div>
+  </section>
+
+  <!-- ===== COLOR PALETTE ===== -->
+  <section id="color-palette" class="section">
+    <div class="section-label">カラーパレット</div>
+    <div class="section-title">使用カラー (C-2 パレット)</div>
+    <div class="section-desc">既存の C-2 パレットをそのまま継承。支払者には Teal、割り勘メンバーには Emerald を割り当てることで役割を色で区別する。</div>
+
+    <div class="card">
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">ブランドカラー (Teal) — 支払者・メインアクション</p>
+        <div class="palette-row">
+          <div class="swatch"><div class="swatch-block" style="background:#1A4A5E;"></div><div class="swatch-label">Dark</div><div class="swatch-hex">#1A4A5E</div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#2B7A9B;"></div><div class="swatch-label">Primary</div><div class="swatch-hex">#2B7A9B</div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#3A9DC4;"></div><div class="swatch-label">Light</div><div class="swatch-hex">#3A9DC4</div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#D0EBF5;"></div><div class="swatch-label">Tint</div><div class="swatch-hex">#D0EBF5</div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#EAF5FB;"></div><div class="swatch-label">Tint Light</div><div class="swatch-hex">#EAF5FB</div></div>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;margin-top:20px;">Emerald — 割り勘メンバー・精算先</p>
+        <div class="palette-row">
+          <div class="swatch"><div class="swatch-block" style="background:#1A7A52;"></div><div class="swatch-label">Dark</div><div class="swatch-hex">#1A7A52</div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#2E9E6B;"></div><div class="swatch-label">Primary</div><div class="swatch-hex">#2E9E6B</div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#4DB36B;"></div><div class="swatch-label">Light</div><div class="swatch-hex">#4DB36B</div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#D4F0E4;"></div><div class="swatch-label">Tint</div><div class="swatch-hex">#D4F0E4</div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#EDFAF4;"></div><div class="swatch-label">Tint Light</div><div class="swatch-hex">#EDFAF4</div></div>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;margin-top:20px;">収支表示</p>
+        <div class="palette-row">
+          <div class="swatch"><div class="swatch-block" style="background:#2E9E6B;"></div><div class="swatch-label">プラス</div><div class="swatch-hex">#2E9E6B</div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#D94F3D;"></div><div class="swatch-label">マイナス</div><div class="swatch-hex">#D94F3D</div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#EDFAF4;"></div><div class="swatch-label">+背景</div><div class="swatch-hex">#EDFAF4</div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#FDECEA;"></div><div class="swatch-label">-背景</div><div class="swatch-hex">#FDECEA</div></div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>色の役割分担:</strong> Teal = 「誰が払ったか（支払者）」、Emerald = 「誰と割り勘か（メンバー）」。
+          色だけで直感的に役割が伝わるようにする。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TYPOGRAPHY ===== -->
+  <section id="typography" class="section">
+    <div class="section-label">タイポグラフィ</div>
+    <div class="section-title">PaymentListTile の文字スタイル</div>
+    <div class="section-desc">Material 3 の textTheme を基準に各情報のヒエラルキーを設定する。</div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="type-row">
+          <div class="type-name">金額 (displayAmount)</div>
+          <div class="type-spec">titleLarge相当 / 17–20sp / FontWeight.700 / text-primary</div>
+          <div style="font-size:20px;font-weight:700;color:var(--text-primary);">3,000円</div>
+        </div>
+        <div class="type-row">
+          <div class="type-name">支払者ラベル (「支払」バッジ)</div>
+          <div class="type-spec">labelSmall相当 / 10sp / FontWeight.700 / Teal / Teal-tint 背景</div>
+          <div style="display:inline-flex;background:#D0EBF5;color:#1A4A5E;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;">支払</div>
+        </div>
+        <div class="type-row">
+          <div class="type-name">支払者名 (payer.memberName)</div>
+          <div class="type-spec">bodyMedium相当 / 13sp / FontWeight.500 / text-secondary</div>
+          <div style="font-size:13px;font-weight:500;color:var(--text-secondary);">田中 太郎</div>
+        </div>
+        <div class="type-row">
+          <div class="type-name">割り勘ラベル (「割り勘」)</div>
+          <div class="type-spec">labelSmall相当 / 11sp / FontWeight.600 / text-tertiary</div>
+          <div style="font-size:11px;font-weight:600;color:var(--text-tertiary);">割り勘</div>
+        </div>
+        <div class="type-row">
+          <div class="type-name">割り勘メンバー名チップ</div>
+          <div class="type-spec">labelSmall相当 / 11sp / FontWeight.500 / Emerald-dark / Emerald-tint 背景</div>
+          <div style="display:flex;gap:4px;">
+            <span style="font-size:11px;color:#1A7A52;background:#D4F0E4;padding:2px 8px;border-radius:10px;font-weight:500;">田中 太郎</span>
+            <span style="font-size:11px;color:#1A7A52;background:#D4F0E4;padding:2px 8px;border-radius:10px;font-weight:500;">鈴木 花子</span>
+          </div>
+        </div>
+        <div class="type-row">
+          <div class="type-name">メモ</div>
+          <div class="type-spec">bodySmall相当 / 12sp / FontWeight.400 / Italic / text-tertiary</div>
+          <div style="font-size:12px;color:var(--text-tertiary);font-style:italic;">ガソリン代</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COMPONENT PREVIEW ===== -->
+  <section id="component-preview" class="section">
+    <div class="section-label">コンポーネント案</div>
+    <div class="section-title">PaymentListTile — 3 パターン比較</div>
+    <div class="section-desc">縦方向に情報を分離する3つのアプローチ。案 A を推奨とする。</div>
+
+    <div class="comparison-grid">
+
+      <!-- Variant A: 推奨 -->
+      <div class="comp-col recommended">
+        <div class="comp-header">
+          <div class="variant-tag recommended">推奨 — 案 A</div>
+          <h4>3行構成 + チップ型メンバー</h4>
+          <p>支払者・割り勘・メモを完全分離。役割が一目で把握できる。</p>
+        </div>
+        <div class="comp-body">
+          <div style="background:#F5F7FA;border-radius:8px;overflow:hidden;margin-bottom:16px;">
+            <!-- サンプル行1 -->
+            <div class="tile-a">
+              <div class="tile-a-icon">💳</div>
+              <div class="tile-a-body">
+                <div class="tile-a-amount">3,000円</div>
+                <div class="tile-a-payer">
+                  <span class="tile-a-payer-label">支払</span>
+                  <span>田中 太郎</span>
+                </div>
+                <div class="tile-a-split">
+                  <span style="font-size:11px;color:var(--text-tertiary);font-weight:600;align-self:center;">割り勘</span>
+                  <span class="tile-a-chip">田中 太郎</span>
+                  <span class="tile-a-chip">鈴木 花子</span>
+                  <span class="tile-a-chip">山田 一郎</span>
+                </div>
+                <div class="tile-a-memo">ガソリン代</div>
+              </div>
+              <div class="tile-a-chevron">›</div>
+            </div>
+            <div class="phone-divider"></div>
+            <!-- サンプル行2 (割り勘なし) -->
+            <div class="tile-a">
+              <div class="tile-a-icon">💳</div>
+              <div class="tile-a-body">
+                <div class="tile-a-amount">1,500円</div>
+                <div class="tile-a-payer">
+                  <span class="tile-a-payer-label">支払</span>
+                  <span>鈴木 花子</span>
+                </div>
+              </div>
+              <div class="tile-a-chevron">›</div>
+            </div>
+            <div class="phone-divider"></div>
+            <!-- サンプル行3 (メモなし) -->
+            <div class="tile-a">
+              <div class="tile-a-icon">💳</div>
+              <div class="tile-a-body">
+                <div class="tile-a-amount">8,200円</div>
+                <div class="tile-a-payer">
+                  <span class="tile-a-payer-label">支払</span>
+                  <span>山田 一郎</span>
+                </div>
+                <div class="tile-a-split">
+                  <span style="font-size:11px;color:var(--text-tertiary);font-weight:600;align-self:center;">割り勘</span>
+                  <span class="tile-a-chip">田中 太郎</span>
+                  <span class="tile-a-chip">山田 一郎</span>
+                </div>
+              </div>
+              <div class="tile-a-chevron">›</div>
+            </div>
+          </div>
+
+          <ul class="comp-pros">
+            <li>支払者・割り勘を色で即座に区別</li>
+            <li>チップ型でメンバーが視覚的にバラけない</li>
+            <li>メンバー数が増えても折り返しで対応</li>
+            <li>メモがイタリックで自然に下位に配置</li>
+          </ul>
+          <div class="comp-divider"></div>
+          <ul class="comp-cons">
+            <li>行の高さが最も増加する</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Variant B: コンパクト -->
+      <div class="comp-col">
+        <div class="comp-header">
+          <div class="variant-tag standard">案 B</div>
+          <h4>2行 + ドット区切り</h4>
+          <p>支払者を右上に、割り勘名を2行目に配置するコンパクト案。</p>
+        </div>
+        <div class="comp-body">
+          <div style="background:#F5F7FA;border-radius:8px;overflow:hidden;margin-bottom:16px;">
+            <div class="tile-b">
+              <div class="tile-b-icon">💳</div>
+              <div class="tile-b-body">
+                <div class="tile-b-row1">
+                  <div class="tile-b-amount">3,000円</div>
+                  <div class="tile-b-payer-badge">
+                    <div class="tile-b-payer-dot"></div>
+                    <span>田中 太郎</span>
+                  </div>
+                </div>
+                <div class="tile-b-row2">
+                  <span class="tile-b-split-label">割り勘:</span>
+                  <span class="tile-b-names">田中 太郎・鈴木 花子・山田 一郎</span>
+                </div>
+              </div>
+            </div>
+            <div class="phone-divider"></div>
+            <div class="tile-b">
+              <div class="tile-b-icon">💳</div>
+              <div class="tile-b-body">
+                <div class="tile-b-row1">
+                  <div class="tile-b-amount">1,500円</div>
+                  <div class="tile-b-payer-badge">
+                    <div class="tile-b-payer-dot"></div>
+                    <span>鈴木 花子</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="phone-divider"></div>
+            <div class="tile-b">
+              <div class="tile-b-icon">💳</div>
+              <div class="tile-b-body">
+                <div class="tile-b-row1">
+                  <div class="tile-b-amount">8,200円</div>
+                  <div class="tile-b-payer-badge">
+                    <div class="tile-b-payer-dot"></div>
+                    <span>山田 一郎</span>
+                  </div>
+                </div>
+                <div class="tile-b-row2">
+                  <span class="tile-b-split-label">割り勘:</span>
+                  <span class="tile-b-names">田中 太郎・山田 一郎</span>
+                  <span class="tile-b-memo">ランチ</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ul class="comp-pros">
+            <li>行の高さ増加が最小限</li>
+            <li>支払者を右上に隔離して分離感あり</li>
+          </ul>
+          <div class="comp-divider"></div>
+          <ul class="comp-cons">
+            <li>割り勘メンバー名が長いと切れる</li>
+            <li>名前の区切りが「・」のまま残る</li>
+            <li>メモと割り勘名が同行で混在しやすい</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Variant C: カード -->
+      <div class="comp-col">
+        <div class="comp-header">
+          <div class="variant-tag minimal">案 C</div>
+          <h4>カードスタイル</h4>
+          <p>各支払を枠付きカードで表示。情報を最も明確に分離できるが情報密度が下がる。</p>
+        </div>
+        <div class="comp-body">
+          <div style="background:#F5F7FA;border-radius:8px;overflow:hidden;margin-bottom:16px;padding:8px 0;">
+            <div class="tile-c">
+              <div class="tile-c-top">
+                <div class="tile-c-amount">3,000円</div>
+                <div class="tile-c-payer-pill">
+                  <span class="tile-c-payer-icon">💳</span>
+                  <span>田中 太郎</span>
+                </div>
+              </div>
+              <div class="tile-c-divider"></div>
+              <div class="tile-c-bottom">
+                <span class="tile-c-split-label">割り勘</span>
+                <span class="tile-c-chip">田中 太郎</span>
+                <span class="tile-c-chip">鈴木 花子</span>
+                <span class="tile-c-chip">山田 一郎</span>
+                <span class="tile-c-memo">ガソリン代</span>
+              </div>
+            </div>
+            <div class="tile-c">
+              <div class="tile-c-top">
+                <div class="tile-c-amount">1,500円</div>
+                <div class="tile-c-payer-pill">
+                  <span class="tile-c-payer-icon">💳</span>
+                  <span>鈴木 花子</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ul class="comp-pros">
+            <li>情報の分離が最も明確</li>
+            <li>各支払が独立したオブジェクトとして見える</li>
+          </ul>
+          <div class="comp-divider"></div>
+          <ul class="comp-cons">
+            <li>他タブ (MichiInfo) との統一感が薄れる</li>
+            <li>カード間の余白でスクロール量が増える</li>
+            <li>ボーダーレス方針と相反する</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Phone mockup for recommended variant -->
+    <div style="margin-top:40px;">
+      <p style="font-size:14px;font-weight:600;color:var(--text-primary);text-align:center;margin-bottom:24px;">推奨案 A — 実機スケール プレビュー</p>
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-status">
+            <span>9:41</span>
+            <span>●●●</span>
+          </div>
+          <div class="phone-appbar">
+            <div class="phone-appbar-title">支払</div>
+            <div class="phone-appbar-action" style="color:var(--brand-teal);font-size:16px;">+</div>
+          </div>
+          <div class="phone-list">
+            <div class="tile-a">
+              <div class="tile-a-icon">💳</div>
+              <div class="tile-a-body">
+                <div class="tile-a-amount">3,000円</div>
+                <div class="tile-a-payer">
+                  <span class="tile-a-payer-label">支払</span>
+                  <span>田中 太郎</span>
+                </div>
+                <div class="tile-a-split">
+                  <span style="font-size:11px;color:var(--text-tertiary);font-weight:600;align-self:center;">割り勘</span>
+                  <span class="tile-a-chip">田中 太郎</span>
+                  <span class="tile-a-chip">鈴木 花子</span>
+                  <span class="tile-a-chip">山田 一郎</span>
+                </div>
+                <div class="tile-a-memo">ガソリン代</div>
+              </div>
+              <div class="tile-a-chevron">›</div>
+            </div>
+            <div class="phone-divider"></div>
+            <div class="tile-a">
+              <div class="tile-a-icon">💳</div>
+              <div class="tile-a-body">
+                <div class="tile-a-amount">1,500円</div>
+                <div class="tile-a-payer">
+                  <span class="tile-a-payer-label">支払</span>
+                  <span>鈴木 花子</span>
+                </div>
+              </div>
+              <div class="tile-a-chevron">›</div>
+            </div>
+            <div class="phone-divider"></div>
+            <div class="tile-a">
+              <div class="tile-a-icon">💳</div>
+              <div class="tile-a-body">
+                <div class="tile-a-amount">8,200円</div>
+                <div class="tile-a-payer">
+                  <span class="tile-a-payer-label">支払</span>
+                  <span>山田 一郎</span>
+                </div>
+                <div class="tile-a-split">
+                  <span style="font-size:11px;color:var(--text-tertiary);font-weight:600;align-self:center;">割り勘</span>
+                  <span class="tile-a-chip">田中 太郎</span>
+                  <span class="tile-a-chip">山田 一郎</span>
+                </div>
+              </div>
+              <div class="tile-a-chevron">›</div>
+            </div>
+            <div class="phone-divider"></div>
+            <div class="tile-a">
+              <div class="tile-a-icon">💳</div>
+              <div class="tile-a-body">
+                <div class="tile-a-amount">560円</div>
+                <div class="tile-a-payer">
+                  <span class="tile-a-payer-label">支払</span>
+                  <span>田中 太郎</span>
+                </div>
+                <div class="tile-a-memo">コンビニ</div>
+              </div>
+              <div class="tile-a-chevron">›</div>
+            </div>
+          </div>
+          <div class="phone-total-bar">合計: 13,260円</div>
+          <div class="phone-fab">
+            <div class="fab-pill">
+              <span>+</span>
+              <span>追加</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SETTLEMENT SECTION ===== -->
+  <section id="settlement-section" class="section">
+    <div class="section-label">新規セクション</div>
+    <div class="section-title">支払いごとの割り勘収支 — デザイン案</div>
+    <div class="section-desc">
+      各 Payment（伝票）単位で「誰が誰にいくら払うか」を示すサマリー。
+      収支バランスと補完する位置に配置し、精算の根拠がわかるようにする。
+    </div>
+
+    <div class="highlight-box">
+      <strong>表示ロジックのイメージ:</strong>
+      伝票の総額 ÷ 割り勘人数 = 一人あたり負担額。支払者は「(総額 - 自分の負担額) = 受け取るべき金額」、
+      他メンバーは「負担額 = 支払者に払うべき金額」として表示する。
+      詳細な計算ロジックは Spec フェーズで architect が定義する。
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>デザイン案 — 伝票カードリスト形式</h3>
+        <p>各伝票を折りたたみ可能なカードで表示。ヘッダーに金額、ボディに精算先を表示する。</p>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;gap:32px;flex-wrap:wrap;justify-content:center;">
+
+          <!-- パターン1: 展開スタイル -->
+          <div>
+            <p style="font-size:12px;color:var(--text-secondary);text-align:center;margin-bottom:12px;">案 A: 常時展開（推奨）</p>
+            <div style="width:296px;background:#F5F7FA;border-radius:12px;overflow:hidden;">
+              <div class="settlement-section-header">
+                <div class="settlement-section-title">支払いごとの精算</div>
+              </div>
+
+              <div class="settlement-card">
+                <div class="settlement-card-header">
+                  <span class="settlement-card-title">ガソリン代</span>
+                  <span class="settlement-card-amount">3,000円</span>
+                </div>
+                <div class="settlement-arrow-row">
+                  <span class="s-from">鈴木 花子</span>
+                  <span class="s-arrow">→</span>
+                  <span class="s-to">田中 太郎</span>
+                  <span class="s-amount">1,000円</span>
+                </div>
+                <div class="settlement-arrow-row">
+                  <span class="s-from">山田 一郎</span>
+                  <span class="s-arrow">→</span>
+                  <span class="s-to">田中 太郎</span>
+                  <span class="s-amount">1,000円</span>
+                </div>
+              </div>
+
+              <div class="settlement-card">
+                <div class="settlement-card-header">
+                  <span class="settlement-card-title">ランチ</span>
+                  <span class="settlement-card-amount">8,200円</span>
+                </div>
+                <div class="settlement-arrow-row">
+                  <span class="s-from">田中 太郎</span>
+                  <span class="s-arrow">→</span>
+                  <span class="s-to">山田 一郎</span>
+                  <span class="s-amount">4,100円</span>
+                </div>
+              </div>
+
+              <div class="settlement-card">
+                <div class="settlement-card-header">
+                  <span class="settlement-card-title">コンビニ</span>
+                  <span class="settlement-card-amount">560円</span>
+                </div>
+                <div class="settlement-arrow-row" style="color:var(--text-tertiary);font-size:12px;justify-content:center;">
+                  <span>割り勘なし（支払者のみ）</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- パターン2: コンパクト行スタイル -->
+          <div>
+            <p style="font-size:12px;color:var(--text-secondary);text-align:center;margin-bottom:12px;">案 B: インライン行スタイル</p>
+            <div style="width:296px;background:#F5F7FA;border-radius:12px;overflow:hidden;">
+              <div class="settlement-section-header">
+                <div class="settlement-section-title">支払いごとの精算</div>
+              </div>
+              <div style="background:white;margin:0 12px 12px;border-radius:10px;overflow:hidden;border:1px solid var(--border-light);">
+                <!-- 伝票1ヘッダー -->
+                <div style="padding:8px 12px;background:var(--brand-teal-tint2);border-bottom:1px solid var(--brand-teal-tint);display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:12px;font-weight:600;color:var(--brand-teal-dark);">ガソリン代 / 3,000円</span>
+                </div>
+                <!-- 伝票1 精算行 -->
+                <div style="padding:6px 12px;display:flex;align-items:center;gap:4px;font-size:12px;border-bottom:1px solid var(--border-light);">
+                  <span style="color:var(--negative);font-weight:600;">鈴木</span>
+                  <span style="color:var(--text-tertiary);font-size:10px;">→</span>
+                  <span style="color:var(--positive);font-weight:600;">田中</span>
+                  <span style="margin-left:auto;font-size:12px;font-weight:700;">1,000円</span>
+                </div>
+                <div style="padding:6px 12px;display:flex;align-items:center;gap:4px;font-size:12px;border-bottom:1px solid var(--border-light);">
+                  <span style="color:var(--negative);font-weight:600;">山田</span>
+                  <span style="color:var(--text-tertiary);font-size:10px;">→</span>
+                  <span style="color:var(--positive);font-weight:600;">田中</span>
+                  <span style="margin-left:auto;font-size:12px;font-weight:700;">1,000円</span>
+                </div>
+                <!-- 伝票2ヘッダー -->
+                <div style="padding:8px 12px;background:var(--brand-teal-tint2);border-bottom:1px solid var(--brand-teal-tint);border-top:2px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:12px;font-weight:600;color:var(--brand-teal-dark);">ランチ / 8,200円</span>
+                </div>
+                <div style="padding:6px 12px;display:flex;align-items:center;gap:4px;font-size:12px;">
+                  <span style="color:var(--negative);font-weight:600;">田中</span>
+                  <span style="color:var(--text-tertiary);font-size:10px;">→</span>
+                  <span style="color:var(--positive);font-weight:600;">山田</span>
+                  <span style="margin-left:auto;font-size:12px;font-weight:700;">4,100円</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRAVEL OVERVIEW INTEGRATION ===== -->
+  <section id="overview-preview" class="section">
+    <div class="section-label">集計タブ統合案</div>
+    <div class="section-title">TravelExpenseOverviewView への追加イメージ</div>
+    <div class="section-desc">
+      既存の「経費合計」「メンバー別コスト」「収支バランス」の下に
+      「支払いごとの精算」セクションを追加する配置案。
+    </div>
+
+    <div class="phone-wrap">
+      <div class="overview-phone">
+        <div class="phone-notch"></div>
+        <div class="phone-status">
+          <span>9:41</span>
+          <span>●●●</span>
+        </div>
+        <div class="phone-appbar">
+          <div class="phone-appbar-title">旅行 — 概要</div>
+        </div>
+        <div class="overview-scroll" style="max-height:560px;overflow-y:auto;">
+
+          <!-- 経費合計 -->
+          <div class="ov-section">
+            <div class="ov-section-header"><div class="ov-section-title">経費合計</div></div>
+            <div class="ov-row">
+              <span class="ov-label">合計</span>
+              <span class="ov-value">13,260円</span>
+            </div>
+          </div>
+
+          <!-- メンバー別コスト -->
+          <div class="ov-section">
+            <div class="ov-section-header"><div class="ov-section-title">メンバー別コスト</div></div>
+            <div class="ov-row"><span class="ov-label">田中 太郎</span><span class="ov-value">5,200円</span></div>
+            <div class="ov-row"><span class="ov-label">鈴木 花子</span><span class="ov-value">4,030円</span></div>
+            <div class="ov-row"><span class="ov-label">山田 一郎</span><span class="ov-value">4,030円</span></div>
+          </div>
+
+          <!-- 収支バランス -->
+          <div class="ov-section">
+            <div class="ov-section-header"><div class="ov-section-title">収支バランス</div></div>
+            <div class="ov-row"><span class="ov-label">田中 太郎</span><span class="ov-positive">+1,360円</span></div>
+            <div class="ov-row"><span class="ov-label">鈴木 花子</span><span class="ov-negative">−2,530円</span></div>
+            <div class="ov-row"><span class="ov-label">山田 一郎</span><span class="ov-negative">−4,170円</span></div>
+          </div>
+
+          <!-- 支払いごとの精算 — NEW -->
+          <div class="ov-section" style="border-left:3px solid var(--brand-teal);">
+            <div class="ov-settlement-header">
+              <div class="ov-settlement-title">支払いごとの精算 NEW</div>
+            </div>
+
+            <div class="ov-settlement-card">
+              <div class="ov-s-card-head">
+                <span class="ov-s-card-label">ガソリン代</span>
+                <span class="ov-s-card-amt">3,000円</span>
+              </div>
+              <div class="ov-s-row">
+                <span class="ov-s-from">鈴木</span>
+                <span class="ov-s-arrow">→</span>
+                <span class="ov-s-to">田中</span>
+                <span class="ov-s-amt">1,000円</span>
+              </div>
+              <div class="ov-s-row">
+                <span class="ov-s-from">山田</span>
+                <span class="ov-s-arrow">→</span>
+                <span class="ov-s-to">田中</span>
+                <span class="ov-s-amt">1,000円</span>
+              </div>
+            </div>
+
+            <div class="ov-settlement-card">
+              <div class="ov-s-card-head">
+                <span class="ov-s-card-label">ランチ</span>
+                <span class="ov-s-card-amt">8,200円</span>
+              </div>
+              <div class="ov-s-row">
+                <span class="ov-s-from">田中</span>
+                <span class="ov-s-arrow">→</span>
+                <span class="ov-s-to">山田</span>
+                <span class="ov-s-amt">4,100円</span>
+              </div>
+            </div>
+
+            <div style="height:8px;"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:28px;">
+      <strong>配置の根拠:</strong>
+      「収支バランス」はトータルの貸し借りを把握するサマリー。
+      「支払いごとの精算」はその根拠（なぜその収支になったか）を伝票単位で示す補足情報。
+      ユーザーは上から「全体把握 → 詳細確認」の順で読み進めるため、下に配置するのが自然。
+    </div>
+  </section>
+
+  <!-- ===== CODE SNIPPETS ===== -->
+  <section id="code-snippets" class="section">
+    <div class="section-label">実装イメージ（参考）</div>
+    <div class="section-title">Flutter コードスニペット</div>
+    <div class="section-desc">
+      以下は推奨案 A のデザインイメージを示す参考コードスニペット。
+      実際の実装は architect の Spec に従って flutter-dev が行う。
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>推奨案 A — _PaymentListTile のイメージ</h3>
+        <p>ListTile を廃止し、カスタム Widget で3行構成を実現する参考例</p>
+      </div>
+      <div class="card-body">
+        <div class="code-block"><span class="kw">class</span> <span class="cl">_PaymentListTile</span> <span class="kw">extends</span> <span class="cl">StatelessWidget</span> {
+  <span class="kw">final</span> <span class="cl">PaymentItemProjection</span> item;
+
+  <span class="kw">const</span> <span class="fn">_PaymentListTile</span>({<span class="kw">required</span> <span class="kw">this</span>.item});
+
+  <span class="pn">@override</span>
+  <span class="cl">Widget</span> <span class="fn">build</span>(<span class="cl">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="cl">InkWell</span>(
+      onTap: () => <span class="cmt">/* tap handler */</span>,
+      child: <span class="cl">Padding</span>(
+        padding: <span class="kw">const</span> <span class="cl">EdgeInsets</span>.<span class="fn">symmetric</span>(horizontal: 16, vertical: 12),
+        child: <span class="cl">Row</span>(
+          crossAxisAlignment: <span class="cl">CrossAxisAlignment</span>.start,
+          children: [
+            <span class="cmt">// アイコン (Teal背景・角丸)</span>
+            _<span class="fn">PaymentIcon</span>(),
+            <span class="kw">const</span> <span class="cl">SizedBox</span>(width: 12),
+            <span class="cl">Expanded</span>(
+              child: <span class="cl">Column</span>(
+                crossAxisAlignment: <span class="cl">CrossAxisAlignment</span>.start,
+                children: [
+                  <span class="cmt">// 行1: 金額</span>
+                  <span class="cl">Text</span>(item.displayAmount, style: <span class="cmt">/* titleLarge風 */</span>),
+                  <span class="kw">const</span> <span class="cl">SizedBox</span>(height: 3),
+                  <span class="cmt">// 行2: 支払者 (Tealバッジ + 名前)</span>
+                  _<span class="fn">PayerRow</span>(payer: item.payer),
+                  <span class="cmt">// 行3: 割り勘チップ (splitMembers があれば表示)</span>
+                  <span class="kw">if</span> (item.splitMembers.isNotEmpty) ...[
+                    <span class="kw">const</span> <span class="cl">SizedBox</span>(height: 4),
+                    _<span class="fn">SplitMemberChips</span>(members: item.splitMembers),
+                  ],
+                  <span class="cmt">// 行4: メモ (memo が非null・非空なら表示)</span>
+                  <span class="kw">if</span> (item.memo?.isNotEmpty == <span class="kw">true</span>) ...[
+                    <span class="kw">const</span> <span class="cl">SizedBox</span>(height: 3),
+                    _<span class="fn">MemoText</span>(memo: item.memo!),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>割り勘メンバーチップ — _SplitMemberChips のイメージ</h3>
+        <p>Wrap で折り返し対応。Emerald カラーで支払者と視覚的に区別する。</p>
+      </div>
+      <div class="card-body">
+        <div class="code-block"><span class="kw">class</span> <span class="cl">_SplitMemberChips</span> <span class="kw">extends</span> <span class="cl">StatelessWidget</span> {
+  <span class="kw">final</span> <span class="cl">List</span>&lt;<span class="cl">MemberItemProjection</span>&gt; members;
+
+  <span class="kw">const</span> <span class="fn">_SplitMemberChips</span>({<span class="kw">required</span> <span class="kw">this</span>.members});
+
+  <span class="pn">@override</span>
+  <span class="cl">Widget</span> <span class="fn">build</span>(<span class="cl">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="cl">Row</span>(
+      children: [
+        <span class="cl">Text</span>(<span class="str">'割り勘'</span>, style: <span class="cmt">/* labelSmall / tertiary */</span>),
+        <span class="kw">const</span> <span class="cl">SizedBox</span>(width: 6),
+        <span class="cl">Wrap</span>(
+          spacing: 4,
+          runSpacing: 4,
+          children: members.<span class="fn">map</span>((m) => _<span class="fn">MemberChip</span>(name: m.memberName)).<span class="fn">toList</span>(),
+        ),
+      ],
+    );
+  }
+}
+
+<span class="cmt">// チップのカラーは Emerald (#2E9E6B tint背景 / #1A7A52 テキスト)</span>
+<span class="kw">class</span> <span class="cl">_MemberChip</span> <span class="kw">extends</span> <span class="cl">StatelessWidget</span> {
+  <span class="kw">final</span> <span class="cl">String</span> name;
+  <span class="kw">const</span> <span class="fn">_MemberChip</span>({<span class="kw">required</span> <span class="kw">this</span>.name});
+
+  <span class="pn">@override</span>
+  <span class="cl">Widget</span> <span class="fn">build</span>(<span class="cl">BuildContext</span> context) {
+    <span class="kw">return</span> <span class="cl">Container</span>(
+      padding: <span class="kw">const</span> <span class="cl">EdgeInsets</span>.<span class="fn">symmetric</span>(horizontal: 8, vertical: 2),
+      decoration: <span class="cl">BoxDecoration</span>(
+        color: <span class="cmt">/* Emerald tint #D4F0E4 */</span>,
+        borderRadius: <span class="cl">BorderRadius</span>.<span class="fn">circular</span>(10),
+      ),
+      child: <span class="cl">Text</span>(name, style: <span class="cmt">/* labelSmall / Emerald-dark */</span>),
+    );
+  }
+}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>集計タブ — 「支払いごとの精算」セクション追加イメージ</h3>
+        <p>TravelExpenseOverviewView の既存セクション直下に追加するウィジェット構造</p>
+      </div>
+      <div class="card-body">
+        <div class="code-block"><span class="cmt">// TravelExpenseOverviewView の build() 内</span>
+<span class="cl">ListView</span>(
+  children: [
+    <span class="cmt">// 既存セクション</span>
+    _<span class="fn">SectionTitle</span>(title: <span class="str">'経費合計'</span>),
+    <span class="cmt">// ...</span>
+    _<span class="fn">SectionTitle</span>(title: <span class="str">'メンバー別コスト'</span>),
+    <span class="cmt">// ...</span>
+    _<span class="fn">SectionTitle</span>(title: <span class="str">'収支バランス'</span>),
+    <span class="cmt">// ...</span>
+
+    <span class="cmt">// NEW: 伝票単位精算セクション</span>
+    <span class="kw">const</span> <span class="cl">SizedBox</span>(height: 16),
+    _<span class="fn">SectionTitle</span>(title: <span class="str">'支払いごとの精算'</span>),
+    ...projection.paymentSettlements.<span class="fn">map</span>(
+      (settlement) => _<span class="fn">SettlementCard</span>(settlement: settlement),
+    ),
+  ],
+)
+
+<span class="cmt">// 必要な Projection 型 (architect が設計する)</span>
+<span class="cmt">// PaymentSettlementProjection {</span>
+<span class="cmt">//   String paymentTitle  // メモ or "支払 #N"</span>
+<span class="cmt">//   String displayAmount</span>
+<span class="cmt">//   List&lt;SettlementArrow&gt; arrows  // from → to → amount</span>
+<span class="cmt">// }</span>
+<span class="cmt">// SettlementArrow { String fromName, String toName, String displayAmount }</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RATIONALE ===== -->
+  <section id="rationale" class="section">
+    <div class="section-label">根拠</div>
+    <div class="section-title">デザイン判断の根拠</div>
+    <div class="section-desc">各デザイン判断の背景にある原則と考え方。</div>
+
+    <div class="rationale-grid">
+      <div class="rationale-card">
+        <h4>なぜ案 A（チップ型）を推奨するか</h4>
+        <p>
+          名前をチップ（pill形式）で囲むことで、文字列の連続ではなく「個々のメンバーオブジェクト」として視覚表現できる。
+          Wrap を使うと3名以上でも折り返して表示でき、文字列が切れる問題がない。
+          Emerald カラーを使うことで Teal の「支払者」と即座に区別できる。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>支払者に「支払」バッジを付ける理由</h4>
+        <p>
+          「誰が払ったか」と「誰と割り勘にするか」は役割が異なる情報。
+          支払者名だけ表示しても、その名前が支払者なのか割り勘メンバーの一人なのかが文脈なしでは判断できない。
+          Teal の小さなバッジを左に置くことでラベルとして機能しつつ、スペースを取らない。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>伝票単位精算を「収支バランス」の下に置く理由</h4>
+        <p>
+          収支バランスは「最終的に誰が誰にいくら払えばよいか」のトータルサマリー。
+          伝票精算は「なぜそうなるか」の根拠情報。
+          ユーザーは上から「把握 → 確認 → 根拠」の順で読むため、サマリーを先に提示し詳細を後ろに置く設計が自然。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>カードスタイル（案 C）を不採用とする理由</h4>
+        <p>
+          MichiMark は「ボーダーレス・Divider 区切り」をUI方針として既に採用している（入力画面刷新で確立済み）。
+          カードに枠線・影を付けると他タブとの統一感が崩れる。
+          情報の分離は色とレイアウトで実現し、ボーダーに頼らないことを優先する。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>縦幅増加の許容について</h4>
+        <p>
+          支払履歴は通常数件〜十数件の規模であり、MarkLinkのような大量リスト表示とは性質が異なる。
+          1行あたりの高さが増えてもスクロール負荷はほぼ発生しない。
+          可読性を犠牲にして情報を1行に詰め込む設計はユーザーフィードバックとも相反しており、ここは縦幅を惜しまない。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>WCAG コントラスト基準への適合</h4>
+        <p>
+          Emerald チップ（#1A7A52 on #D4F0E4）のコントラスト比は約 5.8:1 で WCAG AA（4.5:1）を満たす。
+          Teal バッジ（#1A4A5E on #D0EBF5）は約 7.2:1 で AAA 基準も満たす。
+          グレー系テキスト（#6C757D on white）は 4.6:1 で AA 適合。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NEXT STEPS ===== -->
+  <section class="section">
+    <div class="section-label">次のステップ</div>
+    <div class="section-title">product-manager へのお願い</div>
+    <div class="section-desc">このレポートを確認後、以下の点についてユーザーに方針確認をお願いしたい。</div>
+
+    <div class="card">
+      <div class="card-body">
+        <ol style="padding-left:20px;font-size:14px;line-height:2;color:var(--text-secondary);">
+          <li><strong style="color:var(--text-primary);">ListTile 改善案の採用案決定</strong> — 案A（推奨）・案B・案Cのいずれを採用するか</li>
+          <li><strong style="color:var(--text-primary);">「支払いごとの精算」セクションのスコープ確認</strong> —
+            割り勘計算ロジック（均等割り・比率割りなど）の方針を architect と確認する必要あり</li>
+          <li><strong style="color:var(--text-primary);">PaymentItemProjection に「タイトル（メモ）」が必須化されるか</strong> —
+            伝票カードヘッダーに「ガソリン代」のようなタイトルを出したい場合、
+            memo が空のときの代替表示（「支払 #1」など）の方針を決める必要あり</li>
+          <li><strong style="color:var(--text-primary);">実装優先度</strong> —
+            ListTile 改善と精算セクション追加は別タスクで分割してよいか</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>MichiMark Design Report — PaymentInfo UI 改善提案</p>
+  <p>作成: designer / 2026-04-09 / Status: DRAFT</p>
+  <p>格納: docs/Design/draft/2026-04-09_payment_info_redesign.html</p>
+</footer>
+
+</body>
+</html>

@@ -62,6 +62,7 @@ class _ActionTimeContent extends StatelessWidget {
             runSpacing: 8,
             children: availableActions.map((action) {
               return ElevatedButton(
+                key: Key('action_time_action_button_${action.id}'),
                 onPressed: () => context
                     .read<ActionTimeBloc>()
                     .add(ActionTimeLogRecorded(action.id)),

@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
+import '../../../features/action_time/bloc/action_time_bloc.dart';
+import '../../../features/action_time/bloc/action_time_event.dart';
+import '../../../features/action_time/bloc/action_time_state.dart';
+import '../../../features/action_time/view/action_time_view.dart';
 import '../../../features/event_detail/projection/michi_info_list_projection.dart';
 import '../../../features/link_detail/link_detail_args.dart';
 import '../../../features/mark_detail/mark_detail_args.dart';
 import '../../../features/shared/projection/action_item_projection.dart';
 import '../../../features/shared/projection/mark_link_item_projection.dart';
+import '../../../repository/action_repository.dart';
+import '../../../repository/event_repository.dart';
 import '../bloc/michi_info_bloc.dart';
 import '../bloc/michi_info_event.dart';
 import '../bloc/michi_info_state.dart';
@@ -146,11 +153,13 @@ class _MichiInfoViewState extends State<MichiInfoView> {
           MichiInfoLoading() =>
             const Center(child: CircularProgressIndicator()),
           MichiInfoError(:final message) => Center(child: Text(message)),
-          MichiInfoLoaded(:final projection, :final topicConfig, :final markActionItems) =>
+          MichiInfoLoaded(:final projection, :final topicConfig, :final markActionItems, :final markActionStateLabels, :final eventId) =>
             _MichiInfoList(
               projection: projection,
               topicConfig: topicConfig,
               markActionItems: markActionItems,
+              markActionStateLabels: markActionStateLabels,
+              eventId: eventId,
             ),
         };
       },
@@ -223,10 +232,99 @@ class _MichiInfoViewState extends State<MichiInfoView> {
           context.read<MichiInfoBloc>().add(const MichiInfoReloadRequested());
         }
 
+      case MichiInfoOpenActionTimeDelegate(
+          :final markLinkId,
+          :final eventId,
+          :final topicConfig,
+        ):
+        await _showActionTimeBottomSheet(
+          markLinkId: markLinkId,
+          eventId: eventId,
+          topicConfig: topicConfig,
+        );
+
       case MichiInfoReloadedDelegate():
         // 再読込完了: EventDetailPageのBlocListenerでcachedEventを更新する
         break;
     }
+  }
+
+  Future<void> _showActionTimeBottomSheet({
+    required String markLinkId,
+    required String eventId,
+    required TopicConfig topicConfig,
+  }) async {
+    ActionTimeState? lastState;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      enableDrag: true,
+      builder: (sheetContext) {
+        return BlocProvider<ActionTimeBloc>(
+          create: (_) => ActionTimeBloc(
+            eventRepository: GetIt.instance<EventRepository>(),
+            actionRepository: GetIt.instance<ActionRepository>(),
+          )..add(ActionTimeStarted(
+              eventId,
+              topicConfig: topicConfig,
+              markOrLink: MarkOrLink.mark,
+            )),
+          child: BlocListener<ActionTimeBloc, ActionTimeState>(
+            listener: (listenerContext, state) {
+              lastState = state;
+            },
+            child: DraggableScrollableSheet(
+              initialChildSize: 0.6,
+              maxChildSize: 0.9,
+              minChildSize: 0.4,
+              expand: false,
+              builder: (_, scrollController) {
+                return Column(
+                  children: [
+                    // ヘッダー
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            'ActionTime',
+                            style: Theme.of(sheetContext).textTheme.titleMedium,
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () => Navigator.of(sheetContext).pop(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    // コンテンツ
+                    const Expanded(
+                      child: ActionTimeView(),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+
+    // ボトムシートが閉じた後に状態ラベルを更新する
+    if (!mounted) return;
+    final stateLabel = lastState?.projection.currentStateLabel ?? '滞留中';
+    context.read<MichiInfoBloc>().add(
+          MichiInfoActionStateLabelUpdated(
+            markLinkId: markLinkId,
+            currentStateLabel: stateLabel,
+          ),
+        );
   }
 }
 
@@ -238,11 +336,15 @@ class _MichiInfoList extends StatefulWidget {
   final MichiInfoListProjection projection;
   final TopicConfig topicConfig;
   final List<ActionItemProjection> markActionItems;
+  final Map<String, String> markActionStateLabels;
+  final String eventId;
 
   const _MichiInfoList({
     required this.projection,
     required this.topicConfig,
     required this.markActionItems,
+    required this.markActionStateLabels,
+    required this.eventId,
   });
 
   @override
@@ -485,6 +587,9 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                               ),
                             ),
                         markActionItems: markActionItems,
+                        markActionStateLabels: widget.markActionStateLabels,
+                        topicConfig: widget.topicConfig,
+                        eventId: widget.eventId,
                       );
                     },
                     childCount: items.length,
@@ -776,12 +881,18 @@ class _TimelineItem extends StatelessWidget {
   final double gapAfter;
   final VoidCallback onTap;
   final List<ActionItemProjection> markActionItems;
+  final Map<String, String> markActionStateLabels;
+  final TopicConfig topicConfig;
+  final String eventId;
 
   const _TimelineItem({
     required this.item,
     required this.gapAfter,
     required this.onTap,
     required this.markActionItems,
+    required this.markActionStateLabels,
+    required this.topicConfig,
+    required this.eventId,
   });
 
   @override
@@ -816,6 +927,9 @@ class _TimelineItem extends StatelessWidget {
                         item: item,
                         onTap: onTap,
                         isMark: isMark,
+                        currentStateLabel: markActionStateLabels[item.id],
+                        topicConfig: topicConfig,
+                        eventId: eventId,
                       ),
                     ),
                   ],
@@ -1010,10 +1124,20 @@ class _MichiTimelinePainter extends CustomPainter {
 // _TimelineItemOverlay
 // ────────────────────────────────────────────────────────
 
+// Violet カラー（ActionTime ボタン・バッジ用）
+const Color _violetColor = Color(0xFF7C3AED);
+const Color _violetBadgeBg = Color(0x197C3AED);
+
 class _TimelineItemOverlay extends StatelessWidget {
   final MarkLinkItemProjection item;
   final VoidCallback onTap;
   final bool isMark;
+
+  /// markActionStateLabels[item.id]。null の場合はデフォルト「滞留中」を表示する。
+  final String? currentStateLabel;
+
+  final TopicConfig topicConfig;
+  final String eventId;
 
   static const double _cardLeft = 40.0;
 
@@ -1021,6 +1145,9 @@ class _TimelineItemOverlay extends StatelessWidget {
     required this.item,
     required this.onTap,
     required this.isMark,
+    required this.currentStateLabel,
+    required this.topicConfig,
+    required this.eventId,
   });
 
   @override
@@ -1067,6 +1194,14 @@ class _TimelineItemOverlay extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                     ),
+                  // 状態バッジ（Mark のみ表示）
+                  if (isMark)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: _ActionStateBadge(
+                        label: currentStateLabel ?? '滞留中',
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -1076,7 +1211,82 @@ class _TimelineItemOverlay extends StatelessWidget {
                 size: 16,
                 color: _markPrimaryColor,
               ),
+            // ⚡ アイコンボタン（Mark のみ表示）
+            if (isMark)
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: _ActionTimeButton(
+                  onPressed: () => context.read<MichiInfoBloc>().add(
+                        MichiInfoActionButtonPressed(
+                          markLinkId: item.id,
+                          eventId: eventId,
+                          topicConfig: topicConfig,
+                          markOrLink: MarkOrLink.mark,
+                        ),
+                      ),
+                ),
+              ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ────────────────────────────────────────────────────────
+// _ActionTimeButton（⚡ アイコンボタン）
+// ────────────────────────────────────────────────────────
+
+class _ActionTimeButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const _ActionTimeButton({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        key: const Key('mark_action_button'),
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          color: _violetColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Icon(
+          Icons.bolt,
+          color: Colors.white,
+          size: 18,
+        ),
+      ),
+    );
+  }
+}
+
+// ────────────────────────────────────────────────────────
+// _ActionStateBadge（状態バッジ）
+// ────────────────────────────────────────────────────────
+
+class _ActionStateBadge extends StatelessWidget {
+  final String label;
+
+  const _ActionStateBadge({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('mark_action_state_badge'),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: _violetBadgeBg,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 10,
+          color: _violetColor,
         ),
       ),
     );

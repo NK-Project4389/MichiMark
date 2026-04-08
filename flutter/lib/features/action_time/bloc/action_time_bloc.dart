@@ -77,6 +77,7 @@ class ActionTimeBloc extends Bloc<ActionTimeEvent, ActionTimeState> {
       );
       await _eventRepository.saveActionTimeLog(log);
       await _refreshState(eventId, emit);
+      emit(state.copyWith(delegate: const ActionTimeNavigateBackDelegate()));
     } on Exception catch (e) {
       emit(state.copyWith(errorMessage: e.toString()));
     }

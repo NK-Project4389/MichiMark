@@ -34,6 +34,8 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     on<MichiInfoLinkSaved>(_onLinkSaved);
     on<MichiInfoTopicConfigUpdated>(_onTopicConfigUpdated);
     on<MichiInfoMarkActionPressed>(_onMarkActionPressed);
+    on<MichiInfoActionButtonPressed>(_onActionButtonPressed);
+    on<MichiInfoActionStateLabelUpdated>(_onActionStateLabelUpdated);
     on<MichiInfoDelegateConsumed>(_onDelegateConsumed);
     on<MichiInfoReloadRequested>(_onReloadRequested);
   }
@@ -55,10 +57,13 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       final domain = await _eventRepository.fetch(event.eventId);
       _cachedActions = await _actionRepository.fetchAll();
       final projection = EventDetailAdapter.toProjection(domain).michiInfo;
+      final topicConfig = TopicConfig.fromTopicType(domain.topic?.topicType);
       emit(MichiInfoLoaded(
         projection: projection,
         draft: const MichiInfoDraft(),
         eventMembers: domain.members,
+        eventId: event.eventId,
+        topicConfig: topicConfig,
       ));
     } on Exception catch (e) {
       emit(MichiInfoError(message: e.toString()));
@@ -270,6 +275,34 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       await _eventRepository.saveActionTimeLog(log);
     } on Exception {
       // ログ記録失敗は一覧UIに影響を与えない
+    }
+  }
+
+  /// ⚡ ボタンタップ: ActionTime ボトムシート表示意図を Delegate として emit
+  Future<void> _onActionButtonPressed(
+    MichiInfoActionButtonPressed event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (state case MichiInfoLoaded current) {
+      emit(current.copyWith(
+        delegate: MichiInfoOpenActionTimeDelegate(
+          markLinkId: event.markLinkId,
+          eventId: event.eventId,
+          topicConfig: event.topicConfig,
+        ),
+      ));
+    }
+  }
+
+  /// ボトムシートを閉じた後に markActionStateLabels を更新する
+  Future<void> _onActionStateLabelUpdated(
+    MichiInfoActionStateLabelUpdated event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (state case MichiInfoLoaded current) {
+      final updated = Map<String, String>.from(current.markActionStateLabels);
+      updated[event.markLinkId] = event.currentStateLabel;
+      emit(current.copyWith(markActionStateLabels: updated));
     }
   }
 

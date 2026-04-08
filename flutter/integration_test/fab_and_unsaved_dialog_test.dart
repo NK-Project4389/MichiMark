@@ -265,4 +265,127 @@ void main() {
     expect(find.text('破棄して戻る'), findsOneWidget);
     expect(find.text('保存して戻る'), findsOneWidget);
   });
+
+  // ─────────────────────────────────────────────────────────
+  // TC-BACK-002: Topic設定済みイベント・編集中にグラデーションAppBarの戻るボタンで未保存ダイアログが表示される
+  // Topic設定済みイベント「箱根日帰りドライブ」を使用
+  // ─────────────────────────────────────────────────────────
+
+  testWidgets(
+      'TC-BACK-002: Topic設定済みイベントで編集中にグラデーションAppBar戻るボタンタップで未保存確認ダイアログが表示される',
+      (tester) async {
+    // topic設定済みのイベント「箱根日帰りドライブ」を使う
+    // （topic設定済み → グラデーションAppBar → 戻るボタンが_onBackPressedを呼ぶ）
+    final reached = await goToEventDetail(tester);
+    if (!reached) {
+      fail('[スキップ不可] 「箱根日帰りドライブ」EventDetailPageへの遷移に失敗しました');
+    }
+
+    // BasicInfoSection のロード完了を待つ（「編集」ボタンが表示されるまで）
+    for (var i = 0; i < 15; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.text('編集').evaluate().isNotEmpty) break;
+    }
+
+    // BasicInfoView 参照モードの「編集」ボタンをタップ
+    // テキスト「編集」またはアイコン Icons.edit を探す
+    Finder? editTarget;
+    if (find.text('編集').evaluate().isNotEmpty) {
+      editTarget = find.text('編集');
+    } else if (find.byIcon(Icons.edit).evaluate().isNotEmpty) {
+      editTarget = find.byIcon(Icons.edit);
+    }
+    if (editTarget == null) {
+      fail('[スキップ不可] 「編集」ボタン（テキストまたはアイコン）が見つかりません');
+    }
+    await tester.tap(editTarget.first);
+    await tester.pumpAndSettle();
+
+    // 編集モードになったことを確認（TextFieldが表示されるはず）
+    await tester.pump(const Duration(milliseconds: 300));
+    final textFields = find.byType(TextField);
+    if (textFields.evaluate().isEmpty) {
+      fail('[スキップ不可] 編集モードのTextFieldが見つかりません');
+    }
+
+    // イベント名フィールドに文字を入力して isEditing = true にする
+    await tester.tap(textFields.first);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.enterText(textFields.first, '編集中テスト名_トピックあり');
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // グラデーションAppBarの戻るボタン（chevron_left または arrow_back_ios_new）をタップ
+    // グラデーションAppBarはカスタム描画のため複数のアイコン候補を試みる
+    Finder? backButton;
+    for (final icon in [Icons.chevron_left, Icons.arrow_back_ios_new, Icons.arrow_back]) {
+      final f = find.byIcon(icon);
+      if (f.evaluate().isNotEmpty) {
+        backButton = f;
+        break;
+      }
+    }
+
+    if (backButton == null || backButton.evaluate().isEmpty) {
+      fail('[スキップ不可] グラデーションAppBarの戻るボタンが見つかりません');
+    }
+
+    await tester.tap(backButton.first);
+    await tester.pumpAndSettle();
+
+    // 未保存確認ダイアログが表示されていること
+    expect(find.text('保存していません'), findsOneWidget,
+        reason: 'Topic設定済みイベントで編集中に戻るボタンをタップすると未保存確認ダイアログが表示されること');
+    // ダイアログのボタン群が表示されていること
+    expect(find.text('編集に戻る'), findsOneWidget);
+    expect(find.text('破棄して戻る'), findsOneWidget);
+    expect(find.text('保存して戻る'), findsOneWidget);
+  });
+
+  // ─────────────────────────────────────────────────────────
+  // TC-BACK-003: Topic設定済みイベント・未編集時にグラデーションAppBarの戻るボタンでイベント一覧に戻る
+  // Topic設定済みイベント「箱根日帰りドライブ」を使用
+  // ─────────────────────────────────────────────────────────
+
+  testWidgets(
+      'TC-BACK-003: Topic設定済みイベントで未編集時にグラデーションAppBar戻るボタンタップでイベント一覧に戻る',
+      (tester) async {
+    // topic設定済みのイベント「箱根日帰りドライブ」を使う
+    final reached = await goToEventDetail(tester);
+    if (!reached) {
+      fail('[スキップ不可] 「箱根日帰りドライブ」EventDetailPageへの遷移に失敗しました');
+    }
+
+    // 何も編集せずに戻るボタンをタップ
+    // グラデーションAppBarの戻るボタン（chevron_left または arrow_back_ios_new）をタップ
+    Finder? backButton;
+    for (final icon in [Icons.chevron_left, Icons.arrow_back_ios_new, Icons.arrow_back]) {
+      final f = find.byIcon(icon);
+      if (f.evaluate().isNotEmpty) {
+        backButton = f;
+        break;
+      }
+    }
+
+    if (backButton == null || backButton.evaluate().isEmpty) {
+      fail('[スキップ不可] グラデーションAppBarの戻るボタンが見つかりません');
+    }
+
+    await tester.tap(backButton.first);
+
+    // イベント一覧に戻るのを待つ
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      // EventList が表示されていること（概要タブが消えてイベント一覧が見える）
+      if (find.text('概要').evaluate().isEmpty &&
+          find.text('イベント').evaluate().isNotEmpty) break;
+    }
+    await tester.pumpAndSettle();
+
+    // ダイアログが表示されていないこと
+    expect(find.text('保存していません'), findsNothing,
+        reason: '未編集時は未保存確認ダイアログが表示されないこと');
+    // イベント一覧に戻っていること
+    expect(find.text('箱根日帰りドライブ'), findsWidgets,
+        reason: 'イベント一覧に戻りイベント名が表示されること');
+  });
 }
