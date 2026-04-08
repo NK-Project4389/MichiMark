@@ -33,6 +33,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     on<MichiInfoLinkDraftApplied>(_onLinkDraftApplied);
     on<MichiInfoTopicConfigUpdated>(_onTopicConfigUpdated);
     on<MichiInfoMarkActionPressed>(_onMarkActionPressed);
+    on<MichiInfoDelegateConsumed>(_onDelegateConsumed);
   }
 
   final EventRepository _eventRepository;
@@ -214,6 +215,15 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       await _eventRepository.saveActionTimeLog(log);
     } on Exception {
       // ログ記録失敗は一覧UIに影響を与えない
+    }
+  }
+
+  Future<void> _onDelegateConsumed(
+    MichiInfoDelegateConsumed event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (state case MichiInfoLoaded current) {
+      emit(current.copyWith());
     }
   }
 

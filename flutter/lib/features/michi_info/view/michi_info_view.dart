@@ -128,9 +128,15 @@ class _MichiInfoViewState extends State<MichiInfoView> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MichiInfoBloc, MichiInfoState>(
-      listener: (_, state) async {
+      listener: (context, state) async {
         if (state is MichiInfoLoaded && state.delegate != null) {
           await _handleDelegate(state.delegate!);
+          if (mounted) {
+            this
+                .context
+                .read<MichiInfoBloc>()
+                .add(const MichiInfoDelegateConsumed());
+          }
         }
       },
       builder: (context, state) {
@@ -365,11 +371,16 @@ class _MichiInfoListState extends State<_MichiInfoList> {
       }
     }
 
-    // スパンに含まれない Link（先頭・末尾・孤立）の距離を単独テキストとして収集
+    // スパンに含まれない Link（先頭・末尾・孤立）の Emerald 線と距離テキストを収集
     final standaloneLinkDistances = <(double, String)>[];
     for (var k = 0; k < items.length; k++) {
       if (items[k].markLinkType != MarkOrLink.link) continue;
       if (coveredLinkIndices.contains(k)) continue;
+      // Emerald グラデーション縦線（スパン内 Link と同じ描画）
+      linkSegments.add(LinkSegmentData(
+        startY: yOffsets[k],
+        endY: yOffsets[k] + _linkCardHeight,
+      ));
       final dist = items[k].displayDistanceValue;
       if (dist != null) {
         standaloneLinkDistances.add((yOffsets[k] + _linkCardHeight / 2, dist));

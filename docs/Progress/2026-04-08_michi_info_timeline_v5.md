@@ -5,6 +5,7 @@
 ---
 
 ## 完了した作業
+- docs: MichiInfo v5.0 進捗ファイルに Round 3 修正内容を追記 (2941db1)
 - fix: MichiInfo タイムライン 区間距離未表示・縦線タブはみ出し・距離テキスト中央揃え修正 (79b3677)
 - feat: MichiInfo タイムライン UI v5.0（縦線分離・矢印位置・距離右配置・Mark-Mark間隔） (78aa044)
 
@@ -76,17 +77,41 @@
 
 ---
 
+## 追加修正（2026-04-08 第2セッション）
+
+### デリゲート消費バグ修正（MichiInfo / EventList / PaymentInfo）
+
+**原因**: `Equatable` を使用した delegate は同じオブジェクトを emit すると `BlocConsumer` listener が発火しない。
+→ ナビゲーション後に戻り、再度同じボタンを押しても反応しない症状。
+
+**修正**: delegate を消費後に `DelegateConsumed` イベントを dispatch して state から null に戻す。
+
+対応ファイル:
+- `michi_info_event.dart` / `michi_info_bloc.dart` / `michi_info_view.dart`
+- `event_list_event.dart` / `event_list_bloc.dart` / `event_list_page.dart`
+- `payment_info_event.dart` / `payment_info_bloc.dart` / `payment_info_view.dart`
+
+### スタンドアロン Link の Emerald グラデーション線表示
+
+**修正**: パターン2（区間だけ）のときに、距離テキストのみでなく Emerald グラデーション縦線も描画。
+→ `_buildTimelineData()` でスパン外 Link も `linkSegments` に追加。
+
+テスト: 未実施（次回）
+
+---
+
 ## 未完了・次回やること
 
+- [ ] **tester**: デリゲートバグ修正 + スタンドアロン Link 線表示の動作確認テスト
 - [ ] **MichiInfo_Layout_Spec.md v5.0 追記**: v4→v5 変更内容の Spec 反映（architect タスク）
 - [ ] **TS-09 パターン1の検証**: Mark-Mark 直接のシードデータを作って手動確認
 - [ ] **T-064〜T-067**: タイムライン挿入UI（FAB型）— 次の大きな機能
 
 ## 次回セッションで最初にやること
 
-1. **手動目視確認**: シミュレーターで縦線・矢印位置・距離表示が意図通りか確認
-2. **T-064**: タイムライン挿入UI の要件書作成（product-manager タスク）
-3. **MichiInfo_Layout_Spec.md v5.0 追記**
+1. **tester に確認テスト依頼**: delegate バグ修正・スタンドアロン Link 線の動作確認
+2. **手動目視確認**: シミュレーターで縦線・矢印位置・区間のみパターン確認
+3. **T-064**: タイムライン挿入UI の要件書作成（product-manager タスク）
 
 ---
 

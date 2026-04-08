@@ -17,6 +17,9 @@ class PaymentInfoView extends StatelessWidget {
       listener: (context, state) {
         if (state is PaymentInfoLoaded && state.delegate != null) {
           _handleDelegate(context, state.delegate!, state.eventId);
+          context
+              .read<PaymentInfoBloc>()
+              .add(const PaymentInfoDelegateConsumed());
         }
       },
       builder: (context, state) {

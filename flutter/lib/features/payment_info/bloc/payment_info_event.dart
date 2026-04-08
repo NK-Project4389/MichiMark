@@ -35,3 +35,11 @@ class PaymentInfoPlusButtonTapped extends PaymentInfoEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// delegate を消費してクリアするとき（画面遷移完了後に dispatch）
+class PaymentInfoDelegateConsumed extends PaymentInfoEvent {
+  const PaymentInfoDelegateConsumed();
+
+  @override
+  List<Object?> get props => [];
+}

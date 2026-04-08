@@ -59,3 +59,11 @@ class EventListTopicSelectedForNewEvent extends EventListEvent {
   @override
   List<Object?> get props => [topicType, eventId];
 }
+
+/// delegate を消費してクリアするとき（画面遷移完了後に dispatch）
+class EventListDelegateConsumed extends EventListEvent {
+  const EventListDelegateConsumed();
+
+  @override
+  List<Object?> get props => [];
+}

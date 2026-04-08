@@ -32,6 +32,7 @@ class _EventListPageState extends State<EventListPage> {
         final delegate = state.delegate;
         if (delegate != null) {
           _handleDelegate(context, delegate);
+          context.read<EventListBloc>().add(const EventListDelegateConsumed());
         }
       },
       builder: (context, state) {

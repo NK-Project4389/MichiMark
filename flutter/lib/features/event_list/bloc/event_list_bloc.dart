@@ -14,6 +14,7 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
     on<EventListSettingsButtonPressed>(_onSettingsButtonPressed);
     on<EventListDeleteRequested>(_onDeleteRequested);
     on<EventListTopicSelectedForNewEvent>(_onTopicSelectedForNewEvent);
+    on<EventListDelegateConsumed>(_onDelegateConsumed);
   }
 
   final EventRepository _eventRepository;
@@ -90,6 +91,16 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
           eventId: event.eventId,
         ),
       ));
+    }
+  }
+
+  Future<void> _onDelegateConsumed(
+    EventListDelegateConsumed event,
+    Emitter<EventListState> emit,
+  ) async {
+    if (state is EventListLoaded) {
+      final current = state as EventListLoaded;
+      emit(current.copyWith());
     }
   }
 }

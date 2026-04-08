@@ -7,6 +7,7 @@ class PaymentInfoBloc extends Bloc<PaymentInfoEvent, PaymentInfoState> {
     on<PaymentInfoStarted>(_onStarted);
     on<PaymentInfoPaymentTapped>(_onPaymentTapped);
     on<PaymentInfoPlusButtonTapped>(_onPlusButtonTapped);
+    on<PaymentInfoDelegateConsumed>(_onDelegateConsumed);
   }
 
   Future<void> _onStarted(
@@ -40,6 +41,16 @@ class PaymentInfoBloc extends Bloc<PaymentInfoEvent, PaymentInfoState> {
       emit(current.copyWith(
         delegate: const PaymentInfoOpenNewPaymentDelegate(),
       ));
+    }
+  }
+
+  Future<void> _onDelegateConsumed(
+    PaymentInfoDelegateConsumed event,
+    Emitter<PaymentInfoState> emit,
+  ) async {
+    if (state is PaymentInfoLoaded) {
+      final current = state as PaymentInfoLoaded;
+      emit(current.copyWith());
     }
   }
 }

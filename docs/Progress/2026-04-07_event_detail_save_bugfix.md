@@ -46,6 +46,7 @@
 ---
 
 ## 完了した作業
+- docs: event_detail_save_bugfix 進捗ファイル更新 (3bd3e3f)
 - chore: テスト全件パス後に進捗登録+push をセットで行う運用ルール追加 (c913a73)
 - docs: MichiInfo タイムライン再設計の進捗更新（罫線見た目課題・次回タスク追記） (7f36d85)
 - feat: MichiInfo タイムライン UI 再設計 v3.0（罫線接続・スパン矢印・B案 CustomScrollView） (d8ca2b4)

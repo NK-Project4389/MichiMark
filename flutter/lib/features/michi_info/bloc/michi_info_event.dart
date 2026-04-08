@@ -84,3 +84,11 @@ class MichiInfoMarkActionPressed extends MichiInfoEvent {
   @override
   List<Object?> get props => [markLinkId, actionId];
 }
+
+/// delegate を消費してクリアするとき（画面遷移完了後に dispatch）
+class MichiInfoDelegateConsumed extends MichiInfoEvent {
+  const MichiInfoDelegateConsumed();
+
+  @override
+  List<Object?> get props => [];
+}
