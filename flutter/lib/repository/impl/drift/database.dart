@@ -40,7 +40,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -85,6 +85,12 @@ class AppDatabase extends _$AppDatabase {
             // topics テーブルが存在する場合のみ実行
             await customStatement(
               'ALTER TABLE topics ADD COLUMN color TEXT',
+            );
+          }
+          if (from < 4) {
+            // MovingCostFuelMode: mark_links に gas_payer_id カラムを追加
+            await customStatement(
+              'ALTER TABLE mark_links ADD COLUMN gas_payer_id TEXT REFERENCES members(id)',
             );
           }
         },

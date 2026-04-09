@@ -2819,6 +2819,20 @@ class $MarkLinksTable extends MarkLinks
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _gasPayerIdMeta = const VerificationMeta(
+    'gasPayerId',
+  );
+  @override
+  late final GeneratedColumn<String> gasPayerId = GeneratedColumn<String>(
+    'gas_payer_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES members (id) ON DELETE SET NULL',
+    ),
+  );
   static const VerificationMeta _isDeletedMeta = const VerificationMeta(
     'isDeleted',
   );
@@ -2871,6 +2885,7 @@ class $MarkLinksTable extends MarkLinks
     pricePerGas,
     gasQuantity,
     gasPrice,
+    gasPayerId,
     isDeleted,
     createdAt,
     updatedAt,
@@ -2993,6 +3008,15 @@ class $MarkLinksTable extends MarkLinks
         gasPrice.isAcceptableOrUnknown(data['gas_price']!, _gasPriceMeta),
       );
     }
+    if (data.containsKey('gas_payer_id')) {
+      context.handle(
+        _gasPayerIdMeta,
+        gasPayerId.isAcceptableOrUnknown(
+          data['gas_payer_id']!,
+          _gasPayerIdMeta,
+        ),
+      );
+    }
     if (data.containsKey('is_deleted')) {
       context.handle(
         _isDeletedMeta,
@@ -3076,6 +3100,10 @@ class $MarkLinksTable extends MarkLinks
         DriftSqlType.int,
         data['${effectivePrefix}gas_price'],
       ),
+      gasPayerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}gas_payer_id'],
+      ),
       isDeleted: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_deleted'],
@@ -3111,6 +3139,7 @@ class MarkLink extends DataClass implements Insertable<MarkLink> {
   final int? pricePerGas;
   final int? gasQuantity;
   final int? gasPrice;
+  final String? gasPayerId;
   final bool isDeleted;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -3128,6 +3157,7 @@ class MarkLink extends DataClass implements Insertable<MarkLink> {
     this.pricePerGas,
     this.gasQuantity,
     this.gasPrice,
+    this.gasPayerId,
     required this.isDeleted,
     required this.createdAt,
     required this.updatedAt,
@@ -3162,6 +3192,9 @@ class MarkLink extends DataClass implements Insertable<MarkLink> {
     if (!nullToAbsent || gasPrice != null) {
       map['gas_price'] = Variable<int>(gasPrice);
     }
+    if (!nullToAbsent || gasPayerId != null) {
+      map['gas_payer_id'] = Variable<String>(gasPayerId);
+    }
     map['is_deleted'] = Variable<bool>(isDeleted);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -3195,6 +3228,9 @@ class MarkLink extends DataClass implements Insertable<MarkLink> {
       gasPrice: gasPrice == null && nullToAbsent
           ? const Value.absent()
           : Value(gasPrice),
+      gasPayerId: gasPayerId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(gasPayerId),
       isDeleted: Value(isDeleted),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -3220,6 +3256,7 @@ class MarkLink extends DataClass implements Insertable<MarkLink> {
       pricePerGas: serializer.fromJson<int?>(json['pricePerGas']),
       gasQuantity: serializer.fromJson<int?>(json['gasQuantity']),
       gasPrice: serializer.fromJson<int?>(json['gasPrice']),
+      gasPayerId: serializer.fromJson<String?>(json['gasPayerId']),
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -3242,6 +3279,7 @@ class MarkLink extends DataClass implements Insertable<MarkLink> {
       'pricePerGas': serializer.toJson<int?>(pricePerGas),
       'gasQuantity': serializer.toJson<int?>(gasQuantity),
       'gasPrice': serializer.toJson<int?>(gasPrice),
+      'gasPayerId': serializer.toJson<String?>(gasPayerId),
       'isDeleted': serializer.toJson<bool>(isDeleted),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -3262,6 +3300,7 @@ class MarkLink extends DataClass implements Insertable<MarkLink> {
     Value<int?> pricePerGas = const Value.absent(),
     Value<int?> gasQuantity = const Value.absent(),
     Value<int?> gasPrice = const Value.absent(),
+    Value<String?> gasPayerId = const Value.absent(),
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -3281,6 +3320,7 @@ class MarkLink extends DataClass implements Insertable<MarkLink> {
     pricePerGas: pricePerGas.present ? pricePerGas.value : this.pricePerGas,
     gasQuantity: gasQuantity.present ? gasQuantity.value : this.gasQuantity,
     gasPrice: gasPrice.present ? gasPrice.value : this.gasPrice,
+    gasPayerId: gasPayerId.present ? gasPayerId.value : this.gasPayerId,
     isDeleted: isDeleted ?? this.isDeleted,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -3316,6 +3356,9 @@ class MarkLink extends DataClass implements Insertable<MarkLink> {
           ? data.gasQuantity.value
           : this.gasQuantity,
       gasPrice: data.gasPrice.present ? data.gasPrice.value : this.gasPrice,
+      gasPayerId: data.gasPayerId.present
+          ? data.gasPayerId.value
+          : this.gasPayerId,
       isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -3338,6 +3381,7 @@ class MarkLink extends DataClass implements Insertable<MarkLink> {
           ..write('pricePerGas: $pricePerGas, ')
           ..write('gasQuantity: $gasQuantity, ')
           ..write('gasPrice: $gasPrice, ')
+          ..write('gasPayerId: $gasPayerId, ')
           ..write('isDeleted: $isDeleted, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -3360,6 +3404,7 @@ class MarkLink extends DataClass implements Insertable<MarkLink> {
     pricePerGas,
     gasQuantity,
     gasPrice,
+    gasPayerId,
     isDeleted,
     createdAt,
     updatedAt,
@@ -3381,6 +3426,7 @@ class MarkLink extends DataClass implements Insertable<MarkLink> {
           other.pricePerGas == this.pricePerGas &&
           other.gasQuantity == this.gasQuantity &&
           other.gasPrice == this.gasPrice &&
+          other.gasPayerId == this.gasPayerId &&
           other.isDeleted == this.isDeleted &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -3400,6 +3446,7 @@ class MarkLinksCompanion extends UpdateCompanion<MarkLink> {
   final Value<int?> pricePerGas;
   final Value<int?> gasQuantity;
   final Value<int?> gasPrice;
+  final Value<String?> gasPayerId;
   final Value<bool> isDeleted;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -3418,6 +3465,7 @@ class MarkLinksCompanion extends UpdateCompanion<MarkLink> {
     this.pricePerGas = const Value.absent(),
     this.gasQuantity = const Value.absent(),
     this.gasPrice = const Value.absent(),
+    this.gasPayerId = const Value.absent(),
     this.isDeleted = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -3437,6 +3485,7 @@ class MarkLinksCompanion extends UpdateCompanion<MarkLink> {
     this.pricePerGas = const Value.absent(),
     this.gasQuantity = const Value.absent(),
     this.gasPrice = const Value.absent(),
+    this.gasPayerId = const Value.absent(),
     this.isDeleted = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -3462,6 +3511,7 @@ class MarkLinksCompanion extends UpdateCompanion<MarkLink> {
     Expression<int>? pricePerGas,
     Expression<int>? gasQuantity,
     Expression<int>? gasPrice,
+    Expression<String>? gasPayerId,
     Expression<bool>? isDeleted,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -3481,6 +3531,7 @@ class MarkLinksCompanion extends UpdateCompanion<MarkLink> {
       if (pricePerGas != null) 'price_per_gas': pricePerGas,
       if (gasQuantity != null) 'gas_quantity': gasQuantity,
       if (gasPrice != null) 'gas_price': gasPrice,
+      if (gasPayerId != null) 'gas_payer_id': gasPayerId,
       if (isDeleted != null) 'is_deleted': isDeleted,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -3502,6 +3553,7 @@ class MarkLinksCompanion extends UpdateCompanion<MarkLink> {
     Value<int?>? pricePerGas,
     Value<int?>? gasQuantity,
     Value<int?>? gasPrice,
+    Value<String?>? gasPayerId,
     Value<bool>? isDeleted,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -3521,6 +3573,7 @@ class MarkLinksCompanion extends UpdateCompanion<MarkLink> {
       pricePerGas: pricePerGas ?? this.pricePerGas,
       gasQuantity: gasQuantity ?? this.gasQuantity,
       gasPrice: gasPrice ?? this.gasPrice,
+      gasPayerId: gasPayerId ?? this.gasPayerId,
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -3570,6 +3623,9 @@ class MarkLinksCompanion extends UpdateCompanion<MarkLink> {
     if (gasPrice.present) {
       map['gas_price'] = Variable<int>(gasPrice.value);
     }
+    if (gasPayerId.present) {
+      map['gas_payer_id'] = Variable<String>(gasPayerId.value);
+    }
     if (isDeleted.present) {
       map['is_deleted'] = Variable<bool>(isDeleted.value);
     }
@@ -3601,6 +3657,7 @@ class MarkLinksCompanion extends UpdateCompanion<MarkLink> {
           ..write('pricePerGas: $pricePerGas, ')
           ..write('gasQuantity: $gasQuantity, ')
           ..write('gasPrice: $gasPrice, ')
+          ..write('gasPayerId: $gasPayerId, ')
           ..write('isDeleted: $isDeleted, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -5833,6 +5890,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
     WritePropagation(
       on: TableUpdateQuery.onTableName(
+        'members',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('mark_links', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
         'events',
         limitUpdateKind: UpdateKind.delete,
       ),
@@ -6439,6 +6503,24 @@ final class $$MembersTableReferences
     );
   }
 
+  static MultiTypedResultKey<$MarkLinksTable, List<MarkLink>>
+  _markLinksRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.markLinks,
+    aliasName: $_aliasNameGenerator(db.members.id, db.markLinks.gasPayerId),
+  );
+
+  $$MarkLinksTableProcessedTableManager get markLinksRefs {
+    final manager = $$MarkLinksTableTableManager(
+      $_db,
+      $_db.markLinks,
+    ).filter((f) => f.gasPayerId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_markLinksRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
   static MultiTypedResultKey<$PaymentsTable, List<Payment>> _paymentsRefsTable(
     _$AppDatabase db,
   ) => MultiTypedResultKey.fromTable(
@@ -6583,6 +6665,31 @@ class $$MembersTableFilterComposer
           }) => $$EventsTableFilterComposer(
             $db: $db,
             $table: $db.events,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> markLinksRefs(
+    Expression<bool> Function($$MarkLinksTableFilterComposer f) f,
+  ) {
+    final $$MarkLinksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.markLinks,
+      getReferencedColumn: (t) => t.gasPayerId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MarkLinksTableFilterComposer(
+            $db: $db,
+            $table: $db.markLinks,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -6797,6 +6904,31 @@ class $$MembersTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> markLinksRefs<T extends Object>(
+    Expression<T> Function($$MarkLinksTableAnnotationComposer a) f,
+  ) {
+    final $$MarkLinksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.markLinks,
+      getReferencedColumn: (t) => t.gasPayerId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MarkLinksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.markLinks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<T> paymentsRefs<T extends Object>(
     Expression<T> Function($$PaymentsTableAnnotationComposer a) f,
   ) {
@@ -6914,6 +7046,7 @@ class $$MembersTableTableManager
           Member,
           PrefetchHooks Function({
             bool eventsRefs,
+            bool markLinksRefs,
             bool paymentsRefs,
             bool eventMembersRefs,
             bool markLinkMembersRefs,
@@ -6982,6 +7115,7 @@ class $$MembersTableTableManager
           prefetchHooksCallback:
               ({
                 eventsRefs = false,
+                markLinksRefs = false,
                 paymentsRefs = false,
                 eventMembersRefs = false,
                 markLinkMembersRefs = false,
@@ -6991,6 +7125,7 @@ class $$MembersTableTableManager
                   db: db,
                   explicitlyWatchedTables: [
                     if (eventsRefs) db.events,
+                    if (markLinksRefs) db.markLinks,
                     if (paymentsRefs) db.payments,
                     if (eventMembersRefs) db.eventMembers,
                     if (markLinkMembersRefs) db.markLinkMembers,
@@ -7013,6 +7148,27 @@ class $$MembersTableTableManager
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
                                 (e) => e.payMemberId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (markLinksRefs)
+                        await $_getPrefetchedData<
+                          Member,
+                          $MembersTable,
+                          MarkLink
+                        >(
+                          currentTable: table,
+                          referencedTable: $$MembersTableReferences
+                              ._markLinksRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$MembersTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).markLinksRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.gasPayerId == item.id,
                               ),
                           typedResults: items,
                         ),
@@ -7122,6 +7278,7 @@ typedef $$MembersTableProcessedTableManager =
       Member,
       PrefetchHooks Function({
         bool eventsRefs,
+        bool markLinksRefs,
         bool paymentsRefs,
         bool eventMembersRefs,
         bool markLinkMembersRefs,
@@ -8761,6 +8918,7 @@ typedef $$MarkLinksTableCreateCompanionBuilder =
       Value<int?> pricePerGas,
       Value<int?> gasQuantity,
       Value<int?> gasPrice,
+      Value<String?> gasPayerId,
       Value<bool> isDeleted,
       required DateTime createdAt,
       required DateTime updatedAt,
@@ -8781,6 +8939,7 @@ typedef $$MarkLinksTableUpdateCompanionBuilder =
       Value<int?> pricePerGas,
       Value<int?> gasQuantity,
       Value<int?> gasPrice,
+      Value<String?> gasPayerId,
       Value<bool> isDeleted,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -8803,6 +8962,25 @@ final class $$MarkLinksTableReferences
       $_db.events,
     ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_eventIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $MembersTable _gasPayerIdTable(_$AppDatabase db) =>
+      db.members.createAlias(
+        $_aliasNameGenerator(db.markLinks.gasPayerId, db.members.id),
+      );
+
+  $$MembersTableProcessedTableManager? get gasPayerId {
+    final $_column = $_itemColumn<String>('gas_payer_id');
+    if ($_column == null) return null;
+    final manager = $$MembersTableTableManager(
+      $_db,
+      $_db.members,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_gasPayerIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -8954,6 +9132,29 @@ class $$MarkLinksTableFilterComposer
           }) => $$EventsTableFilterComposer(
             $db: $db,
             $table: $db.events,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MembersTableFilterComposer get gasPayerId {
+    final $$MembersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.gasPayerId,
+      referencedTable: $db.members,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MembersTableFilterComposer(
+            $db: $db,
+            $table: $db.members,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -9120,6 +9321,29 @@ class $$MarkLinksTableOrderingComposer
     );
     return composer;
   }
+
+  $$MembersTableOrderingComposer get gasPayerId {
+    final $$MembersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.gasPayerId,
+      referencedTable: $db.members,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MembersTableOrderingComposer(
+            $db: $db,
+            $table: $db.members,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$MarkLinksTableAnnotationComposer
@@ -9215,6 +9439,29 @@ class $$MarkLinksTableAnnotationComposer
     return composer;
   }
 
+  $$MembersTableAnnotationComposer get gasPayerId {
+    final $$MembersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.gasPayerId,
+      referencedTable: $db.members,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MembersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.members,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   Expression<T> markLinkMembersRefs<T extends Object>(
     Expression<T> Function($$MarkLinkMembersTableAnnotationComposer a) f,
   ) {
@@ -9281,6 +9528,7 @@ class $$MarkLinksTableTableManager
           MarkLink,
           PrefetchHooks Function({
             bool eventId,
+            bool gasPayerId,
             bool markLinkMembersRefs,
             bool markLinkActionsRefs,
           })
@@ -9311,6 +9559,7 @@ class $$MarkLinksTableTableManager
                 Value<int?> pricePerGas = const Value.absent(),
                 Value<int?> gasQuantity = const Value.absent(),
                 Value<int?> gasPrice = const Value.absent(),
+                Value<String?> gasPayerId = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -9329,6 +9578,7 @@ class $$MarkLinksTableTableManager
                 pricePerGas: pricePerGas,
                 gasQuantity: gasQuantity,
                 gasPrice: gasPrice,
+                gasPayerId: gasPayerId,
                 isDeleted: isDeleted,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -9349,6 +9599,7 @@ class $$MarkLinksTableTableManager
                 Value<int?> pricePerGas = const Value.absent(),
                 Value<int?> gasQuantity = const Value.absent(),
                 Value<int?> gasPrice = const Value.absent(),
+                Value<String?> gasPayerId = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
@@ -9367,6 +9618,7 @@ class $$MarkLinksTableTableManager
                 pricePerGas: pricePerGas,
                 gasQuantity: gasQuantity,
                 gasPrice: gasPrice,
+                gasPayerId: gasPayerId,
                 isDeleted: isDeleted,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -9383,6 +9635,7 @@ class $$MarkLinksTableTableManager
           prefetchHooksCallback:
               ({
                 eventId = false,
+                gasPayerId = false,
                 markLinkMembersRefs = false,
                 markLinkActionsRefs = false,
               }) {
@@ -9417,6 +9670,19 @@ class $$MarkLinksTableTableManager
                                         ._eventIdTable(db),
                                     referencedColumn: $$MarkLinksTableReferences
                                         ._eventIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+                        if (gasPayerId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.gasPayerId,
+                                    referencedTable: $$MarkLinksTableReferences
+                                        ._gasPayerIdTable(db),
+                                    referencedColumn: $$MarkLinksTableReferences
+                                        ._gasPayerIdTable(db)
                                         .id,
                                   )
                                   as T;
@@ -9490,6 +9756,7 @@ typedef $$MarkLinksTableProcessedTableManager =
       MarkLink,
       PrefetchHooks Function({
         bool eventId,
+        bool gasPayerId,
         bool markLinkMembersRefs,
         bool markLinkActionsRefs,
       })

@@ -35,6 +35,8 @@ class MarkLinks extends Table {
   IntColumn get pricePerGas => integer().nullable()();
   IntColumn get gasQuantity => integer().nullable()();
   IntColumn get gasPrice => integer().nullable()();
+  TextColumn get gasPayerId =>
+      text().nullable().references(Members, #id, onDelete: KeyAction.setNull)();
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();

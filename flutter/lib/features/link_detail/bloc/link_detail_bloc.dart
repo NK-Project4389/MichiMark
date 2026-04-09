@@ -23,6 +23,8 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
     on<LinkDetailIsFuelToggled>(_onIsFuelToggled);
     on<LinkDetailFuelFieldsChanged>(_onFuelFieldsChanged);
     on<LinkDetailTopicConfigUpdated>(_onTopicConfigUpdated);
+    on<LinkDetailEditGasPayerPressed>(_onEditGasPayerPressed);
+    on<LinkDetailGasPayerSelected>(_onGasPayerSelected);
   }
 
   final EventRepository _eventRepository;
@@ -65,6 +67,7 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
             ? (markLink.gasQuantity! / 10).toStringAsFixed(1)
             : '',
         gasPriceInput: markLink.gasPrice?.toString() ?? '',
+        selectedGasPayer: markLink.gasPayer,
       );
       emit(LinkDetailLoaded(
         draft: draft,
@@ -225,6 +228,7 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
           pricePerGas: pricePerGas,
           gasQuantity: gasQuantity,
           gasPrice: gasPrice,
+          gasPayer: draft.selectedGasPayer,
           createdAt: existingMarkLink?.createdAt ?? now,
           updatedAt: now,
         );
@@ -289,6 +293,31 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
     if (state is LinkDetailLoaded) {
       final current = state as LinkDetailLoaded;
       emit(current.copyWith(topicConfig: event.config));
+    }
+  }
+
+  Future<void> _onEditGasPayerPressed(
+    LinkDetailEditGasPayerPressed event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is LinkDetailLoaded) {
+      final current = state as LinkDetailLoaded;
+      emit(current.copyWith(
+        delegate: const LinkDetailOpenGasPayerSelectionDelegate(),
+      ));
+    }
+  }
+
+  Future<void> _onGasPayerSelected(
+    LinkDetailGasPayerSelected event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is LinkDetailLoaded) {
+      final current = state as LinkDetailLoaded;
+      final gasPayer = event.members.firstOrNull;
+      emit(current.copyWith(
+        draft: current.draft.copyWith(selectedGasPayer: gasPayer),
+      ));
     }
   }
 }

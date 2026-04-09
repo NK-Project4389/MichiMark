@@ -93,6 +93,24 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
               .add(LinkDetailActionsSelected(selected));
         }
 
+      case LinkDetailOpenGasPayerSelectionDelegate():
+        final result = await context.push<SelectionResult>(
+          '/selection',
+          extra: SelectionArgs(
+            type: SelectionType.gasPayMember,
+            selectedIds: draft.selectedGasPayer != null
+                ? {draft.selectedGasPayer!.id}
+                : {},
+            candidateMembers: availableMembers.isNotEmpty ? availableMembers : null,
+          ),
+        );
+        if (!context.mounted) return;
+        if (result case MembersSelectionResult(:final selected)) {
+          context
+              .read<LinkDetailBloc>()
+              .add(LinkDetailGasPayerSelected(selected));
+        }
+
       case LinkDetailSavedDelegate():
         if (!context.mounted) return;
         context.pop();
@@ -193,6 +211,7 @@ class _LinkDetailForm extends StatelessWidget {
             pricePerGasInput: draft.pricePerGasInput,
             gasQuantityInput: draft.gasQuantityInput,
             gasPriceInput: draft.gasPriceInput,
+            selectedGasPayerName: draft.selectedGasPayer?.memberName,
           ),
         ],
         const SizedBox(height: 16),
@@ -332,12 +351,14 @@ class _FuelRow extends StatelessWidget {
   final String pricePerGasInput;
   final String gasQuantityInput;
   final String gasPriceInput;
+  final String? selectedGasPayerName;
 
   const _FuelRow({
     required this.isFuel,
     required this.pricePerGasInput,
     required this.gasQuantityInput,
     required this.gasPriceInput,
+    this.selectedGasPayerName,
   });
 
   @override
@@ -353,7 +374,7 @@ class _FuelRow extends StatelessWidget {
               .read<LinkDetailBloc>()
               .add(const LinkDetailIsFuelToggled()),
         ),
-        if (isFuel)
+        if (isFuel) ...[
           BlocProvider(
             create: (_) => FuelDetailBloc()
               ..add(FuelDetailStarted(
@@ -376,6 +397,15 @@ class _FuelRow extends StatelessWidget {
               child: const FuelDetailWidget(),
             ),
           ),
+          const Divider(height: 1),
+          _SelectionRow(
+            label: 'ガソリン支払者',
+            value: selectedGasPayerName ?? '',
+            onEditPressed: () => context
+                .read<LinkDetailBloc>()
+                .add(const LinkDetailEditGasPayerPressed()),
+          ),
+        ],
       ],
     );
   }

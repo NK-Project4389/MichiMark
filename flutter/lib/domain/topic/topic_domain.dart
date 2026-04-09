@@ -5,8 +5,11 @@ import 'topic_theme_color.dart';
 /// Topicの用途種別enum。
 /// Phase 3でカスタム種別が追加される可能性を想定し、enumを参照する形で表示制御を実装する（ハードコード禁止）。
 enum TopicType {
-  /// 燃料・距離・燃費の記録が主目的
+  /// 給油記録（FuelDetail）を実績として使用するモード
   movingCost,
+
+  /// 燃費（km/L）とガソリン単価から走行コストを推計するモード
+  movingCostEstimated,
 
   /// 経費・精算の記録が主目的
   travelExpense,

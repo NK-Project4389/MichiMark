@@ -20,7 +20,7 @@ DateTime _d(int year, int month, int day, [int hour = 0, int minute = 0]) =>
 final seedTopics = [
   TopicDomain(
     id: 'topic-001',
-    topicName: '移動コスト可視化',
+    topicName: '移動コスト（給油から計算）',
     topicType: TopicType.movingCost,
     isVisible: true,
     isDeleted: false,
@@ -37,6 +37,16 @@ final seedTopics = [
     createdAt: _d(2026, 1, 1),
     updatedAt: _d(2026, 1, 1),
     color: 'amberOrange',
+  ),
+  TopicDomain(
+    id: 'topic-003',
+    topicName: '移動コスト（燃費で推定）',
+    topicType: TopicType.movingCostEstimated,
+    isVisible: true,
+    isDeleted: false,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+    color: 'emeraldGreen',
   ),
 ];
 
@@ -353,7 +363,7 @@ final _event2 = EventDomain(
 final _event3 = EventDomain(
   id: 'event-003',
   eventName: '近所のドライブ',
-  topic: seedTopics[0], // 移動コスト可視化
+  topic: seedTopics[0], // 移動コスト（給油から計算）
   trans: seedTrans[0], // マイカー
   members: [seedMembers[0]], // 太郎のみ
   tags: [seedTags[1]], // 日帰り
@@ -361,4 +371,56 @@ final _event3 = EventDomain(
   updatedAt: _d(2026, 3, 28, 16, 0),
 );
 
-final seedEvents = [_event1, _event2, _event3];
+/// イベント4: 燃費推定モードのサンプルイベント
+final _event4 = EventDomain(
+  id: 'event-004',
+  eventName: '週末ドライブ（燃費推定）',
+  topic: seedTopics[2], // 移動コスト（燃費で推定）
+  trans: seedTrans[0], // マイカー
+  members: [seedMembers[0], seedMembers[1]], // 太郎, 花子
+  tags: [seedTags[1]], // 日帰り
+  kmPerGas: 155,
+  pricePerGas: 175,
+  payMember: seedMembers[0], // 太郎
+  markLinks: [
+    MarkLinkDomain(
+      id: 'ml-009',
+      markLinkSeq: 1,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 5, 9, 0),
+      markLinkName: '出発地点',
+      members: [seedMembers[0], seedMembers[1]],
+      meterValue: 46000,
+      createdAt: _d(2026, 4, 5, 9, 0),
+      updatedAt: _d(2026, 4, 5, 9, 0),
+    ),
+    MarkLinkDomain(
+      id: 'ml-010',
+      markLinkSeq: 2,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _d(2026, 4, 5, 9, 30),
+      markLinkName: '一般道',
+      members: [seedMembers[0], seedMembers[1]],
+      distanceValue: 60,
+      createdAt: _d(2026, 4, 5, 9, 30),
+      updatedAt: _d(2026, 4, 5, 9, 30),
+    ),
+    MarkLinkDomain(
+      id: 'ml-011',
+      markLinkSeq: 3,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 5, 11, 0),
+      markLinkName: '目的地',
+      members: [seedMembers[0], seedMembers[1]],
+      meterValue: 46060,
+      actions: [seedActions[0]], // 観光
+      createdAt: _d(2026, 4, 5, 11, 0),
+      updatedAt: _d(2026, 4, 5, 11, 0),
+    ),
+  ],
+  payments: [],
+  createdAt: _d(2026, 4, 5, 9, 0),
+  updatedAt: _d(2026, 4, 5, 11, 0),
+);
+
+final seedEvents = [_event1, _event2, _event3, _event4];

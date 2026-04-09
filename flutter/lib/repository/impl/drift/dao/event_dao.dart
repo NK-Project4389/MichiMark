@@ -290,6 +290,16 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
       if (a != null) mlActions.add(_toActionDomain(a));
     }
 
+    // GasPayer
+    MemberDomain? gasPayerDomain;
+    final gasPayerId = row.gasPayerId;
+    if (gasPayerId != null) {
+      final gasPayerRow = await (select(members)
+            ..where((t) => t.id.equals(gasPayerId)))
+          .getSingleOrNull();
+      if (gasPayerRow != null) gasPayerDomain = _toMemberDomain(gasPayerRow);
+    }
+
     return MarkLinkDomain(
       id: row.id,
       markLinkSeq: row.markLinkSeq,
@@ -309,6 +319,7 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
       isDeleted: row.isDeleted,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
+      gasPayer: gasPayerDomain,
     );
   }
 
@@ -384,6 +395,7 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
         pricePerGas: Value(d.pricePerGas),
         gasQuantity: Value(d.gasQuantity),
         gasPrice: Value(d.gasPrice),
+        gasPayerId: Value(d.gasPayer?.id),
         isDeleted: Value(d.isDeleted),
         createdAt: Value(d.createdAt),
         updatedAt: Value(d.updatedAt),

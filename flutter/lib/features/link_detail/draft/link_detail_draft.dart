@@ -33,6 +33,9 @@ class LinkDetailDraft extends Equatable {
   /// 合計金額入力文字列（例: "4500"。未入力時は空文字）
   final String gasPriceInput;
 
+  /// 選択中のガソリン支払者（isFuel == true のとき意味を持つ）
+  final MemberDomain? selectedGasPayer;
+
   const LinkDetailDraft({
     this.markLinkName = '',
     required this.markLinkDate,
@@ -44,6 +47,7 @@ class LinkDetailDraft extends Equatable {
     this.pricePerGasInput = '',
     this.gasQuantityInput = '',
     this.gasPriceInput = '',
+    this.selectedGasPayer,
   });
 
   LinkDetailDraft copyWith({
@@ -57,6 +61,7 @@ class LinkDetailDraft extends Equatable {
     String? pricePerGasInput,
     String? gasQuantityInput,
     String? gasPriceInput,
+    MemberDomain? selectedGasPayer,
   }) {
     return LinkDetailDraft(
       markLinkName: markLinkName ?? this.markLinkName,
@@ -69,6 +74,7 @@ class LinkDetailDraft extends Equatable {
       pricePerGasInput: pricePerGasInput ?? this.pricePerGasInput,
       gasQuantityInput: gasQuantityInput ?? this.gasQuantityInput,
       gasPriceInput: gasPriceInput ?? this.gasPriceInput,
+      selectedGasPayer: selectedGasPayer ?? this.selectedGasPayer,
     );
   }
 
@@ -84,5 +90,6 @@ class LinkDetailDraft extends Equatable {
         pricePerGasInput,
         gasQuantityInput,
         gasPriceInput,
+        selectedGasPayer,
       ];
 }

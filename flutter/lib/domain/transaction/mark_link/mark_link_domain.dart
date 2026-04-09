@@ -54,6 +54,9 @@ class MarkLinkDomain extends Equatable {
   /// 更新日（保存時更新）
   final DateTime updatedAt;
 
+  /// ガソリン支払者。isFuel == true のとき意味を持つ
+  final MemberDomain? gasPayer;
+
   const MarkLinkDomain({
     required this.id,
     required this.markLinkSeq,
@@ -72,6 +75,7 @@ class MarkLinkDomain extends Equatable {
     this.isDeleted = false,
     required this.createdAt,
     required this.updatedAt,
+    this.gasPayer,
   });
 
   MarkLinkDomain copyWith({
@@ -92,6 +96,7 @@ class MarkLinkDomain extends Equatable {
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
+    MemberDomain? gasPayer,
   }) {
     return MarkLinkDomain(
       id: id ?? this.id,
@@ -111,6 +116,7 @@ class MarkLinkDomain extends Equatable {
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      gasPayer: gasPayer ?? this.gasPayer,
     );
   }
 
@@ -133,5 +139,6 @@ class MarkLinkDomain extends Equatable {
         isDeleted,
         createdAt,
         updatedAt,
+        gasPayer,
       ];
 }

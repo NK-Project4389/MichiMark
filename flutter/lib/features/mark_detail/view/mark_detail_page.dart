@@ -97,6 +97,22 @@ class _MarkDetailPageState extends State<MarkDetailPage> {
           context.read<MarkDetailBloc>().add(MarkDetailActionsSelected(selected));
         }
 
+      case MarkDetailOpenGasPayerSelectionDelegate():
+        final result = await context.push<SelectionResult>(
+          '/selection',
+          extra: SelectionArgs(
+            type: SelectionType.gasPayMember,
+            selectedIds: draft.selectedGasPayer != null
+                ? {draft.selectedGasPayer!.id}
+                : {},
+            candidateMembers: availableMembers.isNotEmpty ? availableMembers : null,
+          ),
+        );
+        if (!context.mounted) return;
+        if (result case MembersSelectionResult(:final selected)) {
+          context.read<MarkDetailBloc>().add(MarkDetailGasPayerSelected(selected));
+        }
+
       case MarkDetailSavedDelegate():
         if (!context.mounted) return;
         context.pop();
@@ -210,6 +226,7 @@ class _MarkDetailForm extends StatelessWidget {
             pricePerGasInput: draft.pricePerGasInput,
             gasQuantityInput: draft.gasQuantityInput,
             gasPriceInput: draft.gasPriceInput,
+            selectedGasPayerName: draft.selectedGasPayer?.memberName,
           ),
         ],
         const SizedBox(height: 16),
@@ -453,12 +470,14 @@ class _FuelRow extends StatelessWidget {
   final String pricePerGasInput;
   final String gasQuantityInput;
   final String gasPriceInput;
+  final String? selectedGasPayerName;
 
   const _FuelRow({
     required this.isFuel,
     required this.pricePerGasInput,
     required this.gasQuantityInput,
     required this.gasPriceInput,
+    this.selectedGasPayerName,
   });
 
   @override
@@ -473,7 +492,7 @@ class _FuelRow extends StatelessWidget {
           onChanged: (_) =>
               context.read<MarkDetailBloc>().add(const MarkDetailIsFuelToggled()),
         ),
-        if (isFuel)
+        if (isFuel) ...[
           BlocProvider(
             create: (_) => FuelDetailBloc()
               ..add(FuelDetailStarted(
@@ -496,6 +515,15 @@ class _FuelRow extends StatelessWidget {
               child: const FuelDetailWidget(),
             ),
           ),
+          const Divider(height: 1),
+          _SelectionRow(
+            label: 'ガソリン支払者',
+            value: selectedGasPayerName ?? '',
+            onEditPressed: () => context
+                .read<MarkDetailBloc>()
+                .add(const MarkDetailEditGasPayerPressed()),
+          ),
+        ],
       ],
     );
   }
