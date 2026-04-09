@@ -5,6 +5,9 @@
 ---
 
 ## 完了した作業
+- fix: Podfile simulator strip フックの minos を 13.0 に修正（90208対策） (673643a)
+- chore: Podfile に simulator スライス除去フックを追加（TF アップロード 91169 対策） (871018e)
+- docs: 2026-04-09セッション進捗まとめ更新 (464e90d)
 
 ### 1. グラデーション AppBar 戻るボタンバグ修正 (5b5136c)
 

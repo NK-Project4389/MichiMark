@@ -66,3 +66,4 @@
 | [2026-04-08_michi_info_action_button.md](./2026-04-08_michi_info_action_button.md) | Phase 10完了：MichiInfoアクションボタンUI（⚡ボタン・状態バッジ・ボトムシート）8PASS/1SKIP |
 - [2026-04-09](./2026-04-09_feat__MichiInfoアクションボタンUI実装完了_.md)
 | [2026-04-09_payment_info_redesign.md](./2026-04-09_payment_info_redesign.md) | PaymentInfo UI 改善 + 支払いごとの精算セクション追加（TC-PIR-001〜014 全件PASS）|
+| [2026-04-09_testflight_upload.md](./2026-04-09_testflight_upload.md) | TestFlight アップロード（1.0.0 (3)）・Podfile simulator スライス除去フック追加 |
