@@ -144,11 +144,20 @@ expect(find.byKey(Key('group_TARGET')), findsOneWidget);
 
 ## テスト実行コマンド
 
+### 原則: 対象ファイルのみ実行
+
+**バグ修正・デザイン変更・機能追加は、該当する1ファイルだけを実行する。**
+
 ```bash
-# シミュレーター起動確認（事前にユーザーが起動しておく）
 cd /Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/flutter
-flutter test integration_test/[feature_name]_test.dart -d [device_id]
+flutter test integration_test/[feature_name]_test.dart
 ```
+
+全ファイル実行（`flutter test integration_test/`）は以下の場合のみ許可:
+- リリース前の最終確認
+- 複数 Feature にまたがる大きな構造変更後
+
+全件実行が必要な理由がなければ、**絶対に全ファイルをまとめて実行しないこと**。
 
 ---
 
