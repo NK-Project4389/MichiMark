@@ -1,12 +1,20 @@
-# 進捗: PaymentInfo UI 改善 + 支払いごとの精算セクション追加
+# 進捗: 2026-04-09 セッション（バグ修正・UI改善・ルール整備）
 
 **日付**: 2026-04-09
-**Spec**: `docs/Spec/Features/PaymentInfoRedesign_Spec.md`
 
 ---
 
 ## 完了した作業
-- feat: PaymentInfo UI 改善 + 支払いごとの精算セクション追加 (c7353e3)
+
+### 1. グラデーション AppBar 戻るボタンバグ修正 (5b5136c)
+
+- `event_detail_page.dart` Topic設定済みイベントの AppBar 戻るボタンが `EventDetailDismissPressed` を直接呼んでいた
+- `_onBackPressed(context)` に修正 → 未保存ダイアログが正しく表示されるように
+- TC-BACK-002, TC-BACK-003 PASS
+
+### 2. PaymentInfo UI 改善 + 支払いごとの精算セクション追加 (c7353e3)
+
+**Spec**: `docs/Spec/Features/PaymentInfoRedesign_Spec.md`
 
 ### 実装（flutter-dev）
 
@@ -35,6 +43,20 @@
 
 - `flutter/integration_test/payment_info_redesign_test.dart` 新規作成
 - TC-PIR-001 〜 TC-PIR-014 全14件 PASS
+
+### 3. FuelDetailWidget デザイン修正（TC-FD-001〜004 PASS）
+
+- `fuel_detail_widget.dart` の `_FuelTextField` が `OutlineInputBorder`（枠あり）だった
+- `InputBorder.none` + 左120px ラベル行スタイルに変更（MarkDetail と統一）
+- フィールド間を `Divider(height: 1)` で区切り
+- `integration_test/fuel_detail_design_test.dart` 新規作成・全4件PASS
+
+### 4. tester ルール整備 (5921119)
+
+- `flutter test integration_test/` での全件実行が過剰だった（79件）
+- 対象ファイルのみ実行を原則化
+- 全件実行はリリース前・大きな構造変更後のみに限定
+- `.claude/agents/tester.md` に明記
 
 ---
 
