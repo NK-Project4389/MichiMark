@@ -70,3 +70,4 @@
 | [2026-04-09_ui_fixes_and_refactor.md](./2026-04-09_ui_fixes_and_refactor.md) | 給油集計バグ修正・UI整理・NumericInputRow共通ウィジェット追加 |
 | [2026-04-09_michi_info_add_button_test.md](./2026-04-09_michi_info_add_button_test.md) | MichiInfo追加ボタン改善・集計ページ整理 Integration Test 全3件PASS |
 | [2026-04-09_michi_info_add_button_and_aggregation.md](./2026-04-09_michi_info_add_button_and_aggregation.md) | MichiInfo追加FABカラー・addMenuItems配列制御・集計時間セクション削除・TF 1.0.0(5) |
+| [2026-04-09_payment_info_fab_fix.md](./2026-04-09_payment_info_fab_fix.md) | PaymentInfo追加ボタンテーマカラー修正・走行コスト割り勘タスクボード追加 |

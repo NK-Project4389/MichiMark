@@ -137,6 +137,27 @@
 | T-102 | カード挿入機能 レビュー | reviewer | `BLOCKED` | | T-101完了後 |
 | T-103 | カード挿入機能 テスト | tester | `BLOCKED` | | T-102完了後 |
 
+## Phase 12: movingCost 概要タブ 走行コスト割り勘
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-110 | 走行コスト割り勘 UIデザイン確定 | designer | `TODO` | | ガソリン代入力場所の迷いを解消するUI設計 |
+| T-111 | 走行コスト割り勘 要件書作成 | product-manager | `TODO` | | T-110完了後。交通手段選択・燃費転記・割り勘ロジック含む |
+| T-112 | 走行コスト割り勘 Spec作成 | architect | `BLOCKED` | | T-111完了後 |
+| T-113 | 走行コスト割り勘 実装 | flutter-dev | `BLOCKED` | | T-112完了後 |
+| T-114 | 走行コスト割り勘 レビュー | reviewer | `BLOCKED` | | T-113完了後 |
+| T-115 | 走行コスト割り勘 テスト | tester | `BLOCKED` | | T-114完了後 |
+
+## Phase 13: 燃費更新機能（別フェーズ）
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-120 | 燃費更新機能 要件書作成 | product-manager | `TODO` | | 交通手段マスターのkmPerGasを概要タブから更新する機能 |
+| T-121 | 燃費更新機能 Spec作成 | architect | `BLOCKED` | | T-120完了後 |
+| T-122 | 燃費更新機能 実装 | flutter-dev | `BLOCKED` | | T-121完了後 |
+| T-123 | 燃費更新機能 レビュー | reviewer | `BLOCKED` | | T-122完了後 |
+| T-124 | 燃費更新機能 テスト | tester | `BLOCKED` | | T-123完了後 |
+
 ---
 
 ## 完了済みタスク（アーカイブ）

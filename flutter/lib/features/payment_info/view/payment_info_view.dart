@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../domain/topic/topic_theme_color.dart';
 import '../../../features/event_detail/projection/payment_info_projection.dart';
 import '../../../features/payment_detail/payment_detail_args.dart';
 import '../../../features/shared/projection/payment_item_projection.dart';
@@ -9,7 +10,9 @@ import '../bloc/payment_info_event.dart';
 import '../bloc/payment_info_state.dart';
 
 class PaymentInfoView extends StatefulWidget {
-  const PaymentInfoView({super.key});
+  final TopicThemeColor? topicThemeColor;
+
+  const PaymentInfoView({super.key, this.topicThemeColor});
 
   @override
   State<PaymentInfoView> createState() => _PaymentInfoViewState();
@@ -34,7 +37,10 @@ class _PaymentInfoViewState extends State<PaymentInfoView> {
             const Center(child: CircularProgressIndicator()),
           PaymentInfoError(:final message) => Center(child: Text(message)),
           PaymentInfoLoaded(:final projection) =>
-            _PaymentInfoList(projection: projection),
+            _PaymentInfoList(
+              projection: projection,
+              topicThemeColor: widget.topicThemeColor,
+            ),
         };
       },
     );
@@ -73,8 +79,9 @@ class _PaymentInfoViewState extends State<PaymentInfoView> {
 
 class _PaymentInfoList extends StatelessWidget {
   final PaymentInfoProjection projection;
+  final TopicThemeColor? topicThemeColor;
 
-  const _PaymentInfoList({required this.projection});
+  const _PaymentInfoList({required this.projection, this.topicThemeColor});
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +122,8 @@ class _PaymentInfoList extends StatelessWidget {
         onPressed: () => context
             .read<PaymentInfoBloc>()
             .add(const PaymentInfoPlusButtonTapped()),
+        backgroundColor: topicThemeColor?.primaryColor,
+        foregroundColor: topicThemeColor != null ? Colors.white : null,
         icon: const Icon(Icons.add),
         label: const Text('追加'),
       ),

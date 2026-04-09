@@ -445,7 +445,8 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
           eventId: projection.basicInfo.eventId,
         ),
       EventDetailTab.michiInfo => const MichiInfoView(),
-      EventDetailTab.paymentInfo => const PaymentInfoView(),
+      EventDetailTab.paymentInfo =>
+        PaymentInfoView(topicThemeColor: widget.topicThemeColor),
     };
   }
 }
