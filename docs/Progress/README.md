@@ -73,3 +73,5 @@
 | [2026-04-09_payment_info_fab_fix.md](./2026-04-09_payment_info_fab_fix.md) | PaymentInfo追加ボタンテーマカラー修正・走行コスト割り勘タスクボード追加 |
 | [2026-04-09_basic_info_trans_fuel_fix_test.md](./2026-04-09_basic_info_trans_fuel_fix_test.md) | BasicInfo燃費変換バグ修正 Integration Test 全2件PASS（TC-BTF-001〜002） |
 | [2026-04-09_moving_cost_fuel_mode_req.md](./2026-04-09_moving_cost_fuel_mode_req.md) | movingCost燃費モード分離 要件書作成・仕様調査ルール追加 |
+| [2026-04-09_permission_settings.md](./2026-04-09_permission_settings.md) | MichiMark・NomikaiShare 操作許可設定追加 |
+| [2026-04-09_moving_cost_fuel_mode_test.md](./2026-04-09_moving_cost_fuel_mode_test.md) | MovingCostFuelMode Integration Test 全8件PASS（TC-FCM-001〜008） |
