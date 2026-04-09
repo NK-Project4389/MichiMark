@@ -5,6 +5,7 @@
 ---
 
 ## 完了した作業
+- test: PaymentInfo FABカラー変更 Integration Test 追加（TC-PIF-001〜002 全件PASS） (9f88b46)
 - docs: 2026-04-09セッション進捗登録（MichiInfo追加ボタン改善・集計整理・TF1.0.0(5)） (e9b6ef4)
 - docs: TestFlight 1.0.0(5) アップロード完了・flutter test integration_test を自動許可設定 (562e87a)
 - feat: MichiInfo追加FABカラー・addMenuItems配列制御・集計時間セクション削除・シードデータ修正 (6e95a2b)
