@@ -72,3 +72,4 @@
 | [2026-04-09_michi_info_add_button_and_aggregation.md](./2026-04-09_michi_info_add_button_and_aggregation.md) | MichiInfo追加FABカラー・addMenuItems配列制御・集計時間セクション削除・TF 1.0.0(5) |
 | [2026-04-09_payment_info_fab_fix.md](./2026-04-09_payment_info_fab_fix.md) | PaymentInfo追加ボタンテーマカラー修正・走行コスト割り勘タスクボード追加 |
 | [2026-04-09_basic_info_trans_fuel_fix_test.md](./2026-04-09_basic_info_trans_fuel_fix_test.md) | BasicInfo燃費変換バグ修正 Integration Test 全2件PASS（TC-BTF-001〜002） |
+| [2026-04-09_moving_cost_fuel_mode_req.md](./2026-04-09_moving_cost_fuel_mode_req.md) | movingCost燃費モード分離 要件書作成・仕様調査ルール追加 |

@@ -141,9 +141,9 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-110 | 走行コスト割り勘 UIデザイン確定 | designer | `TODO` | | ガソリン代入力場所の迷いを解消するUI設計 |
-| T-111 | 走行コスト割り勘 要件書作成 | product-manager | `TODO` | | T-110完了後。交通手段選択・燃費転記・割り勘ロジック含む |
-| T-112 | 走行コスト割り勘 Spec作成 | architect | `BLOCKED` | | T-111完了後 |
+| T-110 | 走行コスト割り勘 UIデザイン確定 | designer | `DONE` | | 燃費推計vs給油実績をTopicTypeレベルで分離する案Cを採用 |
+| T-111 | 走行コスト割り勘 要件書作成 | product-manager | `DONE` | | 要件書: `docs/Requirements/REQ-moving_cost_fuel_mode.md` |
+| T-112 | 走行コスト割り勘 Spec作成 | architect | `TODO` | | T-111完了。movingCostEstimated追加・movingCost変更・gasPayer追加 |
 | T-113 | 走行コスト割り勘 実装 | flutter-dev | `BLOCKED` | | T-112完了後 |
 | T-114 | 走行コスト割り勘 レビュー | reviewer | `BLOCKED` | | T-113完了後 |
 | T-115 | 走行コスト割り勘 テスト | tester | `BLOCKED` | | T-114完了後 |

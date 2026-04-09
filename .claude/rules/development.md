@@ -9,6 +9,17 @@
 - `flutter-dev` はSpecを参照して実装する
 - Specが存在しない・曖昧な場合は実装を停止し `architect` に差し戻す
 
+## 仕様調査の順序（全ロール共通）
+
+仕様・動作・設計を調査する際は、**必ず設計書・Specから先に読む**。コードから仕様を推測することは禁止。
+
+1. `docs/Spec/Features/` の該当 Feature Spec を読む
+2. `docs/Architecture/MichiMark_Design_Constitution.md`（設計憲章）を確認する
+3. `docs/Requirements/` の要件書を確認する
+4. Spec確認後にコードを読む
+
+Specとコードが一致しない・Specに記載がない場合は `architect` に確認依頼する（勝手に解釈しない）。
+
 ## 要件定義
 
 - 追加要件が発生した場合 `product-manager` が要件書を作成する（格納: `docs/Requirements/`）
