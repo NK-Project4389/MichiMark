@@ -65,7 +65,7 @@ post_install do |installer|
           if [ -f "$binary" ]; then
             platform=$(vtool -show-build "$binary" 2>/dev/null | grep -i "IOSSIMULATOR" || true)
             if [ -n "$platform" ]; then
-              vtool -set-build-version ios 14.0 14.0 -replace -output "$binary" "$binary" 2>/dev/null || true
+              vtool -set-build-version ios 13.0 13.0 -replace -output "$binary" "$binary" 2>/dev/null || true
               codesign --force --sign "$EXPANDED_CODE_SIGN_IDENTITY" "$framework" 2>/dev/null || true
             fi
           fi
