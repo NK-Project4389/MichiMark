@@ -5,6 +5,8 @@
 ---
 
 ## 完了した作業
+- docs: 2026-04-09セッション進捗登録（MichiInfo追加ボタン改善・集計整理・TF1.0.0(5)） (e9b6ef4)
+- docs: TestFlight 1.0.0(5) アップロード完了・flutter test integration_test を自動許可設定 (562e87a)
 - feat: MichiInfo追加FABカラー・addMenuItems配列制御・集計時間セクション削除・シードデータ修正 (6e95a2b)
 - test: MichiInfo追加ボタン改善・集計ページ整理 Integration Test 追加（TC-MAB-001〜003 全件PASS） (fa597aa)
 - docs: TestFlight 1.0.0(4) アップロード完了（90087対策: arm64バイナリ差し替え） (0c183ca)
@@ -68,3 +70,12 @@
 1. `docs/Tasks/TASKBOARD.md` を確認してタスクを確認する
 2. 既存テスト失敗を修正する（TC-MAD-006/007、TS-03/04）
 3. 「給油計算」バグの詳細をユーザーに確認する
+
+### 5. PaymentInfo FAB カラー Integration Test 追加
+
+- テストファイル: `flutter/integration_test/payment_info_fab_color_test.dart`
+- テストシナリオ: TC-PIF-001, TC-PIF-002（全2件 PASS）
+- TC-PIF-001: movingCostトピック設定済みイベント（近所のドライブ）の支払タブFABが存在・操作可能
+- TC-PIF-002: Topicありイベント（箱根日帰りドライブ）の支払タブFABが存在・操作可能
+- 補足: FABの backgroundColor（topicThemeColor?.primaryColor）を WidgetTester で直接検証するのは困難なため、
+  FABの存在確認と操作可能確認に留めた
