@@ -353,6 +353,7 @@ final _event2 = EventDomain(
 final _event3 = EventDomain(
   id: 'event-003',
   eventName: '近所のドライブ',
+  topic: seedTopics[0], // 移動コスト可視化
   trans: seedTrans[0], // マイカー
   members: [seedMembers[0]], // 太郎のみ
   tags: [seedTags[1]], // 日帰り

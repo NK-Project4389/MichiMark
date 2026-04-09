@@ -15,12 +15,6 @@ class MovingCostOverviewView extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16),
       children: [
-        _SectionTitle(title: '時間'),
-        _InfoRow(label: '移動時間', value: projection.movingTimeLabel),
-        _InfoRow(label: '作業時間', value: projection.workingTimeLabel),
-        _InfoRow(label: '休憩時間', value: projection.breakTimeLabel),
-        _InfoRow(label: '滞留時間', value: projection.waitingTimeLabel),
-        const SizedBox(height: 16),
         const _SectionTitle(title: '距離'),
         _InfoRow(label: '総走行距離', value: projection.totalDistanceLabel),
         const SizedBox(height: 16),

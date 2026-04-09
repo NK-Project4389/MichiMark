@@ -2,6 +2,9 @@ import 'package:equatable/equatable.dart';
 import 'topic_domain.dart';
 import 'topic_theme_color.dart';
 
+/// MichiInfoの追加FABメニューに表示できる項目の種別
+enum AddMenuItemType { mark, link }
+
 /// TopicConfigはTopicTypeを入力として表示制御フラグのセットを返す値オブジェクト。
 /// BlocやWidgetから参照される読み取り専用の設定値。
 ///
@@ -13,8 +16,12 @@ class TopicConfig extends Equatable {
   /// MarkDetail/LinkDetailの給油スイッチ+FuelDetailを表示するか
   final bool showFuelDetail;
 
-  /// LinkDetailの新規追加を許可するか
-  final bool allowLinkAdd;
+  /// MichiInfoの追加FABメニューに表示する項目。
+  /// - [mark, link]: ボトムシートで両方選択可能
+  /// - [mark]: ボトムシートなしで直接MarkDetailへ遷移
+  /// - [link]: ボトムシートなしで直接LinkDetailへ遷移
+  /// - []: FABを非表示
+  final List<AddMenuItemType> addMenuItems;
 
   /// LinkDetailの走行距離を表示するか
   final bool showLinkDistance;
@@ -49,7 +56,7 @@ class TopicConfig extends Equatable {
   const TopicConfig({
     required this.showMeterValue,
     required this.showFuelDetail,
-    required this.allowLinkAdd,
+    required this.addMenuItems,
     required this.showLinkDistance,
     required this.showKmPerGas,
     required this.showPricePerGas,
@@ -73,7 +80,7 @@ class TopicConfig extends Equatable {
       TopicType.movingCost => const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
-          allowLinkAdd: true,
+          addMenuItems: [AddMenuItemType.mark, AddMenuItemType.link],
           showLinkDistance: true,
           showKmPerGas: true,
           showPricePerGas: true,
@@ -88,7 +95,7 @@ class TopicConfig extends Equatable {
       TopicType.travelExpense => const TopicConfig(
           showMeterValue: false,
           showFuelDetail: false,
-          allowLinkAdd: false,
+          addMenuItems: [AddMenuItemType.mark],
           showLinkDistance: false,
           showKmPerGas: false,
           showPricePerGas: false,
@@ -107,7 +114,7 @@ class TopicConfig extends Equatable {
   List<Object?> get props => [
         showMeterValue,
         showFuelDetail,
-        allowLinkAdd,
+        addMenuItems,
         showLinkDistance,
         showKmPerGas,
         showPricePerGas,

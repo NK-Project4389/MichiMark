@@ -5,6 +5,8 @@
 ---
 
 ## 完了した作業
+- test: MichiInfo追加ボタン改善・集計ページ整理 Integration Test 追加（TC-MAB-001〜003 全件PASS） (fa597aa)
+- docs: TestFlight 1.0.0(4) アップロード完了（90087対策: arm64バイナリ差し替え） (0c183ca)
 - docs: 2026-04-09 UI修正・共通化セッション進捗記録 (aa10341)
 - docs: TestFlight アップロード進捗記録追加 (3ee3ce9)
 

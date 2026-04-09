@@ -36,7 +36,7 @@ class ActionTimeDraft extends Equatable {
             const TopicConfig(
               showMeterValue: true,
               showFuelDetail: true,
-              allowLinkAdd: true,
+              addMenuItems: [AddMenuItemType.mark, AddMenuItemType.link],
               showLinkDistance: true,
               showKmPerGas: true,
               showPricePerGas: true,

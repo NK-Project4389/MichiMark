@@ -532,11 +532,15 @@ class _MichiInfoListState extends State<_MichiInfoList> {
     if (projection.items.isEmpty) {
       return Scaffold(
         body: const Center(child: Text('地点/区間がありません')),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => _showAddMenu(context),
-          icon: const Icon(Icons.add),
-          label: const Text('追加'),
-        ),
+        floatingActionButton: widget.topicConfig.addMenuItems.isEmpty
+            ? null
+            : FloatingActionButton.extended(
+                onPressed: () => _onAddPressed(context),
+                icon: const Icon(Icons.add),
+                label: const Text('追加'),
+                backgroundColor: widget.topicConfig.themeColor.primaryColor,
+                foregroundColor: Colors.white,
+              ),
       );
     }
 
@@ -606,12 +610,30 @@ class _MichiInfoListState extends State<_MichiInfoList> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddMenu(context),
-        icon: const Icon(Icons.add),
-        label: const Text('追加'),
-      ),
+      floatingActionButton: widget.topicConfig.addMenuItems.isEmpty
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () => _onAddPressed(context),
+              icon: const Icon(Icons.add),
+              label: const Text('追加'),
+              backgroundColor: widget.topicConfig.themeColor.primaryColor,
+              foregroundColor: Colors.white,
+            ),
     );
+  }
+
+  void _onAddPressed(BuildContext context) {
+    final items = widget.topicConfig.addMenuItems;
+    if (items.isEmpty) return;
+    if (items.length == 1) {
+      if (items.first == AddMenuItemType.mark) {
+        context.read<MichiInfoBloc>().add(const MichiInfoAddMarkPressed());
+      } else {
+        context.read<MichiInfoBloc>().add(const MichiInfoAddLinkPressed());
+      }
+    } else {
+      _showAddMenu(context);
+    }
   }
 
   void _showAddMenu(BuildContext context) {
@@ -621,17 +643,18 @@ class _MichiInfoListState extends State<_MichiInfoList> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.place),
-              title: const Text('地点を追加'),
-              onTap: () {
-                Navigator.of(context).pop();
-                context
-                    .read<MichiInfoBloc>()
-                    .add(const MichiInfoAddMarkPressed());
-              },
-            ),
-            if (widget.topicConfig.allowLinkAdd)
+            if (widget.topicConfig.addMenuItems.contains(AddMenuItemType.mark))
+              ListTile(
+                leading: const Icon(Icons.place),
+                title: const Text('地点を追加'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  context
+                      .read<MichiInfoBloc>()
+                      .add(const MichiInfoAddMarkPressed());
+                },
+              ),
+            if (widget.topicConfig.addMenuItems.contains(AddMenuItemType.link))
               ListTile(
                 leading: const Icon(Icons.route),
                 title: const Text('区間を追加'),
