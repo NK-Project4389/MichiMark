@@ -37,6 +37,9 @@ class TopicConfig extends Equatable {
   /// 区間（Link）タップ時に提示するActionIDのリスト（REQ-002）
   final List<String> linkActions;
 
+  /// アクションタイム記録ボタン（⚡）・地点アクションボタン・状態バッジを表示するか
+  final bool showActionTimeButton;
+
   /// テーマカラー（REQ-007確定値）
   final TopicThemeColor themeColor;
 
@@ -54,6 +57,7 @@ class TopicConfig extends Equatable {
     required this.showPaymentInfoTab,
     this.markActions = const [],
     this.linkActions = const [],
+    this.showActionTimeButton = false,
     this.themeColor = TopicThemeColor.brandTeal,
     this.displayName = '',
   });
@@ -75,9 +79,9 @@ class TopicConfig extends Equatable {
           showPricePerGas: true,
           showPayMember: true,
           showPaymentInfoTab: true,
-          // SeedDataで定義される固定UUIDを参照（出発・到着）
-          markActions: ['action-seed-depart', 'action-seed-arrive'],
+          markActions: [],
           linkActions: [],
+          showActionTimeButton: false,
           themeColor: TopicThemeColor.emeraldGreen,
           displayName: '移動コスト可視化',
         ),
@@ -92,6 +96,7 @@ class TopicConfig extends Equatable {
           showPaymentInfoTab: true,
           markActions: [],
           linkActions: [],
+          showActionTimeButton: false,
           themeColor: TopicThemeColor.amberOrange,
           displayName: '旅費可視化',
         ),
@@ -110,6 +115,7 @@ class TopicConfig extends Equatable {
         showPaymentInfoTab,
         markActions,
         linkActions,
+        showActionTimeButton,
         themeColor,
         displayName,
       ];

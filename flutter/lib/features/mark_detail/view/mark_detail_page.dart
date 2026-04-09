@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/topic/topic_config.dart';
+import '../../../widgets/numeric_input_row.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_bloc.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_event.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_state.dart';
@@ -192,7 +193,13 @@ class _MarkDetailForm extends StatelessWidget {
         ),
         if (topicConfig.showMeterValue) ...[
           const Divider(height: 1),
-          _MeterValueField(value: draft.meterValueInput),
+          NumericInputRow(
+            label: '累積メーター',
+            unit: 'km',
+            value: draft.meterValueInput,
+            onChanged: (v) =>
+                context.read<MarkDetailBloc>().add(MarkDetailMeterValueChanged(v)),
+          ),
         ],
         const Divider(height: 1),
         _MemoField(value: draft.memo),
@@ -272,66 +279,6 @@ class _NameFieldState extends State<_NameField> {
   }
 }
 
-class _MeterValueField extends StatefulWidget {
-  final String value;
-  const _MeterValueField({required this.value});
-
-  @override
-  State<_MeterValueField> createState() => _MeterValueFieldState();
-}
-
-class _MeterValueFieldState extends State<_MeterValueField> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.value);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              '累積メーター',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                isDense: true,
-                hintText: '0',
-                suffixText: 'km',
-                contentPadding: EdgeInsets.symmetric(vertical: 12),
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (v) =>
-                  context.read<MarkDetailBloc>().add(MarkDetailMeterValueChanged(v)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _MemoField extends StatefulWidget {
   final String value;

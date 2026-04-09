@@ -135,7 +135,6 @@ class _PaymentListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
     final memo = item.memo;
     final hasMemo = memo != null && memo.isNotEmpty;
 
@@ -163,8 +162,18 @@ class _PaymentListTile extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  // 行2: メモ（存在する場合のみ・金額と同スタイル）
+                  if (hasMemo) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      memo,
+                      style: textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 4),
-                  // 行2: 支払者チップ
+                  // 行3: 支払者チップ
                   Row(
                     children: [
                       Text('支払', style: textTheme.bodySmall),
@@ -175,7 +184,7 @@ class _PaymentListTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // 行3: 割り勘メンバー（存在する場合のみ）
+                  // 行4: 割り勘メンバー（存在する場合のみ）
                   if (item.splitMembers.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Row(
@@ -201,17 +210,6 @@ class _PaymentListTile extends StatelessWidget {
                           ),
                         ),
                       ],
-                    ),
-                  ],
-                  // 行4: メモ（存在する場合のみ）
-                  if (hasMemo) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      memo,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                        fontStyle: FontStyle.italic,
-                      ),
                     ),
                   ],
                 ],

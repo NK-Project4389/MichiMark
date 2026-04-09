@@ -194,11 +194,11 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
 
         final distanceValue = draft.distanceValueInput.isEmpty
             ? null
-            : int.tryParse(draft.distanceValueInput);
+            : int.tryParse(draft.distanceValueInput.replaceAll(',', ''));
 
         final pricePerGas = draft.pricePerGasInput.isEmpty
             ? null
-            : int.tryParse(draft.pricePerGasInput);
+            : int.tryParse(draft.pricePerGasInput.replaceAll(',', ''));
 
         final gasQuantity = draft.gasQuantityInput.isEmpty
             ? null
@@ -208,7 +208,7 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
 
         final gasPrice = draft.gasPriceInput.isEmpty
             ? null
-            : int.tryParse(draft.gasPriceInput);
+            : int.tryParse(draft.gasPriceInput.replaceAll(',', ''));
 
         final now = DateTime.now();
         final newMarkLink = MarkLinkDomain(

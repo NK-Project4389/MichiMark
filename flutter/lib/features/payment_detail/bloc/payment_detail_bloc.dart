@@ -150,7 +150,7 @@ class PaymentDetailBloc
       final paymentMember = draft.paymentMember;
       if (paymentMember == null) return;
 
-      final amount = int.tryParse(draft.paymentAmount);
+      final amount = int.tryParse(draft.paymentAmount.replaceAll(',', ''));
       if (amount == null) return;
 
       emit(current.copyWith(isSaving: true));

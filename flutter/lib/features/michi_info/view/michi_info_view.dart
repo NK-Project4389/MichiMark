@@ -1194,8 +1194,8 @@ class _TimelineItemOverlay extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                     ),
-                  // 状態バッジ（Mark のみ表示）
-                  if (isMark)
+                  // 状態バッジ（アクションタイム有効トピックのみ表示）
+                  if (isMark && topicConfig.showActionTimeButton)
                     Padding(
                       padding: const EdgeInsets.only(top: 2),
                       child: _ActionStateBadge(
@@ -1211,8 +1211,8 @@ class _TimelineItemOverlay extends StatelessWidget {
                 size: 16,
                 color: _markPrimaryColor,
               ),
-            // ⚡ アイコンボタン（Mark のみ表示）
-            if (isMark)
+            // ⚡ アイコンボタン（アクションタイム有効トピックのみ表示）
+            if (isMark && topicConfig.showActionTimeButton)
               Padding(
                 padding: const EdgeInsets.only(left: 4),
                 child: _ActionTimeButton(
@@ -1313,13 +1313,26 @@ class _MarkActionButtons extends StatelessWidget {
       child: Wrap(
         spacing: 8,
         children: actions
-            .map((action) => FilledButton.tonal(
+            .map((action) => ElevatedButton(
                   onPressed: () => context.read<MichiInfoBloc>().add(
                         MichiInfoMarkActionPressed(
                           markLinkId: markLinkId,
                           actionId: action.id,
                         ),
                       ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2D6A6A),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                  ),
                   child: Text(action.actionName),
                 ))
             .toList(),

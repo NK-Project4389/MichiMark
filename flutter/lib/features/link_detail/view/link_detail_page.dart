@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../domain/topic/topic_config.dart';
+import '../../../widgets/numeric_input_row.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_bloc.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_event.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_state.dart';
@@ -165,7 +166,13 @@ class _LinkDetailForm extends StatelessWidget {
         _NameField(value: draft.markLinkName),
         if (topicConfig.showLinkDistance) ...[
           const Divider(height: 1),
-          _DistanceField(value: draft.distanceValueInput),
+          NumericInputRow(
+            label: '走行距離',
+            unit: 'km',
+            value: draft.distanceValueInput,
+            onChanged: (v) =>
+                context.read<LinkDetailBloc>().add(LinkDetailDistanceChanged(v)),
+          ),
         ],
         const Divider(height: 1),
         _SelectionRow(
@@ -255,66 +262,6 @@ class _NameFieldState extends State<_NameField> {
   }
 }
 
-class _DistanceField extends StatefulWidget {
-  final String value;
-  const _DistanceField({required this.value});
-
-  @override
-  State<_DistanceField> createState() => _DistanceFieldState();
-}
-
-class _DistanceFieldState extends State<_DistanceField> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.value);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              '走行距離',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                isDense: true,
-                hintText: '0',
-                suffixText: 'km',
-                contentPadding: EdgeInsets.symmetric(vertical: 12),
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (v) =>
-                  context.read<LinkDetailBloc>().add(LinkDetailDistanceChanged(v)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _MemoField extends StatefulWidget {
   final String value;

@@ -72,20 +72,21 @@ class AggregationService {
         }
       }
 
-      // 走行距離・給油集計（Linkのみ）
+      // 走行距離集計（Linkのみ）
       for (final ml in event.markLinks.where((ml) => !ml.isDeleted && ml.markLinkType == MarkOrLink.link)) {
         // 距離採用優先順位: distanceValue > meterValue差分（ここではdistanceValueのみ集計）
         totalDistance += ml.distanceValue ?? 0;
+      }
 
-        if (ml.isFuel) {
-          final qty = ml.gasQuantity;
-          if (qty != null) {
-            totalGasQuantity = (totalGasQuantity ?? 0) + qty;
-          }
-          final price = ml.gasPrice;
-          if (price != null) {
-            totalGasPrice = (totalGasPrice ?? 0) + price;
-          }
+      // 給油集計（Mark・Link両方対象）
+      for (final ml in event.markLinks.where((ml) => !ml.isDeleted && ml.isFuel)) {
+        final qty = ml.gasQuantity;
+        if (qty != null) {
+          totalGasQuantity = (totalGasQuantity ?? 0) + qty;
+        }
+        final price = ml.gasPrice;
+        if (price != null) {
+          totalGasPrice = (totalGasPrice ?? 0) + price;
         }
       }
 

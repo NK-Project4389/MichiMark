@@ -216,11 +216,11 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
 
         final meterValue = draft.meterValueInput.isEmpty
             ? null
-            : int.tryParse(draft.meterValueInput);
+            : int.tryParse(draft.meterValueInput.replaceAll(',', ''));
 
         final pricePerGas = draft.pricePerGasInput.isEmpty
             ? null
-            : int.tryParse(draft.pricePerGasInput);
+            : int.tryParse(draft.pricePerGasInput.replaceAll(',', ''));
 
         final gasQuantity = draft.gasQuantityInput.isEmpty
             ? null
@@ -230,7 +230,7 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
 
         final gasPrice = draft.gasPriceInput.isEmpty
             ? null
-            : int.tryParse(draft.gasPriceInput);
+            : int.tryParse(draft.gasPriceInput.replaceAll(',', ''));
 
         final now = DateTime.now();
         final newMarkLink = MarkLinkDomain(

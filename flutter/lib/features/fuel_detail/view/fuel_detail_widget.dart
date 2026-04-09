@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../widgets/numeric_input_row.dart';
 import '../bloc/fuel_detail_bloc.dart';
 import '../bloc/fuel_detail_event.dart';
 import '../bloc/fuel_detail_state.dart';
@@ -19,114 +20,62 @@ class FuelDetailWidget extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _FuelTextField(
-              label: 'ガソリン単価（円/L）',
+            NumericInputRow(
+              label: 'ガソリン単価',
+              unit: '円/L',
               value: state.draft.pricePerGas,
-              keyboardType: TextInputType.number,
               onChanged: (value) => context
                   .read<FuelDetailBloc>()
                   .add(FuelDetailPricePerGasChanged(value)),
             ),
-            const SizedBox(height: 8),
-            _FuelTextField(
-              label: '給油量（L）',
+            const Divider(height: 1),
+            NumericInputRow(
+              label: '給油量',
+              unit: 'L',
               value: state.draft.gasQuantity,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              isDecimal: true,
               onChanged: (value) => context
                   .read<FuelDetailBloc>()
                   .add(FuelDetailGasQuantityChanged(value)),
             ),
-            const SizedBox(height: 8),
-            _FuelTextField(
-              label: 'ガソリン代（円）',
+            const Divider(height: 1),
+            NumericInputRow(
+              label: 'ガソリン代',
+              unit: '円',
               value: state.draft.gasPrice,
-              keyboardType: TextInputType.number,
               onChanged: (value) => context
                   .read<FuelDetailBloc>()
                   .add(FuelDetailGasPriceChanged(value)),
             ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => context
-                        .read<FuelDetailBloc>()
-                        .add(const FuelDetailClearTapped()),
-                    child: const Text('クリア'),
+            const Divider(height: 1),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => context
+                          .read<FuelDetailBloc>()
+                          .add(const FuelDetailClearTapped()),
+                      child: const Text('クリア'),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => context
-                        .read<FuelDetailBloc>()
-                        .add(const FuelDetailCalculateTapped()),
-                    child: const Text('計算'),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => context
+                          .read<FuelDetailBloc>()
+                          .add(const FuelDetailCalculateTapped()),
+                      child: const Text('計算'),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         );
       },
-    );
-  }
-}
-
-class _FuelTextField extends StatefulWidget {
-  final String label;
-  final String value;
-  final TextInputType keyboardType;
-  final ValueChanged<String> onChanged;
-
-  const _FuelTextField({
-    required this.label,
-    required this.value,
-    required this.keyboardType,
-    required this.onChanged,
-  });
-
-  @override
-  State<_FuelTextField> createState() => _FuelTextFieldState();
-}
-
-class _FuelTextFieldState extends State<_FuelTextField> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.value);
-  }
-
-  @override
-  void didUpdateWidget(_FuelTextField oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // 計算・クリアでBlocが値を更新したときのみコントローラを同期する
-    if (widget.value != _controller.text) {
-      _controller.text = widget.value;
-      _controller.selection =
-          TextSelection.collapsed(offset: widget.value.length);
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      keyboardType: widget.keyboardType,
-      decoration: InputDecoration(
-        labelText: widget.label,
-        border: const OutlineInputBorder(),
-      ),
-      onChanged: widget.onChanged,
     );
   }
 }

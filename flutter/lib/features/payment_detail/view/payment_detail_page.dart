@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../domain/master/member/member_domain.dart';
 import '../../../features/selection/selection_args.dart';
 import '../../../features/selection/selection_result.dart';
+import '../../../widgets/numeric_input_row.dart';
 import '../bloc/payment_detail_bloc.dart';
 import '../bloc/payment_detail_event.dart';
 import '../bloc/payment_detail_state.dart';
@@ -156,7 +157,14 @@ class _PaymentDetailForm extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        _AmountField(value: draft.paymentAmount),
+        NumericInputRow(
+          label: '支払金額',
+          unit: '円',
+          value: draft.paymentAmount,
+          onChanged: (v) => context
+              .read<PaymentDetailBloc>()
+              .add(PaymentDetailAmountChanged(v)),
+        ),
         const Divider(height: 1),
         _SelectionRow(
           label: '支払者',
@@ -184,68 +192,6 @@ class _PaymentDetailForm extends StatelessWidget {
 }
 
 // ── Field widgets ─────────────────────────────────────────────────────────
-
-class _AmountField extends StatefulWidget {
-  final String value;
-  const _AmountField({required this.value});
-
-  @override
-  State<_AmountField> createState() => _AmountFieldState();
-}
-
-class _AmountFieldState extends State<_AmountField> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.value);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              '支払金額',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                isDense: true,
-                hintText: '0',
-                suffixText: '円',
-                contentPadding: EdgeInsets.symmetric(vertical: 12),
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (v) => context
-                  .read<PaymentDetailBloc>()
-                  .add(PaymentDetailAmountChanged(v)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _MemoField extends StatefulWidget {
   final String value;
