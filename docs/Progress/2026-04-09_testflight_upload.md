@@ -5,6 +5,8 @@
 ---
 
 ## 完了した作業
+- docs: 2026-04-09 UI修正・共通化セッション進捗記録 (aa10341)
+- docs: TestFlight アップロード進捗記録追加 (3ee3ce9)
 
 ### 1. TestFlight アップロード（ビルド 1.0.0 (3)）
 
@@ -22,6 +24,17 @@
   - 全フレームワークを走査し IOSSIMULATOR タグを検出したら `vtool` で iOS に書き換え → `codesign` で再署名
   - minos は `13.0`（アプリの最小 OS バージョンに合わせる）
 - `pod install` 適用済み
+
+---
+
+### 3. TestFlight アップロード（ビルド 1.0.0 (4)）
+
+- `flutter build ios --release` → ビルド成功
+- `xcodebuild archive` → アーカイブ成功
+- **エラー 90087/90086/90203**: `objective_c.framework` が x86_64 のみ（シミュレーター用バイナリがリリースビルドに混入）
+  - 前回アーカイブ（2026-04-08）の arm64 版 `objective_c` バイナリをコピーして上書き
+  - `xcodebuild -exportArchive` 再実行 → `Upload succeeded` 確認
+- dSYM warning は動作に影響なし
 
 ---
 
