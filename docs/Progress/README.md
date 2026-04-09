@@ -68,3 +68,4 @@
 | [2026-04-09_payment_info_redesign.md](./2026-04-09_payment_info_redesign.md) | PaymentInfo UI 改善 + 支払いごとの精算セクション追加（TC-PIR-001〜014 全件PASS）|
 | [2026-04-09_testflight_upload.md](./2026-04-09_testflight_upload.md) | TestFlight アップロード（1.0.0 (3)）・Podfile simulator スライス除去フック追加 |
 | [2026-04-09_ui_fixes_and_refactor.md](./2026-04-09_ui_fixes_and_refactor.md) | 給油集計バグ修正・UI整理・NumericInputRow共通ウィジェット追加 |
+| [2026-04-09_michi_info_add_button_test.md](./2026-04-09_michi_info_add_button_test.md) | MichiInfo追加ボタン改善・集計ページ整理 Integration Test 全3件PASS |
