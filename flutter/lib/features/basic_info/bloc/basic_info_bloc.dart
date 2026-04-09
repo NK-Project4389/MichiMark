@@ -124,10 +124,10 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
   ) async {
     if (state is BasicInfoLoaded) {
       final current = state as BasicInfoLoaded;
-      // 交通手段に燃費が設定されていれば自動で反映する
+      // 交通手段に燃費が設定されていれば自動で反映する（0.1km/Lの10倍整数値 → 表示文字列に変換）
       final kmPerGas = event.trans?.kmPerGas;
       final newKmPerGasInput = kmPerGas != null
-          ? kmPerGas.toString()
+          ? (kmPerGas / 10.0).toString()
           : current.draft.kmPerGasInput;
       emit(current.copyWith(
         draft: current.draft.copyWith(

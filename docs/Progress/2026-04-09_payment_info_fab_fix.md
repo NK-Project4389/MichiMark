@@ -5,6 +5,8 @@
 ---
 
 ## 完了した作業
+- test: BasicInfo燃費変換バグ修正 Integration Test 追加（TC-BTF-001〜002 全件PASS） (6f47db8)
+- fix: PaymentInfo追加ボタンにテーマカラー適用・タスクボードPhase12/13追加 (fe001a1)
 
 ### 1. PaymentInfo 追加ボタン テーマカラー適用（バグ修正）
 
