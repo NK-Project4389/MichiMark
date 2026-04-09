@@ -5,6 +5,7 @@
 ---
 
 ## 完了した作業
+- feat: MichiInfo追加FABカラー・addMenuItems配列制御・集計時間セクション削除・シードデータ修正 (6e95a2b)
 - test: MichiInfo追加ボタン改善・集計ページ整理 Integration Test 追加（TC-MAB-001〜003 全件PASS） (fa597aa)
 - docs: TestFlight 1.0.0(4) アップロード完了（90087対策: arm64バイナリ差し替え） (0c183ca)
 - docs: 2026-04-09 UI修正・共通化セッション進捗記録 (aa10341)
@@ -37,6 +38,13 @@
   - 前回アーカイブ（2026-04-08）の arm64 版 `objective_c` バイナリをコピーして上書き
   - `xcodebuild -exportArchive` 再実行 → `Upload succeeded` 確認
 - dSYM warning は動作に影響なし
+
+### 4. TestFlight アップロード（ビルド 1.0.0 (5)）
+
+- 含む変更: MichiInfo追加FABカラー・addMenuItems配列制御・集計時間セクション削除・シードデータ修正
+- `flutter build ios --release` → ビルド成功
+- `xcodebuild archive` → アーカイブ成功
+- `objective_c.framework` を arm64 版に差し替え → `Upload succeeded` 確認
 
 ---
 
