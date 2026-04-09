@@ -4,8 +4,17 @@
     "allow": [
       "Bash(git *)",
       "Bash(dart analyze*)",
+      "Bash(dart run build_runner*)",
       "Bash(flutter build*)",
-      "Bash(flutter test*)"
+      "Bash(flutter test*)",
+      "Bash(flutter run*)",
+      "Bash(flutter pub*)",
+      "Bash(cd flutter && flutter *)",
+      "Bash(pod install*)",
+      "Bash(xcodebuild *)",
+      "Bash(open *)",
+      "Bash(ls*)",
+      "Bash(mkdir*)"
     ]
   },
   "hooks": {
