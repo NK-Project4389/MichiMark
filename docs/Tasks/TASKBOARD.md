@@ -144,9 +144,9 @@
 | T-110 | 走行コスト割り勘 UIデザイン確定 | designer | `DONE` | | 燃費推計vs給油実績をTopicTypeレベルで分離する案Cを採用 |
 | T-111 | 走行コスト割り勘 要件書作成 | product-manager | `DONE` | | 要件書: `docs/Requirements/REQ-moving_cost_fuel_mode.md` |
 | T-112 | 走行コスト割り勘 Spec作成 | architect | `DONE` | | Spec: `docs/Spec/Features/MovingCostFuelMode_Spec.md` |
-| T-113 | 走行コスト割り勘 実装 | flutter-dev | `TODO` | | Spec: MovingCostFuelMode_Spec.md。schemaVersion 3→4、全switch箇所に movingCostEstimated 追加 |
-| T-114 | 走行コスト割り勘 レビュー | reviewer | `BLOCKED` | | T-113完了後 |
-| T-115 | 走行コスト割り勘 テスト | tester | `BLOCKED` | | T-114完了後 |
+| T-113 | 走行コスト割り勘 実装 | flutter-dev | `DONE` | | schemaVersion 4・movingCostEstimated追加・gasPayer追加 |
+| T-114 | 走行コスト割り勘 レビュー | reviewer | `DONE` | | 全項目PASS |
+| T-115 | 走行コスト割り勘 テスト | tester | `DONE` | | TC-FCM-001〜008 全件PASS |
 
 ## Phase 13: 燃費更新機能（別フェーズ）
 
