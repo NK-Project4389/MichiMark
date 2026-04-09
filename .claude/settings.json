@@ -2,7 +2,10 @@
   "model": "sonnet",
   "permissions": {
     "allow": [
-      "Bash(flutter test integration_test*)"
+      "Bash(git *)",
+      "Bash(dart analyze*)",
+      "Bash(flutter build*)",
+      "Bash(flutter test*)"
     ]
   },
   "hooks": {
