@@ -49,6 +49,14 @@
 - `xcodebuild archive` → アーカイブ成功
 - `objective_c.framework` を arm64 版に差し替え → `Upload succeeded` 確認
 
+### 6. TestFlight アップロード（ビルド 1.0.0 (6)）
+
+- 含む変更: MovingCostFuelMode実装（movingCostEstimated追加・gasPayer追加・schemaVersion 4）
+- `flutter build ios --release` → ビルド成功
+- `xcodebuild archive` → アーカイブ成功
+- `objective_c.framework` を arm64 版に差し替え → `Upload succeeded` 確認
+- testflightスキル（`~/.claude/skills/testflight/skill.md`）にStep 2.5として arm64 差し替え手順をルール化
+
 ---
 
 ## 未完了 / 要対応
