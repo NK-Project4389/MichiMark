@@ -81,3 +81,4 @@
 | [2026-04-10_overview_bugfix_basic_info_reorder.md](./2026-04-10_overview_bugfix_basic_info_reorder.md) | 概要集計バグ修正（movingCostEstimated discriminator修正・推計ガソリン代算出）・BasicInfo項目並び替え |
 | [2026-04-10_fuel_efficiency_update_req.md](./2026-04-10_fuel_efficiency_update_req.md) | 燃費更新機能 要件書作成（REQ-fuel_efficiency_update） |
 | [2026-04-10_integration_test_spec.md](./2026-04-10_integration_test_spec.md) | Integration Test 設計書整理・tester/workflowルール更新（41件・10グループ） |
+| [2026-04-10_integration_test_fixes.md](./2026-04-10_integration_test_fixes.md) | Integration Test 修正（TC-MCI挿入モード対応・TS-03/04/05・TC-MAD-001〜008） |

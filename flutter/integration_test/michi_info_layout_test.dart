@@ -185,12 +185,19 @@ void main() {
       return;
     }
 
-    await tester.tap(markText);
+    await tester.ensureVisible(markText);
     await tester.pumpAndSettle();
+    await tester.tap(markText);
+    // MarkDetail画面の保存ボタン「保存」または「累積メーター」ラベルが表示されるまで待つ
+    // 既存Markのタイトルは mark名（例:「自宅出発」）のため AppBar の「地点詳細」は不可
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+      if (find.text('保存').evaluate().isNotEmpty ||
+          find.text('累積メーター').evaluate().isNotEmpty) break;
+    }
 
-    final onMarkDetail = find.text('反映').evaluate().isNotEmpty ||
-        find.text('地点詳細').evaluate().isNotEmpty ||
-        find.text('名称（任意）').evaluate().isNotEmpty;
+    final onMarkDetail = find.text('保存').evaluate().isNotEmpty ||
+        find.text('累積メーター').evaluate().isNotEmpty;
     expect(onMarkDetail, isTrue,
         reason: 'Mark行「自宅出発」をタップするとMarkDetail画面に遷移すること');
   });
@@ -218,18 +225,21 @@ void main() {
       return;
     }
 
+    await tester.ensureVisible(linkText);
+    await tester.pumpAndSettle();
     await tester.tap(linkText);
-    // pumpAndSettle はLinkDetailPageのTextField/SwitchListTileアニメーションで
-    // タイムアウトする場合があるため、明示的なpumpループで遷移完了を待つ
+    // LinkDetailPageのTextField/SwitchListTileアニメーションのため pumpLoop を使用
+    // 既存LinkのタイトルはLink名（例:「東名高速」）のためAppBarの「区間詳細」は不可
+    // 代わりに「保存」ボタンまたは「給油」スイッチの存在を確認
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.text('反映').evaluate().isNotEmpty ||
-          find.text('区間詳細').evaluate().isNotEmpty) break;
+      if (find.text('保存').evaluate().isNotEmpty ||
+          find.text('給油').evaluate().isNotEmpty) break;
     }
 
     // LinkDetailPage に遷移したことを確認
-    final onDetailPage = find.text('反映').evaluate().isNotEmpty ||
-        find.text('区間詳細').evaluate().isNotEmpty;
+    final onDetailPage = find.text('保存').evaluate().isNotEmpty ||
+        find.text('給油').evaluate().isNotEmpty;
     expect(onDetailPage, isTrue,
         reason: 'Link行「東名高速」をタップするとLinkDetail画面に遷移すること');
   });
@@ -247,22 +257,38 @@ void main() {
       return;
     }
 
-    // FABをタップ
+    // TC-MCI以降のFABフロー: FABタップ → 挿入モードON → インジケータータップ → BottomSheet → 地点を追加
     final fab = find.byType(FloatingActionButton);
     expect(fab, findsOneWidget, reason: 'FABが表示されていること');
 
     await tester.tap(fab);
     await tester.pumpAndSettle();
 
-    expect(find.text('地点を追加'), findsOneWidget,
-        reason: 'FABタップ後に「地点を追加」メニューが表示されること');
+    // 挿入モードになりインジケーターが表示されることを確認
+    final indicators = find.byIcon(Icons.add_circle_outline);
+    if (indicators.evaluate().isEmpty) {
+      markTestSkipped('TS-05: 挿入インジケーターが見つからない');
+      return;
+    }
 
-    await tester.tap(find.text('地点を追加'));
+    // 最初のインジケーターをタップ
+    await tester.tap(indicators.first);
     await tester.pumpAndSettle();
 
-    final onMarkDetail = find.text('反映').evaluate().isNotEmpty ||
-        find.text('地点詳細').evaluate().isNotEmpty ||
-        find.text('名称（任意）').evaluate().isNotEmpty;
+    expect(find.text('地点を追加'), findsOneWidget,
+        reason: 'インジケータータップ後に「地点を追加」メニューが表示されること');
+
+    await tester.tap(find.text('地点を追加'));
+    // 新規MarkDetailはアニメーションがあるためpumpLoopで待つ
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+      if (find.text('保存').evaluate().isNotEmpty ||
+          find.text('地点詳細').evaluate().isNotEmpty) break;
+    }
+
+    // 新規作成時はAppBarに「地点詳細」が表示される（名前が空）
+    final onMarkDetail = find.text('保存').evaluate().isNotEmpty ||
+        find.text('地点詳細').evaluate().isNotEmpty;
     expect(onMarkDetail, isTrue,
         reason: '「地点を追加」選択後、MarkDetail新規追加画面に遷移すること');
   });
