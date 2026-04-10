@@ -164,20 +164,6 @@ class _BasicInfoReadView extends StatelessWidget {
               label: '交通手段',
               value: draft.selectedTrans?.transName ?? '未選択',
             ),
-            if (topicConfig.showKmPerGas) ...[
-              const SizedBox(height: 12),
-              _ReadRow(
-                label: '燃費',
-                value: draft.kmPerGasInput.isEmpty ? '未設定' : '${draft.kmPerGasInput} km/L',
-              ),
-            ],
-            if (topicConfig.showPricePerGas) ...[
-              const SizedBox(height: 12),
-              _ReadRow(
-                label: 'ガソリン単価',
-                value: draft.pricePerGasInput.isEmpty ? '未設定' : '${draft.pricePerGasInput} 円/L',
-              ),
-            ],
             const SizedBox(height: 12),
             _ReadRow(
               label: 'メンバー',
@@ -192,6 +178,20 @@ class _BasicInfoReadView extends StatelessWidget {
                   ? '未設定'
                   : draft.selectedTags.map((t) => t.tagName).join('、'),
             ),
+            if (topicConfig.showKmPerGas) ...[
+              const SizedBox(height: 12),
+              _ReadRow(
+                label: '燃費',
+                value: draft.kmPerGasInput.isEmpty ? '未設定' : '${draft.kmPerGasInput} km/L',
+              ),
+            ],
+            if (topicConfig.showPricePerGas) ...[
+              const SizedBox(height: 12),
+              _ReadRow(
+                label: 'ガソリン単価',
+                value: draft.pricePerGasInput.isEmpty ? '未設定' : '${draft.pricePerGasInput} 円/L',
+              ),
+            ],
             if (topicConfig.showPayMember) ...[
               const SizedBox(height: 12),
               _ReadRow(
@@ -282,6 +282,21 @@ class _BasicInfoForm extends StatelessWidget {
                   .read<BasicInfoBloc>()
                   .add(const BasicInfoEditTransPressed()),
             ),
+            const Divider(height: 1),
+            _SelectionRow(
+              label: 'メンバー',
+              value: draft.selectedMembers.isEmpty
+                  ? '未選択'
+                  : draft.selectedMembers.map((m) => m.memberName).join('、'),
+              onEditPressed: () => context
+                  .read<BasicInfoBloc>()
+                  .add(const BasicInfoEditMembersPressed()),
+            ),
+            const Divider(height: 1),
+            _TagInputSection(
+              selectedTags: draft.selectedTags,
+              tagSuggestions: tagSuggestions,
+            ),
             if (topicConfig.showKmPerGas) ...[
               const Divider(height: 1),
               _NumberInputField(
@@ -304,21 +319,6 @@ class _BasicInfoForm extends StatelessWidget {
                     .add(BasicInfoPricePerGasChanged(input)),
               ),
             ],
-            const Divider(height: 1),
-            _SelectionRow(
-              label: 'メンバー',
-              value: draft.selectedMembers.isEmpty
-                  ? '未選択'
-                  : draft.selectedMembers.map((m) => m.memberName).join('、'),
-              onEditPressed: () => context
-                  .read<BasicInfoBloc>()
-                  .add(const BasicInfoEditMembersPressed()),
-            ),
-            const Divider(height: 1),
-            _TagInputSection(
-              selectedTags: draft.selectedTags,
-              tagSuggestions: tagSuggestions,
-            ),
             if (topicConfig.showPayMember) ...[
               const Divider(height: 1),
               _SelectionRow(

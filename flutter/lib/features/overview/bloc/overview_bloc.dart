@@ -64,12 +64,12 @@ class EventDetailOverviewBloc
     Emitter<EventDetailOverviewState> emit,
   ) async {
     try {
-      // TopicConfigのshowFuelDetailフラグで判定（TopicTypeを直接比較しない）
-      if (topicConfig.showFuelDetail) {
-        // movingCost相当
+      // TopicConfigのshowLinkDistanceフラグで判定（movingCost/movingCostEstimated両方がtrue）
+      if (topicConfig.showLinkDistance) {
+        // movingCost / movingCostEstimated 相当
         final result = await _aggregationService.aggregateEvent(eventDomain);
         final projection =
-            EventDetailOverviewAdapter.toMovingCostProjection(result);
+            EventDetailOverviewAdapter.toMovingCostProjection(result, event: eventDomain);
         emit(state.copyWith(
           isLoading: false,
           movingCostProjection: projection,

@@ -132,10 +132,10 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-099 | カード挿入機能 要件書作成 | product-manager | `DONE` | | 要件書: `docs/Requirements/REQ-michi_info_card_insert.md` |
-| T-100 | カード挿入機能 Spec作成 | architect | `BLOCKED` | | T-099完了後 |
-| T-101 | カード挿入機能 実装 | flutter-dev | `BLOCKED` | | T-100完了後 |
-| T-102 | カード挿入機能 レビュー | reviewer | `BLOCKED` | | T-101完了後 |
-| T-103 | カード挿入機能 テスト | tester | `BLOCKED` | | T-102完了後 |
+| T-100 | カード挿入機能 Spec作成 | architect | `DONE` | | Spec: `docs/Spec/Features/MichiInfo/CardInsert_Spec.md` |
+| T-101 | カード挿入機能 実装 | flutter-dev | `DONE` | | |
+| T-102 | カード挿入機能 レビュー | reviewer | `DONE` | | 全項目PASS |
+| T-103 | カード挿入機能 テスト | tester | `IN_PROGRESS` | 2026-04-10_card_insert_impl | T-102完了後 |
 
 ## Phase 12: movingCost 概要タブ 走行コスト割り勘
 
@@ -157,6 +157,16 @@
 | T-122 | 燃費更新機能 実装 | flutter-dev | `BLOCKED` | | T-121完了後 |
 | T-123 | 燃費更新機能 レビュー | reviewer | `BLOCKED` | | T-122完了後 |
 | T-124 | 燃費更新機能 テスト | tester | `BLOCKED` | | T-123完了後 |
+
+## Phase 14: イベント削除機能 + スワイプ削除UI
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-130 | イベント削除機能 要件書作成 | product-manager | `DONE` | | 要件書: ユーザー提示仕様（カスケード削除・確認ダイアログなし・flutter_slidable使用） |
+| T-131 | イベント削除機能 Spec作成 | architect | `TODO` | | T-130完了後。flutter_slidable ^3.1.0 追加・deleteEvent(eventId)実装・スワイプUI |
+| T-132 | イベント削除機能 実装 | flutter-dev | `BLOCKED` | | T-131完了後 |
+| T-133 | イベント削除機能 レビュー | reviewer | `BLOCKED` | | T-132完了後 |
+| T-134 | イベント削除機能 テスト | tester | `BLOCKED` | | T-133完了後 |
 
 ---
 

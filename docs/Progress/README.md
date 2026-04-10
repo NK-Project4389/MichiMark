@@ -76,3 +76,5 @@
 | [2026-04-09_moving_cost_fuel_mode_impl.md](./2026-04-09_moving_cost_fuel_mode_impl.md) | MovingCostFuelMode 実装・全8件PASS・TF 1.0.0(6) |
 | [2026-04-09_permission_settings.md](./2026-04-09_permission_settings.md) | MichiMark・NomikaiShare 操作許可設定追加 |
 | [2026-04-09_moving_cost_fuel_mode_test.md](./2026-04-09_moving_cost_fuel_mode_test.md) | MovingCostFuelMode Integration Test 全8件PASS（TC-FCM-001〜008） |
+- [2026-04-10](./2026-04-10_test__TC_BTF_001_002_全件PASS確認_.md)
+| [2026-04-10_overview_bugfix_basic_info_reorder.md](./2026-04-10_overview_bugfix_basic_info_reorder.md) | 概要集計バグ修正（movingCostEstimated discriminator修正・推計ガソリン代算出）・BasicInfo項目並び替え |

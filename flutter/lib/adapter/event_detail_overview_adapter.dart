@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import '../domain/aggregation/aggregation_result.dart';
+import '../domain/transaction/event/event_domain.dart';
 import '../features/overview/projection/moving_cost_overview_projection.dart';
 
 /// AggregationResult → MovingCostOverviewProjection の変換を担当。
@@ -11,8 +12,20 @@ class EventDetailOverviewAdapter {
   static final _currencyFormat = NumberFormat('#,###');
 
   static MovingCostOverviewProjection toMovingCostProjection(
-    AggregationResult result,
-  ) {
+    AggregationResult result, {
+    EventDomain? event,
+  }) {
+    // 実績ガソリン代がない場合は、燃費推定モードとして推計値を計算する
+    // 推計: totalDistance(km) / (kmPerGas/10)(km/L) * pricePerGas(円/L)
+    int? effectiveGasPrice = result.totalGasPrice;
+    if (effectiveGasPrice == null && event != null) {
+      final km = event.kmPerGas;
+      final price = event.pricePerGas;
+      if (km != null && km > 0 && price != null) {
+        effectiveGasPrice = (result.totalDistance / (km / 10.0) * price).round();
+      }
+    }
+
     return MovingCostOverviewProjection(
       movingTimeLabel: _formatDuration(result.movingTime),
       workingTimeLabel: _formatDuration(result.workingTime),
@@ -22,8 +35,8 @@ class EventDetailOverviewAdapter {
       totalGasQuantityLabel: result.totalGasQuantity != null
           ? '${(result.totalGasQuantity! / 10).toStringAsFixed(1)}L'
           : '---',
-      totalGasPriceLabel: result.totalGasPrice != null
-          ? '${_currencyFormat.format(result.totalGasPrice!)}円'
+      totalGasPriceLabel: effectiveGasPrice != null
+          ? '${_currencyFormat.format(effectiveGasPrice)}円'
           : '---',
       totalPaymentLabel: result.totalPayment != null
           ? '${_currencyFormat.format(result.totalPayment!)}円'
