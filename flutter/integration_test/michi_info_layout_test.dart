@@ -53,13 +53,13 @@ void main() {
     if (eventCards.evaluate().isEmpty) return false;
 
     await tester.tap(eventCards.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // EventDetail画面の「ミチ」タブをタップ
     final michiTab = find.text('ミチ');
     if (michiTab.evaluate().isEmpty) return false;
     await tester.tap(michiTab);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     return true;
   }
@@ -81,12 +81,12 @@ void main() {
     if (eventCards.evaluate().isEmpty) return false;
 
     await tester.tap(eventCards.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     final michiTab = find.text('ミチ');
     if (michiTab.evaluate().isEmpty) return false;
     await tester.tap(michiTab);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     return true;
   }
@@ -186,7 +186,7 @@ void main() {
     }
 
     await tester.ensureVisible(markText);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(markText);
     // MarkDetail画面の保存ボタン「保存」または「累積メーター」ラベルが表示されるまで待つ
     // 既存Markのタイトルは mark名（例:「自宅出発」）のため AppBar の「地点詳細」は不可
@@ -226,7 +226,7 @@ void main() {
     }
 
     await tester.ensureVisible(linkText);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(linkText);
     // LinkDetailPageのTextField/SwitchListTileアニメーションのため pumpLoop を使用
     // 既存LinkのタイトルはLink名（例:「東名高速」）のためAppBarの「区間詳細」は不可
@@ -262,7 +262,7 @@ void main() {
     expect(fab, findsOneWidget, reason: 'FABが表示されていること');
 
     await tester.tap(fab);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // 挿入モードになりインジケーターが表示されることを確認
     final indicators = find.byIcon(Icons.add_circle_outline);
@@ -273,7 +273,7 @@ void main() {
 
     // 最初のインジケーターをタップ
     await tester.tap(indicators.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('地点を追加'), findsOneWidget,
         reason: 'インジケータータップ後に「地点を追加」メニューが表示されること');
@@ -312,7 +312,7 @@ void main() {
     }
 
     await tester.tap(emptyEventCards.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     final michiTab = find.text('ミチ');
     if (michiTab.evaluate().isEmpty) {
@@ -320,7 +320,7 @@ void main() {
       return;
     }
     await tester.tap(michiTab);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('地点/区間がありません'), findsOneWidget,
         reason: 'Mark/Linkが0件の場合「地点/区間がありません」が表示されること');
@@ -353,7 +353,7 @@ void main() {
     }
 
     await tester.tap(markText);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     final textFields = find.byType(TextField);
     if (textFields.evaluate().isEmpty) {
@@ -377,9 +377,9 @@ void main() {
     }
 
     await tester.ensureVisible(saveButton);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(saveButton);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // MichiInfo一覧に戻るまで待つ
     for (var i = 0; i < 10; i++) {
@@ -640,7 +640,7 @@ void main() {
       // 下方向にスクロール
       await tester.drag(scrollView.first, const Offset(0, -300));
       await tester.pump(const Duration(milliseconds: 500));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // スクロール後: km テキストが引き続き表示されていること
       // （スパン矢印の距離テキストが消えていないことを確認）
@@ -656,14 +656,14 @@ void main() {
       // 上方向に戻す
       await tester.drag(scrollView.first, const Offset(0, 300));
       await tester.pump(const Duration(milliseconds: 500));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
     } else {
       // CustomScrollView がない場合はListViewでスクロール
       final listView = find.byType(ListView);
       if (listView.evaluate().isNotEmpty) {
         await tester.drag(listView.first, const Offset(0, -300));
         await tester.pump(const Duration(milliseconds: 500));
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
       }
     }
 

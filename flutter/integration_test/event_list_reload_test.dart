@@ -69,7 +69,7 @@ void main() {
     }
 
     await tester.tap(gestureDetectors.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // EventDetail画面に遷移したことを確認（chevron_leftのBackボタンが表示される）
     for (var i = 0; i < 10; i++) {
@@ -91,9 +91,9 @@ void main() {
     // 最初のTextField（イベント名）を変更する
     const newEventName = 'テスト変更イベント名_BUG001';
     await tester.tap(textFields.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.enterText(textFields.first, newEventName);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // 保存ボタン（Icons.check）をタップ
     final checkButton = find.byIcon(Icons.check);
@@ -101,9 +101,9 @@ void main() {
         reason: 'EventDetail画面に保存ボタン（チェックアイコン）が存在すること');
 
     await tester.ensureVisible(checkButton);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(checkButton);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // 「保存しました」スナックバーが表示されることを確認
     expect(find.text('保存しました'), findsOneWidget,
@@ -118,7 +118,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
       if (find.text('イベント').evaluate().isNotEmpty) break;
     }
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // EventListに変更したイベント名が表示されることを確認
     expect(find.text(newEventName), findsOneWidget,
@@ -153,7 +153,7 @@ void main() {
     expect(fab, findsOneWidget, reason: 'EventList画面にFABが表示されること');
 
     await tester.tap(fab);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // TopicSelectionSheetが表示されることを確認
     expect(find.text('トピックを選択'), findsOneWidget,
@@ -165,14 +165,14 @@ void main() {
         reason: 'TopicSelectionSheetにTopicタイプの選択肢が表示されること');
 
     await tester.tap(topicListTiles.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // EventDetail画面が表示されるまで待つ
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
       if (find.byIcon(Icons.chevron_left).evaluate().isNotEmpty) break;
     }
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // EventDetail画面にいることを確認
     expect(find.byIcon(Icons.chevron_left), findsOneWidget,
@@ -187,7 +187,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
       if (find.text('イベント').evaluate().isNotEmpty) break;
     }
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // EventListに戻っていることを確認
     expect(find.text('イベント'), findsOneWidget,

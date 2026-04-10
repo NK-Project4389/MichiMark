@@ -46,12 +46,20 @@ void main() {
         reason: '$eventName のイベントカードが見つかること');
 
     await tester.tap(eventCards.first);
-    await tester.pumpAndSettle();
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.text('ミチ').evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
 
     final michiTab = find.text('ミチ');
     expect(michiTab, findsOneWidget, reason: 'ミチタブが表示されること');
     await tester.tap(michiTab);
-    await tester.pumpAndSettle();
+    for (var i = 0; i < 15; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.byType(FloatingActionButton).evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
   }
 
   /// FAB → 挿入モード → インジケータータップ → 「地点を追加」をタップしてMarkDetail画面を表示する。
@@ -63,8 +71,11 @@ void main() {
     final fab = find.byType(FloatingActionButton);
     expect(fab, findsOneWidget, reason: '地点追加FABが表示されること');
     await tester.tap(fab.first);
-    await tester.pumpAndSettle();
-    await tester.pump(const Duration(milliseconds: 500));
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 200));
+      if (find.byIcon(Icons.add_circle_outline).evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
 
     // 挿入モードでインジケーターが表示されるまで待つ
     final indicator = find.byIcon(Icons.add_circle_outline);
@@ -76,14 +87,21 @@ void main() {
     // 最後のインジケーター（最終アイテムの後）をタップ → 末尾追加のデフォルト動作
     // 前の地点のmeterValue・メンバー・日付が引き継がれる
     await tester.tap(indicator.last);
-    await tester.pumpAndSettle();
-    await tester.pump(const Duration(milliseconds: 500));
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 200));
+      if (find.text('地点を追加').evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
 
     final addMarkButton = find.text('地点を追加');
     expect(addMarkButton, findsOneWidget, reason: '「地点を追加」メニューが表示されること');
     await tester.tap(addMarkButton.first);
-    await tester.pumpAndSettle();
-    await tester.pump(const Duration(milliseconds: 500));
+    for (var i = 0; i < 15; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.text('累積メーター').evaluate().isNotEmpty ||
+          find.text('累積メーター (km)').evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
     return true;
   }
 
@@ -227,7 +245,7 @@ void main() {
     );
     expect(memberRow, findsWidgets, reason: 'MarkDetail画面にメンバー選択行が存在すること');
     await tester.tap(memberRow.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pump(const Duration(milliseconds: 500));
 
     // 選択候補確認
@@ -258,7 +276,7 @@ void main() {
     final markCard = find.text('大涌谷');
     expect(markCard, findsOneWidget, reason: '「大涌谷」地点カードが表示されること');
     await tester.ensureVisible(markCard);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(markCard);
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
@@ -275,7 +293,7 @@ void main() {
     // 「保存」ボタンをタップ → mark_detail_bloc が Trans.meterValue を更新
     final saveButton = find.text('保存');
     await tester.ensureVisible(saveButton);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(saveButton);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
@@ -296,13 +314,13 @@ void main() {
     final settingsIcon = find.byIcon(Icons.settings);
     expect(settingsIcon, findsOneWidget, reason: '設定アイコンが表示されること');
     await tester.tap(settingsIcon);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // 交通手段設定をタップ
     final transSection = find.text('交通手段');
     expect(transSection, findsOneWidget, reason: '設定画面に「交通手段」が表示されること');
     await tester.tap(transSection);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pump(const Duration(milliseconds: 500));
 
     // 交通手段一覧でマイカーのmeterValueが "45,340" に更新されているか確認
@@ -325,7 +343,7 @@ void main() {
     final markCard = find.text('自宅出発');
     expect(markCard, findsOneWidget, reason: '「自宅出発」地点カードが表示されること');
     await tester.ensureVisible(markCard);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(markCard);
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));

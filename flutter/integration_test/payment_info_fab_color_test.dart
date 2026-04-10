@@ -109,11 +109,11 @@ void main() {
     // FABが操作可能であること（hit testが通ること）
     // ensureVisible でスクロール外への押し出しを防ぐ
     await tester.ensureVisible(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // FABをタップして操作可能であることを確認（タップ後に何らかのUI変化が起きること）
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // タップ後の状態確認: BottomSheet または新規画面が開く
     // 操作可能であれば何らかのUI変化（BottomSheetやPageなど）が生じる
@@ -178,7 +178,7 @@ void main() {
 
     // FABが操作可能であること
     await tester.ensureVisible(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // NOTE: Topicなしイベントのテストについて
     // シードデータには全てトピック付きのイベントが存在します（movingCost・travelExpense）。

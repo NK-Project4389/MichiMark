@@ -62,7 +62,11 @@ void main() {
     final michiTab = find.text('ミチ');
     if (michiTab.evaluate().isEmpty) return false;
     await tester.tap(michiTab);
-    await tester.pumpAndSettle();
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.byType(FloatingActionButton).evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
     return true;
   }
 
@@ -71,14 +75,19 @@ void main() {
     final overviewTab = find.text('概要');
     if (overviewTab.evaluate().isEmpty) return false;
     await tester.tap(overviewTab);
-    await tester.pumpAndSettle();
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.text('距離').evaluate().isNotEmpty ||
+          find.text('費用').evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
     return true;
   }
 
   // ────────────────────────────────────────────────────────
-  // TC-MAB-001: movingCost FABタップでボトムシート表示（地点・区間の両方）
+  // TC-MAB-001: movingCost FABタップでInsertMode→インジケータータップでBottomSheet表示
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-MAB-001: movingCostイベントのFABタップでボトムシート表示（地点・区間の両方）',
+  testWidgets('TC-MAB-001: movingCostイベントのFABタップでInsertMode→インジケータータップでBottomSheet表示（地点・区間の両方）',
       (tester) async {
     await startApp(tester);
 
@@ -102,11 +111,30 @@ void main() {
       reason: 'MichiInfoにFABが表示されること',
     );
 
-    // FABをタップ
+    // FABをタップ → InsertMode に切り替わる
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 200));
+      if (find.byIcon(Icons.add_circle_outline).evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
 
-    // ボトムシートが表示されること
+    // InsertMode になりインジケーター（add_circle_outline）が表示されること
+    expect(
+      find.byIcon(Icons.add_circle_outline),
+      findsWidgets,
+      reason: 'InsertMode中にインジケーターが表示されること',
+    );
+
+    // インジケーターをタップ → BottomSheetが表示される
+    await tester.tap(find.byIcon(Icons.add_circle_outline).first);
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 200));
+      if (find.text('地点を追加').evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
+
+    // ボトムシートに地点・区間の両方が表示されること
     expect(
       find.text('地点を追加'),
       findsOneWidget,
@@ -120,9 +148,9 @@ void main() {
   });
 
   // ────────────────────────────────────────────────────────
-  // TC-MAB-002: travelExpense FABタップで直接MarkDetail画面へ遷移
+  // TC-MAB-002: travelExpense FABタップでInsertMode→インジケータータップでBottomSheet（地点のみ）
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-MAB-002: travelExpenseイベントのFABタップでMarkDetail画面が直接表示される',
+  testWidgets('TC-MAB-002: travelExpenseイベントのFABタップでInsertMode→インジケータータップでBottomSheet（地点のみ）',
       (tester) async {
     await startApp(tester);
 
@@ -146,28 +174,41 @@ void main() {
       reason: 'MichiInfoにFABが表示されること',
     );
 
-    // FABをタップ
+    // FABをタップ → InsertMode に切り替わる
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 200));
+      if (find.byIcon(Icons.add_circle_outline).evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
 
-    // ボトムシートが表示されないこと
+    // InsertMode になりインジケーターが表示されること
+    expect(
+      find.byIcon(Icons.add_circle_outline),
+      findsWidgets,
+      reason: 'InsertMode中にインジケーターが表示されること',
+    );
+
+    // インジケーターをタップ → BottomSheetが表示される
+    await tester.tap(find.byIcon(Icons.add_circle_outline).first);
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 200));
+      if (find.text('地点を追加').evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
+
+    // travelExpense では「区間を追加」が表示されないこと
     expect(
       find.text('区間を追加'),
       findsNothing,
-      reason: 'travelExpenseではボトムシートの「区間を追加」が表示されないこと',
+      reason: 'travelExpenseでは「区間を追加」が表示されないこと',
     );
 
-    // MarkDetail画面（地点追加画面）が直接表示されること
-    // 既存テスト（michi_info_layout_test.dart）での確認: MarkDetail画面には「反映」「地点詳細」「名称（任意）」が表示される
-    final hasMarkDetailTitle = find.text('反映').evaluate().isNotEmpty ||
-        find.text('地点詳細').evaluate().isNotEmpty ||
-        find.text('名称（任意）').evaluate().isNotEmpty ||
-        find.text('地点を追加').evaluate().isNotEmpty;
-
+    // 「地点を追加」が表示されること
     expect(
-      hasMarkDetailTitle,
-      isTrue,
-      reason: 'travelExpenseのFABタップでMarkDetail画面（地点追加画面）が直接表示されること',
+      find.text('地点を追加'),
+      findsOneWidget,
+      reason: 'travelExpenseのBottomSheetに「地点を追加」が表示されること',
     );
   });
 

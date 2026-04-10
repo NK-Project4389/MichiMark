@@ -5,6 +5,7 @@ import '../../../domain/master/tag/tag_domain.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../features/selection/selection_args.dart';
 import '../../../features/selection/selection_result.dart';
+import '../../../widgets/numeric_input_row.dart';
 import '../bloc/basic_info_bloc.dart';
 import '../bloc/basic_info_event.dart';
 import '../bloc/basic_info_state.dart';
@@ -299,10 +300,12 @@ class _BasicInfoForm extends StatelessWidget {
             ),
             if (topicConfig.showKmPerGas) ...[
               const Divider(height: 1),
-              _NumberInputField(
+              NumericInputRow(
+                key: const Key('km_per_gas_input_row'),
                 label: '燃費',
-                suffix: 'km/L',
+                unit: 'km/L',
                 value: draft.kmPerGasInput,
+                isDecimal: true,
                 onChanged: (input) => context
                     .read<BasicInfoBloc>()
                     .add(BasicInfoKmPerGasChanged(input)),
@@ -310,9 +313,9 @@ class _BasicInfoForm extends StatelessWidget {
             ],
             if (topicConfig.showPricePerGas) ...[
               const Divider(height: 1),
-              _NumberInputField(
+              NumericInputRow(
                 label: 'ガソリン単価',
-                suffix: '円/L',
+                unit: '円/L',
                 value: draft.pricePerGasInput,
                 onChanged: (input) => context
                     .read<BasicInfoBloc>()
@@ -420,75 +423,6 @@ class _EventNameFieldState extends State<_EventNameField> {
               onChanged: (value) => context
                   .read<BasicInfoBloc>()
                   .add(BasicInfoEventNameChanged(value)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _NumberInputField extends StatefulWidget {
-  final String label;
-  final String suffix;
-  final String value;
-  final ValueChanged<String> onChanged;
-
-  const _NumberInputField({
-    required this.label,
-    required this.suffix,
-    required this.value,
-    required this.onChanged,
-  });
-
-  @override
-  State<_NumberInputField> createState() => _NumberInputFieldState();
-}
-
-class _NumberInputFieldState extends State<_NumberInputField> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.value);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              widget.label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                isDense: true,
-                hintText: '0',
-                suffixText: widget.suffix,
-                contentPadding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              onChanged: widget.onChanged,
             ),
           ),
         ],

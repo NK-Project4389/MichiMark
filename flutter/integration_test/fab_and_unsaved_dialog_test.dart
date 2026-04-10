@@ -40,7 +40,7 @@ void main() {
     if (eventCards.evaluate().isEmpty) return false;
 
     await tester.tap(eventCards.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // EventDetailPage のロード完了を待つ
     for (var i = 0; i < 10; i++) {
@@ -63,7 +63,7 @@ void main() {
     if (eventCards.evaluate().isEmpty) return false;
 
     await tester.tap(eventCards.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // EventDetailPage のロード完了を待つ
     for (var i = 0; i < 10; i++) {
@@ -105,7 +105,7 @@ void main() {
   // TC-FAB-001: MichiInfoView に FAB extended が表示される
   // ─────────────────────────────────────────────────────────
 
-  testWidgets('TC-FAB-001: MichiInfoView に FloatingActionButton.extended が表示される',
+  testWidgets('TC-FAB-001: MichiInfoView に FloatingActionButton が表示される',
       (tester) async {
     final reached = await goToMichiTab(tester);
     if (!reached) {
@@ -113,9 +113,8 @@ void main() {
     }
 
     // FloatingActionButton が表示されていること
+    // MichiInfoのFABはInsertModeトグル用のAmber FAB（アイコンのみ）
     expect(find.byType(FloatingActionButton), findsAtLeastNWidgets(1));
-    // FABに「追加」ラベルが含まれること（extended の証）
-    expect(find.text('追加'), findsOneWidget);
   });
 
   // ─────────────────────────────────────────────────────────
@@ -202,7 +201,7 @@ void main() {
 
     // 支払追加FABをタップしてPaymentDetailPageへ遷移
     await tester.ensureVisible(find.byType(FloatingActionButton).first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(find.byType(FloatingActionButton).first);
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 500));
@@ -234,7 +233,7 @@ void main() {
       fail('[スキップ不可] 編集アイコンボタンが見つかりません');
     }
     await tester.tap(editIconButton.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // 編集モードになったことを確認（TextFieldが表示されるはず）
     await tester.pump(const Duration(milliseconds: 300));
@@ -256,7 +255,7 @@ void main() {
     }
 
     await tester.tap(backButton.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // 未保存確認ダイアログが表示されていること
     expect(find.text('保存していません'), findsOneWidget);
@@ -299,7 +298,7 @@ void main() {
       fail('[スキップ不可] 「編集」ボタン（テキストまたはアイコン）が見つかりません');
     }
     await tester.tap(editTarget.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // 編集モードになったことを確認（TextFieldが表示されるはず）
     await tester.pump(const Duration(milliseconds: 300));
@@ -330,7 +329,7 @@ void main() {
     }
 
     await tester.tap(backButton.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // 未保存確認ダイアログが表示されていること
     expect(find.text('保存していません'), findsOneWidget,
@@ -379,7 +378,7 @@ void main() {
       if (find.text('概要').evaluate().isEmpty &&
           find.text('イベント').evaluate().isNotEmpty) break;
     }
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // ダイアログが表示されていないこと
     expect(find.text('保存していません'), findsNothing,

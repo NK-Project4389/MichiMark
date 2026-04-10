@@ -639,23 +639,25 @@ class _MichiInfoListState extends State<_MichiInfoList> {
       body: Stack(
         children: [
           // 背景レイヤー: 縦線全体 + スパン矢印 + 距離テキスト
+          // InsertMode 中はインジケーター挿入でY座標がずれるため非表示
           // top: 48 でタブ/凡例領域へのはみ出しを防ぎ、ClipRect でさらに安全にクリップ
-          Positioned.fill(
-            top: 48,
-            child: ClipRect(
-              child: CustomPaint(
-                painter: _MichiTimelineCanvas(
-                  spans: timelineData.spans,
-                  linkSegments: timelineData.linkSegments,
-                  standaloneLinkDistances: timelineData.standaloneLinkDistances,
-                  standaloneLinkLines: timelineData.standaloneLinkLines,
-                  verticalLineStartRelY: timelineData.verticalLineStartRelY,
-                  verticalLineEndRelY: timelineData.verticalLineEndRelY,
-                  scrollOffset: scrollOffset,
+          if (!widget.isInsertMode)
+            Positioned.fill(
+              top: 48,
+              child: ClipRect(
+                child: CustomPaint(
+                  painter: _MichiTimelineCanvas(
+                    spans: timelineData.spans,
+                    linkSegments: timelineData.linkSegments,
+                    standaloneLinkDistances: timelineData.standaloneLinkDistances,
+                    standaloneLinkLines: timelineData.standaloneLinkLines,
+                    verticalLineStartRelY: timelineData.verticalLineStartRelY,
+                    verticalLineEndRelY: timelineData.verticalLineEndRelY,
+                    scrollOffset: scrollOffset,
+                  ),
                 ),
               ),
             ),
-          ),
           // メインスクロールビュー
           CustomScrollView(
             controller: _scrollController,

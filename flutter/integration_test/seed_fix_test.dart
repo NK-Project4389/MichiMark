@@ -64,7 +64,7 @@ void main() {
   // ────────────────────────────────────────────────────────
   // TC-SEED-001: イベント一覧でevent-001のトピック名が表示される
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-SEED-001: イベント一覧で「移動コスト可視化」トピック名が表示される',
+  testWidgets('TC-SEED-001: イベント一覧で「移動コスト（給油から計算）」トピック名が表示される',
       (tester) async {
     await startApp(tester);
 
@@ -73,11 +73,11 @@ void main() {
       return;
     }
 
-    // 「箱根日帰りドライブ」カードに「移動コスト可視化」が表示されること
+    // 「箱根日帰りドライブ」カードに「移動コスト（給油から計算）」が表示されること
     expect(
-      find.text('移動コスト可視化'),
+      find.text('移動コスト（給油から計算）'),
       findsWidgets,
-      reason: 'イベント一覧の「箱根日帰りドライブ」カードに「移動コスト可視化」トピック名が表示されること',
+      reason: 'イベント一覧の「箱根日帰りドライブ」カードに「移動コスト（給油から計算）」トピック名が表示されること',
     );
   });
 
@@ -133,7 +133,11 @@ void main() {
     } else {
       await tester.tap(editButton);
     }
-    await tester.pumpAndSettle();
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.text('ガソリン支払者').evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
 
     // 「ガソリン支払者」行を探してタップする
     final gasPayerRow = find.text('ガソリン支払者');
@@ -153,7 +157,7 @@ void main() {
     }
 
     await tester.ensureVisible(gasPayerInkWell.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(gasPayerInkWell.first);
 
     // SelectionPageが開くまで待つ

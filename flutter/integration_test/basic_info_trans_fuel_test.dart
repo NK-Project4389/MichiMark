@@ -134,7 +134,7 @@ void main() {
     final saveButton = find.text('保存');
     if (saveButton.evaluate().isEmpty) return;
     await tester.ensureVisible(saveButton);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(saveButton);
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));

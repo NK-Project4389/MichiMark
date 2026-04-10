@@ -1,6 +1,13 @@
 # 進捗記録 2026-04-11
 
 ## 完了した作業
+- docs: Phase16/17タスク追加・進捗登録（MichiInfo/PaymentInfoカード削除・ロードマップ再設計） (d3f1b5e)
+- docs: Roadmap再設計（Phase A〜E・ターゲット8セグメント・マーケターAgent定義） (a51205a)
+- chore: Roadmap.md の完了済みPhase・実装状況を削除（再設計前の整理） (4273b7f)
+- chore: タスクボードの完了済みPhaseを削除（Phase 1〜13・アーカイブ） (79414ce)
+- chore: SwiftUI資材を削除（Flutter移植完了のため不要） (95e2ccc)
+- docs: Phase15（B-1〜B-4 バグ修正）をタスクボードに追加 (94d0f09)
+- docs: 2026-04-11セッション進捗更新（Integration Test修正・pumpAndSettle禁止ルール追加） (4335635)
 
 ### Integration Test 修正（TC-MCI insertモード対応）(ba2a9b1)
 - `michi_info_layout_test.dart`: TS-03/04/05 修正

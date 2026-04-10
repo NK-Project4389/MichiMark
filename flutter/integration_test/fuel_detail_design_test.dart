@@ -66,7 +66,7 @@ void main() {
     final michiTab = find.text('ミチ');
     if (michiTab.evaluate().isEmpty) return;
     await tester.tap(michiTab);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pump(const Duration(milliseconds: 300));
   }
 
@@ -121,7 +121,7 @@ void main() {
     final switchWidget = tester.widget<SwitchListTile>(fuelSwitch.first);
     if (!switchWidget.value) {
       await tester.tap(fuelSwitch.first);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       await tester.pump(const Duration(milliseconds: 300));
     }
   }
@@ -136,7 +136,7 @@ void main() {
     final switchWidget = tester.widget<SwitchListTile>(fuelSwitch.first);
     if (switchWidget.value) {
       await tester.tap(fuelSwitch.first);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       await tester.pump(const Duration(milliseconds: 300));
     }
   }
@@ -153,7 +153,7 @@ void main() {
       return false;
     }
     await tester.ensureVisible(gasPayerRow.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(gasPayerRow.first);
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
@@ -187,7 +187,7 @@ void main() {
     final saveButton = find.text('保存');
     if (saveButton.evaluate().isEmpty) return;
     await tester.ensureVisible(saveButton.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(saveButton.first);
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
@@ -441,7 +441,7 @@ void main() {
     final overviewTab = find.text('概要');
     if (overviewTab.evaluate().isNotEmpty) {
       await tester.tap(overviewTab.first);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       await tester.pump(const Duration(milliseconds: 300));
     }
 
@@ -518,7 +518,7 @@ void main() {
     final overviewTab = find.text('概要');
     if (overviewTab.evaluate().isNotEmpty) {
       await tester.tap(overviewTab.first);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       await tester.pump(const Duration(milliseconds: 300));
     }
 
@@ -573,7 +573,7 @@ void main() {
     final fab = find.byType(FloatingActionButton);
     expect(fab, findsOneWidget, reason: '新規作成FABが表示されること');
     await tester.tap(fab.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pump(const Duration(milliseconds: 500));
 
     // 2. Topic選択画面（ModalBottomSheet）が表示される

@@ -376,6 +376,13 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
           isInsertMode: false,
           pendingInsertAfterSeq: null,
         ));
+      } else if (current.projection.items.isEmpty) {
+        // 0件のとき: インジケーターがないためBottomSheetを直接トリガー
+        // pendingInsertAfterSeq = -1 は「末尾追加（0件）」のシグナル値
+        emit(current.copyWith(
+          isInsertMode: true,
+          pendingInsertAfterSeq: -1,
+        ));
       } else {
         emit(current.copyWith(isInsertMode: true));
       }
@@ -437,6 +444,10 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       // REQ-MAD-004: イベントメンバー一覧
       final List<MemberDomain> eventMembers = domain.members;
 
+      // -1 は0件時のシグナル値 → insertAfterSeq: null（末尾追加）に変換
+      final effectiveInsertAfterSeq = current.pendingInsertAfterSeq == -1
+          ? null
+          : current.pendingInsertAfterSeq;
       emit(current.copyWith(
         delegate: MichiInfoAddMarkDelegate(
           _eventId,
@@ -445,7 +456,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
           initialSelectedMembers: initialSelectedMembers,
           initialMarkLinkDate: initialMarkLinkDate,
           eventMembers: eventMembers,
-          insertAfterSeq: current.pendingInsertAfterSeq,
+          insertAfterSeq: effectiveInsertAfterSeq,
         ),
       ));
     } on Exception catch (e) {
@@ -459,12 +470,16 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     Emitter<MichiInfoState> emit,
   ) async {
     if (state case MichiInfoLoaded current) {
+      // -1 は0件時のシグナル値 → insertAfterSeq: null（末尾追加）に変換
+      final effectiveInsertAfterSeq = current.pendingInsertAfterSeq == -1
+          ? null
+          : current.pendingInsertAfterSeq;
       emit(current.copyWith(
         delegate: MichiInfoAddLinkDelegate(
           _eventId,
           current.topicConfig,
           eventMembers: current.eventMembers,
-          insertAfterSeq: current.pendingInsertAfterSeq,
+          insertAfterSeq: effectiveInsertAfterSeq,
         ),
       ));
     }

@@ -171,13 +171,13 @@ class _PaymentListTile extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  // 行2: メモ（存在する場合のみ・金額と同スタイル）
+                  // 行2: メモ（存在する場合のみ・italic で表示）
                   if (hasMemo) ...[
                     const SizedBox(height: 2),
                     Text(
                       memo,
                       style: textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
                       ),
                     ),
                   ],

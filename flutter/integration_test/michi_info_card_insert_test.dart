@@ -56,7 +56,7 @@ void main() {
     final michiTab = find.text('ミチ');
     expect(michiTab, findsOneWidget, reason: '「ミチ」タブが表示されること');
     await tester.tap(michiTab);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // MichiInfo ページのロードを待つ
     for (var i = 0; i < 15; i++) {
@@ -135,7 +135,7 @@ void main() {
     final fab = find.byType(FloatingActionButton);
     expect(fab, findsOneWidget, reason: 'FABが表示されること');
     await tester.tap(fab);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // FABのアイコンが close に変わること
     expect(
@@ -164,7 +164,7 @@ void main() {
 
     // 1回目のタップ（挿入モードへ）
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // 挿入モードになったことを確認
     expect(
@@ -178,7 +178,7 @@ void main() {
 
     // 2回目のタップ（通常モードへ戻る）
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // FABが + アイコンに戻ること
     expect(
@@ -207,7 +207,7 @@ void main() {
 
     // FABタップ（挿入モードへ）
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターが表示されていることを確認
     final indicators = find.byIcon(Icons.add_circle_outline);
@@ -215,7 +215,7 @@ void main() {
 
     // 最初のインジケーターをタップ
     await tester.tap(indicators.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // BottomSheet が表示されること
     final hasAddMark = find.text('地点を追加').evaluate().isNotEmpty ||
@@ -241,13 +241,13 @@ void main() {
 
     // FABタップ（挿入モードへ）
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターをタップ
     final indicators = find.byIcon(Icons.add_circle_outline);
     expect(indicators, findsWidgets, reason: 'インジケーターが表示されること');
     await tester.tap(indicators.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // BottomSheet が表示されることを確認
     final hasBottomSheet = find.text('地点を追加').evaluate().isNotEmpty ||
@@ -260,7 +260,7 @@ void main() {
 
     // BottomSheet をドラッグ（スワイプ）して閉じる
     await tester.drag(find.byType(BottomSheet), const Offset(0, 300));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // 挿入モードが継続していること（インジケーターが表示されたまま）
     expect(
@@ -289,13 +289,13 @@ void main() {
 
     // FABタップ（挿入モードへ）
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターをタップ
     final indicators = find.byIcon(Icons.add_circle_outline);
     expect(indicators, findsWidgets, reason: 'インジケーターが表示されること');
     await tester.tap(indicators.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // BottomSheet から「地点を追加」または「Mark を追加」をタップ
     Finder addMarkFinder;
@@ -328,13 +328,13 @@ void main() {
 
     // FABタップ（挿入モードへ）
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターをタップ（最初のインジケーター = 1枚目のカードの後）
     final indicators = find.byIcon(Icons.add_circle_outline);
     expect(indicators, findsWidgets, reason: 'インジケーターが表示されること');
     await tester.tap(indicators.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // BottomSheet で地点追加を選択
     Finder addMarkFinder;
@@ -376,7 +376,7 @@ void main() {
     }
 
     await tester.ensureVisible(saveButton);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(saveButton);
 
     // 保存後の画面遷移を待つ（MichiInfoに戻るまで待機）
@@ -384,7 +384,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.byType(FloatingActionButton).evaluate().isNotEmpty) break;
     }
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // MichiInfoに戻ったことを確認（FABが表示されること）
     expect(
@@ -430,13 +430,13 @@ void main() {
 
     // FABタップ（挿入モードへ）
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターをタップ
     final indicators = find.byIcon(Icons.add_circle_outline);
     expect(indicators, findsWidgets, reason: 'インジケーターが表示されること');
     await tester.tap(indicators.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // BottomSheet に「区間を追加」または「Link を追加」があることを確認
     Finder addLinkFinder;
@@ -472,13 +472,13 @@ void main() {
 
     // FABタップ（挿入モードへ）
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターをタップ
     final indicators = find.byIcon(Icons.add_circle_outline);
     expect(indicators, findsWidgets, reason: 'インジケーターが表示されること');
     await tester.tap(indicators.first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // BottomSheet に「区間を追加」または「Link を追加」があることを確認
     Finder addLinkFinder;
@@ -522,7 +522,7 @@ void main() {
     }
 
     await tester.ensureVisible(saveButton);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(saveButton);
 
     // 保存後の画面遷移を待つ
@@ -530,7 +530,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.byType(FloatingActionButton).evaluate().isNotEmpty) break;
     }
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // MichiInfoに戻ったことを確認
     expect(
@@ -576,7 +576,7 @@ void main() {
 
     // FABタップ（挿入モードへ）
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターが表示されていることを確認
     final indicatorsBefore = find.byIcon(Icons.add_circle_outline);
@@ -589,7 +589,7 @@ void main() {
             find.byType(ListView).first, const Offset(0, -300));
         await tester.pump(const Duration(milliseconds: 200));
       }
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
     }
 
     // 末尾インジケーターをタップ（最後に表示されているインジケーター）
@@ -600,7 +600,7 @@ void main() {
     }
 
     await tester.tap(indicatorsAtEnd.last);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // BottomSheet が表示されること
     Finder addMarkFinder;
@@ -643,7 +643,7 @@ void main() {
     }
 
     await tester.ensureVisible(saveButton);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(saveButton);
 
     // 保存後の画面遷移を待つ
@@ -651,7 +651,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.byType(FloatingActionButton).evaluate().isNotEmpty) break;
     }
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // MichiInfoに戻ったことを確認
     expect(
@@ -668,7 +668,7 @@ void main() {
               find.byType(ListView).first, const Offset(0, -300));
           await tester.pump(const Duration(milliseconds: 200));
         }
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
       }
 
       for (var i = 0; i < 5; i++) {
