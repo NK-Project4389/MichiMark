@@ -152,8 +152,8 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-120 | 燃費更新機能 要件書作成 | product-manager | `TODO` | | 交通手段マスターのkmPerGasを概要タブから更新する機能 |
-| T-121 | 燃費更新機能 Spec作成 | architect | `BLOCKED` | | T-120完了後 |
+| T-120 | 燃費更新機能 要件書作成 | product-manager | `DONE` | | 要件書: `docs/Requirements/REQ-fuel_efficiency_update.md` |
+| T-121 | 燃費更新機能 Spec作成 | architect | `TODO` | | T-120完了後 |
 | T-122 | 燃費更新機能 実装 | flutter-dev | `BLOCKED` | | T-121完了後 |
 | T-123 | 燃費更新機能 レビュー | reviewer | `BLOCKED` | | T-122完了後 |
 | T-124 | 燃費更新機能 テスト | tester | `BLOCKED` | | T-123完了後 |
