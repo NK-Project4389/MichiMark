@@ -85,3 +85,4 @@
 - [2026-04-11](./2026-04-11_docs__pumpAndSettle__禁止ルールをCLA.md)
 | [2026-04-11_session_progress.md](./2026-04-11_session_progress.md) | Phase11カード挿入・Phase13燃費更新 全完了・許可設定追加 |
 | [2026-04-11_roadmap_renewal_and_cleanup.md](./2026-04-11_roadmap_renewal_and_cleanup.md) | SwiftUI資材削除・Roadmap再設計（Phase A〜E）・タスク追加（Phase 16・17） |
+| [2026-04-11_fix__B1-B4バグ修正_IntTest全件PASS_TF予定.md](./2026-04-11_fix__B1-B4バグ修正_IntTest全件PASS_TF予定.md) | B-1〜B-4バグ修正・Integration Test 84PASS/0FAIL・TestFlight予定 |

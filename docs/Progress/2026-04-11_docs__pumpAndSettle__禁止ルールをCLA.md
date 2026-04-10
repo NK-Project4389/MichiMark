@@ -1,6 +1,7 @@
 # 進捗記録 2026-04-11
 
 ## 完了した作業
+- fix: B-1〜B-4バグ修正・Integration Test全件PASS (e430ba5)
 - docs: Phase16/17タスク追加・進捗登録（MichiInfo/PaymentInfoカード削除・ロードマップ再設計） (d3f1b5e)
 - docs: Roadmap再設計（Phase A〜E・ターゲット8セグメント・マーケターAgent定義） (a51205a)
 - chore: Roadmap.md の完了済みPhase・実装状況を削除（再設計前の整理） (4273b7f)
