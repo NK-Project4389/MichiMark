@@ -14,7 +14,9 @@
       "Bash(xcodebuild *)",
       "Bash(open *)",
       "Bash(ls*)",
-      "Bash(mkdir*)"
+      "Bash(mkdir*)",
+      "Bash(xcrun *)",
+      "Bash(sqlite3 *)"
     ]
   },
   "hooks": {

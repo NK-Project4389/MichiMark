@@ -5,6 +5,7 @@
 ---
 
 ## 完了した作業
+- feat: T-120〜124完了 燃費更新機能（Trans選択時にkmPerGasを概要タブに反映）TC-FEU 2PASS/1SKIP (bae2595)
 - test: TC-MCI insertモード対応・TS-03/04/05・TC-MAD-001〜008 全件修正 (ba2a9b1)
 - docs: 燃費更新機能 要件書修正（方向を逆に：Trans選択時にkmPerGasを概要タブに反映） (dd53de0)
 - docs: T-120完了 燃費更新機能 要件書作成（REQ-fuel_efficiency_update） (d1efe18)
