@@ -100,7 +100,7 @@ sqlite3 "$TCC_DB" "INSERT OR REPLACE INTO access \
 
 ```dart
 await tester.ensureVisible(find.byKey(const Key('save_button')));
-await tester.pumpAndSettle();
+await tester.pump(const Duration(milliseconds: 500));
 await tester.tap(find.byKey(const Key('save_button')));
 ```
 
@@ -123,6 +123,31 @@ for (var i = 0; i < 10; i++) {
 }
 expect(find.byKey(Key('target_item')), findsOneWidget);
 ```
+
+---
+
+### 落とし穴 5: pumpAndSettle() は Integration Test で使わない
+
+**症状**: テストが数十分経っても終わらず無限ハング。
+
+**原因**: `pumpAndSettle()` は「アニメーションが全部止まるまで無限に待つ」仕様。
+MichiInfo の CustomPainter など**常に再描画し続けるウィジェット**が画面上に存在すると永遠に終わらない。
+
+**対処**: `pumpAndSettle()` を固定時間の `pump()` に置き換える。
+
+```dart
+// ❌ NG: CustomPainter や RepaintBoundary があると無限ハング
+await tester.ensureVisible(find.byKey(const Key('save_button')));
+await tester.pumpAndSettle();
+await tester.tap(find.byKey(const Key('save_button')));
+
+// ✅ OK: 固定時間で待つ
+await tester.ensureVisible(find.byKey(const Key('save_button')));
+await tester.pump(const Duration(milliseconds: 500));
+await tester.tap(find.byKey(const Key('save_button')));
+```
+
+**ルール: Integration Test 内での `pumpAndSettle()` 使用は禁止。必ず `pump(Duration(...))` を使うこと。**
 
 ---
 
