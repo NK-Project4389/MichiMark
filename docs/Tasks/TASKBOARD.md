@@ -153,10 +153,10 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-120 | 燃費更新機能 要件書作成 | product-manager | `DONE` | | 要件書: `docs/Requirements/REQ-fuel_efficiency_update.md` |
-| T-121 | 燃費更新機能 Spec作成 | architect | `TODO` | | T-120完了後 |
-| T-122 | 燃費更新機能 実装 | flutter-dev | `BLOCKED` | | T-121完了後 |
-| T-123 | 燃費更新機能 レビュー | reviewer | `BLOCKED` | | T-122完了後 |
-| T-124 | 燃費更新機能 テスト | tester | `BLOCKED` | | T-123完了後 |
+| T-121 | 燃費更新機能 Spec作成 | architect | `DONE` | | Spec: `docs/Spec/Features/FuelEfficiencyUpdate_Spec.md` |
+| T-122 | 燃費更新機能 実装 | flutter-dev | `DONE` | | |
+| T-123 | 燃費更新機能 レビュー | reviewer | `DONE` | | 全項目PASS |
+| T-124 | 燃費更新機能 テスト | tester | `DONE` | | TC-FEU-001/003 PASS、TC-FEU-002 SKIP（kmPerGas=null のTrans をUIから作成不可） |
 
 ## Phase 14: イベント削除機能 + スワイプ削除UI
 

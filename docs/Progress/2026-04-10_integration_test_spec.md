@@ -5,6 +5,10 @@
 ---
 
 ## 完了した作業
+- test: TC-MCI insertモード対応・TS-03/04/05・TC-MAD-001〜008 全件修正 (ba2a9b1)
+- docs: 燃費更新機能 要件書修正（方向を逆に：Trans選択時にkmPerGasを概要タブに反映） (dd53de0)
+- docs: T-120完了 燃費更新機能 要件書作成（REQ-fuel_efficiency_update） (d1efe18)
+- docs: Integration Test 設計書整理・tester/workflow ルール更新（41件・10グループ） (cf0f90e)
 - feat: MichiInfoカード間挿入機能 実装・全10件PASS（TC-MCI-001〜010） (6cf2a88)
 
 ### Integration Test 設計書の作成

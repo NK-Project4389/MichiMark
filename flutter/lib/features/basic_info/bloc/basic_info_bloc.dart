@@ -125,9 +125,11 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
     if (state is BasicInfoLoaded) {
       final current = state as BasicInfoLoaded;
       // 交通手段に燃費が設定されていれば自動で反映する（0.1km/Lの10倍整数値 → 表示文字列に変換）
+      // movingCostEstimated モードのみ反映する（REQ-FEU-003）
       final kmPerGas = event.trans?.kmPerGas;
-      final newKmPerGasInput = kmPerGas != null
-          ? (kmPerGas / 10.0).toString()
+      final isEstimatedMode = current.draft.selectedTopic?.topicType == TopicType.movingCostEstimated;
+      final newKmPerGasInput = (kmPerGas != null && isEstimatedMode)
+          ? (kmPerGas / 10.0).toStringAsFixed(1)
           : current.draft.kmPerGasInput;
       emit(current.copyWith(
         draft: current.draft.copyWith(
