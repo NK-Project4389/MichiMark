@@ -126,8 +126,27 @@ Bottom sheet のスクロール内でリストが長い場合も同様。
 
 ```dart
 await tester.ensureVisible(find.byKey(const Key('save_button')));
-await tester.pumpAndSettle();
+await tester.pump(const Duration(milliseconds: 500));
 await tester.tap(find.byKey(const Key('save_button')));
+```
+
+---
+
+### 落とし穴 4: pumpAndSettle() は使わない（無限ハング）
+
+**症状**: テストが数十分経っても終わらない。
+
+**原因**: `pumpAndSettle()` は「アニメーションが全部止まるまで無限に待つ」仕様。
+MichiInfo の CustomPainter など常に再描画し続けるウィジェットが画面上にあると永遠に終わらない。
+
+**ルール: Integration Test 内での `pumpAndSettle()` 使用は禁止。必ず `pump(Duration(...))` を使うこと。**
+
+```dart
+// ❌ NG: CustomPainter があると無限ハング
+await tester.pumpAndSettle();
+
+// ✅ OK: 固定時間で待つ
+await tester.pump(const Duration(milliseconds: 500));
 ```
 
 ---
