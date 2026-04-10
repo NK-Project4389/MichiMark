@@ -168,6 +168,16 @@
 | T-133 | イベント削除機能 レビュー | reviewer | `BLOCKED` | | T-132完了後 |
 | T-134 | イベント削除機能 テスト | tester | `BLOCKED` | | T-133完了後 |
 
+## Phase 15: バグ修正（B-1〜B-4）
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-140 | B-1/B-2: BasicInfo燃費/ガソリン単価 単位表示・即時反映修正 | flutter-dev | `IN_PROGRESS` | `2026-04-11_bugfix_basic_michi` | _NumberInputField → NumericInputRow置き換え |
+| T-141 | B-3: MichiInfo 0件時 追加ボタン修正 | flutter-dev | `IN_PROGRESS` | `2026-04-11_bugfix_basic_michi` | items.empty時 pendingInsertAfterSeq=-1設定 |
+| T-142 | B-4: MichiInfo InsertMode時タイムライン座標ズレ修正 | flutter-dev | `IN_PROGRESS` | `2026-04-11_bugfix_basic_michi` | InsertMode時CustomPaint非表示 |
+| T-143 | バグ修正 レビュー | reviewer | `BLOCKED` | | T-140〜142完了後 |
+| T-144 | バグ修正 テスト | tester | `BLOCKED` | | T-143完了後 |
+
 ---
 
 ## 完了済みタスク（アーカイブ）
