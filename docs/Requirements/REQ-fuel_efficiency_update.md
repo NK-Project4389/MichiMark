@@ -10,37 +10,20 @@
 
 ## 背景・目的
 
-`movingCostEstimated`（燃費推定モード）のイベントでは、概要タブ（BasicInfo）で燃費（km/L）を入力・保存できる。
-しかし現状、この値はイベントの `topic.kmPerGas` として保存されるが、元になる交通手段マスター（`TransDomain.kmPerGas`）は更新されない。
+`movingCostEstimated`（燃費推定モード）の概要タブでは、燃費（km/L）を手動で入力できる。
+しかし交通手段マスター（`TransDomain.kmPerGas`）には車両ごとの燃費が登録されており、
+交通手段を選択したときにマスターの燃費値が自動で反映されないため、毎回手動入力が必要になっている。
 
-次に新しいイベントを作成すると、マスターの古い燃費値が引き継がれるため、毎回設定画面から手動でマスターを更新する手間が発生している。
-
-本要件は「概要タブで変更した燃費を交通手段マスターにも反映できる機能」を定義する。
+本要件は「概要タブで交通手段を選択したとき、マスターの燃費（`kmPerGas`）で概要タブの燃費入力欄を上書きする」機能を定義する。
 
 ---
 
 ## UXフロー
 
-1. `movingCostEstimated` イベントの概要タブで燃費を変更する
-2. 保存ボタンをタップする（既存の保存フロー）
-3. 保存完了後、**確認ダイアログ**を表示する
-   - タイトル: `「[交通手段名]」の燃費を更新しますか？`
-   - 本文: `入力した燃費（XX.X km/L）を交通手段マスターにも反映します。次回以降のイベントにも適用されます。`
-   - ボタン: `更新する` / `このイベントのみ`
-4. `更新する` を選択 → `TransDomain.kmPerGas` を更新して保存
-5. `このイベントのみ` を選択 → マスターは変更せず終了
-
-### ダイアログ表示条件
-
-以下をすべて満たす場合のみダイアログを表示する：
-
-| 条件 | 内容 |
-|---|---|
-| TopicType | `movingCostEstimated` であること |
-| 交通手段 | 選択済み（`selectedTrans != null`）であること |
-| 燃費の変化 | 入力した燃費値が交通手段マスターの現在値と**異なる**こと |
-
-上記条件を満たさない場合は、ダイアログを表示せず通常通り保存して終了する。
+1. `movingCostEstimated` イベントの概要タブを開く
+2. 交通手段の選択行をタップして交通手段マスターを選択する
+3. 選択完了時、選択した交通手段の `kmPerGas` で燃費入力欄（`kmPerGasInput`）を**上書き**する
+4. マスターの `kmPerGas` が null の場合は燃費入力欄を変更しない
 
 ---
 
@@ -48,38 +31,40 @@
 
 | ID | 要件 | 優先度 |
 |---|---|---|
-| REQ-FEU-001 | 概要タブ保存後、ダイアログ表示条件を満たす場合に確認ダイアログを表示する | Must |
-| REQ-FEU-002 | ダイアログで「更新する」を選択すると `TransDomain.kmPerGas` が更新される | Must |
-| REQ-FEU-003 | ダイアログで「このイベントのみ」を選択するとマスターは変更されない | Must |
-| REQ-FEU-004 | 交通手段未選択の場合はダイアログを表示しない | Must |
-| REQ-FEU-005 | 燃費入力値がマスター現在値と同じ場合はダイアログを表示しない | Must |
-| REQ-FEU-006 | `movingCostEstimated` 以外のTopicTypeではダイアログを表示しない | Must |
+| REQ-FEU-001 | 交通手段選択時、選択した Trans の `kmPerGas` が non-null であれば概要タブの燃費入力欄を上書きする | Must |
+| REQ-FEU-002 | 選択した Trans の `kmPerGas` が null の場合は燃費入力欄を変更しない | Must |
+| REQ-FEU-003 | 上書きは `movingCostEstimated` TopicType のみ行う。他の TopicType では燃費入力欄が非表示のため対象外 | Must |
+| REQ-FEU-004 | 上書き後、ユーザーは燃費入力欄を手動で変更できる（通常の編集フロー） | Must |
 
 ---
 
 ## 燃費値の変換仕様
 
-`BasicInfoDraft.kmPerGasInput`（小数文字列）と `TransDomain.kmPerGas`（int、0.1km/L単位）の変換：
+`TransDomain.kmPerGas`（int、0.1km/L単位）→ `BasicInfoDraft.kmPerGasInput`（小数文字列）の変換：
 
-| 方向 | 変換式 | 例 |
+| 変換 | 計算式 | 例 |
 |---|---|---|
-| 入力 → 比較 | `double.parse(kmPerGasInput) * 10` を `int` に変換 | `"15.5"` → `155` |
-| マスター → 表示 | `kmPerGas / 10.0` | `155` → `15.5` |
+| マスター → 入力欄 | `(kmPerGas / 10.0).toStringAsFixed(1)` | `155` → `"15.5"` |
 
-変換後の整数値が一致する場合はダイアログ表示なし（REQ-FEU-005）。
+---
+
+## 実装方針
+
+`BasicInfoBloc` の `BasicInfoTransSelected` ハンドラーにて、
+選択された `TransDomain.kmPerGas` が non-null かつ TopicType が `movingCostEstimated` の場合に、
+`draft.kmPerGasInput` を変換値で更新する。
 
 ---
 
 ## スコープ外
 
-- 設定画面（TransSettings）からの燃費更新（既存機能）
-- `meterValue`（累積メーター初期値）のマスター更新
-- `pricePerGas`（ガソリン単価）のマスター更新
-- `movingCost`（給油実績モード）での燃費更新
+- 概要タブの燃費変更を交通手段マスターに書き戻す機能
+- `pricePerGas`（ガソリン単価）の自動反映
+- `meterValue`（累積メーター初期値）の自動反映
+- `movingCost`（給油実績モード）への適用
 
 ---
 
 ## 参照
 
-- 交通手段マスター: `docs/Spec/Features/` 内の Trans 関連 Spec
 - タスクボード: T-120〜T-124
