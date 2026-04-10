@@ -90,10 +90,13 @@ final router = GoRouter(
             args is MarkDetailArgs ? args.initialMarkLinkDate : null;
         final List<MemberDomain> eventMembers =
             args is MarkDetailArgs ? args.eventMembers : const [];
+        final insertAfterSeq =
+            args is MarkDetailArgs ? args.insertAfterSeq : null;
         return BlocProvider(
           create: (_) => MarkDetailBloc(
             eventRepository: getIt<EventRepository>(),
             transRepository: getIt<TransRepository>(),
+            insertAfterSeq: insertAfterSeq,
           )..add(MarkDetailStarted(
               eventId: eventId,
               markLinkId: markId,
@@ -115,9 +118,12 @@ final router = GoRouter(
         final eventId = args is LinkDetailArgs ? args.eventId : (args as String? ?? '');
         final topicConfig = args is LinkDetailArgs ? args.topicConfig : null;
         final eventMembers = args is LinkDetailArgs ? args.eventMembers : const <MemberDomain>[];
+        final insertAfterSeq =
+            args is LinkDetailArgs ? args.insertAfterSeq : null;
         return BlocProvider(
           create: (_) => LinkDetailBloc(
             eventRepository: getIt<EventRepository>(),
+            insertAfterSeq: insertAfterSeq,
           )..add(LinkDetailStarted(
               eventId: eventId,
               markLinkId: linkId,

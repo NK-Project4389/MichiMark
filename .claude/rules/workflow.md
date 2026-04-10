@@ -17,7 +17,9 @@
 ```
 product-manager（要件書）→ architect（Spec・テストシナリオ込み）→ flutter-dev（実装）
   → reviewer（レビュー・自動交代）→ 違反あり → flutter-dev（修正）→ reviewer（再レビュー）
-  → reviewer承認 → tester（Integration Test実行）
+  → reviewer承認 → tester（下記2ステップを実施）
+      ├─ Step 1: IntegrationTest_Spec.md との照合・必要に応じて更新
+      └─ Step 2: 新機能の Integration Test 実装・実行
   → 失敗 → flutter-dev（問題切り分け）
       ├─ 設計レベル → architect（設計修正）→ reviewer → flutter-dev → reviewer → tester
       └─ コードレベル → flutter-dev（直接修正）→ reviewer → tester

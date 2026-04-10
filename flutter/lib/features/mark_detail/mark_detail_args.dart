@@ -18,6 +18,9 @@ class MarkDetailArgs {
   /// メンバー選択候補（イベントメンバー一覧）
   final List<MemberDomain> eventMembers;
 
+  /// null = 末尾追加（現行動作）、non-null = 指定位置に挿入
+  final int? insertAfterSeq;
+
   const MarkDetailArgs({
     required this.eventId,
     required this.topicConfig,
@@ -25,5 +28,6 @@ class MarkDetailArgs {
     this.initialSelectedMembers = const [],
     this.initialMarkLinkDate,
     this.eventMembers = const [],
+    this.insertAfterSeq,
   });
 }

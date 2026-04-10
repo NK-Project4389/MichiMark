@@ -7,8 +7,10 @@ import 'link_detail_event.dart';
 import 'link_detail_state.dart';
 
 class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
-  LinkDetailBloc({required EventRepository eventRepository})
-      : _eventRepository = eventRepository,
+  LinkDetailBloc({
+    required EventRepository eventRepository,
+    this.insertAfterSeq,
+  })  : _eventRepository = eventRepository,
         super(const LinkDetailLoading()) {
     on<LinkDetailStarted>(_onStarted);
     on<LinkDetailDismissPressed>(_onDismissPressed);
@@ -28,6 +30,10 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
   }
 
   final EventRepository _eventRepository;
+
+  /// null = 末尾追加（現行動作）、non-null = 指定位置に挿入
+  final int? insertAfterSeq;
+
   String _eventId = '';
   String _markLinkId = '';
 
@@ -187,12 +193,25 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
         final activeMarkLinks = existing.markLinks.where((ml) => !ml.isDeleted).toList();
         final existingMarkLink = activeMarkLinks.where((ml) => ml.id == _markLinkId).firstOrNull;
         final int seq;
+        List<MarkLinkDomain> shiftedMarkLinks = List.of(existing.markLinks);
         if (existingMarkLink != null) {
           seq = existingMarkLink.markLinkSeq;
         } else {
-          seq = activeMarkLinks.isEmpty
-              ? 0
-              : activeMarkLinks.map((ml) => ml.markLinkSeq).reduce((a, b) => a > b ? a : b) + 1;
+          final insertSeq = insertAfterSeq;
+          if (insertSeq != null) {
+            // 挿入モード: insertAfterSeq より大きい seq を全て +1
+            shiftedMarkLinks = shiftedMarkLinks.map((ml) {
+              if (!ml.isDeleted && ml.markLinkSeq > insertSeq) {
+                return ml.copyWith(markLinkSeq: ml.markLinkSeq + 1);
+              }
+              return ml;
+            }).toList();
+            seq = insertSeq + 1;
+          } else {
+            seq = activeMarkLinks.isEmpty
+                ? 0
+                : activeMarkLinks.map((ml) => ml.markLinkSeq).reduce((a, b) => a > b ? a : b) + 1;
+          }
         }
 
         final distanceValue = draft.distanceValueInput.isEmpty
@@ -234,7 +253,7 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
         );
 
         final updatedMarkLinks = List<MarkLinkDomain>.from(
-          existing.markLinks.where((ml) => ml.id != _markLinkId),
+          shiftedMarkLinks.where((ml) => ml.id != _markLinkId),
         )..add(newMarkLink);
 
         final updated = existing.copyWith(

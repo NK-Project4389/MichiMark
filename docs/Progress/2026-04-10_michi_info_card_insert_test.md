@@ -1,6 +1,7 @@
 # 2026-04-10 MichiInfoカード間挿入機能 Integration Test 全10件PASS
 
 ## 完了した作業
+- test: MichiInfoカード間挿入機能 Integration Test 全10件PASS（TC-MCI-001〜010） (e48eb40)
 
 - TC-MCI-007/009 FAIL の原因（`_onReloadRequested` ハンドラーに `isInsertMode: false` / `pendingInsertAfterSeq: null` のリセット未実装）を flutter-dev が修正
 - 既存テストファイル `integration_test/michi_info_card_insert_test.dart` を使って再テスト実施

@@ -9,9 +9,13 @@ class LinkDetailArgs {
   /// メンバー選択候補（基本情報のメンバーのみを表示するために使用）
   final List<MemberDomain> eventMembers;
 
+  /// null = 末尾追加（現行動作）、non-null = 指定位置に挿入
+  final int? insertAfterSeq;
+
   const LinkDetailArgs({
     required this.eventId,
     required this.topicConfig,
     this.eventMembers = const [],
+    this.insertAfterSeq,
   });
 }

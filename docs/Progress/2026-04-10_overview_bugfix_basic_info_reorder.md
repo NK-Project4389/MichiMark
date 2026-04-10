@@ -5,6 +5,7 @@
 ---
 
 ## 完了した作業
+- fix: movingCostEstimated概要集計バグ修正・BasicInfo項目並び替え・TC-BTF修正 (f85e67f)
 
 ### 1. movingCostEstimated 概要集計バグ修正（バグ修正）
 

@@ -125,6 +125,48 @@ class MichiInfoDelegateConsumed extends MichiInfoEvent {
   List<Object?> get props => [];
 }
 
+/// FAB タップ（挿入モードのトグル）
+class MichiInfoInsertModeFabPressed extends MichiInfoEvent {
+  const MichiInfoInsertModeFabPressed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// インジケータータップ（挿入ポイント確定）
+/// [insertAfterSeq] 直前カードの markLinkSeq。末尾インジケーターの場合は全アイテムの最大 seq
+class MichiInfoInsertPointSelected extends MichiInfoEvent {
+  final int insertAfterSeq;
+  const MichiInfoInsertPointSelected(this.insertAfterSeq);
+
+  @override
+  List<Object?> get props => [insertAfterSeq];
+}
+
+/// 挿入モードで Mark 追加を選択したとき
+class MichiInfoInsertMarkPressed extends MichiInfoEvent {
+  const MichiInfoInsertMarkPressed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 挿入モードで Link 追加を選択したとき
+class MichiInfoInsertLinkPressed extends MichiInfoEvent {
+  const MichiInfoInsertLinkPressed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 挿入ポイント選択をキャンセルしたとき（BottomSheet を閉じた）
+class MichiInfoInsertPointCancelled extends MichiInfoEvent {
+  const MichiInfoInsertPointCancelled();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// Mark/Link 詳細から戻ったとき DB からリロードするとき（ローディング表示なし）
 class MichiInfoReloadRequested extends MichiInfoEvent {
   const MichiInfoReloadRequested();

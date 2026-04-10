@@ -5,6 +5,11 @@
 ---
 
 ## 完了した作業
+- chore: T-113〜115 DONE（MovingCostFuelMode 実装・レビュー・テスト完了） (96c2c1c)
+- feat: MovingCostFuelMode Spec作成（T-112完了） (176360a)
+- docs: movingCost燃費モード分離 要件書作成・オーケストレーターSpec調査ルール追加 (1223057)
+- chore: git/dart/flutter コマンドの永続許可を追加 (366b321)
+- fix: 交通手段選択時の燃費単位変換バグ修正（kmPerGas/10.0で正しく変換） (090073e)
 - test: BasicInfo燃費変換バグ修正 Integration Test 追加（TC-BTF-001〜002 全件PASS） (6f47db8)
 - fix: PaymentInfo追加ボタンにテーマカラー適用・タスクボードPhase12/13追加 (fe001a1)
 

@@ -137,8 +137,27 @@ class _MichiInfoViewState extends State<MichiInfoView> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MichiInfoBloc, MichiInfoState>(
+      listenWhen: (prev, curr) {
+        // delegate 変化 → 従来のトリガー
+        if (curr is MichiInfoLoaded && curr.delegate != null) return true;
+        // pendingInsertAfterSeq が null → non-null に変化 → BottomSheet トリガー
+        if (prev is MichiInfoLoaded && curr is MichiInfoLoaded) {
+          return prev.pendingInsertAfterSeq == null &&
+              curr.pendingInsertAfterSeq != null;
+        }
+        return false;
+      },
       listener: (context, state) async {
-        if (state is MichiInfoLoaded && state.delegate != null) {
+        if (state is! MichiInfoLoaded) return;
+
+        // BottomSheet トリガー（pendingInsertAfterSeq が non-null になったとき）
+        if (state.delegate == null && state.pendingInsertAfterSeq != null) {
+          await _showInsertBottomSheet(state.topicConfig);
+          return;
+        }
+
+        // 従来の delegate 処理
+        if (state.delegate != null) {
           await _handleDelegate(state.delegate!);
           if (mounted) {
             this
@@ -153,17 +172,70 @@ class _MichiInfoViewState extends State<MichiInfoView> {
           MichiInfoLoading() =>
             const Center(child: CircularProgressIndicator()),
           MichiInfoError(:final message) => Center(child: Text(message)),
-          MichiInfoLoaded(:final projection, :final topicConfig, :final markActionItems, :final markActionStateLabels, :final eventId) =>
+          MichiInfoLoaded(
+            :final projection,
+            :final topicConfig,
+            :final markActionItems,
+            :final markActionStateLabels,
+            :final eventId,
+            :final isInsertMode,
+          ) =>
             _MichiInfoList(
               projection: projection,
               topicConfig: topicConfig,
               markActionItems: markActionItems,
               markActionStateLabels: markActionStateLabels,
               eventId: eventId,
+              isInsertMode: isInsertMode,
             ),
         };
       },
     );
+  }
+
+  Future<void> _showInsertBottomSheet(TopicConfig topicConfig) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (topicConfig.addMenuItems.contains(AddMenuItemType.mark))
+              ListTile(
+                leading: const Icon(Icons.place),
+                title: const Text('地点を追加'),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  if (mounted) {
+                    context
+                        .read<MichiInfoBloc>()
+                        .add(const MichiInfoInsertMarkPressed());
+                  }
+                },
+              ),
+            if (topicConfig.addMenuItems.contains(AddMenuItemType.link))
+              ListTile(
+                leading: const Icon(Icons.route),
+                title: const Text('区間を追加'),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  if (mounted) {
+                    context
+                        .read<MichiInfoBloc>()
+                        .add(const MichiInfoInsertLinkPressed());
+                  }
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+    // BottomSheet が閉じた（キャンセル）場合に pendingInsertAfterSeq をリセット
+    if (mounted) {
+      context
+          .read<MichiInfoBloc>()
+          .add(const MichiInfoInsertPointCancelled());
+    }
   }
 
   Future<void> _handleDelegate(MichiInfoDelegate delegate) async {
@@ -201,6 +273,7 @@ class _MichiInfoViewState extends State<MichiInfoView> {
           :final initialSelectedMembers,
           :final initialMarkLinkDate,
           :final eventMembers,
+          :final insertAfterSeq,
         ):
         final markId = const Uuid().v4();
         await context.push<void>(
@@ -212,13 +285,19 @@ class _MichiInfoViewState extends State<MichiInfoView> {
             initialSelectedMembers: initialSelectedMembers,
             initialMarkLinkDate: initialMarkLinkDate,
             eventMembers: eventMembers,
+            insertAfterSeq: insertAfterSeq,
           ),
         );
         if (mounted) {
           context.read<MichiInfoBloc>().add(const MichiInfoReloadRequested());
         }
 
-      case MichiInfoAddLinkDelegate(:final eventId, :final topicConfig, :final eventMembers):
+      case MichiInfoAddLinkDelegate(
+          :final eventId,
+          :final topicConfig,
+          :final eventMembers,
+          :final insertAfterSeq,
+        ):
         final linkId = const Uuid().v4();
         await context.push<void>(
           '/event/link/$linkId',
@@ -226,6 +305,7 @@ class _MichiInfoViewState extends State<MichiInfoView> {
             eventId: eventId,
             topicConfig: topicConfig,
             eventMembers: eventMembers,
+            insertAfterSeq: insertAfterSeq,
           ),
         );
         if (mounted) {
@@ -338,6 +418,7 @@ class _MichiInfoList extends StatefulWidget {
   final List<ActionItemProjection> markActionItems;
   final Map<String, String> markActionStateLabels;
   final String eventId;
+  final bool isInsertMode;
 
   const _MichiInfoList({
     required this.projection,
@@ -345,6 +426,7 @@ class _MichiInfoList extends StatefulWidget {
     required this.markActionItems,
     required this.markActionStateLabels,
     required this.eventId,
+    this.isInsertMode = false,
   });
 
   @override
@@ -534,12 +616,15 @@ class _MichiInfoListState extends State<_MichiInfoList> {
         body: const Center(child: Text('地点/区間がありません')),
         floatingActionButton: widget.topicConfig.addMenuItems.isEmpty
             ? null
-            : FloatingActionButton.extended(
-                onPressed: () => _onAddPressed(context),
-                icon: const Icon(Icons.add),
-                label: const Text('追加'),
-                backgroundColor: widget.topicConfig.themeColor.primaryColor,
+            : FloatingActionButton(
+                onPressed: () => context
+                    .read<MichiInfoBloc>()
+                    .add(const MichiInfoInsertModeFabPressed()),
+                backgroundColor: const Color(0xFFF59E0B),
                 foregroundColor: Colors.white,
+                child: Icon(
+                  widget.isInsertMode ? Icons.close : Icons.add,
+                ),
               ),
       );
     }
@@ -577,28 +662,68 @@ class _MichiInfoListState extends State<_MichiInfoList> {
             slivers: [
               SliverPadding(
                 padding: const EdgeInsets.only(top: 48, bottom: 80),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final item = items[index];
-                      return _TimelineItem(
-                        item: item,
-                        gapAfter: timelineData.gapAfterItem[index],
-                        onTap: () => context.read<MichiInfoBloc>().add(
-                              MichiInfoItemTapped(
-                                markLinkId: item.id,
-                                type: item.markLinkType,
-                              ),
-                            ),
-                        markActionItems: markActionItems,
-                        markActionStateLabels: widget.markActionStateLabels,
-                        topicConfig: widget.topicConfig,
-                        eventId: widget.eventId,
-                      );
-                    },
-                    childCount: items.length,
-                  ),
-                ),
+                sliver: widget.isInsertMode
+                    ? SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            // index 0 は先頭インジケーターなので表示しない（スペース確保のみ）
+                            // index 1 → items[0]
+                            // index 2 → インジケーター（insertAfterSeq = items[0].markLinkSeq）
+                            // ...
+                            if (index == 0) return const SizedBox.shrink();
+                            final isIndicator = index.isEven;
+                            if (isIndicator) {
+                              final itemIndex = index ~/ 2 - 1;
+                              return _InsertIndicator(
+                                insertAfterSeq: items[itemIndex].markLinkSeq,
+                              );
+                            } else {
+                              final itemIndex = index ~/ 2;
+                              final item = items[itemIndex];
+                              return _TimelineItem(
+                                item: item,
+                                gapAfter: timelineData.gapAfterItem[itemIndex],
+                                onTap: () => context.read<MichiInfoBloc>().add(
+                                      MichiInfoItemTapped(
+                                        markLinkId: item.id,
+                                        type: item.markLinkType,
+                                      ),
+                                    ),
+                                markActionItems: markActionItems,
+                                markActionStateLabels:
+                                    widget.markActionStateLabels,
+                                topicConfig: widget.topicConfig,
+                                eventId: widget.eventId,
+                              );
+                            }
+                          },
+                          // childCount = items.length * 2 + 1
+                          // index 0: 先頭（非表示）、index 1: items[0]、index 2: インジケーター、...
+                          childCount: items.length * 2 + 1,
+                        ),
+                      )
+                    : SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final item = items[index];
+                            return _TimelineItem(
+                              item: item,
+                              gapAfter: timelineData.gapAfterItem[index],
+                              onTap: () => context.read<MichiInfoBloc>().add(
+                                    MichiInfoItemTapped(
+                                      markLinkId: item.id,
+                                      type: item.markLinkType,
+                                    ),
+                                  ),
+                              markActionItems: markActionItems,
+                              markActionStateLabels: widget.markActionStateLabels,
+                              topicConfig: widget.topicConfig,
+                              eventId: widget.eventId,
+                            );
+                          },
+                          childCount: items.length,
+                        ),
+                      ),
               ),
             ],
           ),
@@ -612,62 +737,16 @@ class _MichiInfoListState extends State<_MichiInfoList> {
       ),
       floatingActionButton: widget.topicConfig.addMenuItems.isEmpty
           ? null
-          : FloatingActionButton.extended(
-              onPressed: () => _onAddPressed(context),
-              icon: const Icon(Icons.add),
-              label: const Text('追加'),
-              backgroundColor: widget.topicConfig.themeColor.primaryColor,
+          : FloatingActionButton(
+              onPressed: () => context
+                  .read<MichiInfoBloc>()
+                  .add(const MichiInfoInsertModeFabPressed()),
+              backgroundColor: const Color(0xFFF59E0B),
               foregroundColor: Colors.white,
+              child: Icon(
+                widget.isInsertMode ? Icons.close : Icons.add,
+              ),
             ),
-    );
-  }
-
-  void _onAddPressed(BuildContext context) {
-    final items = widget.topicConfig.addMenuItems;
-    if (items.isEmpty) return;
-    if (items.length == 1) {
-      if (items.first == AddMenuItemType.mark) {
-        context.read<MichiInfoBloc>().add(const MichiInfoAddMarkPressed());
-      } else {
-        context.read<MichiInfoBloc>().add(const MichiInfoAddLinkPressed());
-      }
-    } else {
-      _showAddMenu(context);
-    }
-  }
-
-  void _showAddMenu(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (_) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (widget.topicConfig.addMenuItems.contains(AddMenuItemType.mark))
-              ListTile(
-                leading: const Icon(Icons.place),
-                title: const Text('地点を追加'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  context
-                      .read<MichiInfoBloc>()
-                      .add(const MichiInfoAddMarkPressed());
-                },
-              ),
-            if (widget.topicConfig.addMenuItems.contains(AddMenuItemType.link))
-              ListTile(
-                leading: const Icon(Icons.route),
-                title: const Text('区間を追加'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  context
-                      .read<MichiInfoBloc>()
-                      .add(const MichiInfoAddLinkPressed());
-                },
-              ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -1407,6 +1486,48 @@ class _DistanceLegend extends StatelessWidget {
                 ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ────────────────────────────────────────────────────────
+// _InsertIndicator（挿入モード時にカード間に表示するインジケーター）
+// ────────────────────────────────────────────────────────
+
+class _InsertIndicator extends StatelessWidget {
+  final int insertAfterSeq;
+  const _InsertIndicator({required this.insertAfterSeq});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context
+          .read<MichiInfoBloc>()
+          .add(MichiInfoInsertPointSelected(insertAfterSeq)),
+      child: SizedBox(
+        height: 24,
+        child: Row(
+          children: [
+            Expanded(
+              child: Divider(
+                color: const Color(0x66F59E0B),
+                thickness: 1.5,
+              ),
+            ),
+            const Icon(
+              Icons.add_circle_outline,
+              color: Color(0xFFF59E0B),
+              size: 16,
+            ),
+            Expanded(
+              child: Divider(
+                color: const Color(0x66F59E0B),
+                thickness: 1.5,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

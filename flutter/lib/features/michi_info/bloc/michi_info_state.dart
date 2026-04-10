@@ -61,6 +61,9 @@ class MichiInfoAddMarkDelegate extends MichiInfoDelegate {
   /// REQ-MAD-004: メンバー選択候補（イベントメンバー一覧）
   final List<MemberDomain> eventMembers;
 
+  /// null = 末尾追加（現行動作）、non-null = 指定位置に挿入
+  final int? insertAfterSeq;
+
   const MichiInfoAddMarkDelegate(
     this.eventId,
     this.topicConfig, {
@@ -68,6 +71,7 @@ class MichiInfoAddMarkDelegate extends MichiInfoDelegate {
     this.initialSelectedMembers = const [],
     this.initialMarkLinkDate,
     this.eventMembers = const [],
+    this.insertAfterSeq,
   });
 
   @override
@@ -78,6 +82,7 @@ class MichiInfoAddMarkDelegate extends MichiInfoDelegate {
         initialSelectedMembers,
         initialMarkLinkDate,
         eventMembers,
+        insertAfterSeq,
       ];
 }
 
@@ -110,12 +115,17 @@ class MichiInfoAddLinkDelegate extends MichiInfoDelegate {
   final String eventId;
   final TopicConfig topicConfig;
   final List<MemberDomain> eventMembers;
+
+  /// null = 末尾追加（現行動作）、non-null = 指定位置に挿入
+  final int? insertAfterSeq;
+
   const MichiInfoAddLinkDelegate(this.eventId, this.topicConfig, {
     this.eventMembers = const [],
+    this.insertAfterSeq,
   });
 
   @override
-  List<Object?> get props => [eventId, topicConfig, eventMembers];
+  List<Object?> get props => [eventId, topicConfig, eventMembers, insertAfterSeq];
 }
 
 // ---------------------------------------------------------------------------
@@ -150,6 +160,13 @@ class MichiInfoLoaded extends MichiInfoState {
   /// 対象イベントの ID（ActionTimeButton からボトムシートを開く際に使用）
   final String eventId;
 
+  /// 挿入モード中かどうか
+  final bool isInsertMode;
+
+  /// 挿入モードで選択されたインジケーターの直前カードの markLinkSeq
+  /// null = まだ未選択（挿入モード中）
+  final int? pendingInsertAfterSeq;
+
   const MichiInfoLoaded({
     required this.projection,
     required this.draft,
@@ -159,6 +176,8 @@ class MichiInfoLoaded extends MichiInfoState {
     this.eventMembers = const [],
     this.markActionStateLabels = const {},
     this.eventId = '',
+    this.isInsertMode = false,
+    this.pendingInsertAfterSeq,
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -179,6 +198,8 @@ class MichiInfoLoaded extends MichiInfoState {
     List<MemberDomain>? eventMembers,
     Map<String, String>? markActionStateLabels,
     String? eventId,
+    bool? isInsertMode,
+    Object? pendingInsertAfterSeq = _sentinel,
   }) {
     return MichiInfoLoaded(
       projection: projection ?? this.projection,
@@ -189,12 +210,30 @@ class MichiInfoLoaded extends MichiInfoState {
       eventMembers: eventMembers ?? this.eventMembers,
       markActionStateLabels: markActionStateLabels ?? this.markActionStateLabels,
       eventId: eventId ?? this.eventId,
+      isInsertMode: isInsertMode ?? this.isInsertMode,
+      pendingInsertAfterSeq: pendingInsertAfterSeq == _sentinel
+          ? this.pendingInsertAfterSeq
+          : pendingInsertAfterSeq as int?,
     );
   }
 
   @override
-  List<Object?> get props => [projection, draft, delegate, topicConfig, markActionItems, eventMembers, markActionStateLabels, eventId];
+  List<Object?> get props => [
+        projection,
+        draft,
+        delegate,
+        topicConfig,
+        markActionItems,
+        eventMembers,
+        markActionStateLabels,
+        eventId,
+        isInsertMode,
+        pendingInsertAfterSeq,
+      ];
 }
+
+/// copyWith で null をセットするためのセンチネル値
+const _sentinel = Object();
 
 class MichiInfoError extends MichiInfoState {
   final String message;

@@ -38,6 +38,11 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     on<MichiInfoActionStateLabelUpdated>(_onActionStateLabelUpdated);
     on<MichiInfoDelegateConsumed>(_onDelegateConsumed);
     on<MichiInfoReloadRequested>(_onReloadRequested);
+    on<MichiInfoInsertModeFabPressed>(_onInsertModeFabPressed);
+    on<MichiInfoInsertPointSelected>(_onInsertPointSelected);
+    on<MichiInfoInsertMarkPressed>(_onInsertMarkPressed);
+    on<MichiInfoInsertLinkPressed>(_onInsertLinkPressed);
+    on<MichiInfoInsertPointCancelled>(_onInsertPointCancelled);
   }
 
   final EventRepository _eventRepository;
@@ -178,7 +183,11 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
         event.markLinkId,
         event.draft,
       );
-      emit(current.copyWith(projection: updated));
+      emit(current.copyWith(
+        projection: updated,
+        isInsertMode: false,
+        pendingInsertAfterSeq: null,
+      ));
     }
   }
 
@@ -192,7 +201,11 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
         event.markLinkId,
         event.draft,
       );
-      emit(current.copyWith(projection: updated));
+      emit(current.copyWith(
+        projection: updated,
+        isInsertMode: false,
+        pendingInsertAfterSeq: null,
+      ));
     }
   }
 
@@ -328,6 +341,8 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
           projection: projection,
           eventMembers: domain.members,
           delegate: const MichiInfoReloadedDelegate(),
+          isInsertMode: false,
+          pendingInsertAfterSeq: null,
         ));
       } on Exception {
         // サイレント失敗（既存の projection を維持）
@@ -348,6 +363,121 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
               isVisible: a.isVisible,
             ))
         .toList();
+  }
+
+  /// FAB タップ: 挿入モードのトグル
+  Future<void> _onInsertModeFabPressed(
+    MichiInfoInsertModeFabPressed event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (state case MichiInfoLoaded current) {
+      if (current.isInsertMode) {
+        emit(current.copyWith(
+          isInsertMode: false,
+          pendingInsertAfterSeq: null,
+        ));
+      } else {
+        emit(current.copyWith(isInsertMode: true));
+      }
+    }
+  }
+
+  /// インジケータータップ: 挿入ポイント確定
+  Future<void> _onInsertPointSelected(
+    MichiInfoInsertPointSelected event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (state case MichiInfoLoaded current) {
+      emit(current.copyWith(
+        pendingInsertAfterSeq: event.insertAfterSeq,
+      ));
+    }
+  }
+
+  /// 挿入モードで Mark 追加を選択
+  Future<void> _onInsertMarkPressed(
+    MichiInfoInsertMarkPressed event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (state is! MichiInfoLoaded) return;
+    final current = state as MichiInfoLoaded;
+
+    try {
+      final domain = await _eventRepository.fetch(_eventId);
+
+      // markLinkSeq 昇順・論理削除除外でフィルタリング
+      final activeMarkLinks = (List.of(domain.markLinks)
+            ..sort((a, b) => a.markLinkSeq.compareTo(b.markLinkSeq)))
+          .where((ml) => !ml.isDeleted)
+          .toList();
+
+      // 最後の Mark を前の地点として特定
+      final markOnlyList = activeMarkLinks
+          .where((ml) => ml.markLinkType == MarkOrLink.mark)
+          .toList();
+      final previousMark = markOnlyList.isNotEmpty ? markOnlyList.last : null;
+
+      // REQ-MAD-001: メーター初期値
+      final String initialMeterValueInput;
+      if (previousMark != null) {
+        final mv = previousMark.meterValue;
+        initialMeterValueInput = mv != null ? mv.toString() : '';
+      } else {
+        final transMv = domain.trans?.meterValue;
+        initialMeterValueInput = transMv != null ? transMv.toString() : '';
+      }
+
+      // REQ-MAD-002: メンバー初期値
+      final List<MemberDomain> initialSelectedMembers =
+          previousMark?.members ?? const [];
+
+      // REQ-MAD-003: 日付初期値
+      final DateTime? initialMarkLinkDate = previousMark?.markLinkDate;
+
+      // REQ-MAD-004: イベントメンバー一覧
+      final List<MemberDomain> eventMembers = domain.members;
+
+      emit(current.copyWith(
+        delegate: MichiInfoAddMarkDelegate(
+          _eventId,
+          current.topicConfig,
+          initialMeterValueInput: initialMeterValueInput,
+          initialSelectedMembers: initialSelectedMembers,
+          initialMarkLinkDate: initialMarkLinkDate,
+          eventMembers: eventMembers,
+          insertAfterSeq: current.pendingInsertAfterSeq,
+        ),
+      ));
+    } on Exception catch (e) {
+      emit(MichiInfoError(message: e.toString()));
+    }
+  }
+
+  /// 挿入モードで Link 追加を選択
+  Future<void> _onInsertLinkPressed(
+    MichiInfoInsertLinkPressed event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (state case MichiInfoLoaded current) {
+      emit(current.copyWith(
+        delegate: MichiInfoAddLinkDelegate(
+          _eventId,
+          current.topicConfig,
+          eventMembers: current.eventMembers,
+          insertAfterSeq: current.pendingInsertAfterSeq,
+        ),
+      ));
+    }
+  }
+
+  /// 挿入ポイントキャンセル: pendingInsertAfterSeq を null に（isInsertMode は true のまま）
+  Future<void> _onInsertPointCancelled(
+    MichiInfoInsertPointCancelled event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (state case MichiInfoLoaded current) {
+      emit(current.copyWith(pendingInsertAfterSeq: null));
+    }
   }
 
   /// ソート済み items を走査して displayMeterDiff を再計算する

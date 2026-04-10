@@ -135,7 +135,7 @@
 | T-100 | カード挿入機能 Spec作成 | architect | `DONE` | | Spec: `docs/Spec/Features/MichiInfo/CardInsert_Spec.md` |
 | T-101 | カード挿入機能 実装 | flutter-dev | `DONE` | | |
 | T-102 | カード挿入機能 レビュー | reviewer | `DONE` | | 全項目PASS |
-| T-103 | カード挿入機能 テスト | tester | `IN_PROGRESS` | 2026-04-10_card_insert_impl | T-102完了後 |
+| T-103 | カード挿入機能 テスト | tester | `DONE` | | TC-MCI-001〜010 全件PASS |
 
 ## Phase 12: movingCost 概要タブ 走行コスト割り勘
 
