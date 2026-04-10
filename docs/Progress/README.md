@@ -84,3 +84,4 @@
 | [2026-04-10_integration_test_fixes.md](./2026-04-10_integration_test_fixes.md) | Integration Test 修正（TC-MCI挿入モード対応・TS-03/04/05・TC-MAD-001〜008） |
 - [2026-04-11](./2026-04-11_docs__pumpAndSettle__禁止ルールをCLA.md)
 | [2026-04-11_session_progress.md](./2026-04-11_session_progress.md) | Phase11カード挿入・Phase13燃費更新 全完了・許可設定追加 |
+| [2026-04-11_roadmap_renewal_and_cleanup.md](./2026-04-11_roadmap_renewal_and_cleanup.md) | SwiftUI資材削除・Roadmap再設計（Phase A〜E）・タスク追加（Phase 16・17） |

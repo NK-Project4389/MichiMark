@@ -38,3 +38,23 @@
 | T-142 | B-4: MichiInfo InsertMode時タイムライン座標ズレ修正 | flutter-dev | `IN_PROGRESS` | `2026-04-11_bugfix_basic_michi` | InsertMode時CustomPaint非表示 |
 | T-143 | バグ修正 レビュー | reviewer | `BLOCKED` | | T-140〜142完了後 |
 | T-144 | バグ修正 テスト | tester | `BLOCKED` | | T-143完了後 |
+
+## Phase 16: MichiInfo カード削除機能
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-150 | MichiInfo カード削除 要件書作成 | product-manager | `TODO` | | スワイプ削除 or 削除ボタン方式・カスケード削除要否を定義 |
+| T-151 | MichiInfo カード削除 Spec作成 | architect | `BLOCKED` | | T-150完了後 |
+| T-152 | MichiInfo カード削除 実装 | flutter-dev | `BLOCKED` | | T-151完了後 |
+| T-153 | MichiInfo カード削除 レビュー | reviewer | `BLOCKED` | | T-152完了後 |
+| T-154 | MichiInfo カード削除 テスト | tester | `BLOCKED` | | T-153完了後 |
+
+## Phase 17: PaymentInfo カード削除機能
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-155 | PaymentInfo カード削除 要件書作成 | product-manager | `TODO` | | 削除対象（payment_detail単体 or payment_info行）・確認ダイアログ要否を定義 |
+| T-156 | PaymentInfo カード削除 Spec作成 | architect | `BLOCKED` | | T-155完了後 |
+| T-157 | PaymentInfo カード削除 実装 | flutter-dev | `BLOCKED` | | T-156完了後 |
+| T-158 | PaymentInfo カード削除 レビュー | reviewer | `BLOCKED` | | T-157完了後 |
+| T-159 | PaymentInfo カード削除 テスト | tester | `BLOCKED` | | T-158完了後 |
