@@ -155,10 +155,12 @@ void main() {
       return;
     }
 
-    // 1. 箱根日帰りドライブ（movingCost トピック）を開く
-    final opened = await openEventDetail(tester, '箱根日帰りドライブ');
+    // 1. 週末ドライブ（燃費推定）（movingCostEstimated トピック・showKmPerGas=true）を開く
+    //    movingCost トピックは showKmPerGas=false のため燃費フィールドが非表示になった
+    //    movingCostEstimated は showKmPerGas=true のため燃費フィールドが表示される
+    final opened = await openEventDetail(tester, '週末ドライブ（燃費推定）');
     if (!opened) {
-      markTestSkipped('「箱根日帰りドライブ」が見つからないためスキップします');
+      markTestSkipped('「週末ドライブ（燃費推定）」が見つからないためスキップします');
       return;
     }
 
@@ -220,10 +222,10 @@ void main() {
       return;
     }
 
-    // 1. 箱根日帰りドライブ（movingCost トピック）を開く
-    final opened = await openEventDetail(tester, '箱根日帰りドライブ');
+    // 1. 週末ドライブ（燃費推定）（movingCostEstimated トピック・showKmPerGas=true）を開く
+    final opened = await openEventDetail(tester, '週末ドライブ（燃費推定）');
     if (!opened) {
-      markTestSkipped('「箱根日帰りドライブ」が見つからないためスキップします');
+      markTestSkipped('「週末ドライブ（燃費推定）」が見つからないためスキップします');
       return;
     }
 
