@@ -97,3 +97,4 @@
 | [2026-04-11_feat__CustomNumericKeypad実装完了.md](./2026-04-11_feat__CustomNumericKeypad実装完了.md) | F-1 Phase 1 カスタム数値キーパッド実装・テスト全件PASS |
 | [2026-04-11_feat__CustomNumericKeypad_Phase2_四則演算完了.md](./2026-04-11_feat__CustomNumericKeypad_Phase2_四則演算完了.md) | F-1 Phase 2 四則演算 19PASS/0FAIL 完了 |
 | [2026-04-11_feat__CustomNumericKeypad_Phase3_完了.md](./2026-04-11_feat__CustomNumericKeypad_Phase3_完了.md) | F-1 Phase 3 確定ボタンラベル変更 5PASS/0FAIL 完了 |
+| [2026-04-12_testflight__1_0_0_9_アップロード完了.md](./2026-04-12_testflight__1_0_0_9_アップロード完了.md) | TestFlight 1.0.0(9) アップロード完了（F-1 Phase1-3・R-1・Phase16/17含む） |
