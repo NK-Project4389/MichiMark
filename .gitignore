@@ -3,3 +3,6 @@
 
 # Claude Code worktrees (temporary isolated branches)
 .claude/worktrees/
+
+# Test execution logs (auto-generated, not tracked)
+docs/TestLogs/

@@ -201,10 +201,14 @@ expect(find.byKey(Key('group_TARGET')), findsOneWidget);
 
 **バグ修正・デザイン変更・機能追加は、該当する1ファイルだけを実行する。**
 
+テスト実行時は必ず `tee` でログを保存すること。ログファイル名は `YYYY-MM-DD_HH-MM_[feature_name].log` の形式。
+
 ```bash
-cd /Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/flutter
-flutter test integration_test/[feature_name]_test.dart
+LOG=/Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/docs/TestLogs/$(date +%Y-%m-%d_%H-%M)_[feature_name].log
+cd /Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/flutter && flutter test integration_test/[feature_name]_test.dart 2>&1 | tee "$LOG"
 ```
+
+実行後、ログのパスを報告に含めること。
 
 全ファイル実行（`flutter test integration_test/`）は以下の場合のみ許可:
 - リリース前の最終確認
