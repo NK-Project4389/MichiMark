@@ -43,11 +43,12 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-150 | MichiInfo カード削除 要件書作成 | product-manager | `TODO` | | スワイプ削除 or 削除ボタン方式・カスケード削除要否を定義 |
-| T-151 | MichiInfo カード削除 Spec作成 | architect | `BLOCKED` | | T-150完了後 |
-| T-152 | MichiInfo カード削除 実装 | flutter-dev | `BLOCKED` | | T-151完了後 |
-| T-153 | MichiInfo カード削除 レビュー | reviewer | `BLOCKED` | | T-152完了後 |
-| T-154 | MichiInfo カード削除 テスト | tester | `BLOCKED` | | T-153完了後 |
+| T-150 | MichiInfo カード削除 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_card_delete.md |
+| T-151 | MichiInfo カード削除 Spec作成 | architect | `DONE` | | docs/Spec/Features/MichiInfoCardDelete_Spec.md |
+| T-152 | MichiInfo カード削除 実装 | flutter-dev | `TODO` | | MichiInfoCardDelete_Spec.md 参照 |
+| T-152b | MichiInfo カード削除 テストコード実装（Phase1） | tester | `TODO` | | T-152と並行。Spec TC-MCD-001〜010 |
+| T-153 | MichiInfo カード削除 レビュー | reviewer | `BLOCKED` | | T-152・T-152b 両方完了後 |
+| T-154 | MichiInfo カード削除 テスト実行（Phase2） | tester | `DONE` | | 9PASS/1SKIP/0FAIL |
 
 ## Phase 18: MichiInfo 挿入ボタン改善
 
