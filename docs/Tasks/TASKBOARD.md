@@ -24,8 +24,8 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-130 | イベント削除機能 要件書作成 | product-manager | `DONE` | | 要件書: ユーザー提示仕様（カスケード削除・確認ダイアログなし・flutter_slidable使用） |
-| T-131 | イベント削除機能 Spec作成 | architect | `TODO` | | T-130完了後。flutter_slidable ^3.1.0 追加・deleteEvent(eventId)実装・スワイプUI |
-| T-132 | イベント削除機能 実装 | flutter-dev | `BLOCKED` | | T-131完了後 |
+| T-131 | イベント削除機能 Spec作成 | architect | `DONE` | | docs/Spec/Features/EventDelete_Spec.md |
+| T-132 | イベント削除機能 実装 | flutter-dev | `TODO` | | T-131完了。EventDelete_Spec.md 参照 |
 | T-133 | イベント削除機能 レビュー | reviewer | `BLOCKED` | | T-132完了後 |
 | T-134 | イベント削除機能 テスト | tester | `BLOCKED` | | T-133完了後 |
 
@@ -33,11 +33,11 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-140 | B-1/B-2: BasicInfo燃費/ガソリン単価 単位表示・即時反映修正 | flutter-dev | `IN_PROGRESS` | `2026-04-11_bugfix_basic_michi` | _NumberInputField → NumericInputRow置き換え |
-| T-141 | B-3: MichiInfo 0件時 追加ボタン修正 | flutter-dev | `IN_PROGRESS` | `2026-04-11_bugfix_basic_michi` | items.empty時 pendingInsertAfterSeq=-1設定 |
-| T-142 | B-4: MichiInfo InsertMode時タイムライン座標ズレ修正 | flutter-dev | `IN_PROGRESS` | `2026-04-11_bugfix_basic_michi` | InsertMode時CustomPaint非表示 |
-| T-143 | バグ修正 レビュー | reviewer | `BLOCKED` | | T-140〜142完了後 |
-| T-144 | バグ修正 テスト | tester | `BLOCKED` | | T-143完了後 |
+| T-140 | B-1/B-2: BasicInfo燃費/ガソリン単価 単位表示・即時反映修正 | flutter-dev | `DONE` | | _NumberInputField → NumericInputRow置き換え |
+| T-141 | B-3: MichiInfo 0件時 追加ボタン修正 | flutter-dev | `DONE` | | items.empty時 pendingInsertAfterSeq=-1設定 |
+| T-142 | B-4: MichiInfo InsertMode時タイムライン座標ズレ修正 | flutter-dev | `DONE` | | InsertMode時CustomPaint非表示 |
+| T-143 | バグ修正 レビュー | reviewer | `DONE` | | |
+| T-144 | バグ修正 テスト | tester | `DONE` | | 84PASS/19SKIP/0FAIL |
 
 ## Phase 16: MichiInfo カード削除機能
 
@@ -48,6 +48,17 @@
 | T-152 | MichiInfo カード削除 実装 | flutter-dev | `BLOCKED` | | T-151完了後 |
 | T-153 | MichiInfo カード削除 レビュー | reviewer | `BLOCKED` | | T-152完了後 |
 | T-154 | MichiInfo カード削除 テスト | tester | `BLOCKED` | | T-153完了後 |
+
+## Phase 18: MichiInfo 挿入ボタン改善
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-160 | MIB-001/002: インジケーターサイズ拡大・先頭「＋」追加 Spec作成 | architect | `TODO` | | 要件書: REQ-michi_info_insert_button_size（REQ-MIB-001・002）|
+| T-161 | MIB-001/002: 実装 | flutter-dev | `BLOCKED` | | T-160完了後 |
+| T-162 | MIB-001/002: レビュー | reviewer | `BLOCKED` | | T-161完了後 |
+| T-163 | MIB-001/002: テスト | tester | `BLOCKED` | | T-162完了後 |
+| T-164 | MIB-003: デザイン提案（「＋」アイコンのみ変更） | designer | `TODO` | | 要件書: REQ-MIB-003。罫線等変更なし・Amberカラー維持・視認性向上 |
+| T-165 | MIB-003: デザインレビュー・ユーザー確認 | product-manager | `BLOCKED` | | T-164完了後 |
 
 ## Phase 17: PaymentInfo カード削除機能
 
