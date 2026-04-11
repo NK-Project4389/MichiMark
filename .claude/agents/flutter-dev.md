@@ -53,6 +53,28 @@ Widget → Projection → Draft → Adapter → Domain → Repository
 
 ---
 
+## Widget Key命名規則
+
+テスト対象になるWidgetには必ずKeyを付与すること。
+
+```
+Key('${画面名}_${要素種別}_${要素名}')
+```
+
+| 要素 | キーワード | 例 |
+|------|-----------|-----|
+| ボタン | `button` | `Key('michiList_button_create')` |
+| テキストフィールド | `field` | `Key('michiCreate_field_name')` |
+| リストアイテム | `item` | `Key('michiList_item_${id}')` |
+| アイコン | `icon` | `Key('michiDetail_icon_menu')` |
+| ダイアログ | `dialog` | `Key('michiCreate_dialog_confirm')` |
+
+**ルール: 全てsnake_case、画面名はlowerCamelCase**
+
+SpecのテストシナリオにKey名が記載されている場合は**完全一致**させること。
+
+---
+
 ## 出力形式
 
 - 変更対象ファイルのみ出力

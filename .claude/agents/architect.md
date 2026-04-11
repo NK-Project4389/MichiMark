@@ -80,11 +80,32 @@ Event → Bloc → State
 - Delegate Contract（名前・遷移先）
 - Data Flow（箇条書き、コード不要）
 - Router変更方針（必要な場合のみ）
+- **テストシナリオセクション（必須）**: TC-XXX 形式でUnit / Widget / Integration Testのシナリオを記載すること。各シナリオには「前提・手順・期待結果」と「実装ノート（ウィジェットキー一覧）」を含めること。テストシナリオなしのSpecはflutter-devが実装を開始できない
 
 記載しないこと:
 - Dart/Flutter実装コード
 - copyWithの実装詳細
 - Widgetの詳細なUIコード
+
+---
+
+## Widget Key命名規則
+
+Specのテストシナリオに記載するウィジェットキーは以下の規則に従うこと。
+
+```
+Key('${画面名}_${要素種別}_${要素名}')
+```
+
+| 要素 | キーワード | 例 |
+|------|-----------|-----|
+| ボタン | `button` | `Key('michiList_button_create')` |
+| テキストフィールド | `field` | `Key('michiCreate_field_name')` |
+| リストアイテム | `item` | `Key('michiList_item_${id}')` |
+| アイコン | `icon` | `Key('michiDetail_icon_menu')` |
+| ダイアログ | `dialog` | `Key('michiCreate_dialog_confirm')` |
+
+**ルール: 全てsnake_case、画面名はlowerCamelCase**
 
 ---
 
