@@ -80,10 +80,10 @@
 |---|---|---|---|---|---|
 | T-180 | カスタムキーパッド 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-custom_numeric_keypad.md |
 | T-181 | カスタムキーパッド Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-custom_numeric_keypad.md |
-| T-182 | カスタムキーパッド 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-11_custom_keypad_impl | |
-| T-182b | カスタムキーパッド テストコード実装 | tester | `IN_PROGRESS` | 2026-04-11_custom_keypad_test | TC-CNK-001〜009 |
-| T-183 | カスタムキーパッド レビュー | reviewer | `TODO` | | |
-| T-184 | カスタムキーパッド テスト実行 | tester | `TODO` | | |
+| T-182 | カスタムキーパッド 実装 | flutter-dev | `DONE` | | |
+| T-182b | カスタムキーパッド テストコード実装 | tester | `DONE` | | TC-CNK-001〜009 実装済み |
+| T-183 | カスタムキーパッド レビュー | reviewer | `DONE` | | 承認・違反なし |
+| T-184 | カスタムキーパッド テスト実行 | tester | `DONE` | | 9PASS/0SKIP/0FAIL |
 
 ### Phase 2（四則演算・中間式表示）
 

@@ -94,3 +94,4 @@
 | [2026-04-11_feat__PaymentInfo伝票削除機能.md](./2026-04-11_feat__PaymentInfo伝票削除機能.md) | Phase 17 PaymentInfo 伝票削除機能 実装・テスト完了（4PASS/1SKIP/0FAIL） |
 | [2026-04-11_feat__Phase16_17_削除機能完了.md](./2026-04-11_feat__Phase16_17_削除機能完了.md) | Phase 16・17 削除機能完了セッションサマリー・次回やること |
 | [2026-04-11_feat__R-1_メンバー未選択ガード完了.md](./2026-04-11_feat__R-1_メンバー未選択ガード完了.md) | R-1 メンバー未選択ガード・Slidable排他制御修正 完了 |
+| [2026-04-11_feat__CustomNumericKeypad実装完了.md](./2026-04-11_feat__CustomNumericKeypad実装完了.md) | F-1 Phase 1 カスタム数値キーパッド実装・テスト全件PASS |
