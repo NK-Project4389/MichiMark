@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 ///
 /// - StatefulWidget で内部入力文字列を管理する
 /// - BLoC・Cubit は持たない
-/// - Phase 1: 演算子キー（+−×÷）はタップ無効・非活性スタイル
+/// - Phase 2: 演算子キー（+−×÷）のタップ有効化・四則演算対応
 class CustomNumericKeypad extends StatefulWidget {
   /// 確定時に呼ばれるコールバック（生の数値文字列、カンマなし）
   final ValueChanged<String> onConfirmed;
@@ -31,58 +31,300 @@ class CustomNumericKeypad extends StatefulWidget {
 }
 
 class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
-  String _inputString = '';
+  // Phase 2 内部状態（Phase 1 の _inputString を廃止し4フィールドに分解）
+  String _lhs = '';
+  String? _operator;
+  String _rhs = '';
+  bool _resultShown = false;
+
+  // エラー表示フラグ（ゼロ除算など）
+  bool _isError = false;
+
+  // ---- 状態導出 ----
+
+  bool get _isIdle =>
+      _lhs.isEmpty && _operator == null && _rhs.isEmpty && !_resultShown;
+
+  bool get _isEnteringLhs => _lhs.isNotEmpty && _operator == null && !_resultShown;
+
+  bool get _isOperatorEntered =>
+      _operator != null && _rhs.isEmpty && !_resultShown;
+
+  bool get _isEnteringRhs => _operator != null && _rhs.isNotEmpty;
 
   // ---- 入力ロジック ----
 
   void _onDigit(String digit) {
-    if (_inputString.length >= 15) return;
     setState(() {
-      if (digit == '00') {
-        // 先頭が "0" だけの場合は "00" を入力しても "0" のまま
-        if (_inputString == '0') return;
-        _inputString += '00';
-      } else {
-        // 先頭が "0" の場合（小数点なし）は上書き
-        if (_inputString == '0') {
-          _inputString = digit;
+      _isError = false;
+      if (_resultShown) {
+        // result_shown: 全リセットして新規入力
+        _lhs = digit == '00' ? '' : (digit == '0' ? '0' : digit);
+        _operator = null;
+        _rhs = '';
+        _resultShown = false;
+        if (digit == '00') {
+          // 00 は先頭には入力しない
+        }
+        return;
+      }
+
+      if (_operator == null) {
+        // entering_lhs または idle
+        if (digit == '00') {
+          if (_lhs == '0') return;
+          if (_lhs.length >= 15) return;
+          if (_lhs.length + 2 > 15) return;
+          _lhs += '00';
         } else {
-          _inputString += digit;
+          if (_lhs.length >= 15) return;
+          if (_lhs == '0') {
+            _lhs = digit;
+          } else {
+            _lhs += digit;
+          }
+        }
+      } else {
+        // operator_entered または entering_rhs
+        if (digit == '00') {
+          if (_rhs == '0') return;
+          if (_rhs.length >= 15) return;
+          if (_rhs.length + 2 > 15) return;
+          _rhs += '00';
+        } else {
+          if (_rhs.length >= 15) return;
+          if (_rhs == '0') {
+            _rhs = digit;
+          } else {
+            _rhs += digit;
+          }
         }
       }
     });
   }
 
+  void _onOperator(String op) {
+    setState(() {
+      _isError = false;
+      if (_isIdle) {
+        // lhs なしで演算子は無効
+        return;
+      }
+      if (_isEnteringLhs) {
+        _operator = op;
+      } else if (_isOperatorEntered) {
+        _operator = op;
+      } else if (_isEnteringRhs) {
+        _operator = op;
+        _rhs = '';
+      } else if (_resultShown) {
+        // 計算結果を lhs として引き継ぎ
+        _operator = op;
+        _rhs = '';
+        _resultShown = false;
+      }
+    });
+  }
+
+  void _onEquals() {
+    if (_isError) {
+      // エラー状態では何もしない（表示はクリア操作まで維持）
+      return;
+    }
+    if (_isIdle) {
+      // idle 状態（未入力）でも = を押したらシートを閉じる（元の値を維持）
+      widget.onConfirmed(widget.originalValue);
+      Navigator.pop(context);
+      return;
+    }
+    if (_isEnteringLhs) {
+      final value = _lhs.isEmpty ? widget.originalValue : _lhs;
+      widget.onConfirmed(value);
+      Navigator.pop(context);
+      return;
+    }
+    if (_isOperatorEntered) {
+      final value = _lhs.isEmpty ? widget.originalValue : _lhs;
+      widget.onConfirmed(value);
+      Navigator.pop(context);
+      return;
+    }
+    if (_isEnteringRhs) {
+      _calculate();
+      return;
+    }
+    if (_resultShown) {
+      widget.onConfirmed(_lhs);
+      Navigator.pop(context);
+      return;
+    }
+  }
+
+  void _calculate() {
+    final op = _operator;
+    if (op == null) return;
+
+    final lhsVal = double.tryParse(_lhs);
+    final rhsVal = double.tryParse(_rhs);
+    if (lhsVal == null || rhsVal == null) return;
+
+    // ゼロ除算チェック
+    if (op == '÷' && rhsVal == 0) {
+      setState(() {
+        _isError = true;
+      });
+      return;
+    }
+
+    double result;
+    switch (op) {
+      case '+':
+        result = lhsVal + rhsVal;
+      case '−':
+        result = lhsVal - rhsVal;
+      case '×':
+        result = lhsVal * rhsVal;
+      case '÷':
+        result = lhsVal / rhsVal;
+      default:
+        return;
+    }
+
+    setState(() {
+      _lhs = _formatResult(result);
+      _operator = null;
+      _rhs = '';
+      _resultShown = true;
+      _isError = false;
+    });
+  }
+
+  String _formatResult(double value) {
+    // 整数値の場合は小数点なし
+    if (value == value.truncateToDouble()) {
+      final intStr = value.truncate().toString();
+      if (intStr.length <= 15) return intStr;
+      // 15文字超は丸めて対処
+      return value.toStringAsFixed(0).substring(0, 15);
+    }
+
+    // 小数値: 末尾の余分な0を削除
+    String str = value.toString();
+
+    // 15文字超の場合は小数点以下を丸める
+    if (str.length > 15) {
+      // 小数点の位置を確認
+      final dotIndex = str.indexOf('.');
+      if (dotIndex >= 0) {
+        final intPartLength = dotIndex;
+        if (intPartLength >= 15) {
+          return str.substring(0, 15);
+        }
+        final decimals = 15 - intPartLength - 1; // -1 for dot
+        if (decimals <= 0) {
+          return str.substring(0, 15);
+        }
+        str = value.toStringAsFixed(decimals);
+      } else {
+        return str.substring(0, 15);
+      }
+    }
+
+    // 末尾の余分な0を削除
+    if (str.contains('.')) {
+      str = str.replaceAll(RegExp(r'0+$'), '');
+      str = str.replaceAll(RegExp(r'\.$'), '');
+    }
+
+    return str;
+  }
+
   void _onDot() {
     if (!widget.isDecimal) return;
-    if (_inputString.contains('.')) return;
-    if (_inputString.length >= 15) return;
     setState(() {
-      if (_inputString.isEmpty) {
-        _inputString = '0.';
+      _isError = false;
+      if (_resultShown) {
+        // result_shown では何もしない
+        return;
+      }
+
+      if (_operator == null) {
+        // idle または entering_lhs: _lhs に小数点追加
+        if (_lhs.contains('.')) return;
+        if (_lhs.length >= 15) return;
+        if (_lhs.isEmpty) {
+          _lhs = '0.';
+        } else {
+          _lhs += '.';
+        }
       } else {
-        _inputString += '.';
+        // operator_entered または entering_rhs: _rhs に小数点追加
+        if (_rhs.contains('.')) return;
+        if (_rhs.length >= 15) return;
+        if (_rhs.isEmpty) {
+          _rhs = '0.';
+        } else {
+          _rhs += '.';
+        }
       }
     });
   }
 
   void _onClear() {
     setState(() {
-      _inputString = '';
+      _lhs = '';
+      _operator = null;
+      _rhs = '';
+      _resultShown = false;
+      _isError = false;
     });
   }
 
   void _onBackspace() {
-    if (_inputString.isEmpty) return;
     setState(() {
-      _inputString = _inputString.substring(0, _inputString.length - 1);
+      _isError = false;
+      if (_isIdle) {
+        return;
+      }
+      if (_resultShown) {
+        // result_shown: 全消去 → idle
+        _lhs = '';
+        _operator = null;
+        _rhs = '';
+        _resultShown = false;
+        return;
+      }
+      if (_isEnteringRhs) {
+        _rhs = _rhs.substring(0, _rhs.length - 1);
+        // rhs が空になったら operator_entered へ
+        return;
+      }
+      if (_isOperatorEntered) {
+        _operator = null;
+        return;
+      }
+      if (_isEnteringLhs) {
+        _lhs = _lhs.substring(0, _lhs.length - 1);
+        return;
+      }
     });
   }
 
-  void _onConfirm() {
-    final value = _inputString.isEmpty ? widget.originalValue : _inputString;
-    widget.onConfirmed(value);
-    Navigator.pop(context);
+  // ---- Display テキスト ----
+
+  String _buildDisplayText() {
+    if (_isError) return 'エラー';
+    if (_resultShown) return _lhs;
+    if (_isEnteringRhs) return '$_lhs $_operator $_rhs';
+    if (_isOperatorEntered) return '$_lhs $_operator';
+    if (_isEnteringLhs) return _lhs;
+    // idle
+    return widget.originalValue;
+  }
+
+  bool _isDisplayPlaceholder() {
+    if (_isError) return false;
+    return _isIdle;
   }
 
   // ---- カラー ----
@@ -101,6 +343,13 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
 
   Color _operatorForeground(bool isDark) =>
       isDark ? const Color(0xFF4A6A68) : const Color(0xFFA0B8B6);
+
+  // Phase 2: 演算子活性スタイル
+  Color _operatorActiveBackground(bool isDark) =>
+      isDark ? const Color(0xFF1E3A3A) : const Color(0xFFD6EDEB);
+
+  Color _operatorActiveForeground(bool isDark) =>
+      isDark ? const Color(0xFF4ECDC4) : const Color(0xFF2D6A6A);
 
   Color _confirmBackground(bool isDark) =>
       isDark ? const Color(0xFF4ECDC4) : const Color(0xFF2D6A6A);
@@ -184,9 +433,8 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
     required double sf,
   }) {
     final showOriginal = widget.originalValue.isNotEmpty;
-    final displayText =
-        _inputString.isEmpty ? widget.originalValue : _inputString;
-    final isPlaceholder = _inputString.isEmpty;
+    final displayText = _buildDisplayText();
+    final isPlaceholder = _isDisplayPlaceholder();
 
     return SizedBox(
       height: displayHeight,
@@ -221,7 +469,9 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
                     fontWeight: FontWeight.w300,
                     color: isPlaceholder
                         ? colorScheme.onSurface.withValues(alpha: 0.3)
-                        : colorScheme.onSurface,
+                        : _isError
+                            ? Colors.red
+                            : colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -261,7 +511,7 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
             _buildDigitKey('7', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
             _buildDigitKey('8', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
             _buildDigitKey('9', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
-            _buildOperatorKey('÷', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
+            _buildOperatorKey('÷', keyId: 'keypad_op_divide', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
           ],
           gap: gap,
         ),
@@ -272,7 +522,7 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
             _buildDigitKey('4', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
             _buildDigitKey('5', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
             _buildDigitKey('6', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
-            _buildOperatorKey('×', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
+            _buildOperatorKey('×', keyId: 'keypad_op_multiply', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
           ],
           gap: gap,
         ),
@@ -283,7 +533,7 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
             _buildDigitKey('1', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
             _buildDigitKey('2', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
             _buildDigitKey('3', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
-            _buildOperatorKey('−', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
+            _buildOperatorKey('−', keyId: 'keypad_op_minus', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
           ],
           gap: gap,
         ),
@@ -295,7 +545,7 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
             // ダミーセル × 2
             SizedBox(height: keyHeight),
             SizedBox(height: keyHeight),
-            _buildOperatorKey('+', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
+            _buildOperatorKey('+', keyId: 'keypad_op_plus', isDark: isDark, keyHeight: keyHeight, radius: radius, sf: sf),
           ],
           gap: gap,
         ),
@@ -347,25 +597,30 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
 
   Widget _buildOperatorKey(
     String symbol, {
+    required String keyId,
     required bool isDark,
     required double keyHeight,
     required double radius,
     required double sf,
   }) {
     return Expanded(
-      child: Container(
-        height: keyHeight,
-        decoration: BoxDecoration(
-          color: _operatorBackground(isDark),
-          borderRadius: BorderRadius.circular(radius),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          symbol,
-          style: TextStyle(
-            fontSize: 20 * sf,
-            fontWeight: FontWeight.w400,
-            color: _operatorForeground(isDark),
+      child: GestureDetector(
+        key: Key(keyId),
+        onTap: () => _onOperator(symbol),
+        child: Container(
+          height: keyHeight,
+          decoration: BoxDecoration(
+            color: _operatorActiveBackground(isDark),
+            borderRadius: BorderRadius.circular(radius),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            symbol,
+            style: TextStyle(
+              fontSize: 20 * sf,
+              fontWeight: FontWeight.w400,
+              color: _operatorActiveForeground(isDark),
+            ),
           ),
         ),
       ),
@@ -466,9 +721,10 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
     required double radius,
     required double sf,
   }) {
+    final label = _resultShown ? '確定' : '=';
     return GestureDetector(
       key: const Key('keypad_confirm'),
-      onTap: _onConfirm,
+      onTap: _onEquals,
       child: Container(
         width: double.infinity,
         height: keyHeight,
@@ -478,7 +734,7 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
         ),
         alignment: Alignment.center,
         child: Text(
-          '=',
+          label,
           style: TextStyle(
             fontSize: 16 * sf,
             fontWeight: FontWeight.w600,

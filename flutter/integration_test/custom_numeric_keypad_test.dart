@@ -4,8 +4,9 @@
 /// Integration Test: CustomNumericKeypad（カスタム数値キーパッド）
 ///
 /// Spec: docs/Spec/Features/FS-custom_numeric_keypad.md §12
+///       docs/Spec/Features/FS-custom_numeric_keypad_phase2.md §10
 ///
-/// テストシナリオ: TC-CNK-001 〜 TC-CNK-009
+/// テストシナリオ: TC-CNK-001 〜 TC-CNK-019
 
 library;
 
@@ -615,5 +616,549 @@ void main() {
       // フィールドが見つからない場合は単純にキーパッドが閉じることを確認済み
       print('[TC-CNK-009] 燃費フィールドが見つからないため値比較をスキップ');
     }
+  });
+
+  // ────────────────────────────────────────────────────────
+  // Phase 2 テストシナリオ（TC-CNK-010 〜 TC-CNK-019）
+  // Spec: docs/Spec/Features/FS-custom_numeric_keypad_phase2.md §10
+  // ────────────────────────────────────────────────────────
+
+  /// 確定ボタン（keypad_confirm）のラベルテキストを返す。
+  String getConfirmButtonLabel(WidgetTester tester) {
+    final btn = find.byKey(const Key('keypad_confirm'));
+    if (btn.evaluate().isEmpty) return '';
+    final textFinder = find.descendant(of: btn, matching: find.byType(Text));
+    if (textFinder.evaluate().isEmpty) return '';
+    final textWidget = tester.widget<Text>(textFinder.first);
+    return textWidget.data ?? '';
+  }
+
+  /// 演算子キーをタップして状態遷移させる。
+  Future<void> tapOperator(WidgetTester tester, Key opKey) async {
+    await tester.tap(find.byKey(opKey));
+    await tester.pump(const Duration(milliseconds: 300));
+  }
+
+  // ────────────────────────────────────────────────────────
+  // TC-CNK-010: 加算 — lhs + rhs を計算して確定できる
+  // ────────────────────────────────────────────────────────
+  testWidgets('TC-CNK-010: 加算 — lhs + rhs を計算して確定できる', (tester) async {
+    await startApp(tester);
+
+    if (find.text('週末ドライブ（燃費推定）').evaluate().isEmpty) {
+      markTestSkipped('「週末ドライブ（燃費推定）」イベントが見つからないためスキップします');
+      return;
+    }
+
+    final opened = await openEventWithFuel(tester, '週末ドライブ（燃費推定）');
+    expect(opened, isTrue, reason: 'イベント詳細が開けること');
+
+    final editing = await enterEditMode(tester);
+    expect(editing, isTrue, reason: '編集モードに入れること');
+
+    final keypadOpened = await openKeypad(tester, const Key('numeric_input_tap_燃費'));
+    expect(keypadOpened, isTrue, reason: 'キーパッドが開くこと');
+
+    // 1 → 0 → 0 を入力する（Display: 100）
+    await tapDigit(tester, '1');
+    await tapDigit(tester, '0');
+    await tapDigit(tester, '0');
+
+    // + 演算子をタップする（Display: 100 +）
+    await tapOperator(tester, const Key('keypad_op_plus'));
+
+    // 5 → 0 を入力する（Display: 100 + 50）
+    await tapDigit(tester, '5');
+    await tapDigit(tester, '0');
+
+    // = をタップする（ラベル "="）
+    final confirmBtn = find.byKey(const Key('keypad_confirm'));
+    await tester.ensureVisible(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // Display に「150」が表示されること
+    final displayText = getDisplayInput(tester);
+    print('[TC-CNK-010] = タップ後 Display: "$displayText"');
+    expect(displayText, equals('150'), reason: 'Display に計算結果 "150" が表示されること');
+  });
+
+  // ────────────────────────────────────────────────────────
+  // TC-CNK-011: 減算 — lhs − rhs を計算して確定できる
+  // ────────────────────────────────────────────────────────
+  testWidgets('TC-CNK-011: 減算 — lhs − rhs を計算して確定できる', (tester) async {
+    await startApp(tester);
+
+    if (find.text('週末ドライブ（燃費推定）').evaluate().isEmpty) {
+      markTestSkipped('「週末ドライブ（燃費推定）」イベントが見つからないためスキップします');
+      return;
+    }
+
+    final opened = await openEventWithFuel(tester, '週末ドライブ（燃費推定）');
+    expect(opened, isTrue, reason: 'イベント詳細が開けること');
+
+    final editing = await enterEditMode(tester);
+    expect(editing, isTrue, reason: '編集モードに入れること');
+
+    final keypadOpened = await openKeypad(tester, const Key('numeric_input_tap_燃費'));
+    expect(keypadOpened, isTrue, reason: 'キーパッドが開くこと');
+
+    // 2 → 0 → 0 を入力する（Display: 200）
+    await tapDigit(tester, '2');
+    await tapDigit(tester, '0');
+    await tapDigit(tester, '0');
+
+    // − 演算子をタップする（Display: 200 −）
+    await tapOperator(tester, const Key('keypad_op_minus'));
+
+    // 5 → 0 を入力する（Display: 200 − 50）
+    await tapDigit(tester, '5');
+    await tapDigit(tester, '0');
+
+    // = をタップする
+    final confirmBtn = find.byKey(const Key('keypad_confirm'));
+    await tester.ensureVisible(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // Display に「150」が表示されること
+    final displayText = getDisplayInput(tester);
+    print('[TC-CNK-011] = タップ後 Display: "$displayText"');
+    expect(displayText, equals('150'), reason: 'Display に計算結果 "150" が表示されること');
+  });
+
+  // ────────────────────────────────────────────────────────
+  // TC-CNK-012: 乗算 — lhs × rhs を計算して確定できる
+  // ────────────────────────────────────────────────────────
+  testWidgets('TC-CNK-012: 乗算 — lhs × rhs を計算して確定できる', (tester) async {
+    await startApp(tester);
+
+    if (find.text('週末ドライブ（燃費推定）').evaluate().isEmpty) {
+      markTestSkipped('「週末ドライブ（燃費推定）」イベントが見つからないためスキップします');
+      return;
+    }
+
+    final opened = await openEventWithFuel(tester, '週末ドライブ（燃費推定）');
+    expect(opened, isTrue, reason: 'イベント詳細が開けること');
+
+    final editing = await enterEditMode(tester);
+    expect(editing, isTrue, reason: '編集モードに入れること');
+
+    final keypadOpened = await openKeypad(tester, const Key('numeric_input_tap_燃費'));
+    expect(keypadOpened, isTrue, reason: 'キーパッドが開くこと');
+
+    // 3 → 0 を入力する（Display: 30）
+    await tapDigit(tester, '3');
+    await tapDigit(tester, '0');
+
+    // × 演算子をタップする（Display: 30 ×）
+    await tapOperator(tester, const Key('keypad_op_multiply'));
+
+    // 5 を入力する（Display: 30 × 5）
+    await tapDigit(tester, '5');
+
+    // = をタップする
+    final confirmBtn = find.byKey(const Key('keypad_confirm'));
+    await tester.ensureVisible(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // Display に「150」が表示されること
+    final displayText = getDisplayInput(tester);
+    print('[TC-CNK-012] = タップ後 Display: "$displayText"');
+    expect(displayText, equals('150'), reason: 'Display に計算結果 "150" が表示されること');
+  });
+
+  // ────────────────────────────────────────────────────────
+  // TC-CNK-013: 除算 — lhs ÷ rhs を計算して確定できる
+  // ────────────────────────────────────────────────────────
+  testWidgets('TC-CNK-013: 除算 — lhs ÷ rhs を計算して確定できる', (tester) async {
+    await startApp(tester);
+
+    if (find.text('週末ドライブ（燃費推定）').evaluate().isEmpty) {
+      markTestSkipped('「週末ドライブ（燃費推定）」イベントが見つからないためスキップします');
+      return;
+    }
+
+    final opened = await openEventWithFuel(tester, '週末ドライブ（燃費推定）');
+    expect(opened, isTrue, reason: 'イベント詳細が開けること');
+
+    final editing = await enterEditMode(tester);
+    expect(editing, isTrue, reason: '編集モードに入れること');
+
+    final keypadOpened = await openKeypad(tester, const Key('numeric_input_tap_燃費'));
+    expect(keypadOpened, isTrue, reason: 'キーパッドが開くこと');
+
+    // 3 → 0 → 0 を入力する（Display: 300）
+    await tapDigit(tester, '3');
+    await tapDigit(tester, '0');
+    await tapDigit(tester, '0');
+
+    // ÷ 演算子をタップする（Display: 300 ÷）
+    await tapOperator(tester, const Key('keypad_op_divide'));
+
+    // 2 を入力する（Display: 300 ÷ 2）
+    await tapDigit(tester, '2');
+
+    // = をタップする
+    final confirmBtn = find.byKey(const Key('keypad_confirm'));
+    await tester.ensureVisible(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // Display に「150」が表示されること
+    final displayText = getDisplayInput(tester);
+    print('[TC-CNK-013] = タップ後 Display: "$displayText"');
+    expect(displayText, equals('150'), reason: 'Display に計算結果 "150" が表示されること');
+  });
+
+  // ────────────────────────────────────────────────────────
+  // TC-CNK-014: = → 確定 の2ステップで確定できる
+  // ────────────────────────────────────────────────────────
+  testWidgets('TC-CNK-014: = → 確定 の2ステップで確定できる', (tester) async {
+    await startApp(tester);
+
+    if (find.text('週末ドライブ（燃費推定）').evaluate().isEmpty) {
+      markTestSkipped('「週末ドライブ（燃費推定）」イベントが見つからないためスキップします');
+      return;
+    }
+
+    final opened = await openEventWithFuel(tester, '週末ドライブ（燃費推定）');
+    expect(opened, isTrue, reason: 'イベント詳細が開けること');
+
+    final editing = await enterEditMode(tester);
+    expect(editing, isTrue, reason: '編集モードに入れること');
+
+    final keypadOpened = await openKeypad(tester, const Key('numeric_input_tap_燃費'));
+    expect(keypadOpened, isTrue, reason: 'キーパッドが開くこと');
+
+    // 1 → 5 → 0 を入力する
+    await tapDigit(tester, '1');
+    await tapDigit(tester, '5');
+    await tapDigit(tester, '0');
+
+    // + 演算子をタップする
+    await tapOperator(tester, const Key('keypad_op_plus'));
+
+    // 5 → 0 を入力する
+    await tapDigit(tester, '5');
+    await tapDigit(tester, '0');
+
+    // Step 1: = をタップする（ラベル "="）
+    final confirmBtn = find.byKey(const Key('keypad_confirm'));
+    await tester.ensureVisible(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // Display に「200」が表示され、ボタンラベルが「確定」に変わること
+    final displayAfterEquals = getDisplayInput(tester);
+    print('[TC-CNK-014] = タップ後 Display: "$displayAfterEquals"');
+    expect(displayAfterEquals, equals('200'), reason: '= タップ後に Display に "200" が表示されること');
+
+    final labelAfterEquals = getConfirmButtonLabel(tester);
+    print('[TC-CNK-014] = タップ後ボタンラベル: "$labelAfterEquals"');
+    expect(labelAfterEquals, equals('確定'), reason: '= タップ後にボタンラベルが "確定" に変わること');
+
+    // Step 2: 確定 をタップして確定する
+    await tester.ensureVisible(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(confirmBtn);
+    for (var i = 0; i < 15; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.byKey(const Key('custom_numeric_keypad')).evaluate().isEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
+
+    // キーパッドが閉じていることを確認
+    expect(
+      find.byKey(const Key('custom_numeric_keypad')),
+      findsNothing,
+      reason: '確定タップ後にキーパッドが閉じること',
+    );
+
+    // 「燃費」フィールドに「200」が反映されていることを確認
+    final row = find.byKey(const Key('km_per_gas_input_row'));
+    expect(row, findsOneWidget, reason: '燃費フィールドが存在すること');
+    final rowTexts = tester
+        .widgetList<Text>(find.descendant(of: row, matching: find.byType(Text)))
+        .map((t) => t.data ?? '')
+        .toList();
+    print('[TC-CNK-014] 燃費フィールド内テキスト: $rowTexts');
+    expect(
+      rowTexts.any((s) => s == '200'),
+      isTrue,
+      reason: '燃費フィールドに "200" が反映されること',
+    );
+  });
+
+  // ────────────────────────────────────────────────────────
+  // TC-CNK-015: lhs + 演算子のみで = を押した場合は lhs を確定する
+  // ────────────────────────────────────────────────────────
+  testWidgets('TC-CNK-015: lhs + 演算子のみで = を押した場合は lhs を確定する', (tester) async {
+    await startApp(tester);
+
+    if (find.text('週末ドライブ（燃費推定）').evaluate().isEmpty) {
+      markTestSkipped('「週末ドライブ（燃費推定）」イベントが見つからないためスキップします');
+      return;
+    }
+
+    final opened = await openEventWithFuel(tester, '週末ドライブ（燃費推定）');
+    expect(opened, isTrue, reason: 'イベント詳細が開けること');
+
+    final editing = await enterEditMode(tester);
+    expect(editing, isTrue, reason: '編集モードに入れること');
+
+    final keypadOpened = await openKeypad(tester, const Key('numeric_input_tap_燃費'));
+    expect(keypadOpened, isTrue, reason: 'キーパッドが開くこと');
+
+    // 1 → 2 → 0 を入力する（Display: 120）
+    await tapDigit(tester, '1');
+    await tapDigit(tester, '2');
+    await tapDigit(tester, '0');
+
+    // + 演算子をタップする（Display: 120 +）
+    await tapOperator(tester, const Key('keypad_op_plus'));
+
+    // rhs を入力せずに = をタップする
+    await tapConfirm(tester);
+
+    // キーパッドが閉じていることを確認
+    expect(
+      find.byKey(const Key('custom_numeric_keypad')),
+      findsNothing,
+      reason: '確定後にキーパッドが閉じること',
+    );
+
+    // 「燃費」フィールドに「120」が反映されていることを確認（演算子は無視される）
+    final row = find.byKey(const Key('km_per_gas_input_row'));
+    expect(row, findsOneWidget, reason: '燃費フィールドが存在すること');
+    final rowTexts = tester
+        .widgetList<Text>(find.descendant(of: row, matching: find.byType(Text)))
+        .map((t) => t.data ?? '')
+        .toList();
+    print('[TC-CNK-015] 燃費フィールド内テキスト: $rowTexts');
+    expect(
+      rowTexts.any((s) => s == '120'),
+      isTrue,
+      reason: '演算子のみで = を押した場合は lhs の "120" が確定されること',
+    );
+  });
+
+  // ────────────────────────────────────────────────────────
+  // TC-CNK-016: ゼロ除算でエラーを表示する
+  // ────────────────────────────────────────────────────────
+  testWidgets('TC-CNK-016: ゼロ除算でエラーを表示する', (tester) async {
+    await startApp(tester);
+
+    if (find.text('週末ドライブ（燃費推定）').evaluate().isEmpty) {
+      markTestSkipped('「週末ドライブ（燃費推定）」イベントが見つからないためスキップします');
+      return;
+    }
+
+    final opened = await openEventWithFuel(tester, '週末ドライブ（燃費推定）');
+    expect(opened, isTrue, reason: 'イベント詳細が開けること');
+
+    final editing = await enterEditMode(tester);
+    expect(editing, isTrue, reason: '編集モードに入れること');
+
+    final keypadOpened = await openKeypad(tester, const Key('numeric_input_tap_燃費'));
+    expect(keypadOpened, isTrue, reason: 'キーパッドが開くこと');
+
+    // 1 → 5 → 0 を入力する（Display: 150）
+    await tapDigit(tester, '1');
+    await tapDigit(tester, '5');
+    await tapDigit(tester, '0');
+
+    // ÷ 演算子をタップする（Display: 150 ÷）
+    await tapOperator(tester, const Key('keypad_op_divide'));
+
+    // 0 を入力する（Display: 150 ÷ 0）
+    await tapDigit(tester, '0');
+
+    // = をタップする
+    final confirmBtn = find.byKey(const Key('keypad_confirm'));
+    await tester.ensureVisible(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // Display に「エラー」が表示されること
+    final displayText = getDisplayInput(tester);
+    print('[TC-CNK-016] ゼロ除算後 Display: "$displayText"');
+    expect(displayText, equals('エラー'), reason: 'ゼロ除算後に Display に "エラー" が表示されること');
+
+    // ボタンラベルが「=」のまま変わらないこと（result_shown にならない）
+    final label = getConfirmButtonLabel(tester);
+    print('[TC-CNK-016] ゼロ除算後ボタンラベル: "$label"');
+    expect(label, equals('='), reason: 'ゼロ除算後もボタンラベルが "=" のまま変わらないこと');
+
+    // キーパッドが閉じていないこと
+    expect(
+      find.byKey(const Key('custom_numeric_keypad')),
+      findsOneWidget,
+      reason: 'ゼロ除算後にキーパッドが閉じないこと',
+    );
+  });
+
+  // ────────────────────────────────────────────────────────
+  // TC-CNK-017: result_shown 状態で演算子を押して連続計算できる
+  // ────────────────────────────────────────────────────────
+  testWidgets('TC-CNK-017: result_shown 状態で演算子を押して連続計算できる', (tester) async {
+    await startApp(tester);
+
+    if (find.text('週末ドライブ（燃費推定）').evaluate().isEmpty) {
+      markTestSkipped('「週末ドライブ（燃費推定）」イベントが見つからないためスキップします');
+      return;
+    }
+
+    final opened = await openEventWithFuel(tester, '週末ドライブ（燃費推定）');
+    expect(opened, isTrue, reason: 'イベント詳細が開けること');
+
+    final editing = await enterEditMode(tester);
+    expect(editing, isTrue, reason: '編集モードに入れること');
+
+    final keypadOpened = await openKeypad(tester, const Key('numeric_input_tap_燃費'));
+    expect(keypadOpened, isTrue, reason: 'キーパッドが開くこと');
+
+    // Step 1: 100 + 50 = 150（result_shown 状態を作る）
+    await tapDigit(tester, '1');
+    await tapDigit(tester, '0');
+    await tapDigit(tester, '0');
+    await tapOperator(tester, const Key('keypad_op_plus'));
+    await tapDigit(tester, '5');
+    await tapDigit(tester, '0');
+
+    final confirmBtn = find.byKey(const Key('keypad_confirm'));
+    await tester.ensureVisible(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // Display が「150」であることを確認（result_shown 状態）
+    final displayAfterFirst = getDisplayInput(tester);
+    expect(displayAfterFirst, equals('150'), reason: '1回目の計算後に Display が "150" になること');
+
+    // Step 2: result_shown 状態で × をタップ（Display: 150 ×）
+    await tapOperator(tester, const Key('keypad_op_multiply'));
+
+    // 2 を入力する（Display: 150 × 2）
+    await tapDigit(tester, '2');
+
+    // = をタップする
+    await tester.ensureVisible(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // Display に「300」が表示されること
+    final displayAfterSecond = getDisplayInput(tester);
+    expect(displayAfterSecond, equals('300'), reason: '連続計算後に Display が "300" になること');
+
+    // ボタンラベルが「確定」になること
+    final label = getConfirmButtonLabel(tester);
+    expect(label, equals('確定'), reason: '計算後にボタンラベルが "確定" になること');
+  });
+
+  // ────────────────────────────────────────────────────────
+  // TC-CNK-018: result_shown 状態で数字を押すと新規入力としてリセットされる
+  // ────────────────────────────────────────────────────────
+  testWidgets('TC-CNK-018: result_shown 状態で数字を押すと新規入力としてリセットされる', (tester) async {
+    await startApp(tester);
+
+    if (find.text('週末ドライブ（燃費推定）').evaluate().isEmpty) {
+      markTestSkipped('「週末ドライブ（燃費推定）」イベントが見つからないためスキップします');
+      return;
+    }
+
+    final opened = await openEventWithFuel(tester, '週末ドライブ（燃費推定）');
+    expect(opened, isTrue, reason: 'イベント詳細が開けること');
+
+    final editing = await enterEditMode(tester);
+    expect(editing, isTrue, reason: '編集モードに入れること');
+
+    final keypadOpened = await openKeypad(tester, const Key('numeric_input_tap_燃費'));
+    expect(keypadOpened, isTrue, reason: 'キーパッドが開くこと');
+
+    // 100 + 50 = 150（result_shown 状態を作る）
+    await tapDigit(tester, '1');
+    await tapDigit(tester, '0');
+    await tapDigit(tester, '0');
+    await tapOperator(tester, const Key('keypad_op_plus'));
+    await tapDigit(tester, '5');
+    await tapDigit(tester, '0');
+
+    final confirmBtn = find.byKey(const Key('keypad_confirm'));
+    await tester.ensureVisible(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(confirmBtn);
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // result_shown 状態であること（Display: 150、ラベル: 確定）
+    final displayBeforeReset = getDisplayInput(tester);
+    print('[TC-CNK-018] リセット前 Display: "$displayBeforeReset"');
+    expect(displayBeforeReset, equals('150'), reason: 'リセット前に Display が "150" であること');
+
+    // result_shown 状態で「5」をタップする
+    await tapDigit(tester, '5');
+
+    // Display に「5」が表示される（150 がリセットされる）
+    final displayAfterReset = getDisplayInput(tester);
+    print('[TC-CNK-018] 数字タップ後 Display: "$displayAfterReset"');
+    expect(displayAfterReset, equals('5'), reason: 'result_shown 状態で数字タップ後に Display が "5" にリセットされること');
+
+    // ボタンラベルが「=」に戻っていること
+    final label = getConfirmButtonLabel(tester);
+    print('[TC-CNK-018] 数字タップ後ボタンラベル: "$label"');
+    expect(label, equals('='), reason: 'result_shown 状態で数字タップ後にボタンラベルが "=" に戻ること');
+  });
+
+  // ────────────────────────────────────────────────────────
+  // TC-CNK-019: ⌫ で演算子を削除できる（operator_entered → entering_lhs に戻る）
+  // ────────────────────────────────────────────────────────
+  testWidgets('TC-CNK-019: ⌫ で演算子を削除できる（operator_entered → entering_lhs に戻る）', (tester) async {
+    await startApp(tester);
+
+    if (find.text('週末ドライブ（燃費推定）').evaluate().isEmpty) {
+      markTestSkipped('「週末ドライブ（燃費推定）」イベントが見つからないためスキップします');
+      return;
+    }
+
+    final opened = await openEventWithFuel(tester, '週末ドライブ（燃費推定）');
+    expect(opened, isTrue, reason: 'イベント詳細が開けること');
+
+    final editing = await enterEditMode(tester);
+    expect(editing, isTrue, reason: '編集モードに入れること');
+
+    final keypadOpened = await openKeypad(tester, const Key('numeric_input_tap_燃費'));
+    expect(keypadOpened, isTrue, reason: 'キーパッドが開くこと');
+
+    // 1 → 2 → 0 を入力する（Display: 120）
+    await tapDigit(tester, '1');
+    await tapDigit(tester, '2');
+    await tapDigit(tester, '0');
+
+    // + 演算子をタップする（Display: 120 +）
+    await tapOperator(tester, const Key('keypad_op_plus'));
+
+    // ⌫ をタップして演算子を削除する
+    await tester.tap(find.byKey(const Key('keypad_backspace')));
+    await tester.pump(const Duration(milliseconds: 300));
+
+    // Display に「120」が表示されること（演算子が削除される）
+    final displayText = getDisplayInput(tester);
+    print('[TC-CNK-019] バックスペース後 Display: "$displayText"');
+    expect(displayText, equals('120'), reason: '⌫ タップ後に演算子が削除されて Display が "120" に戻ること');
+
+    // + 演算子キーが存在すること（ウィジェット存在確認）
+    expect(
+      find.byKey(const Key('keypad_op_plus')),
+      findsOneWidget,
+      reason: '⌫ タップ後も + 演算子キーが存在すること',
+    );
   });
 }

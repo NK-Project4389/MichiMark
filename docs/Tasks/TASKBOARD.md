@@ -89,16 +89,31 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-185 | 四則演算 要件書作成 | product-manager | `TODO` | | Phase 1 完了後に着手 |
-| T-186 | 四則演算 Spec作成 | architect | `BLOCKED` | | T-185 完了待ち |
-| T-187 | 四則演算 実装 | flutter-dev | `BLOCKED` | | T-186 完了待ち |
-| T-188 | 四則演算 テスト | tester | `BLOCKED` | | T-186 完了待ち |
+| T-185 | 四則演算 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-custom_numeric_keypad_phase2.md |
+| T-186 | 四則演算 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-custom_numeric_keypad_phase2.md |
+| T-187 | 四則演算 実装 | flutter-dev | `DONE` | | |
+| T-187b | 四則演算 テストコード実装 | tester | `DONE` | | TC-CNK-010〜019 実装済み |
+| T-188 | 四則演算 レビュー | reviewer | `DONE` | | 承認・違反なし |
+| T-189b | 四則演算 テスト実行 | tester | `DONE` | | 19PASS/0SKIP/0FAIL |
 
 ### Phase 3（Push-up 方式移行）
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-189 | Push-up方式 要件書作成 | product-manager | `TODO` | | Phase 2 完了・実機FB後に判断 |
+
+---
+
+## R-2: メンバー選択UI タグ式リニューアル
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-190 | メンバー選択UIタグ式リニューアル 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-member_selection_tag_style.md |
+| T-191 | メンバー選択UIタグ式リニューアル Spec作成 | architect | `TODO` | | REQ-member_selection_tag_style.md 参照 |
+| T-192 | モード1: BasicInfo `_MemberInputSection` 実装 | flutter-dev | `BLOCKED` | | T-191 完了待ち |
+| T-193 | モード2: SelectionPage メンバー系UI改善 実装 | flutter-dev | `BLOCKED` | | T-191 完了待ち |
+| T-194 | メンバー選択UIタグ式リニューアル レビュー | reviewer | `BLOCKED` | | T-192/T-193 完了後に着手 |
+| T-195 | メンバー選択UIタグ式リニューアル テスト | tester | `BLOCKED` | | T-194 承認後に着手 |
 
 ---
 
