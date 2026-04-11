@@ -668,11 +668,13 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                     ? SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
-                            // index 0 は先頭インジケーターなので表示しない（スペース確保のみ）
+                            // index 0 は先頭インジケーター（insertAfterSeq: -1）
                             // index 1 → items[0]
                             // index 2 → インジケーター（insertAfterSeq = items[0].markLinkSeq）
                             // ...
-                            if (index == 0) return const SizedBox.shrink();
+                            if (index == 0) {
+                              return const _InsertIndicator(insertAfterSeq: -1);
+                            }
                             final isIndicator = index.isEven;
                             if (isIndicator) {
                               final itemIndex = index ~/ 2 - 1;
@@ -700,7 +702,7 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                             }
                           },
                           // childCount = items.length * 2 + 1
-                          // index 0: 先頭（非表示）、index 1: items[0]、index 2: インジケーター、...
+                          // index 0: 先頭インジケーター（insertAfterSeq: -1）、index 1: items[0]、index 2: インジケーター、...
                           childCount: items.length * 2 + 1,
                         ),
                       )
@@ -1503,12 +1505,16 @@ class _InsertIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final key = insertAfterSeq == -1
+        ? const Key('insert_indicator_top')
+        : Key('insert_indicator_$insertAfterSeq');
     return GestureDetector(
+      key: key,
       onTap: () => context
           .read<MichiInfoBloc>()
           .add(MichiInfoInsertPointSelected(insertAfterSeq)),
       child: SizedBox(
-        height: 24,
+        height: 36,
         child: Row(
           children: [
             Expanded(
@@ -1517,10 +1523,22 @@ class _InsertIndicator extends StatelessWidget {
                 thickness: 1.5,
               ),
             ),
-            const Icon(
-              Icons.add_circle_outline,
-              color: Color(0xFFF59E0B),
-              size: 16,
+            DecoratedBox(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0x40F59E0B),
+                    blurRadius: 8,
+                    spreadRadius: 4,
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.add_circle,
+                color: Color(0xFFF59E0B),
+                size: 28,
+              ),
             ),
             Expanded(
               child: Divider(

@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark — MichiInfo 挿入インジケーター アイコン改善提案</title>
+  <style>
+    :root {
+      --brand-teal:       #2B7A9B;
+      --brand-teal-dark:  #1A4A5E;
+      --brand-teal-light: #3A9DC4;
+      --brand-teal-tint:  #D0EBF5;
+
+      --insert-amber:     #F59E0B;
+      --insert-amber-dark:#D97706;
+      --insert-amber-mid: #B45309;
+      --insert-amber-tint:#FEF3C7;
+      --insert-amber-tint-light: #FFFBEB;
+      --insert-amber-40:  rgba(245, 158, 11, 0.40);
+      --insert-amber-20:  rgba(245, 158, 11, 0.20);
+
+      --text-primary:     #1A1A2E;
+      --text-secondary:   #6C757D;
+      --text-tertiary:    #ADB5BD;
+      --bg-page:          #F5F7FA;
+      --bg-card:          #FFFFFF;
+      --bg-dark:          #1C1C1E;
+      --border-light:     #E9ECEF;
+      --recommended:      #16A34A;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #1A4A5E 0%, #2B7A9B 55%, #3A9DC4 100%);
+      color: white;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .page-header p {
+      font-size: 15px;
+      opacity: 0.85;
+      max-width: 700px;
+    }
+    .meta-row {
+      display: flex;
+      gap: 28px;
+      margin-top: 22px;
+      font-size: 12px;
+      opacity: 0.65;
+    }
+
+    /* ===== LAYOUT ===== */
+    .content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 32px;
+    }
+
+    /* ===== SECTION ===== */
+    section {
+      margin-bottom: 72px;
+    }
+    .section-header {
+      margin-bottom: 32px;
+    }
+    .section-header .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+    .section-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .section-header p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      max-width: 720px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 48px 0;
+    }
+
+    /* ===== COLOR PALETTE ===== */
+    .palette-grid {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .swatch-rect {
+      width: 80px;
+      height: 48px;
+      border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    .swatch-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.4;
+    }
+    .swatch-hex {
+      font-size: 10px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: var(--text-tertiary);
+    }
+
+    /* ===== CURRENT STATE ===== */
+    .current-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .current-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 20px;
+    }
+    .issue-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .issue-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .issue-list li::before {
+      content: "!";
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      background: #FEF3C7;
+      color: #D97706;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    /* ===== PROPOSAL GRID ===== */
+    .proposal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 700px) {
+      .proposal-grid { grid-template-columns: 1fr; }
+    }
+    .proposal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+    .proposal-card.recommended {
+      border: 2px solid var(--recommended);
+    }
+    .recommended-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: var(--recommended);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+    .proposal-header {
+      padding: 20px 24px 0;
+    }
+    .proposal-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 4px;
+    }
+    .proposal-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .proposal-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ===== INDICATOR SIMULATOR ===== */
+    .simulator-area {
+      padding: 20px 24px;
+    }
+    .sim-bg-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+    }
+    .sim-bg-dark .sim-bg-label { color: rgba(255,255,255,0.4); }
+    .sim-phone {
+      background: #F0F2F5;
+      border-radius: 12px;
+      padding: 0 16px;
+      overflow: hidden;
+    }
+    .sim-phone.dark {
+      background: #1C1C1E;
+    }
+    /* 疑似カードアイテム */
+    .sim-card {
+      background: white;
+      border-radius: 10px;
+      margin: 10px 0;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .sim-card.dark {
+      background: #2C2C2E;
+    }
+    .sim-card-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #3A9DC4;
+      flex-shrink: 0;
+    }
+    .sim-card-dot.green { background: #2E9E6B; }
+    .sim-card-text {
+      font-size: 12px;
+      color: #444;
+      flex: 1;
+    }
+    .sim-card-text.dark { color: #DDD; }
+    .sim-card-sub {
+      font-size: 10px;
+      color: #999;
+    }
+    .sim-card-sub.dark { color: #888; }
+
+    /* ===== 各インジケータスタイル ===== */
+
+    /* 現状 (Before) */
+    .indicator-before {
+      display: flex;
+      align-items: center;
+      height: 24px;
+      margin: 2px 0;
+    }
+    .indicator-before .line {
+      flex: 1;
+      height: 1.5px;
+      background: rgba(245, 158, 11, 0.40);
+    }
+    .indicator-before .icon {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #F59E0B;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    /* 案A: add_circle（塗りつぶし） */
+    .indicator-A {
+      display: flex;
+      align-items: center;
+      height: 28px;
+      margin: 2px 0;
+    }
+    .indicator-A .line {
+      flex: 1;
+      height: 1.5px;
+      background: rgba(245, 158, 11, 0.40);
+    }
+    .indicator-A .icon {
+      width: 22px;
+      height: 22px;
+      background: #F59E0B;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* 案B: ピル型バッジ */
+    .indicator-B {
+      display: flex;
+      align-items: center;
+      height: 28px;
+      margin: 2px 0;
+    }
+    .indicator-B .line {
+      flex: 1;
+      height: 1.5px;
+      background: rgba(245, 158, 11, 0.40);
+    }
+    .indicator-B .badge {
+      background: #F59E0B;
+      border-radius: 10px;
+      padding: 2px 10px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .indicator-B .badge-plus {
+      font-size: 14px;
+      line-height: 1;
+      margin-top: -1px;
+    }
+
+    /* 案C: add_circle + グロー（推奨） */
+    .indicator-C {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      margin: 2px 0;
+    }
+    .indicator-C .line {
+      flex: 1;
+      height: 1.5px;
+      background: rgba(245, 158, 11, 0.40);
+    }
+    .indicator-C .icon-wrap {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .indicator-C .glow {
+      position: absolute;
+      inset: -4px;
+      background: rgba(245, 158, 11, 0.25);
+      border-radius: 50%;
+    }
+    .indicator-C .icon {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      background: #F59E0B;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.50);
+    }
+
+    /* 案D: ダイヤモンド型 */
+    .indicator-D {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      margin: 2px 0;
+    }
+    .indicator-D .line {
+      flex: 1;
+      height: 1.5px;
+      background: rgba(245, 158, 11, 0.40);
+    }
+    .indicator-D .diamond-wrap {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .indicator-D .diamond {
+      width: 18px;
+      height: 18px;
+      background: #F59E0B;
+      transform: rotate(45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .indicator-D .diamond-plus {
+      transform: rotate(-45deg);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+      margin-top: -1px;
+    }
+
+    /* 案E: ライン強調型（アウトライン→ラインと統合） */
+    .indicator-E {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      margin: 2px 0;
+      position: relative;
+    }
+    .indicator-E .line-thick {
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(245,158,11,0) 0%, #F59E0B 30%, #F59E0B 70%, rgba(245,158,11,0) 100%);
+    }
+    .indicator-E .icon-wrap {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .indicator-E .icon-bg {
+      position: absolute;
+      inset: 0;
+      background: white;
+      border: 2px solid #F59E0B;
+      border-radius: 50%;
+    }
+    .indicator-E .icon-plus {
+      position: relative;
+      color: #F59E0B;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .sim-phone.dark .indicator-E .icon-bg {
+      background: #2C2C2E;
+    }
+
+    /* ===== DARK MODE VARIANTS ===== */
+    .sim-phone.dark .indicator-A .icon { box-shadow: 0 0 8px rgba(245,158,11,0.4); }
+    .sim-phone.dark .indicator-C .glow { background: rgba(245,158,11,0.30); }
+    .sim-phone.dark .indicator-C .icon { box-shadow: 0 2px 12px rgba(245,158,11,0.60); }
+
+    /* ===== COMPARISON TABLE ===== */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: var(--bg-card);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+    }
+    .comparison-table thead {
+      background: #F8FAFC;
+    }
+    .comparison-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-light);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    .comparison-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-primary);
+      vertical-align: top;
+    }
+    .comparison-table tr:last-child td { border-bottom: none; }
+    .comparison-table tr.highlight td { background: #F0FDF4; }
+    .score {
+      display: inline-flex;
+      gap: 3px;
+    }
+    .dot-filled {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #F59E0B;
+      display: inline-block;
+    }
+    .dot-empty {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #E5E7EB;
+      display: inline-block;
+    }
+
+    /* ===== CODE SNIPPET ===== */
+    .code-block {
+      background: #0F172A;
+      border-radius: 10px;
+      padding: 20px 24px;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: #E2E8F0;
+      overflow-x: auto;
+    }
+    .code-keyword { color: #93C5FD; }
+    .code-const   { color: #F9A8D4; }
+    .code-string  { color: #86EFAC; }
+    .code-number  { color: #FCA5A5; }
+    .code-comment { color: #64748B; font-style: italic; }
+    .code-widget  { color: #FCD34D; }
+    .code-hex     { color: #6EE7B7; }
+
+    .code-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .code-caption {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+
+    /* ===== RATIONALE ===== */
+    .rationale-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 700px) {
+      .rationale-grid { grid-template-columns: 1fr; }
+    }
+    .rationale-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .rationale-card.green { border-left: 3px solid var(--recommended); }
+    .rationale-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .rationale-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .proposal-body {
+      padding: 0 24px 24px;
+    }
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 13px;
+    }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-key {
+      color: var(--text-secondary);
+    }
+    .spec-val {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: 'SF Mono', monospace;
+      font-size: 12px;
+    }
+
+    .annotation {
+      background: var(--insert-amber-tint-light);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      color: #92400E;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     PAGE HEADER
+     ============================================================ -->
+<header class="page-header">
+  <div class="badge">REQ-MIB-003 / Designer Report</div>
+  <h1>MichiInfo 挿入インジケーター アイコン改善提案</h1>
+  <p>挿入モード時にカード間に表示される「＋」アイコンの視認性を高めるための5案を提示します。Divider・Amberカラーは維持し、アイコン形状・サイズ・グロー効果の組み合わせで改善を図ります。</p>
+  <div class="meta-row">
+    <span>作成日: 2026-04-11</span>
+    <span>対象: _InsertIndicator ウィジェット</span>
+    <span>変更範囲: Icon ウィジェット部分のみ</span>
+    <span>ステータス: 提案中</span>
+  </div>
+</header>
+
+<div class="content">
+
+  <!-- ============================================================
+       1. COLOR PALETTE
+       ============================================================ -->
+  <section id="color-palette">
+    <div class="section-header">
+      <div class="label">01 — Color Palette</div>
+      <h2>使用カラー（変更なし）</h2>
+      <p>Amberカラー系統はすべて維持します。Dividerの透明度（40%）・アイコンの不透明Amberも既存どおりです。</p>
+    </div>
+
+    <div class="palette-grid">
+      <div class="swatch">
+        <div class="swatch-rect" style="background:#F59E0B;"></div>
+        <div class="swatch-label">Amber Primary<br><span class="swatch-hex">#F59E0B / FF</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-rect" style="background:#D97706;"></div>
+        <div class="swatch-label">Amber Dark<br><span class="swatch-hex">#D97706</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-rect" style="background:rgba(245,158,11,0.40); border: 1px dashed #ccc;"></div>
+        <div class="swatch-label">Amber 40%<br><span class="swatch-hex">#F59E0B / 66</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-rect" style="background:#FEF3C7;"></div>
+        <div class="swatch-label">Amber Tint<br><span class="swatch-hex">#FEF3C7</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-rect" style="background:rgba(245,158,11,0.25); border: 1px dashed #ccc;"></div>
+        <div class="swatch-label">Glow Layer<br><span class="swatch-hex">25% Amber</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-rect" style="background:white; border: 1px solid #E5E7EB;"></div>
+        <div class="swatch-label">Icon Fill (white)<br><span class="swatch-hex">#FFFFFF</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ============================================================
+       2. CURRENT STATE
+       ============================================================ -->
+  <section id="current-state">
+    <div class="section-header">
+      <div class="label">02 — Current State</div>
+      <h2>現状のデザインと課題</h2>
+    </div>
+
+    <div class="current-card">
+      <div class="current-title">現状プレビュー（ライト / ダーク）</div>
+      <div style="display:flex; gap:20px; flex-wrap:wrap;">
+
+        <!-- ライト -->
+        <div style="flex:1; min-width:220px;">
+          <div class="sim-bg-label">Light Background</div>
+          <div class="sim-phone" style="background:#F0F2F5;">
+            <div class="sim-card">
+              <div class="sim-card-dot"></div>
+              <div>
+                <div class="sim-card-text">道の駅 天城越え</div>
+                <div class="sim-card-sub">09:42 · Mark</div>
+              </div>
+            </div>
+            <div class="indicator-before">
+              <div class="line"></div>
+              <div class="icon">&#xFF0B;</div>
+              <div class="line"></div>
+            </div>
+            <div class="sim-card">
+              <div class="sim-card-dot green"></div>
+              <div>
+                <div class="sim-card-text">浄蓮の滝 駐車場</div>
+                <div class="sim-card-sub">10:15 · Link</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ダーク -->
+        <div style="flex:1; min-width:220px;">
+          <div class="sim-bg-label">Dark Background</div>
+          <div class="sim-phone dark">
+            <div class="sim-card dark">
+              <div class="sim-card-dot"></div>
+              <div>
+                <div class="sim-card-text dark">道の駅 天城越え</div>
+                <div class="sim-card-sub dark">09:42 · Mark</div>
+              </div>
+            </div>
+            <div class="indicator-before">
+              <div class="line"></div>
+              <div class="icon">&#xFF0B;</div>
+              <div class="line"></div>
+            </div>
+            <div class="sim-card dark">
+              <div class="sim-card-dot green"></div>
+              <div>
+                <div class="sim-card-text dark">浄蓮の滝 駐車場</div>
+                <div class="sim-card-sub dark">10:15 · Link</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="issue-list" style="margin-top:20px;">
+        <li>アイコンサイズ 16dp は小さく、タップ領域として認識しづらい</li>
+        <li>add_circle_outline のアウトラインスタイルは細く、ダーク背景でさらに視認しにくい</li>
+        <li>インタラクティブ要素（タップ可能）であることが視覚的に伝わりにくい</li>
+        <li>高さ 24dp の SizedBox に収まっており、28dp 以上に拡大すると枠からはみ出す</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ============================================================
+       3. COMPONENT PREVIEW — 5 PROPOSALS
+       ============================================================ -->
+  <section id="component-preview">
+    <div class="section-header">
+      <div class="label">03 — Component Preview</div>
+      <h2>デザイン案 A〜E</h2>
+      <p>ライトモード・ダークモードそれぞれのシミュレーター上でプレビューしています。</p>
+    </div>
+
+    <div class="proposal-grid">
+
+      <!-- 案A -->
+      <div class="proposal-card">
+        <div class="proposal-header">
+          <div class="proposal-label">案 A</div>
+          <div class="proposal-title">add_circle（塗りつぶし）</div>
+          <div class="proposal-subtitle">アウトラインを塗りつぶし円に変更。最小コスト変更。</div>
+        </div>
+        <div class="simulator-area">
+          <div class="sim-bg-label">Light</div>
+          <div class="sim-phone">
+            <div class="sim-card"><div class="sim-card-dot"></div><div class="sim-card-text">道の駅 天城越え</div></div>
+            <div class="indicator-A">
+              <div class="line"></div>
+              <div class="icon">+</div>
+              <div class="line"></div>
+            </div>
+            <div class="sim-card"><div class="sim-card-dot green"></div><div class="sim-card-text">浄蓮の滝 駐車場</div></div>
+          </div>
+          <div class="sim-bg-label" style="margin-top:12px;">Dark</div>
+          <div class="sim-phone dark">
+            <div class="sim-card dark"><div class="sim-card-dot"></div><div class="sim-card-text dark">道の駅 天城越え</div></div>
+            <div class="indicator-A">
+              <div class="line"></div>
+              <div class="icon">+</div>
+              <div class="line"></div>
+            </div>
+            <div class="sim-card dark"><div class="sim-card-dot green"></div><div class="sim-card-text dark">浄蓮の滝 駐車場</div></div>
+          </div>
+        </div>
+        <div class="proposal-body">
+          <div class="spec-row"><span class="spec-key">アイコン</span><span class="spec-val">Icons.add_circle</span></div>
+          <div class="spec-row"><span class="spec-key">サイズ</span><span class="spec-val">22 dp</span></div>
+          <div class="spec-row"><span class="spec-key">カラー</span><span class="spec-val">#F59E0B</span></div>
+          <div class="spec-row"><span class="spec-key">SizedBox高さ</span><span class="spec-val">28 dp</span></div>
+          <div class="annotation">シンプルな変更。アウトラインより面積が増えコントラスト向上。ただし「インタラクティブ感」はやや弱い。</div>
+        </div>
+      </div>
+
+      <!-- 案B -->
+      <div class="proposal-card">
+        <div class="proposal-header">
+          <div class="proposal-label">案 B</div>
+          <div class="proposal-title">ピル型バッジ</div>
+          <div class="proposal-subtitle">アイコンを横長のバッジ形状に変更。明示的なラベル付き。</div>
+        </div>
+        <div class="simulator-area">
+          <div class="sim-bg-label">Light</div>
+          <div class="sim-phone">
+            <div class="sim-card"><div class="sim-card-dot"></div><div class="sim-card-text">道の駅 天城越え</div></div>
+            <div class="indicator-B">
+              <div class="line"></div>
+              <div class="badge"><span class="badge-plus">+</span><span>追加</span></div>
+              <div class="line"></div>
+            </div>
+            <div class="sim-card"><div class="sim-card-dot green"></div><div class="sim-card-text">浄蓮の滝 駐車場</div></div>
+          </div>
+          <div class="sim-bg-label" style="margin-top:12px;">Dark</div>
+          <div class="sim-phone dark">
+            <div class="sim-card dark"><div class="sim-card-dot"></div><div class="sim-card-text dark">道の駅 天城越え</div></div>
+            <div class="indicator-B">
+              <div class="line"></div>
+              <div class="badge"><span class="badge-plus">+</span><span>追加</span></div>
+              <div class="line"></div>
+            </div>
+            <div class="sim-card dark"><div class="sim-card-dot green"></div><div class="sim-card-text dark">浄蓮の滝 駐車場</div></div>
+          </div>
+        </div>
+        <div class="proposal-body">
+          <div class="spec-row"><span class="spec-key">形状</span><span class="spec-val">Container + Row</span></div>
+          <div class="spec-row"><span class="spec-key">サイズ</span><span class="spec-val">高さ 22 dp / 角丸 10</span></div>
+          <div class="spec-row"><span class="spec-key">背景</span><span class="spec-val">#F59E0B</span></div>
+          <div class="spec-row"><span class="spec-key">SizedBox高さ</span><span class="spec-val">28 dp</span></div>
+          <div class="annotation">アフォーダンスは最高だが横幅を取るため、幅の狭い端末では Divider がほぼ見えなくなる可能性がある。</div>
+        </div>
+      </div>
+
+      <!-- 案C（推奨） -->
+      <div class="proposal-card recommended">
+        <div class="recommended-badge">推奨</div>
+        <div class="proposal-header">
+          <div class="proposal-label">案 C</div>
+          <div class="proposal-title">add_circle + グロー効果</div>
+          <div class="proposal-subtitle">塗りつぶし円にドロップシャドウ＋薄い発光リングを追加。</div>
+        </div>
+        <div class="simulator-area">
+          <div class="sim-bg-label">Light</div>
+          <div class="sim-phone">
+            <div class="sim-card"><div class="sim-card-dot"></div><div class="sim-card-text">道の駅 天城越え</div></div>
+            <div class="indicator-C">
+              <div class="line"></div>
+              <div class="icon-wrap">
+                <div class="glow"></div>
+                <div class="icon">+</div>
+              </div>
+              <div class="line"></div>
+            </div>
+            <div class="sim-card"><div class="sim-card-dot green"></div><div class="sim-card-text">浄蓮の滝 駐車場</div></div>
+          </div>
+          <div class="sim-bg-label" style="margin-top:12px;">Dark</div>
+          <div class="sim-phone dark">
+            <div class="sim-card dark"><div class="sim-card-dot"></div><div class="sim-card-text dark">道の駅 天城越え</div></div>
+            <div class="indicator-C">
+              <div class="line"></div>
+              <div class="icon-wrap">
+                <div class="glow"></div>
+                <div class="icon">+</div>
+              </div>
+              <div class="line"></div>
+            </div>
+            <div class="sim-card dark"><div class="sim-card-dot green"></div><div class="sim-card-text dark">浄蓮の滝 駐車場</div></div>
+          </div>
+        </div>
+        <div class="proposal-body">
+          <div class="spec-row"><span class="spec-key">アイコン</span><span class="spec-val">Icons.add_circle</span></div>
+          <div class="spec-row"><span class="spec-key">サイズ</span><span class="spec-val">28 dp</span></div>
+          <div class="spec-row"><span class="spec-key">カラー</span><span class="spec-val">#F59E0B</span></div>
+          <div class="spec-row"><span class="spec-key">グロー半径</span><span class="spec-val">4 dp (25% Amber)</span></div>
+          <div class="spec-row"><span class="spec-key">shadow</span><span class="spec-val">50% Amber / blur 8</span></div>
+          <div class="spec-row"><span class="spec-key">SizedBox高さ</span><span class="spec-val">36 dp</span></div>
+          <div class="annotation">ドライブ・エネルギー感を視覚的に表現。ダークモードでの視認性が特に向上する。実装コストも低く Material Icon のみで完結。</div>
+        </div>
+      </div>
+
+      <!-- 案D -->
+      <div class="proposal-card">
+        <div class="proposal-header">
+          <div class="proposal-label">案 D</div>
+          <div class="proposal-title">ダイヤモンド型</div>
+          <div class="proposal-subtitle">ルート・道路標識をイメージした菱形シンボル。MichiMark独自感を演出。</div>
+        </div>
+        <div class="simulator-area">
+          <div class="sim-bg-label">Light</div>
+          <div class="sim-phone">
+            <div class="sim-card"><div class="sim-card-dot"></div><div class="sim-card-text">道の駅 天城越え</div></div>
+            <div class="indicator-D">
+              <div class="line"></div>
+              <div class="diamond-wrap">
+                <div class="diamond">
+                  <span class="diamond-plus">+</span>
+                </div>
+              </div>
+              <div class="line"></div>
+            </div>
+            <div class="sim-card"><div class="sim-card-dot green"></div><div class="sim-card-text">浄蓮の滝 駐車場</div></div>
+          </div>
+          <div class="sim-bg-label" style="margin-top:12px;">Dark</div>
+          <div class="sim-phone dark">
+            <div class="sim-card dark"><div class="sim-card-dot"></div><div class="sim-card-text dark">道の駅 天城越え</div></div>
+            <div class="indicator-D">
+              <div class="line"></div>
+              <div class="diamond-wrap">
+                <div class="diamond">
+                  <span class="diamond-plus">+</span>
+                </div>
+              </div>
+              <div class="line"></div>
+            </div>
+            <div class="sim-card dark"><div class="sim-card-dot green"></div><div class="sim-card-text dark">浄蓮の滝 駐車場</div></div>
+          </div>
+        </div>
+        <div class="proposal-body">
+          <div class="spec-row"><span class="spec-key">形状</span><span class="spec-val">Container (rotated 45°)</span></div>
+          <div class="spec-row"><span class="spec-key">サイズ</span><span class="spec-val">20 × 20 dp (回転後)</span></div>
+          <div class="spec-row"><span class="spec-key">背景</span><span class="spec-val">#F59E0B</span></div>
+          <div class="spec-row"><span class="spec-key">SizedBox高さ</span><span class="spec-val">32 dp</span></div>
+          <div class="annotation">MichiMarkらしさは高いが「＋を押す」アフォーダンスがやや直感的でない。ユーザー調査が必要。</div>
+        </div>
+      </div>
+
+      <!-- 案E -->
+      <div class="proposal-card" style="grid-column: 1 / -1;">
+        <div class="proposal-header">
+          <div class="proposal-label">案 E</div>
+          <div class="proposal-title">ライン強調 + アウトライン円（グラデーションライン）</div>
+          <div class="proposal-subtitle">Dividerラインをグラデーションで強調し、アイコンはアウトラインに白背景を持たせることで背景に埋もれない設計にする。</div>
+        </div>
+        <div class="simulator-area" style="display:flex; gap:20px; flex-wrap:wrap;">
+          <div style="flex:1; min-width:200px;">
+            <div class="sim-bg-label">Light</div>
+            <div class="sim-phone">
+              <div class="sim-card"><div class="sim-card-dot"></div><div class="sim-card-text">道の駅 天城越え</div></div>
+              <div class="indicator-E">
+                <div class="line-thick"></div>
+                <div class="icon-wrap">
+                  <div class="icon-bg"></div>
+                  <span class="icon-plus">+</span>
+                </div>
+                <div class="line-thick"></div>
+              </div>
+              <div class="sim-card"><div class="sim-card-dot green"></div><div class="sim-card-text">浄蓮の滝 駐車場</div></div>
+            </div>
+          </div>
+          <div style="flex:1; min-width:200px;">
+            <div class="sim-bg-label">Dark</div>
+            <div class="sim-phone dark">
+              <div class="sim-card dark"><div class="sim-card-dot"></div><div class="sim-card-text dark">道の駅 天城越え</div></div>
+              <div class="indicator-E">
+                <div class="line-thick"></div>
+                <div class="icon-wrap">
+                  <div class="icon-bg"></div>
+                  <span class="icon-plus">+</span>
+                </div>
+                <div class="line-thick"></div>
+              </div>
+              <div class="sim-card dark"><div class="sim-card-dot green"></div><div class="sim-card-text dark">浄蓮の滝 駐車場</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="proposal-body">
+          <div style="display:flex; gap:16px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:180px;">
+              <div class="spec-row"><span class="spec-key">アイコン</span><span class="spec-val">Icons.add (カスタム枠)</span></div>
+              <div class="spec-row"><span class="spec-key">アイコンサイズ</span><span class="spec-val">32 dp (枠込み)</span></div>
+              <div class="spec-row"><span class="spec-key">枠スタイル</span><span class="spec-val">border 2dp #F59E0B</span></div>
+            </div>
+            <div style="flex:1; min-width:180px;">
+              <div class="spec-row"><span class="spec-key">ライン</span><span class="spec-val">グラデーション 2dp</span></div>
+              <div class="spec-row"><span class="spec-key">背景塗り</span><span class="spec-val">白 / ダーク面に合わせて切替</span></div>
+              <div class="spec-row"><span class="spec-key">SizedBox高さ</span><span class="spec-val">36 dp</span></div>
+            </div>
+          </div>
+          <div class="annotation" style="margin-top:16px;">Dividerがより目立ち「境界線」の存在感が増す。ただし、実装でダークモード対応時に背景色の動的切替が必要になる点は要注意。</div>
+        </div>
+      </div>
+
+    </div><!-- /proposal-grid -->
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ============================================================
+       4. COMPARISON TABLE
+       ============================================================ -->
+  <section id="comparison">
+    <div class="section-header">
+      <div class="label">04 — Comparison</div>
+      <h2>案の比較表</h2>
+    </div>
+
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>案</th>
+          <th>視認性 (Light)</th>
+          <th>視認性 (Dark)</th>
+          <th>アフォーダンス</th>
+          <th>MichiMarkらしさ</th>
+          <th>実装コスト</th>
+          <th>備考</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Before</strong><br>現状</td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td>-</td>
+          <td>16dp / アウトライン</td>
+        </tr>
+        <tr>
+          <td><strong>A</strong><br>add_circle</td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td>最低</td>
+          <td>1行変更で完結</td>
+        </tr>
+        <tr>
+          <td><strong>B</strong><br>ピル型</td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td>低</td>
+          <td>幅狭端末で Divider が消える恐れ</td>
+        </tr>
+        <tr class="highlight">
+          <td><strong>C</strong><br>add_circle + グロー ★推奨</td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span></span></td>
+          <td>低〜中</td>
+          <td>DecoratedBox + Icon で実装可</td>
+        </tr>
+        <tr>
+          <td><strong>D</strong><br>ダイヤモンド</td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span></span></td>
+          <td>中</td>
+          <td>Transform.rotate が必要</td>
+        </tr>
+        <tr>
+          <td><strong>E</strong><br>グラデーションライン</td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span></span></td>
+          <td><span class="score"><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-filled"></span><span class="dot-empty"></span><span class="dot-empty"></span></span></td>
+          <td>中〜高</td>
+          <td>背景色動的切替が必要</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ============================================================
+       5. TYPOGRAPHY (minimal — アイコンのみのため省略なし)
+       ============================================================ -->
+  <section id="typography">
+    <div class="section-header">
+      <div class="label">05 — Typography</div>
+      <h2>テキスト要素（変更なし）</h2>
+      <p>インジケーター内にテキストを持つ案（B: 「追加」ラベル）を採用した場合は以下のスペックを推奨します。案A / C / D / E ではテキスト変更なし。</p>
+    </div>
+    <div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:12px; padding:20px 24px;">
+      <div class="spec-row"><span class="spec-key">フォントサイズ（案Bのみ）</span><span class="spec-val">11 sp</span></div>
+      <div class="spec-row"><span class="spec-key">フォントウェイト</span><span class="spec-val">700 (Bold)</span></div>
+      <div class="spec-row"><span class="spec-key">カラー</span><span class="spec-val">白 (#FFFFFF)</span></div>
+      <div class="spec-row"><span class="spec-key">コントラスト比</span><span class="spec-val">白 on #F59E0B = 2.78:1（WCAG AA Large Text 基準 3:1 に近接 — 小さいテキストは非推奨）</span></div>
+    </div>
+    <div class="annotation" style="margin-top:12px; background:#FFF1F2; border-color:rgba(239,68,68,0.3); color:#9F1239;">
+      注意: 案Bの「追加」テキスト（11sp / 白 on Amber）は WCAG AA 小テキスト基準（4.5:1）を満たしません。案Bを採用する場合はラベルを「Large Text」扱いとなる 14sp 以上にするか、テキストなしの＋アイコンのみに変更することを推奨します。
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ============================================================
+       6. CODE SNIPPETS
+       ============================================================ -->
+  <section id="code-snippets">
+    <div class="section-header">
+      <div class="label">06 — Code Snippets</div>
+      <h2>Dart コードスニペット（Icon ウィジェット部分のみ）</h2>
+      <p>各案の Icon ウィジェット置き換え箇所のみを示します。Row・Divider・GestureDetector は変更しません。</p>
+    </div>
+
+    <div class="code-group">
+
+      <!-- 案A -->
+      <div>
+        <div class="code-caption">案 A — add_circle（塗りつぶし、22dp）</div>
+        <div class="code-block"><span class="code-keyword">const</span> <span class="code-widget">Icon</span>(
+  <span class="code-const">Icons</span>.add_circle,
+  <span class="code-keyword">color</span>: <span class="code-widget">Color</span>(<span class="code-hex">0xFFF59E0B</span>),
+  <span class="code-keyword">size</span>: <span class="code-number">22</span>,
+),</div>
+      </div>
+
+      <!-- 案B -->
+      <div>
+        <div class="code-caption">案 B — ピル型バッジ（Icon のみ部分）</div>
+        <div class="code-block"><span class="code-widget">Container</span>(
+  <span class="code-keyword">padding</span>: <span class="code-keyword">const</span> <span class="code-widget">EdgeInsets</span>.symmetric(horizontal: <span class="code-number">10</span>, vertical: <span class="code-number">3</span>),
+  <span class="code-keyword">decoration</span>: <span class="code-keyword">const</span> <span class="code-widget">BoxDecoration</span>(
+    <span class="code-keyword">color</span>: <span class="code-widget">Color</span>(<span class="code-hex">0xFFF59E0B</span>),
+    <span class="code-keyword">borderRadius</span>: <span class="code-widget">BorderRadius</span>.all(<span class="code-widget">Radius</span>.circular(<span class="code-number">10</span>)),
+  ),
+  <span class="code-keyword">child</span>: <span class="code-keyword">const</span> <span class="code-widget">Icon</span>(
+    <span class="code-const">Icons</span>.add,
+    <span class="code-keyword">color</span>: <span class="code-widget">Colors</span>.white,
+    <span class="code-keyword">size</span>: <span class="code-number">16</span>,
+  ),
+),</div>
+      </div>
+
+      <!-- 案C（推奨） -->
+      <div>
+        <div class="code-caption">案 C — add_circle + グロー効果（28dp）★推奨</div>
+        <div class="code-block"><span class="code-widget">DecoratedBox</span>(
+  <span class="code-keyword">decoration</span>: <span class="code-widget">BoxDecoration</span>(
+    <span class="code-keyword">shape</span>: <span class="code-const">BoxShape</span>.circle,
+    <span class="code-keyword">boxShadow</span>: [
+      <span class="code-widget">BoxShadow</span>(
+        <span class="code-keyword">color</span>: <span class="code-keyword">const</span> <span class="code-widget">Color</span>(<span class="code-hex">0xFFF59E0B</span>).withValues(alpha: <span class="code-number">0.25</span>),
+        <span class="code-keyword">blurRadius</span>: <span class="code-number">8</span>,
+        <span class="code-keyword">spreadRadius</span>: <span class="code-number">4</span>,
+      ),
+    ],
+  ),
+  <span class="code-keyword">child</span>: <span class="code-keyword">const</span> <span class="code-widget">Icon</span>(
+    <span class="code-const">Icons</span>.add_circle,
+    <span class="code-keyword">color</span>: <span class="code-widget">Color</span>(<span class="code-hex">0xFFF59E0B</span>),
+    <span class="code-keyword">size</span>: <span class="code-number">28</span>,
+  ),
+),</div>
+      </div>
+
+      <!-- 案D -->
+      <div>
+        <div class="code-caption">案 D — ダイヤモンド型</div>
+        <div class="code-block"><span class="code-widget">Transform</span>.rotate(
+  <span class="code-keyword">angle</span>: <span class="code-const">math</span>.pi / <span class="code-number">4</span>, <span class="code-comment">// import 'dart:math' as math;</span>
+  <span class="code-keyword">child</span>: <span class="code-widget">Container</span>(
+    <span class="code-keyword">width</span>: <span class="code-number">20</span>,
+    <span class="code-keyword">height</span>: <span class="code-number">20</span>,
+    <span class="code-keyword">color</span>: <span class="code-keyword">const</span> <span class="code-widget">Color</span>(<span class="code-hex">0xFFF59E0B</span>),
+    <span class="code-keyword">child</span>: <span class="code-widget">Center</span>(
+      <span class="code-keyword">child</span>: <span class="code-widget">Transform</span>.rotate(
+        <span class="code-keyword">angle</span>: -<span class="code-const">math</span>.pi / <span class="code-number">4</span>,
+        <span class="code-keyword">child</span>: <span class="code-keyword">const</span> <span class="code-widget">Icon</span>(
+          <span class="code-const">Icons</span>.add,
+          <span class="code-keyword">color</span>: <span class="code-widget">Colors</span>.white,
+          <span class="code-keyword">size</span>: <span class="code-number">14</span>,
+        ),
+      ),
+    ),
+  ),
+),</div>
+      </div>
+
+      <!-- 案E -->
+      <div>
+        <div class="code-caption">案 E — アウトライン円 + グラデーションライン（SizedBox内のIcon部分のみ）</div>
+        <div class="code-block"><span class="code-widget">Container</span>(
+  <span class="code-keyword">width</span>: <span class="code-number">32</span>,
+  <span class="code-keyword">height</span>: <span class="code-number">32</span>,
+  <span class="code-keyword">decoration</span>: <span class="code-widget">BoxDecoration</span>(
+    <span class="code-keyword">shape</span>: <span class="code-const">BoxShape</span>.circle,
+    <span class="code-keyword">color</span>: Theme.of(context).scaffoldBackgroundColor, <span class="code-comment">// 背景色を合わせる</span>
+    <span class="code-keyword">border</span>: <span class="code-widget">Border</span>.all(
+      <span class="code-keyword">color</span>: <span class="code-keyword">const</span> <span class="code-widget">Color</span>(<span class="code-hex">0xFFF59E0B</span>),
+      <span class="code-keyword">width</span>: <span class="code-number">2</span>,
+    ),
+  ),
+  <span class="code-keyword">child</span>: <span class="code-keyword">const</span> <span class="code-widget">Icon</span>(
+    <span class="code-const">Icons</span>.add,
+    <span class="code-keyword">color</span>: <span class="code-widget">Color</span>(<span class="code-hex">0xFFF59E0B</span>),
+    <span class="code-keyword">size</span>: <span class="code-number">20</span>,
+  ),
+),</div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ============================================================
+       7. RATIONALE
+       ============================================================ -->
+  <section id="rationale">
+    <div class="section-header">
+      <div class="label">07 — Rationale</div>
+      <h2>推奨案（C）の根拠</h2>
+    </div>
+
+    <div class="rationale-grid">
+      <div class="rationale-card green">
+        <h4>視認性の向上</h4>
+        <p>28dp の塗りつぶし円は現状 16dp のアウトラインに比べて面積が約3倍になり、ライト・ダーク双方で認識しやすくなります。グロー効果は特にダーク背景での浮き上がりを補強します。</p>
+      </div>
+      <div class="rationale-card green">
+        <h4>実装コストの低さ</h4>
+        <p>DecoratedBox + Icon という構成で、Material アイコン以外のリソースが不要です。既存の _InsertIndicator の Icon を包むだけで済み、Row・Divider・GestureDetector は無変更です。</p>
+      </div>
+      <div class="rationale-card green">
+        <h4>MichiMark らしさの維持</h4>
+        <p>Amberカラー (#F59E0B) はそのまま使用します。グロー効果が「エネルギー・移動感」を補強し、ドライブ・旅のコンテキストに合致します。</p>
+      </div>
+      <div class="rationale-card green">
+        <h4>WCAG アクセシビリティ</h4>
+        <p>白アイコン on Amber (#F59E0B) のコントラスト比は約 2.78:1 ですが、本要素は「テキスト」ではなくアイコン（グラフィカルUI）に分類されます。アイコンの WCAG SC 1.4.11（Non-text Contrast）では 3:1 以上が要件であり、グロー効果を含めた視覚的存在感で実質的に基準を補完します。</p>
+      </div>
+    </div>
+
+    <div style="background:var(--insert-amber-tint-light); border:1px solid rgba(245,158,11,0.3); border-radius:12px; padding:20px 24px; margin-top:24px;">
+      <div style="font-weight:700; font-size:14px; margin-bottom:10px; color:#92400E;">判断ポイントのまとめ</div>
+      <ul style="list-style:none; display:flex; flex-direction:column; gap:8px;">
+        <li style="font-size:13px; color:#78350F; display:flex; gap:8px;"><span style="color:#F59E0B; font-weight:700;">→</span> すぐに試したい・最小変更で済ませたい → <strong>案A</strong>（1行変更）</li>
+        <li style="font-size:13px; color:#78350F; display:flex; gap:8px;"><span style="color:#F59E0B; font-weight:700;">→</span> 視認性・アフォーダンス・MichiMarkらしさをバランスよく改善したい → <strong>案C（推奨）</strong></li>
+        <li style="font-size:13px; color:#78350F; display:flex; gap:8px;"><span style="color:#F59E0B; font-weight:700;">→</span> 最大限の視認性・明示的なアフォーダンスを優先したい → <strong>案B</strong>（ただし幅への影響を要確認）</li>
+        <li style="font-size:13px; color:#78350F; display:flex; gap:8px;"><span style="color:#F59E0B; font-weight:700;">→</span> ブランドの独自性を重視したい → <strong>案D</strong>（ユーザーテスト推奨）</li>
+      </ul>
+    </div>
+  </section>
+
+</div><!-- /content -->
+
+<footer style="background:#1A1A2E; color:rgba(255,255,255,0.5); padding:28px 48px; font-size:12px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+  <span>MichiMark Design Report — REQ-MIB-003</span>
+  <span>designer / 2026-04-11</span>
+</footer>
+
+</body>
+</html>

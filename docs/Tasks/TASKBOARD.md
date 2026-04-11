@@ -56,7 +56,7 @@
 | T-160 | MIB-001+003統合/002: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_insert_button_size.md (v2.0) |
 | T-161 | MIB-001+003統合/002: 実装 | flutter-dev | `DONE` | | |
 | T-162 | MIB-001+003統合/002: レビュー | reviewer | `DONE` | | 承認・違反なし |
-| T-163 | MIB-001+003統合/002: テスト | tester | `IN_PROGRESS` | `2026-04-11_michi_info_insert_button` | |
+| T-163 | MIB-001+003統合/002: テスト | tester | `DONE` | | 5PASS/0FAIL |
 | T-164 | MIB-003: デザイン提案（「＋」アイコンのみ変更） | designer | `DONE` | | docs/Design/draft/michi_info_insert_icon_design.html |
 | T-165 | MIB-003: デザインレビュー・ユーザー確認 | product-manager | `DONE` | | C案採用・MIB-001と統合。負のmargin不採用 |
 

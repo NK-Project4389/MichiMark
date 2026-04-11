@@ -19,6 +19,7 @@ part 'event_dao.g.dart';
   Events,
   MarkLinks,
   Payments,
+  ActionTimeLogs,
   EventMembers,
   EventTags,
   MarkLinkMembers,
@@ -174,8 +175,30 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
   // ---------------------------------------------------------------------------
 
   Future<void> deleteEvent(String id) async {
-    await (update(events)..where((t) => t.id.equals(id)))
-        .write(const EventsCompanion(isDeleted: Value(true)));
+    final now = DateTime.now();
+    await transaction(() async {
+      // 1. 子テーブル: mark_links 論理削除
+      await (update(markLinks)..where((t) => t.eventId.equals(id))).write(
+        MarkLinksCompanion(isDeleted: const Value(true), updatedAt: Value(now)),
+      );
+      // 2. 子テーブル: payments 論理削除
+      await (update(payments)..where((t) => t.eventId.equals(id))).write(
+        PaymentsCompanion(isDeleted: const Value(true), updatedAt: Value(now)),
+      );
+      // 3. 子テーブル: action_time_logs 論理削除
+      await (update(actionTimeLogs)..where((t) => t.eventId.equals(id))).write(
+        ActionTimeLogsCompanion(
+            isDeleted: const Value(true), updatedAt: Value(now)),
+      );
+      // 4. 中間テーブル: event_members 物理削除
+      await (delete(eventMembers)..where((t) => t.eventId.equals(id))).go();
+      // 5. 中間テーブル: event_tags 物理削除
+      await (delete(eventTags)..where((t) => t.eventId.equals(id))).go();
+      // 6. events 本体 論理削除
+      await (update(events)..where((t) => t.id.equals(id))).write(
+        EventsCompanion(isDeleted: const Value(true), updatedAt: Value(now)),
+      );
+    });
   }
 
   // ---------------------------------------------------------------------------

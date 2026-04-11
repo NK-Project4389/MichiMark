@@ -1,6 +1,15 @@
 # 進捗記録 2026-04-11
 
 ## 完了した作業
+- test: TC-ELD-001〜003 イベント削除機能 Integration Test 全件PASS (c0fd942)
+- test: MichiInfo InsertIndicator改善 Integration Test 追加（TC-MIB-001〜005 全件PASS） (fbd723c)
+- feat: reviewer不整合判断をarchitectへ委譲・タスクボード並行実施notes追加 (e19723c)
+- feat: エージェントインテリジェンス強化（実装/テスト並行サイクル・reviewer整合チェック強化） (9d97f28)
+- docs: イベント削除機能 Spec作成・Phase15 DONE更新（T-131） (db4c6ac)
+- docs: 2026-04-11セッション完了（TF 1.0.0(7)アップロード・TestFlight永続許可設定追加） (14df9d5)
+- docs: 2026-04-11セッション完了（TF 1.0.0(7)アップロード・TestFlight永続許可設定追加） (14df9d5)
+- chore: テスト許可設定整理・TestLogs保存機能追加（MichiMark/NomikaiShare） (b8c5da9)
+- docs: 2026-04-11進捗更新（B-1〜B-4修正・Integration Test全件PASS） (1cf5895)
 - fix: B-1〜B-4バグ修正・Integration Test全件PASS (e430ba5)
 - docs: Phase16/17タスク追加・進捗登録（MichiInfo/PaymentInfoカード削除・ロードマップ再設計） (d3f1b5e)
 - docs: Roadmap再設計（Phase A〜E・ターゲット8セグメント・マーケターAgent定義） (a51205a)

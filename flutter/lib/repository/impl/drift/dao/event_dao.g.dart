@@ -9,11 +9,12 @@ mixin _$EventDaoMixin on DatabaseAccessor<AppDatabase> {
   $EventsTable get events => attachedDatabase.events;
   $MarkLinksTable get markLinks => attachedDatabase.markLinks;
   $PaymentsTable get payments => attachedDatabase.payments;
+  $ActionsTable get actions => attachedDatabase.actions;
+  $ActionTimeLogsTable get actionTimeLogs => attachedDatabase.actionTimeLogs;
   $EventMembersTable get eventMembers => attachedDatabase.eventMembers;
   $TagsTable get tags => attachedDatabase.tags;
   $EventTagsTable get eventTags => attachedDatabase.eventTags;
   $MarkLinkMembersTable get markLinkMembers => attachedDatabase.markLinkMembers;
-  $ActionsTable get actions => attachedDatabase.actions;
   $MarkLinkActionsTable get markLinkActions => attachedDatabase.markLinkActions;
   $PaymentSplitMembersTable get paymentSplitMembers =>
       attachedDatabase.paymentSplitMembers;
@@ -33,6 +34,13 @@ class EventDaoManager {
       $$MarkLinksTableTableManager(_db.attachedDatabase, _db.markLinks);
   $$PaymentsTableTableManager get payments =>
       $$PaymentsTableTableManager(_db.attachedDatabase, _db.payments);
+  $$ActionsTableTableManager get actions =>
+      $$ActionsTableTableManager(_db.attachedDatabase, _db.actions);
+  $$ActionTimeLogsTableTableManager get actionTimeLogs =>
+      $$ActionTimeLogsTableTableManager(
+        _db.attachedDatabase,
+        _db.actionTimeLogs,
+      );
   $$EventMembersTableTableManager get eventMembers =>
       $$EventMembersTableTableManager(_db.attachedDatabase, _db.eventMembers);
   $$TagsTableTableManager get tags =>
@@ -44,8 +52,6 @@ class EventDaoManager {
         _db.attachedDatabase,
         _db.markLinkMembers,
       );
-  $$ActionsTableTableManager get actions =>
-      $$ActionsTableTableManager(_db.attachedDatabase, _db.actions);
   $$MarkLinkActionsTableTableManager get markLinkActions =>
       $$MarkLinkActionsTableTableManager(
         _db.attachedDatabase,
