@@ -71,3 +71,14 @@
 | T-157b | PaymentInfo カード削除 テストコード実装（Phase1） | tester | `DONE` | | TC-PID-001〜005 実装済み |
 | T-158 | PaymentInfo カード削除 レビュー | reviewer | `DONE` | | 承認・違反なし |
 | T-159 | PaymentInfo カード削除 テスト実行（Phase2） | tester | `DONE` | | 4PASS/1SKIP/0FAIL |
+
+## R-1: メンバー未選択時の入力ガード
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-170 | メンバー未選択ガード 要件書 | product-manager | `DONE` | | docs/Requirements/REQ-member_required_guard.md |
+| T-171 | メンバー未選択ガード Spec作成 | architect | `DONE` | | docs/Spec/Features/MemberRequiredGuard_Spec.md |
+| T-172 | メンバー未選択ガード 実装 | flutter-dev | `TODO` | | MemberRequiredGuard_Spec.md 参照 |
+| T-172b | メンバー未選択ガード テストコード実装 | tester | `TODO` | | TC-MRG-001〜006 |
+| T-173 | メンバー未選択ガード レビュー | reviewer | `TODO` | | |
+| T-174 | メンバー未選択ガード テスト実行 | tester | `TODO` | | |
