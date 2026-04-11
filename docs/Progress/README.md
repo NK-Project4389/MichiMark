@@ -91,3 +91,4 @@
 | [2026-04-11_feat__イベント削除機能.md](./2026-04-11_feat__イベント削除機能.md) | Phase 14完了：イベント削除機能（スワイプ削除・カスケード削除）3PASS/0FAIL |
 | [2026-04-11_workflow__並行テスト実装フロー導入.md](./2026-04-11_workflow__並行テスト実装フロー導入.md) | 並行テストフロー導入・T-131 Spec作成・T-132〜134完了・エージェント強化 |
 | [2026-04-11_test__TC-MCD-001-010_MichiInfoCard削除全件PASS.md](./2026-04-11_test__TC-MCD-001-010_MichiInfoCard削除全件PASS.md) | MichiInfo カード削除機能 TC-MCD-001〜010 9PASS/1SKIP/0FAIL |
+| [2026-04-11_feat__PaymentInfo伝票削除機能.md](./2026-04-11_feat__PaymentInfo伝票削除機能.md) | Phase 17 PaymentInfo 伝票削除機能 実装・テスト完了（4PASS/1SKIP/0FAIL） |

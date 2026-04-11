@@ -65,8 +65,9 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-155 | PaymentInfo カード削除 要件書作成 | product-manager | `TODO` | | 削除対象（payment_detail単体 or payment_info行）・確認ダイアログ要否を定義 |
-| T-156 | PaymentInfo カード削除 Spec作成 | architect | `BLOCKED` | | T-155完了後 |
-| T-157 | PaymentInfo カード削除 実装 | flutter-dev | `BLOCKED` | | T-156完了後 |
-| T-158 | PaymentInfo カード削除 レビュー | reviewer | `BLOCKED` | | T-157完了後 |
-| T-159 | PaymentInfo カード削除 テスト | tester | `BLOCKED` | | T-158完了後 |
+| T-155 | PaymentInfo カード削除 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_info_card_delete.md |
+| T-156 | PaymentInfo カード削除 Spec作成 | architect | `DONE` | | docs/Spec/Features/PaymentInfoCardDelete_Spec.md |
+| T-157 | PaymentInfo カード削除 実装 | flutter-dev | `DONE` | | PaymentInfoCardDelete_Spec.md 参照 |
+| T-157b | PaymentInfo カード削除 テストコード実装（Phase1） | tester | `DONE` | | TC-PID-001〜005 実装済み |
+| T-158 | PaymentInfo カード削除 レビュー | reviewer | `DONE` | | 承認・違反なし |
+| T-159 | PaymentInfo カード削除 テスト実行（Phase2） | tester | `DONE` | | 4PASS/1SKIP/0FAIL |
