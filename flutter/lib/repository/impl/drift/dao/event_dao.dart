@@ -201,6 +201,13 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
     });
   }
 
+  Future<void> deleteMarkLink(String markLinkId) async {
+    final now = DateTime.now();
+    await (update(markLinks)..where((t) => t.id.equals(markLinkId))).write(
+      MarkLinksCompanion(isDeleted: const Value(true), updatedAt: Value(now)),
+    );
+  }
+
   // ---------------------------------------------------------------------------
   // Event Domain 組み立て
   // ---------------------------------------------------------------------------

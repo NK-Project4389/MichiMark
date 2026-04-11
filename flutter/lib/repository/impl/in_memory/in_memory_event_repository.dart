@@ -80,6 +80,21 @@ class InMemoryEventRepository implements EventRepository {
   }
 
   @override
+  Future<void> deleteMarkLink(String markLinkId) async {
+    for (var i = 0; i < _items.length; i++) {
+      final event = _items[i];
+      final mlIndex = event.markLinks.indexWhere((ml) => ml.id == markLinkId);
+      if (mlIndex >= 0) {
+        final updatedMarkLinks = List.of(event.markLinks);
+        updatedMarkLinks[mlIndex] =
+            updatedMarkLinks[mlIndex].copyWith(isDeleted: true);
+        _items[i] = event.copyWith(markLinks: updatedMarkLinks);
+        return;
+      }
+    }
+  }
+
+  @override
   Future<List<EventDomain>> fetchByFilter(AggregationFilter filter) async {
     // 期間計算
     final (start, end) = _resolveDateRange(filter.dateRange);

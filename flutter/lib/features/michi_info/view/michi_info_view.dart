@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
@@ -710,19 +711,45 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
                             final item = items[index];
-                            return _TimelineItem(
-                              item: item,
-                              gapAfter: timelineData.gapAfterItem[index],
-                              onTap: () => context.read<MichiInfoBloc>().add(
-                                    MichiInfoItemTapped(
-                                      markLinkId: item.id,
-                                      type: item.markLinkType,
+                            return Slidable(
+                              key: Key('michi_info_card_slidable_${item.id}'),
+                              enabled: !widget.isInsertMode,
+                              endActionPane: ActionPane(
+                                motion: const DrawerMotion(),
+                                extentRatio: 0.25,
+                                children: [
+                                  SlidableAction(
+                                    key: Key(
+                                      'michi_info_card_delete_action_${item.id}',
                                     ),
+                                    onPressed: (_) =>
+                                        context.read<MichiInfoBloc>().add(
+                                              MichiInfoCardDeleteRequested(
+                                                item.id,
+                                              ),
+                                            ),
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                    icon: Icons.delete,
+                                    label: '削除',
                                   ),
-                              markActionItems: markActionItems,
-                              markActionStateLabels: widget.markActionStateLabels,
-                              topicConfig: widget.topicConfig,
-                              eventId: widget.eventId,
+                                ],
+                              ),
+                              child: _TimelineItem(
+                                item: item,
+                                gapAfter: timelineData.gapAfterItem[index],
+                                onTap: () => context.read<MichiInfoBloc>().add(
+                                      MichiInfoItemTapped(
+                                        markLinkId: item.id,
+                                        type: item.markLinkType,
+                                      ),
+                                    ),
+                                markActionItems: markActionItems,
+                                markActionStateLabels:
+                                    widget.markActionStateLabels,
+                                topicConfig: widget.topicConfig,
+                                eventId: widget.eventId,
+                              ),
                             );
                           },
                           childCount: items.length,

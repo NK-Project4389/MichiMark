@@ -43,4 +43,7 @@ abstract interface class EventRepository {
 
   /// AggregationFilterの全条件でフィルタしたEventを取得する
   Future<List<EventDomain>> fetchByFilter(AggregationFilter filter);
+
+  /// MarkLink（Mark または Link）を論理削除する
+  Future<void> deleteMarkLink(String markLinkId);
 }

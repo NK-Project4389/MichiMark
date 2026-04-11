@@ -43,6 +43,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     on<MichiInfoInsertMarkPressed>(_onInsertMarkPressed);
     on<MichiInfoInsertLinkPressed>(_onInsertLinkPressed);
     on<MichiInfoInsertPointCancelled>(_onInsertPointCancelled);
+    on<MichiInfoCardDeleteRequested>(_onCardDeleteRequested);
   }
 
   final EventRepository _eventRepository;
@@ -482,6 +483,27 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
           insertAfterSeq: effectiveInsertAfterSeq,
         ),
       ));
+    }
+  }
+
+  /// カード削除: DB に論理削除後、projection を再取得して emit
+  Future<void> _onCardDeleteRequested(
+    MichiInfoCardDeleteRequested event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (state case MichiInfoLoaded current) {
+      try {
+        await _eventRepository.deleteMarkLink(event.markLinkId);
+        final domain = await _eventRepository.fetch(_eventId);
+        final projection = EventDetailAdapter.toProjection(domain).michiInfo;
+        emit(current.copyWith(
+          projection: projection,
+          isInsertMode: false,
+          pendingInsertAfterSeq: null,
+        ));
+      } on Exception {
+        // サイレント失敗（既存の projection を維持）
+      }
     }
   }
 

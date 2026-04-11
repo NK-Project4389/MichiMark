@@ -61,4 +61,8 @@ class DriftEventRepository implements EventRepository {
   @override
   Future<List<EventDomain>> fetchByFilter(AggregationFilter filter) async =>
       throw UnimplementedError('fetchByFilter not yet implemented in Drift');
+
+  @override
+  Future<void> deleteMarkLink(String markLinkId) async =>
+      _dao.deleteMarkLink(markLinkId);
 }

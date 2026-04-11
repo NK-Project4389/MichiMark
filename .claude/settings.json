@@ -22,7 +22,8 @@
       "Bash(lipo *)",
       "Bash(cp *)",
       "Bash(rm -rf /tmp/*)",
-      "Bash(cat > /tmp/*)"
+      "Bash(cat > /tmp/*)",
+      "Bash(diff *)"
     ]
   },
   "hooks": {

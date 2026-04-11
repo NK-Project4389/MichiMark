@@ -174,3 +174,12 @@ class MichiInfoReloadRequested extends MichiInfoEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// カード（Mark または Link）の削除ボタンがタップされたとき
+class MichiInfoCardDeleteRequested extends MichiInfoEvent {
+  final String markLinkId;
+  const MichiInfoCardDeleteRequested(this.markLinkId);
+
+  @override
+  List<Object?> get props => [markLinkId];
+}
