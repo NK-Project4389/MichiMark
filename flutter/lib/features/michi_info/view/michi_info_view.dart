@@ -660,7 +660,8 @@ class _MichiInfoListState extends State<_MichiInfoList> {
               ),
             ),
           // メインスクロールビュー
-          CustomScrollView(
+          SlidableAutoCloseBehavior(
+          child: CustomScrollView(
             controller: _scrollController,
             slivers: [
               SliverPadding(
@@ -757,6 +758,7 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                       ),
               ),
             ],
+          ),
           ),
           // 右上固定の凡例
           const Positioned(

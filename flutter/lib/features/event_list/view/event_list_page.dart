@@ -151,14 +151,16 @@ class _EventListBody extends StatelessWidget {
       return const Center(child: Text('イベントがありません'));
     }
 
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      itemCount: projection.events.length,
-      separatorBuilder: (context, _) => const SizedBox(height: 12),
-      itemBuilder: (context, index) {
-        final item = projection.events[index];
-        return _EventListItem(item: item);
-      },
+    return SlidableAutoCloseBehavior(
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        itemCount: projection.events.length,
+        separatorBuilder: (context, _) => const SizedBox(height: 12),
+        itemBuilder: (context, index) {
+          final item = projection.events[index];
+          return _EventListItem(item: item);
+        },
+      ),
     );
   }
 }

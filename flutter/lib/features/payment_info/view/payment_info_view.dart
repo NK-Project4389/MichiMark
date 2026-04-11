@@ -92,7 +92,8 @@ class _PaymentInfoList extends StatelessWidget {
           Expanded(
             child: projection.items.isEmpty
                 ? const Center(child: Text('支払情報がありません'))
-                : ListView.separated(
+                : SlidableAutoCloseBehavior(
+                    child: ListView.separated(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     itemCount: projection.items.length,
                     separatorBuilder: (context, _) =>
@@ -123,6 +124,7 @@ class _PaymentInfoList extends StatelessWidget {
                       );
                     },
                   ),
+                ),
           ),
           const Divider(height: 1),
           Padding(
