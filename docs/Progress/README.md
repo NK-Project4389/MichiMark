@@ -92,3 +92,4 @@
 | [2026-04-11_workflow__並行テスト実装フロー導入.md](./2026-04-11_workflow__並行テスト実装フロー導入.md) | 並行テストフロー導入・T-131 Spec作成・T-132〜134完了・エージェント強化 |
 | [2026-04-11_test__TC-MCD-001-010_MichiInfoCard削除全件PASS.md](./2026-04-11_test__TC-MCD-001-010_MichiInfoCard削除全件PASS.md) | MichiInfo カード削除機能 TC-MCD-001〜010 9PASS/1SKIP/0FAIL |
 | [2026-04-11_feat__PaymentInfo伝票削除機能.md](./2026-04-11_feat__PaymentInfo伝票削除機能.md) | Phase 17 PaymentInfo 伝票削除機能 実装・テスト完了（4PASS/1SKIP/0FAIL） |
+| [2026-04-11_feat__Phase16_17_削除機能完了.md](./2026-04-11_feat__Phase16_17_削除機能完了.md) | Phase 16・17 削除機能完了セッションサマリー・次回やること |
