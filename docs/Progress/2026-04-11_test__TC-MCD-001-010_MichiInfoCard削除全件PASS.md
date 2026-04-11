@@ -1,6 +1,10 @@
 # 2026-04-11 MichiInfo カード削除機能 Integration Test 全件PASS（T-154）
 
 ## 完了した作業
+- docs: R-1 メンバー未選択ガード Spec・タスクボード追加（T-170〜174） (fcdff56)
+- fix: Slidable排他制御 SlidableAutoCloseBehaviorでラップ（EventList/MichiInfo/PaymentInfo） (1e859c9)
+- docs: TestFlight 1.0.0(7) アップロード完了・進捗更新 (7117f4d)
+- feat: Phase17 PaymentInfo伝票削除機能・IntegrationTest・Spec追加 (225f80f)
 - docs: 2026-04-11セッション進捗登録（Phase16・17削除機能完了） (98b770b)
 - test: TC-PID-001〜005 PaymentInfo伝票削除機能 4PASS/1SKIP/0FAIL (a284c6a)
 - feat: MichiInfo カード削除機能（flutter_slidable スワイプ削除・論理削除） (ac9ee7a)

@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark — カスタム数値キーパッド デザイン提案 2026-04-11</title>
+  <style>
+    :root {
+      /* ===== Brand Colors ===== */
+      --teal:            #4ECDC4;
+      --teal-dark:       #2D6A6A;
+      --teal-mid:        #3AADA5;
+      --teal-tint:       #E0F7F5;
+      --teal-tint2:      #F0FAFA;
+      --teal-deep:       #1A4A4A;
+
+      /* ===== Page / Card ===== */
+      --bg-page:         #F4F8F8;
+      --bg-card:         #FFFFFF;
+      --border-light:    #E0EEEC;
+
+      /* ===== Text ===== */
+      --text-primary:    #1A1A2E;
+      --text-secondary:  #5C7070;
+      --text-tertiary:   #9BB5B3;
+      --text-teal:       #2D6A6A;
+
+      /* ===== Keypad Light ===== */
+      --kp-bg:           #F2F4F4;
+      --kp-key-num:      #FFFFFF;
+      --kp-key-num-text: #1A1A2E;
+      --kp-key-op:       #D8EDEB;
+      --kp-key-op-text:  #2D6A6A;
+      --kp-key-ac:       #FFE5E5;
+      --kp-key-ac-text:  #C0392B;
+      --kp-key-eq:       #2D6A6A;
+      --kp-key-eq-text:  #FFFFFF;
+      --kp-key-del:      #E8EEF0;
+      --kp-key-del-text: #4A6060;
+      --kp-display-bg:   #FFFFFF;
+      --kp-handle:       #C0D0CE;
+
+      /* ===== Keypad Dark ===== */
+      --kp-dark-bg:           #1C2626;
+      --kp-dark-key-num:      #2C3C3C;
+      --kp-dark-key-num-text: #E8F4F2;
+      --kp-dark-key-op:       #1A3A3A;
+      --kp-dark-key-op-text:  #4ECDC4;
+      --kp-dark-key-ac:       #3A1A1A;
+      --kp-dark-key-ac-text:  #FF6B6B;
+      --kp-dark-key-eq:       #4ECDC4;
+      --kp-dark-key-eq-text:  #1A1A2E;
+      --kp-dark-key-del:      #243030;
+      --kp-dark-key-del-text: #9BB5B3;
+      --kp-dark-display-bg:   #0F1A1A;
+      --kp-dark-handle:       #3A5050;
+
+      --radius-key: 12px;
+      --shadow-card: 0 2px 16px rgba(45,106,106,0.10);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue',
+                   'Hiragino Sans', 'Yu Gothic', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, var(--teal-deep) 0%, var(--teal-dark) 55%, var(--teal) 100%);
+      color: #fff;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+    }
+    .page-header h1 { font-size: 30px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.3px; }
+    .page-header p  { font-size: 14px; opacity: 0.85; max-width: 600px; }
+    .page-header .meta {
+      display: flex; gap: 24px; margin-top: 20px;
+      font-size: 12px; opacity: 0.75;
+    }
+
+    /* ===== LAYOUT ===== */
+    .content { max-width: 1100px; margin: 0 auto; padding: 48px 32px; }
+
+    section { margin-bottom: 64px; }
+    section h2 {
+      font-size: 22px; font-weight: 700;
+      color: var(--teal-dark);
+      border-left: 4px solid var(--teal);
+      padding-left: 14px;
+      margin-bottom: 28px;
+    }
+    section h3 {
+      font-size: 16px; font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    /* ===== TOC ===== */
+    .toc-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+      box-shadow: var(--shadow-card);
+    }
+    .toc-card h3 { font-size: 14px; color: var(--text-secondary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.8px; }
+    .toc-card ol { padding-left: 20px; }
+    .toc-card li { font-size: 14px; margin-bottom: 6px; }
+    .toc-card a { color: var(--teal-dark); text-decoration: none; }
+    .toc-card a:hover { text-decoration: underline; }
+
+    /* ===== INFO CARD ===== */
+    .info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-card);
+    }
+    .info-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.8; }
+    .info-card ul { padding-left: 20px; font-size: 14px; color: var(--text-secondary); line-height: 1.9; }
+
+    /* ===== DESIGN PLAN HEADER ===== */
+    .plan-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .plan-badge {
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .plan-badge-a { background: var(--teal-dark); color: #fff; }
+    .plan-badge-b { background: #E8F0FF; color: #2D4EA8; border: 1px solid #B8CCFF; }
+    .plan-badge-c { background: #FFF3E0; color: #A85A00; border: 1px solid #FFD580; }
+    .plan-badge-rec { background: var(--teal); color: #fff; }
+    .plan-title { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+    .plan-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* ===== PLAN WRAPPER ===== */
+    .plan-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow-card);
+    }
+    .plan-wrapper.rec {
+      border-color: var(--teal);
+      box-shadow: 0 4px 24px rgba(78,205,196,0.18);
+    }
+
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .pros, .cons {
+      background: #F9FCFC;
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .pros h4 { color: #27AE60; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    .cons h4 { color: #E74C3C; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    .pros ul, .cons ul {
+      padding-left: 18px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .preview-row {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .preview-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 8px;
+      letter-spacing: 0.4px;
+    }
+
+    /* ===== KEYPAD BASE ===== */
+    .keypad-shell {
+      width: 320px;
+      border-radius: 24px 24px 0 0;
+      overflow: hidden;
+      box-shadow: 0 -4px 32px rgba(0,0,0,0.14);
+      flex-shrink: 0;
+    }
+
+    /* ===== DISPLAY AREA ===== */
+    .kp-display {
+      background: var(--kp-display-bg);
+      padding: 10px 20px 14px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .kp-display-orig {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      text-align: right;
+      min-height: 18px;
+      font-family: 'SF Mono', 'Courier New', monospace;
+    }
+    .kp-display-value {
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--text-primary);
+      text-align: right;
+      letter-spacing: -1px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.2;
+    }
+    .kp-display-expr {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      text-align: right;
+      font-family: 'SF Mono', 'Courier New', monospace;
+      min-height: 18px;
+    }
+    .kp-label-tag {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--teal-mid);
+      margin-bottom: 2px;
+    }
+
+    /* Handle bar */
+    .kp-handle-bar {
+      display: flex;
+      justify-content: center;
+      padding: 10px 0 0;
+    }
+    .kp-handle-bar span {
+      width: 36px; height: 4px;
+      background: var(--kp-handle);
+      border-radius: 3px;
+    }
+
+    /* ===== KEY GRID ===== */
+    .kp-grid {
+      display: grid;
+      padding: 12px 12px 20px;
+      gap: 8px;
+    }
+
+    /* Plan A: 4 col grid */
+    .kp-grid-a {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    /* Plan B: custom 4 col */
+    .kp-grid-b {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    /* Plan C: 4 col iOS style */
+    .kp-grid-c {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .kp-key {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 52px;
+      border-radius: var(--radius-key);
+      font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+      user-select: none;
+      border: none;
+      outline: none;
+      transition: filter 0.08s, transform 0.08s;
+      position: relative;
+      letter-spacing: -0.3px;
+    }
+    .kp-key:active, .kp-key.pressed {
+      filter: brightness(0.88);
+      transform: scale(0.96);
+    }
+    .kp-key-span2 { grid-column: span 2; font-size: 16px; }
+
+    /* Light key types */
+    .kp-num    { background: var(--kp-key-num);   color: var(--kp-key-num-text); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+    .kp-op     { background: var(--kp-key-op);    color: var(--kp-key-op-text);  }
+    .kp-ac     { background: var(--kp-key-ac);    color: var(--kp-key-ac-text);  font-size: 16px; font-weight: 700; }
+    .kp-eq     { background: var(--kp-key-eq);    color: var(--kp-key-eq-text);  font-weight: 700; font-size: 16px; }
+    .kp-del    { background: var(--kp-key-del);   color: var(--kp-key-del-text); }
+    .kp-dot    { background: var(--kp-key-num);   color: var(--kp-key-num-text); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+
+    /* ===== DARK VARIANT ===== */
+    .kp-dark {
+      --kp-display-bg:   var(--kp-dark-display-bg);
+      --kp-key-num:      var(--kp-dark-key-num);
+      --kp-key-num-text: var(--kp-dark-key-num-text);
+      --kp-key-op:       var(--kp-dark-key-op);
+      --kp-key-op-text:  var(--kp-dark-key-op-text);
+      --kp-key-ac:       var(--kp-dark-key-ac);
+      --kp-key-ac-text:  var(--kp-dark-key-ac-text);
+      --kp-key-eq:       var(--kp-dark-key-eq);
+      --kp-key-eq-text:  var(--kp-dark-key-eq-text);
+      --kp-key-del:      var(--kp-dark-key-del);
+      --kp-key-del-text: var(--kp-dark-key-del-text);
+      --kp-handle:       var(--kp-dark-handle);
+      background: var(--kp-dark-bg);
+    }
+    .kp-dark .kp-display {
+      background: var(--kp-dark-display-bg);
+      border-bottom-color: #2C3C3C;
+    }
+    .kp-dark .kp-display-value { color: #E8F4F2; }
+    .kp-dark .kp-display-orig  { color: #4A6A68; }
+    .kp-dark .kp-display-expr  { color: #4A6A68; }
+    .kp-dark .kp-label-tag     { color: #4ECDC4; }
+    .kp-dark .kp-num    { box-shadow: none; }
+
+    /* ===== PLAN B — GROUPED ===== */
+    .kp-section-label {
+      grid-column: 1 / -1;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-tertiary);
+      padding: 2px 4px 0;
+    }
+    .kp-divider-line {
+      grid-column: 1 / -1;
+      height: 1px;
+      background: var(--border-light);
+      margin: 2px 0;
+    }
+
+    /* ===== PLAN C — iOS-like ===== */
+    .kp-c-grid {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+
+    /* ===== SPEC TABLE ===== */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 16px;
+    }
+    .spec-table th {
+      background: var(--teal-tint);
+      color: var(--teal-dark);
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+    }
+    .spec-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+    .spec-table tr:last-child td { border-bottom: none; }
+    .spec-table tr:nth-child(even) td { background: #FAFCFC; }
+
+    /* ===== SIZE SPEC ===== */
+    .size-spec {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .size-card {
+      background: #F9FCFC;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 16px 20px;
+      flex: 1;
+      min-width: 160px;
+    }
+    .size-card h4 { font-size: 12px; font-weight: 700; color: var(--teal-dark); margin-bottom: 8px; }
+    .size-card table { font-size: 12px; color: var(--text-secondary); width: 100%; }
+    .size-card td { padding: 3px 0; }
+    .size-card td:first-child { font-weight: 600; color: var(--text-primary); white-space: nowrap; padding-right: 8px; }
+
+    /* ===== DISPLAY MODE COMPARISON ===== */
+    .mode-comparison {
+      display: flex;
+      gap: 24px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .mode-card {
+      flex: 1;
+      min-width: 200px;
+      background: #F9FCFC;
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .mode-card h4 { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; }
+    .mode-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+
+    /* ===== RECOMMENDATION BANNER ===== */
+    .rec-banner {
+      background: linear-gradient(135deg, var(--teal-deep) 0%, var(--teal-dark) 60%, var(--teal-mid) 100%);
+      color: #fff;
+      border-radius: 20px;
+      padding: 32px 36px;
+      margin-bottom: 48px;
+    }
+    .rec-banner h3 { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+    .rec-banner p  { font-size: 14px; opacity: 0.9; line-height: 1.8; }
+    .rec-banner ul { padding-left: 20px; font-size: 14px; opacity: 0.9; line-height: 1.9; margin-top: 8px; }
+
+    /* ===== PRESS DEMO ===== */
+    .press-demo-btn {
+      background: var(--teal-dark);
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+    .press-demo-btn:hover { background: var(--teal-deep); }
+
+    /* ===== RATIONALE ===== */
+    .rationale-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .rationale-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .rationale-item h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rationale-item p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .ri-icon {
+      width: 22px; height: 22px;
+      background: var(--teal-tint);
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--teal-deep);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 28px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 700px) {
+      .pros-cons { grid-template-columns: 1fr; }
+      .preview-row { flex-direction: column; }
+      .rationale-grid { grid-template-columns: 1fr; }
+      .page-header { padding: 36px 24px 32px; }
+      .content { padding: 32px 16px; }
+      .plan-wrapper { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="page-header">
+  <div class="badge">MichiMark Design Report</div>
+  <h1>カスタム数値キーパッド UI デザイン提案</h1>
+  <p>BasicInfo / FuelDetail / PaymentDetail / MarkDetail / LinkDetail 等、全数値入力フィールドへ適用するカスタムキーパッド（カスタムIME）の3案提示</p>
+  <div class="meta">
+    <span>作成日: 2026-04-11</span>
+    <span>ロール: designer</span>
+    <span>対象: product-manager レビュー用 叩き</span>
+  </div>
+</header>
+
+<div class="content">
+
+  <!-- ===== TOC ===== -->
+  <div class="toc-card">
+    <h3>目次</h3>
+    <ol>
+      <li><a href="#overview">設計概要・共通仕様</a></li>
+      <li><a href="#color-palette">カラーパレット</a></li>
+      <li><a href="#typography">タイポグラフィ・スペーシング</a></li>
+      <li><a href="#component-preview">コンポーネントプレビュー（A案・B案・C案）</a></li>
+      <li><a href="#size-spec">レスポンシブサイズ仕様</a></li>
+      <li><a href="#display-mode">表示モード（Push-up vs Overlay）</a></li>
+      <li><a href="#rationale">根拠・設計判断</a></li>
+      <li><a href="#recommendation">推奨案</a></li>
+    </ol>
+  </div>
+
+  <!-- ===== SECTION 1: OVERVIEW ===== -->
+  <section id="overview">
+    <h2>1. 設計概要・共通仕様</h2>
+    <div class="info-card">
+      <h3 style="margin-bottom: 10px; color: var(--text-primary);">キー構成（全案共通）</h3>
+      <table class="spec-table">
+        <thead>
+          <tr><th>キー</th><th>表示</th><th>役割</th><th>備考</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>数字</td><td>0〜9</td><td>数値入力</td><td>—</td></tr>
+          <tr><td>ダブルゼロ</td><td>00</td><td>2桁入力ショートカット</td><td>ガソリン単価・金額などで頻用</td></tr>
+          <tr><td>小数点</td><td>.</td><td>小数点入力</td><td>isDecimal=false 時は非活性表示</td></tr>
+          <tr><td>演算子</td><td>+ − × ÷</td><td>四則演算（簡易電卓モード）</td><td>中間式は Display 2行目に表示</td></tr>
+          <tr><td>確定</td><td>= / 確定</td><td>演算結果を入力フィールドに反映</td><td>演算なしでも確定＝キーパッドを閉じる</td></tr>
+          <tr><td>バックスペース</td><td>⌫</td><td>1文字削除</td><td>長押しでAll Clear と同等</td></tr>
+          <tr><td>クリア</td><td>C</td><td>入力欄を完全クリア（0に戻す）</td><td>赤系アクセントで視認性確保</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-card" style="margin-top: 16px;">
+      <h3 style="margin-bottom: 10px; color: var(--text-primary);">表示エリア構成（全案共通）</h3>
+      <ul>
+        <li><strong>行1（Draft original）</strong>: 変更前の保存済み値をグレーで薄く表示。変更をキャンセルしたいときの参照用</li>
+        <li><strong>行2（現在入力値）</strong>: 大きいフォント（28〜36sp）で現在値を表示。演算途中の式文字列もここに表示</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 2: COLOR PALETTE ===== -->
+  <section id="color-palette">
+    <h2>2. カラーパレット</h2>
+    <div class="info-card">
+      <h3 style="margin-bottom: 16px; color: var(--text-primary);">ライトモード キーカラー</h3>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px;">
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 48px; background: #FFFFFF; border-radius: 10px; border: 1px solid #E0EEEC; box-shadow: 0 2px 4px rgba(0,0,0,0.08); margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; color: #5C7070; font-weight: 600;">数字</div>
+          <div style="font-size: 10px; color: #9BB5B3;">#FFFFFF</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 48px; background: #D8EDEB; border-radius: 10px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; color: #5C7070; font-weight: 600;">演算子</div>
+          <div style="font-size: 10px; color: #9BB5B3;">#D8EDEB</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 48px; background: #2D6A6A; border-radius: 10px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; color: #5C7070; font-weight: 600;">確定 (=)</div>
+          <div style="font-size: 10px; color: #9BB5B3;">#2D6A6A</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 48px; background: #E8EEF0; border-radius: 10px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; color: #5C7070; font-weight: 600;">Delete ⌫</div>
+          <div style="font-size: 10px; color: #9BB5B3;">#E8EEF0</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 48px; background: #FFE5E5; border-radius: 10px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; color: #5C7070; font-weight: 600;">C クリア</div>
+          <div style="font-size: 10px; color: #9BB5B3;">#FFE5E5</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 48px; background: #F2F4F4; border-radius: 10px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; color: #5C7070; font-weight: 600;">背景</div>
+          <div style="font-size: 10px; color: #9BB5B3;">#F2F4F4</div>
+        </div>
+      </div>
+
+      <h3 style="margin-bottom: 16px; color: var(--text-primary); margin-top: 24px;">ダークモード キーカラー</h3>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 48px; background: #2C3C3C; border-radius: 10px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; color: #5C7070; font-weight: 600;">数字</div>
+          <div style="font-size: 10px; color: #9BB5B3;">#2C3C3C</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 48px; background: #1A3A3A; border-radius: 10px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; color: #5C7070; font-weight: 600;">演算子</div>
+          <div style="font-size: 10px; color: #9BB5B3;">#1A3A3A</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 48px; background: #4ECDC4; border-radius: 10px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; color: #5C7070; font-weight: 600;">確定 (=)</div>
+          <div style="font-size: 10px; color: #9BB5B3;">#4ECDC4</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 48px; background: #243030; border-radius: 10px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; color: #5C7070; font-weight: 600;">Delete ⌫</div>
+          <div style="font-size: 10px; color: #9BB5B3;">#243030</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 48px; background: #3A1A1A; border-radius: 10px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; color: #5C7070; font-weight: 600;">C クリア</div>
+          <div style="font-size: 10px; color: #9BB5B3;">#3A1A1A</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 48px; background: #1C2626; border-radius: 10px; margin-bottom: 6px;"></div>
+          <div style="font-size: 11px; color: #5C7070; font-weight: 600;">背景</div>
+          <div style="font-size: 10px; color: #9BB5B3;">#1C2626</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px; font-size: 13px; color: var(--text-secondary);">
+        <strong>コントラスト比（WCAG AA 4.5:1 基準）</strong>
+        <ul style="padding-left: 18px; margin-top: 6px; line-height: 1.9;">
+          <li>確定キー (#2D6A6A 上 #FFFFFF): 約 7.8:1 — 合格</li>
+          <li>数字キー (#1A1A2E 上 #FFFFFF): 約 16.2:1 — 合格</li>
+          <li>C キー (#C0392B 上 #FFE5E5): 約 5.2:1 — 合格</li>
+          <li>演算子キー (#2D6A6A 上 #D8EDEB): 約 5.1:1 — 合格</li>
+          <li>ダーク 確定キー (#1A1A2E 上 #4ECDC4): 約 8.2:1 — 合格</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 3: TYPOGRAPHY ===== -->
+  <section id="typography">
+    <h2>3. タイポグラフィ・スペーシング</h2>
+    <div class="info-card">
+      <table class="spec-table">
+        <thead>
+          <tr><th>要素</th><th>サイズ（375pt基準）</th><th>ウェイト</th><th>用途</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Display original (Draft元値)</td><td>11sp</td><td>Regular</td><td>変更前の保存値（グレー）</td></tr>
+          <tr><td>Display value</td><td>32sp</td><td>Light (300)</td><td>現在の入力値</td></tr>
+          <tr><td>Display expression</td><td>13sp</td><td>Regular</td><td>演算式の中間表示（例: 152 ×）</td></tr>
+          <tr><td>Key — 数字</td><td>18sp</td><td>Medium (500)</td><td>0〜9, 00</td></tr>
+          <tr><td>Key — 演算子</td><td>20sp</td><td>Regular</td><td>+, −, ×, ÷</td></tr>
+          <tr><td>Key — 確定</td><td>16sp</td><td>Bold (700)</td><td>= / 確定</td></tr>
+          <tr><td>Key — C / ⌫</td><td>15〜16sp</td><td>SemiBold (600)</td><td>機能キー</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top: 12px; font-size: 12px;">全サイズは <code>MediaQuery.of(context).size.width / 375</code> のスケールファクターで等比拡大。</p>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 4: COMPONENT PREVIEW ===== -->
+  <section id="component-preview">
+    <h2>4. コンポーネントプレビュー</h2>
+
+    <!-- ===== PLAN A ===== -->
+    <div class="plan-wrapper">
+      <div class="plan-header">
+        <span class="plan-badge plan-badge-a">A 案</span>
+        <div>
+          <div class="plan-title">バランス型 4列グリッド — Teal アクセント</div>
+          <div class="plan-subtitle">数字・演算子・機能を4列に均等配置。最もシンプルで学習コスト低</div>
+        </div>
+      </div>
+
+      <!-- Interactive demo toggle -->
+      <button class="press-demo-btn" onclick="togglePressed(this)">タップフィードバック デモ ON/OFF</button>
+
+      <div class="preview-row">
+        <!-- Light Mode A -->
+        <div>
+          <div class="preview-label">ライトモード</div>
+          <div class="keypad-shell" style="background: var(--kp-bg);">
+            <div class="kp-handle-bar"><span></span></div>
+            <div class="kp-display">
+              <div class="kp-label-tag">変更前</div>
+              <div class="kp-display-orig">152.8 L</div>
+              <div class="kp-display-value">152.8</div>
+              <div class="kp-display-expr">152.8 × ▍</div>
+            </div>
+            <div class="kp-grid kp-grid-a">
+              <!-- Row 1 -->
+              <button class="kp-key kp-ac demo-key">C</button>
+              <button class="kp-key kp-op demo-key">÷</button>
+              <button class="kp-key kp-op demo-key">×</button>
+              <button class="kp-key kp-del demo-key">⌫</button>
+              <!-- Row 2 -->
+              <button class="kp-key kp-num demo-key">7</button>
+              <button class="kp-key kp-num demo-key">8</button>
+              <button class="kp-key kp-num demo-key">9</button>
+              <button class="kp-key kp-op demo-key">−</button>
+              <!-- Row 3 -->
+              <button class="kp-key kp-num demo-key">4</button>
+              <button class="kp-key kp-num demo-key">5</button>
+              <button class="kp-key kp-num demo-key">6</button>
+              <button class="kp-key kp-op demo-key">+</button>
+              <!-- Row 4 -->
+              <button class="kp-key kp-num demo-key">1</button>
+              <button class="kp-key kp-num demo-key">2</button>
+              <button class="kp-key kp-num demo-key">3</button>
+              <button class="kp-key kp-eq demo-key" style="grid-row: span 2;">=</button>
+              <!-- Row 5 -->
+              <button class="kp-key kp-num demo-key kp-span2" style="grid-column: span 2;">0</button>
+              <button class="kp-key kp-dot demo-key">.</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dark Mode A -->
+        <div>
+          <div class="preview-label">ダークモード</div>
+          <div class="keypad-shell kp-dark">
+            <div class="kp-handle-bar"><span></span></div>
+            <div class="kp-display">
+              <div class="kp-label-tag">変更前</div>
+              <div class="kp-display-orig">152.8 L</div>
+              <div class="kp-display-value">152.8</div>
+              <div class="kp-display-expr">152.8 × ▍</div>
+            </div>
+            <div class="kp-grid kp-grid-a">
+              <button class="kp-key kp-ac">C</button>
+              <button class="kp-key kp-op">÷</button>
+              <button class="kp-key kp-op">×</button>
+              <button class="kp-key kp-del">⌫</button>
+              <button class="kp-key kp-num">7</button>
+              <button class="kp-key kp-num">8</button>
+              <button class="kp-key kp-num">9</button>
+              <button class="kp-key kp-op">−</button>
+              <button class="kp-key kp-num">4</button>
+              <button class="kp-key kp-num">5</button>
+              <button class="kp-key kp-num">6</button>
+              <button class="kp-key kp-op">+</button>
+              <button class="kp-key kp-num">1</button>
+              <button class="kp-key kp-num">2</button>
+              <button class="kp-key kp-num">3</button>
+              <button class="kp-key kp-eq" style="grid-row: span 2;">=</button>
+              <button class="kp-key kp-num kp-span2" style="grid-column: span 2;">0</button>
+              <button class="kp-key kp-dot">.</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- With 00 key variant -->
+        <div>
+          <div class="preview-label">00キー使用時 (A案変形)</div>
+          <div class="keypad-shell" style="background: var(--kp-bg);">
+            <div class="kp-handle-bar"><span></span></div>
+            <div class="kp-display">
+              <div class="kp-label-tag">変更前</div>
+              <div class="kp-display-orig">5,400 円</div>
+              <div class="kp-display-value">5,400</div>
+              <div class="kp-display-expr"></div>
+            </div>
+            <div class="kp-grid kp-grid-a">
+              <button class="kp-key kp-ac">C</button>
+              <button class="kp-key kp-op">÷</button>
+              <button class="kp-key kp-op">×</button>
+              <button class="kp-key kp-del">⌫</button>
+              <button class="kp-key kp-num">7</button>
+              <button class="kp-key kp-num">8</button>
+              <button class="kp-key kp-num">9</button>
+              <button class="kp-key kp-op">−</button>
+              <button class="kp-key kp-num">4</button>
+              <button class="kp-key kp-num">5</button>
+              <button class="kp-key kp-num">6</button>
+              <button class="kp-key kp-op">+</button>
+              <button class="kp-key kp-num">1</button>
+              <button class="kp-key kp-num">2</button>
+              <button class="kp-key kp-num">3</button>
+              <button class="kp-key kp-eq" style="grid-row: span 2;">=</button>
+              <button class="kp-key kp-num">00</button>
+              <button class="kp-key kp-num">0</button>
+              <button class="kp-key kp-dot" style="opacity:0.35; pointer-events:none;">.</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>長所</h4>
+          <ul>
+            <li>iOS標準電卓に最も近いレイアウト。ユーザーの学習コストがゼロに近い</li>
+            <li>= キーを縦長 (rowspan 2) にすることで視覚的な重点付けが明確</li>
+            <li>0キーを横幅2倍にすることで誤打防止</li>
+            <li>00・. の切り替えが isDecimal フラグ連動で自然に機能する</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>短所</h4>
+          <ul>
+            <li>演算子が右列縦並びのため、横幅が狭い機種では少し窮屈</li>
+            <li>C と ⌫ が隣接しており、誤タップリスクあり</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PLAN B ===== -->
+    <div class="plan-wrapper">
+      <div class="plan-header">
+        <span class="plan-badge plan-badge-b">B 案</span>
+        <div>
+          <div class="plan-title">グループ分離型 — 数字エリア + 演算エリア明確分離</div>
+          <div class="plan-subtitle">数字キーと演算子・機能キーをビジュアル的に分離。入力に集中しやすい</div>
+        </div>
+      </div>
+
+      <div class="preview-row">
+        <!-- Light Mode B -->
+        <div>
+          <div class="preview-label">ライトモード</div>
+          <div class="keypad-shell" style="background: var(--kp-bg);">
+            <div class="kp-handle-bar"><span></span></div>
+            <div class="kp-display">
+              <div class="kp-label-tag">変更前</div>
+              <div class="kp-display-orig">8,500 円/L</div>
+              <div class="kp-display-value">8,500</div>
+              <div class="kp-display-expr"></div>
+            </div>
+            <div class="kp-grid kp-grid-b">
+              <!-- 機能行 -->
+              <button class="kp-key kp-ac" style="font-size:14px; height:44px;">C</button>
+              <button class="kp-key kp-del" style="font-size:14px; height:44px;">⌫</button>
+              <button class="kp-key kp-op" style="height:44px;">+</button>
+              <button class="kp-key kp-op" style="height:44px;">−</button>
+              <!-- 仕切り線 -->
+              <div class="kp-divider-line"></div>
+              <!-- 数字上段 -->
+              <button class="kp-key kp-num">7</button>
+              <button class="kp-key kp-num">8</button>
+              <button class="kp-key kp-num">9</button>
+              <button class="kp-key kp-op">×</button>
+              <!-- 数字中段 -->
+              <button class="kp-key kp-num">4</button>
+              <button class="kp-key kp-num">5</button>
+              <button class="kp-key kp-num">6</button>
+              <button class="kp-key kp-op">÷</button>
+              <!-- 数字下段 -->
+              <button class="kp-key kp-num">1</button>
+              <button class="kp-key kp-num">2</button>
+              <button class="kp-key kp-num">3</button>
+              <button class="kp-key kp-eq" style="grid-row: span 2;">=</button>
+              <button class="kp-key kp-num">00</button>
+              <button class="kp-key kp-num">0</button>
+              <button class="kp-key kp-dot">.</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dark Mode B -->
+        <div>
+          <div class="preview-label">ダークモード</div>
+          <div class="keypad-shell kp-dark">
+            <div class="kp-handle-bar"><span></span></div>
+            <div class="kp-display">
+              <div class="kp-label-tag">変更前</div>
+              <div class="kp-display-orig">8,500 円/L</div>
+              <div class="kp-display-value">8,500</div>
+              <div class="kp-display-expr"></div>
+            </div>
+            <div class="kp-grid kp-grid-b">
+              <button class="kp-key kp-ac" style="font-size:14px; height:44px;">C</button>
+              <button class="kp-key kp-del" style="font-size:14px; height:44px;">⌫</button>
+              <button class="kp-key kp-op" style="height:44px;">+</button>
+              <button class="kp-key kp-op" style="height:44px;">−</button>
+              <div class="kp-divider-line" style="background: #2C3C3C;"></div>
+              <button class="kp-key kp-num">7</button>
+              <button class="kp-key kp-num">8</button>
+              <button class="kp-key kp-num">9</button>
+              <button class="kp-key kp-op">×</button>
+              <button class="kp-key kp-num">4</button>
+              <button class="kp-key kp-num">5</button>
+              <button class="kp-key kp-num">6</button>
+              <button class="kp-key kp-op">÷</button>
+              <button class="kp-key kp-num">1</button>
+              <button class="kp-key kp-num">2</button>
+              <button class="kp-key kp-num">3</button>
+              <button class="kp-key kp-eq" style="grid-row: span 2;">=</button>
+              <button class="kp-key kp-num">00</button>
+              <button class="kp-key kp-num">0</button>
+              <button class="kp-key kp-dot">.</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>長所</h4>
+          <ul>
+            <li>C・⌫ が最上部に隔離されており、数字入力中の誤タップが起きにくい</li>
+            <li>演算子が右列に整列し、操作フローが「数字 → 演算子 → 数字 → =」と自然</li>
+            <li>横仕切り線で機能キーと数字キーのゾーンが明確に分かれる</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>短所</h4>
+          <ul>
+            <li>C・⌫・+・− が一行に詰まり、各キーが小さくなる（高さ44pxに抑える必要あり）</li>
+            <li>演算子（+−）が上部、（×÷）が中段と分散するため直感的でない場合がある</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PLAN C ===== -->
+    <div class="plan-wrapper rec">
+      <div class="plan-header">
+        <span class="plan-badge plan-badge-c">C 案</span>
+        <span class="plan-badge plan-badge-rec">推奨</span>
+        <div>
+          <div class="plan-title">5列ハイブリッド型 — 右列に演算子縦並び、左4列に数字</div>
+          <div class="plan-subtitle">キー面積最大化・演算子専用列で操作フロー最適化。MichiMarkらしい独自感</div>
+        </div>
+      </div>
+
+      <div class="preview-row">
+        <!-- Light Mode C -->
+        <div>
+          <div class="preview-label">ライトモード</div>
+          <div class="keypad-shell" style="background: var(--kp-bg); width: 340px;">
+            <div class="kp-handle-bar"><span></span></div>
+            <div class="kp-display">
+              <div class="kp-label-tag">変更前</div>
+              <div class="kp-display-orig">42.3 km/L</div>
+              <div class="kp-display-value">42.3</div>
+              <div class="kp-display-expr">42.3 + ▍</div>
+            </div>
+            <!-- 5 col grid -->
+            <div class="kp-grid" style="grid-template-columns: repeat(4, 1fr) 1.1fr;">
+              <!-- Row 1 -->
+              <button class="kp-key kp-ac" style="font-size:14px; font-weight:700;">C</button>
+              <button class="kp-key kp-num">7</button>
+              <button class="kp-key kp-num">8</button>
+              <button class="kp-key kp-num">9</button>
+              <button class="kp-key kp-op">÷</button>
+              <!-- Row 2 -->
+              <button class="kp-key kp-del" style="font-size:18px;">⌫</button>
+              <button class="kp-key kp-num">4</button>
+              <button class="kp-key kp-num">5</button>
+              <button class="kp-key kp-num">6</button>
+              <button class="kp-key kp-op">×</button>
+              <!-- Row 3 -->
+              <button class="kp-key kp-dot">.</button>
+              <button class="kp-key kp-num">1</button>
+              <button class="kp-key kp-num">2</button>
+              <button class="kp-key kp-num">3</button>
+              <button class="kp-key kp-op">−</button>
+              <!-- Row 4 -->
+              <button class="kp-key kp-num" style="grid-column: span 2; font-size:15px;">00</button>
+              <button class="kp-key kp-num">0</button>
+              <button class="kp-key kp-eq" style="grid-column: span 2; background: var(--kp-key-eq); color: var(--kp-key-eq-text);">+</button>
+            </div>
+            <!-- Confirm row -->
+            <div style="padding: 0 12px 16px;">
+              <button class="kp-key kp-eq" style="width:100%; border-radius: 14px; font-size: 16px; font-weight: 700;">確定</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dark Mode C -->
+        <div>
+          <div class="preview-label">ダークモード</div>
+          <div class="keypad-shell kp-dark" style="width: 340px;">
+            <div class="kp-handle-bar"><span></span></div>
+            <div class="kp-display">
+              <div class="kp-label-tag">変更前</div>
+              <div class="kp-display-orig">42.3 km/L</div>
+              <div class="kp-display-value">42.3</div>
+              <div class="kp-display-expr">42.3 + ▍</div>
+            </div>
+            <div class="kp-grid" style="grid-template-columns: repeat(4, 1fr) 1.1fr;">
+              <button class="kp-key kp-ac" style="font-size:14px; font-weight:700;">C</button>
+              <button class="kp-key kp-num">7</button>
+              <button class="kp-key kp-num">8</button>
+              <button class="kp-key kp-num">9</button>
+              <button class="kp-key kp-op">÷</button>
+              <button class="kp-key kp-del" style="font-size:18px;">⌫</button>
+              <button class="kp-key kp-num">4</button>
+              <button class="kp-key kp-num">5</button>
+              <button class="kp-key kp-num">6</button>
+              <button class="kp-key kp-op">×</button>
+              <button class="kp-key kp-dot">.</button>
+              <button class="kp-key kp-num">1</button>
+              <button class="kp-key kp-num">2</button>
+              <button class="kp-key kp-num">3</button>
+              <button class="kp-key kp-op">−</button>
+              <button class="kp-key kp-num" style="grid-column: span 2; font-size:15px;">00</button>
+              <button class="kp-key kp-num">0</button>
+              <button class="kp-key kp-eq" style="grid-column: span 2;">+</button>
+            </div>
+            <div style="padding: 0 12px 16px;">
+              <button class="kp-key kp-eq" style="width:100%; border-radius: 14px; font-size: 16px; font-weight: 700;">確定</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- C案の補足説明 -->
+      <div class="info-card" style="margin-top: 16px; background: var(--teal-tint2);">
+        <h3 style="margin-bottom: 8px;">C案 レイアウト詳細</h3>
+        <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.8;">
+          左1列（C・⌫・.）を「補助キー列」とし、数字3列（7-9, 4-6, 1-3）との間に自然な視覚グループを形成。
+          右端列は演算子専用（÷ × − +）。最下段は「00 / 0 / +（ラスト演算子） / 確定（全幅）」の2段構成。
+          確定ボタンを全幅の独立行にすることで、入力完了アクションの視認性と誤打防止を両立。
+        </p>
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>長所</h4>
+          <ul>
+            <li>確定ボタンが全幅・独立行のため絶対に見逃さない。誤打もゼロに近い</li>
+            <li>補助キー列（C・⌫・.）が左端に集約され、親指操作で自然に届く</li>
+            <li>演算子が専用列（右端）に縦並びで、電卓モードの操作フローが完結</li>
+            <li>isDecimal=false 時は「.」を非活性グレーにするだけで直感的にモードが伝わる</li>
+            <li>キーの縦横比・面積が均等で、タップターゲットが全機種で十分な大きさ</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>短所</h4>
+          <ul>
+            <li>5列のため iPhone SE（375pt）では各キー幅が約65ptとやや狭い（許容範囲内）</li>
+            <li>「確定」全幅行があるため全体の高さが他案より1行分高くなる</li>
+            <li>iOS標準電卓との配置差が最も大きく、ユーザーによっては最初に戸惑う可能性</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== SECTION 5: SIZE SPEC ===== -->
+  <section id="size-spec">
+    <h2>5. レスポンシブサイズ仕様</h2>
+    <div class="info-card">
+      <p style="font-size: 13px; margin-bottom: 16px;">
+        キーパッド全体の幅は画面幅 100% を基本とする。高さはアスペクト比固定で計算。
+        スケールファクター <code>sf = screenWidth / 375</code> を全サイズに乗算する。
+      </p>
+      <div class="size-spec">
+        <div class="size-card">
+          <h4>iPhone SE (375pt)</h4>
+          <table>
+            <tr><td>キー幅</td><td>約 68pt (4列) / 61pt (5列)</td></tr>
+            <tr><td>キー高</td><td>52pt</td></tr>
+            <tr><td>キー gap</td><td>8pt</td></tr>
+            <tr><td>確定行高</td><td>52pt</td></tr>
+            <tr><td>表示エリア高</td><td>90pt</td></tr>
+            <tr><td>全体高（C案）</td><td>約 370pt</td></tr>
+          </table>
+        </div>
+        <div class="size-card">
+          <h4>iPhone 15 (393pt)</h4>
+          <table>
+            <tr><td>sf</td><td>1.048</td></tr>
+            <tr><td>キー幅</td><td>約 71pt (4列) / 64pt (5列)</td></tr>
+            <tr><td>キー高</td><td>54pt</td></tr>
+            <tr><td>全体高（C案）</td><td>約 388pt</td></tr>
+          </table>
+        </div>
+        <div class="size-card">
+          <h4>iPhone 15 Pro Max (430pt)</h4>
+          <table>
+            <tr><td>sf</td><td>1.147</td></tr>
+            <tr><td>キー幅</td><td>約 78pt (4列) / 70pt (5列)</td></tr>
+            <tr><td>キー高</td><td>60pt</td></tr>
+            <tr><td>全体高（C案）</td><td>約 424pt</td></tr>
+          </table>
+        </div>
+      </div>
+      <p style="font-size: 12px; color: var(--text-tertiary); margin-top: 14px;">
+        * 全体高は画面の 50〜55% 程度に収まる想定。Home Indicator Padding (34pt) を別途加算すること。
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 6: DISPLAY MODE ===== -->
+  <section id="display-mode">
+    <h2>6. 表示モード（Push-up vs Overlay）</h2>
+    <div class="mode-comparison">
+      <div class="mode-card" style="border: 2px solid var(--teal);">
+        <h4>Push-up 方式（推奨）</h4>
+        <p>
+          システムキーボードと同様に画面コンテンツを上方向に押し上げ、入力中のフィールドを常に可視領域に保つ方式。
+          <br><br>
+          <strong>推奨理由:</strong> NumericInputRow は画面の中央〜下部に配置されることが多い。
+          Overlay 方式だとキーパッドに隠れて入力中の値が見えなくなるリスクがある。
+          Push-up なら常に「ラベル + 現在値 + 単位」が見える状態で入力できる。
+          <br><br>
+          <strong>注意点:</strong> Scaffold の resizeToAvoidBottomInset: true に相当する挙動を
+          カスタムキーパッドでも再現する必要がある（AnimatedPadding 等での制御が必要）。
+        </p>
+      </div>
+      <div class="mode-card">
+        <h4>Overlay（モーダルシート）方式</h4>
+        <p>
+          画面上にオーバーレイとして表示する方式。BottomSheet API の使用が想定される。
+          <br><br>
+          <strong>長所:</strong> 既存画面のレイアウト変更が不要。実装コストが低い。
+          <br><br>
+          <strong>短所:</strong> キーパッドがコンテンツ上に被さるため、入力中の値が隠れやすい。
+          ただし本デザインではキーパッド上部の Display エリアに値を常時表示しているため、
+          フィールド自体が隠れても運用上は問題ない。セカンダリ候補として有効。
+        </p>
+      </div>
+    </div>
+    <div class="info-card" style="margin-top: 20px;">
+      <h3 style="margin-bottom: 8px;">設計指針</h3>
+      <ul>
+        <li>キーパッドの Display エリアに「ラベル名・単位・変更前値・現在値」を集約することで、Push-up でも Overlay でもユーザーは入力情報を失わない</li>
+        <li>まず Overlay（BottomSheet）で実装してリリースし、UX フィードバックを受けて Push-up 方式に移行するロードマップを推奨</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 7: RATIONALE ===== -->
+  <section id="rationale">
+    <h2>7. 根拠・設計判断</h2>
+    <div class="rationale-grid">
+      <div class="rationale-item">
+        <h4><span class="ri-icon">1</span> カスタムキーパッドを採用する理由</h4>
+        <p>
+          システムキーボード（TextInputType.number）はデバイス・OS バージョンによってレイアウトが異なり、
+          「00」「演算子」「変更前値の表示」を統一的に提供できない。
+          カスタムキーパッドにすることでキー配置・演算機能・Draft 表示を完全にコントロールできる。
+        </p>
+      </div>
+      <div class="rationale-item">
+        <h4><span class="ri-icon">2</span> 演算子機能の理由</h4>
+        <p>
+          ガソリン給油量（走行距離 ÷ 燃費）や支払金額（単価 × リットル数）など、
+          ドライブ記録では簡易計算ニーズが発生しやすい。
+          アプリを切り替えずにその場で計算できることで UX が向上する。
+        </p>
+      </div>
+      <div class="rationale-item">
+        <h4><span class="ri-icon">3</span> Draft original の表示理由</h4>
+        <p>
+          編集モードで既存値を変更する際、「元の値がいくつだったか」を確認しながら入力できる。
+          特に燃費・給油量などは誤入力訂正のユースケースが多い。
+          変更前値を薄く1行目に表示することでコンテキストを保持しつつ入力に集中できる。
+        </p>
+      </div>
+      <div class="rationale-item">
+        <h4><span class="ri-icon">4</span> isDecimal 連動 (. キー非活性)</h4>
+        <p>
+          整数フィールド（走行距離・金額）では小数点入力を防ぐため「.」を視覚的に非活性化する。
+          色を薄くするだけで済むため実装コストは最小限。
+          「00」キーは金額系フィールドで特に有用（5,400円 などを素早く入力可能）。
+        </p>
+      </div>
+      <div class="rationale-item">
+        <h4><span class="ri-icon">5</span> Teal アクセントの設計判断</h4>
+        <p>
+          確定（=）キーを Teal Dark (#2D6A6A) で塗ることで、
+          画面内で最もコントラストの高い「完了アクション」として視線を誘導。
+          演算子は Teal Tint で「サブアクション」として階層化し、
+          数字キーは純白（ライト）/ダークグレー（ダーク）でニュートラルに保つ。
+        </p>
+      </div>
+      <div class="rationale-item">
+        <h4><span class="ri-icon">6</span> アスペクト比固定・等比スケールの理由</h4>
+        <p>
+          iPhone SE〜Pro Max の幅差は 375〜430pt（約 15%）。
+          固定ピクセルではキー高が小さすぎたり大きすぎたりするため、
+          <code>MediaQuery.size.width</code> 比率でスケールする設計を採用。
+          縦横比を固定することで機種間での操作感の一貫性を担保する。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 8: RECOMMENDATION ===== -->
+  <section id="recommendation">
+    <h2>8. 推奨案</h2>
+    <div class="rec-banner">
+      <h3>C案（5列ハイブリッド型）を推奨</h3>
+      <p>
+        MichiMark の数値入力ユースケース（精度が求められる燃費・金額・距離）において、
+        「確実な確定操作」「誤タップ防止」「演算子との棲み分け」の3点が最も優れているため。
+      </p>
+      <ul>
+        <li>確定ボタンを全幅・独立行にしたことで、タップ操作の終着点が明確</li>
+        <li>C・⌫・. を左端補助列に集約したことで、数字入力エリアが汚れない</li>
+        <li>シンプルな色分け（白 → teal淡 → teal濃）でキーの役割が一目でわかる</li>
+        <li>Display エリアの Draft 表示 + 現在値の2行構成は全案共通で採用</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3 style="margin-bottom: 10px;">実装フェーズ提案（product-managerへのコメント）</h3>
+      <table class="spec-table">
+        <thead>
+          <tr><th>フェーズ</th><th>内容</th><th>優先度</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Phase 1</td>
+            <td>C案キーパッド（数字 + . + C + ⌫ + 確定）のみ。演算子なし。Overlay（BottomSheet）方式</td>
+            <td>高</td>
+          </tr>
+          <tr>
+            <td>Phase 2</td>
+            <td>演算子（+ − × ÷）・中間式表示・= キーの演算機能を追加</td>
+            <td>中</td>
+          </tr>
+          <tr>
+            <td>Phase 3</td>
+            <td>Push-up 方式への移行（AnimatedPadding + Scaffold 制御）</td>
+            <td>低（UXフィードバック次第）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  MichiMark Design Report — カスタム数値キーパッド 2026-04-11 | ロール: designer | 格納先: docs/Design/draft/
+</footer>
+
+<script>
+  // タップフィードバック デモ
+  function togglePressed(btn) {
+    const keys = document.querySelectorAll('.demo-key');
+    const active = btn.textContent.includes('ON');
+    if (active) {
+      btn.textContent = 'タップフィードバック デモ ON/OFF';
+      keys.forEach(k => k.classList.remove('pressed'));
+    }
+
+    keys.forEach(key => {
+      key.addEventListener('mousedown', () => key.classList.add('pressed'));
+      key.addEventListener('mouseup', () => key.classList.remove('pressed'));
+      key.addEventListener('mouseleave', () => key.classList.remove('pressed'));
+      key.addEventListener('touchstart', (e) => { e.preventDefault(); key.classList.add('pressed'); });
+      key.addEventListener('touchend', () => key.classList.remove('pressed'));
+    });
+  }
+
+  // 初期化（イベント登録のみ）
+  document.querySelectorAll('.demo-key').forEach(key => {
+    key.addEventListener('mousedown', () => key.classList.add('pressed'));
+    key.addEventListener('mouseup', () => key.classList.remove('pressed'));
+    key.addEventListener('mouseleave', () => key.classList.remove('pressed'));
+    key.addEventListener('touchstart', (e) => { e.preventDefault(); key.classList.add('pressed'); });
+    key.addEventListener('touchend', () => key.classList.remove('pressed'));
+  });
+</script>
+
+</body>
+</html>

@@ -72,13 +72,43 @@
 | T-158 | PaymentInfo カード削除 レビュー | reviewer | `DONE` | | 承認・違反なし |
 | T-159 | PaymentInfo カード削除 テスト実行（Phase2） | tester | `DONE` | | 4PASS/1SKIP/0FAIL |
 
+## F-1: カスタム数値キーパッド
+
+### Phase 1（基本キーパッド）
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-180 | カスタムキーパッド 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-custom_numeric_keypad.md |
+| T-181 | カスタムキーパッド Spec作成 | architect | `IN_PROGRESS` | 2026-04-11_custom_keypad_spec | REQ-custom_numeric_keypad.md 参照 |
+| T-182 | カスタムキーパッド 実装 | flutter-dev | `TODO` | | |
+| T-182b | カスタムキーパッド テストコード実装 | tester | `TODO` | | |
+| T-183 | カスタムキーパッド レビュー | reviewer | `TODO` | | |
+| T-184 | カスタムキーパッド テスト実行 | tester | `TODO` | | |
+
+### Phase 2（四則演算・中間式表示）
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-185 | 四則演算 要件書作成 | product-manager | `TODO` | | Phase 1 完了後に着手 |
+| T-186 | 四則演算 Spec作成 | architect | `BLOCKED` | | T-185 完了待ち |
+| T-187 | 四則演算 実装 | flutter-dev | `BLOCKED` | | T-186 完了待ち |
+| T-188 | 四則演算 テスト | tester | `BLOCKED` | | T-186 完了待ち |
+
+### Phase 3（Push-up 方式移行）
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-189 | Push-up方式 要件書作成 | product-manager | `TODO` | | Phase 2 完了・実機FB後に判断 |
+
+---
+
 ## R-1: メンバー未選択時の入力ガード
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-170 | メンバー未選択ガード 要件書 | product-manager | `DONE` | | docs/Requirements/REQ-member_required_guard.md |
 | T-171 | メンバー未選択ガード Spec作成 | architect | `DONE` | | docs/Spec/Features/MemberRequiredGuard_Spec.md |
-| T-172 | メンバー未選択ガード 実装 | flutter-dev | `TODO` | | MemberRequiredGuard_Spec.md 参照 |
-| T-172b | メンバー未選択ガード テストコード実装 | tester | `TODO` | | TC-MRG-001〜006 |
-| T-173 | メンバー未選択ガード レビュー | reviewer | `TODO` | | |
-| T-174 | メンバー未選択ガード テスト実行 | tester | `TODO` | | |
+| T-172 | メンバー未選択ガード 実装 | flutter-dev | `DONE` | | MemberRequiredGuard_Spec.md 参照 |
+| T-172b | メンバー未選択ガード テストコード実装 | tester | `DONE` | | TC-MRG-001〜006 実装済み |
+| T-173 | メンバー未選択ガード レビュー | reviewer | `DONE` | | 承認・違反なし |
+| T-174 | メンバー未選択ガード テスト実行 | tester | `DONE` | | 3PASS/3SKIP/0FAIL |

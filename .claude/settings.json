@@ -23,7 +23,10 @@
       "Bash(cp *)",
       "Bash(rm -rf /tmp/*)",
       "Bash(cat > /tmp/*)",
-      "Bash(diff *)"
+      "Bash(diff *)",
+      "Bash(python3 *)",
+      "Bash(cd flutter && python3 *)",
+      "Bash(cd /Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/flutter && python3 *)"
     ]
   },
   "hooks": {

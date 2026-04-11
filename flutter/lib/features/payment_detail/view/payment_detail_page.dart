@@ -34,8 +34,8 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
           PaymentDetailError(:final message) => Scaffold(
               body: Center(child: Text(message)),
             ),
-          PaymentDetailLoaded(:final draft, :final isSaving) =>
-            _PaymentDetailScaffold(draft: draft, isSaving: isSaving),
+          PaymentDetailLoaded(:final draft, :final isSaving, :final availableMembers) =>
+            _PaymentDetailScaffold(draft: draft, isSaving: isSaving, availableMembers: availableMembers),
         };
       },
     );
@@ -109,8 +109,9 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
 class _PaymentDetailScaffold extends StatelessWidget {
   final PaymentDetailDraft draft;
   final bool isSaving;
+  final List<MemberDomain> availableMembers;
 
-  const _PaymentDetailScaffold({required this.draft, required this.isSaving});
+  const _PaymentDetailScaffold({required this.draft, required this.isSaving, required this.availableMembers});
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +126,7 @@ class _PaymentDetailScaffold extends StatelessWidget {
         title: const Text('支払詳細'),
         centerTitle: true,
       ),
-      body: _PaymentDetailForm(draft: draft),
+      body: _PaymentDetailForm(draft: draft, availableMembers: availableMembers),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: isSaving
             ? null
@@ -149,8 +150,9 @@ class _PaymentDetailScaffold extends StatelessWidget {
 
 class _PaymentDetailForm extends StatelessWidget {
   final PaymentDetailDraft draft;
+  final List<MemberDomain> availableMembers;
 
-  const _PaymentDetailForm({required this.draft});
+  const _PaymentDetailForm({required this.draft, required this.availableMembers});
 
   @override
   Widget build(BuildContext context) {
@@ -169,6 +171,7 @@ class _PaymentDetailForm extends StatelessWidget {
         _SelectionRow(
           label: '支払者',
           value: draft.paymentMember?.memberName ?? '未選択',
+          enabled: availableMembers.isNotEmpty,
           onEditPressed: () => context
               .read<PaymentDetailBloc>()
               .add(const PaymentDetailEditMemberPressed()),
@@ -179,6 +182,7 @@ class _PaymentDetailForm extends StatelessWidget {
           value: draft.splitMembers.isEmpty
               ? '未選択'
               : draft.splitMembers.map((m) => m.memberName).join('、'),
+          enabled: availableMembers.isNotEmpty,
           onEditPressed: () => context
               .read<PaymentDetailBloc>()
               .add(const PaymentDetailEditSplitMembersPressed()),
@@ -262,17 +266,20 @@ class _SelectionRow extends StatelessWidget {
   final String label;
   final String value;
   final VoidCallback onEditPressed;
+  final bool enabled;
 
   const _SelectionRow({
     required this.label,
     required this.value,
     required this.onEditPressed,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final disabledColor = Theme.of(context).colorScheme.onSurfaceVariant;
     return InkWell(
-      onTap: onEditPressed,
+      onTap: enabled ? onEditPressed : null,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
@@ -292,11 +299,13 @@ class _SelectionRow extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Text(
                   value,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: enabled ? null : disabledColor,
+                      ),
                 ),
               ),
             ),
-            const Icon(Icons.chevron_right),
+            Icon(Icons.chevron_right, color: enabled ? null : disabledColor),
           ],
         ),
       ),

@@ -47,12 +47,13 @@ class _MarkDetailPageState extends State<MarkDetailPage> {
           MarkDetailError(:final message) => Scaffold(
               body: Center(child: Text(message)),
             ),
-          MarkDetailLoaded(:final draft, :final topicConfig, :final isSaving) =>
+          MarkDetailLoaded(:final draft, :final topicConfig, :final isSaving, :final availableMembers) =>
             _MarkDetailScaffold(
               draft: draft,
               topicConfig: topicConfig,
               dateFormat: _dateFormat,
               isSaving: isSaving,
+              availableMembers: availableMembers,
             ),
         };
       },
@@ -131,12 +132,14 @@ class _MarkDetailScaffold extends StatelessWidget {
   final TopicConfig topicConfig;
   final DateFormat dateFormat;
   final bool isSaving;
+  final List<MemberDomain> availableMembers;
 
   const _MarkDetailScaffold({
     required this.draft,
     required this.topicConfig,
     required this.dateFormat,
     required this.isSaving,
+    required this.availableMembers,
   });
 
   @override
@@ -158,6 +161,7 @@ class _MarkDetailScaffold extends StatelessWidget {
         draft: draft,
         topicConfig: topicConfig,
         dateFormat: dateFormat,
+        availableMembers: availableMembers,
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: isSaving
@@ -182,11 +186,13 @@ class _MarkDetailForm extends StatelessWidget {
   final MarkDetailDraft draft;
   final TopicConfig topicConfig;
   final DateFormat dateFormat;
+  final List<MemberDomain> availableMembers;
 
   const _MarkDetailForm({
     required this.draft,
     required this.topicConfig,
     required this.dateFormat,
+    required this.availableMembers,
   });
 
   @override
@@ -203,6 +209,7 @@ class _MarkDetailForm extends StatelessWidget {
           value: draft.selectedMembers.isEmpty
               ? '未選択'
               : draft.selectedMembers.map((m) => m.memberName).join('、'),
+          enabled: availableMembers.isNotEmpty,
           onEditPressed: () => context
               .read<MarkDetailBloc>()
               .add(const MarkDetailEditMembersPressed()),
@@ -421,17 +428,20 @@ class _SelectionRow extends StatelessWidget {
   final String label;
   final String value;
   final VoidCallback onEditPressed;
+  final bool enabled;
 
   const _SelectionRow({
     required this.label,
     required this.value,
     required this.onEditPressed,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final disabledColor = Theme.of(context).colorScheme.onSurfaceVariant;
     return InkWell(
-      onTap: onEditPressed,
+      onTap: enabled ? onEditPressed : null,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
@@ -451,11 +461,13 @@ class _SelectionRow extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Text(
                   value,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: enabled ? null : disabledColor,
+                      ),
                 ),
               ),
             ),
-            const Icon(Icons.chevron_right),
+            Icon(Icons.chevron_right, color: enabled ? null : disabledColor),
           ],
         ),
       ),

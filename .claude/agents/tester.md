@@ -158,12 +158,21 @@ cd /Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/flutter && flutter test
 cd /Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/flutter && flutter test --coverage
 
 # Integration テスト（対象ファイルのみ）
-LOG=/Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/docs/TestLogs/$(date +%Y-%m-%d_%H-%M)_[feature_name].log
-cd /Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/flutter && flutter test integration_test/[feature_name]_test.dart 2>&1 | tee "$LOG"
+# ⚠️ $(date) や $変数 を含むコマンドは許可ダイアログが発生するため禁止
+# 手順1: タイムスタンプを取得（Bashツール1回目）
+date +%Y-%m-%d_%H-%M
+
+# 手順2: 取得したタイムスタンプを直接埋め込んで実行（Bashツール2回目）
+cd /Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/flutter && flutter test integration_test/[feature_name]_test.dart 2>&1 | tee "/Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/docs/TestLogs/YYYY-MM-DD_HH-MM_[feature_name].log"
 
 # 利用可能なデバイス確認
 flutter devices
 ```
+
+**ログ保存の手順（必ず2回に分けてBashを呼ぶこと）:**
+1. `date +%Y-%m-%d_%H-%M` でタイムスタンプを取得する
+2. 取得した値をログパスに**リテラル文字列として直接埋め込み**、flutter testを実行する
+- `$(...)`・`$変数`・変数代入（`LOG=...`）はすべて禁止（許可ダイアログが発生する）
 
 実行後、ログのパスを報告に含めること。
 

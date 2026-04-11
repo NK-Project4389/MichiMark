@@ -44,8 +44,8 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
           LinkDetailError(:final message) => Scaffold(
               body: Center(child: Text(message)),
             ),
-          LinkDetailLoaded(:final draft, :final topicConfig, :final isSaving) =>
-            _LinkDetailScaffold(draft: draft, topicConfig: topicConfig, isSaving: isSaving),
+          LinkDetailLoaded(:final draft, :final topicConfig, :final isSaving, :final availableMembers) =>
+            _LinkDetailScaffold(draft: draft, topicConfig: topicConfig, isSaving: isSaving, availableMembers: availableMembers),
         };
       },
     );
@@ -128,11 +128,13 @@ class _LinkDetailScaffold extends StatelessWidget {
   final LinkDetailDraft draft;
   final TopicConfig topicConfig;
   final bool isSaving;
+  final List<MemberDomain> availableMembers;
 
   const _LinkDetailScaffold({
     required this.draft,
     required this.topicConfig,
     required this.isSaving,
+    required this.availableMembers,
   });
 
   @override
@@ -150,7 +152,7 @@ class _LinkDetailScaffold extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: _LinkDetailForm(draft: draft, topicConfig: topicConfig),
+      body: _LinkDetailForm(draft: draft, topicConfig: topicConfig, availableMembers: availableMembers),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: isSaving
             ? null
@@ -173,8 +175,9 @@ class _LinkDetailScaffold extends StatelessWidget {
 class _LinkDetailForm extends StatelessWidget {
   final LinkDetailDraft draft;
   final TopicConfig topicConfig;
+  final List<MemberDomain> availableMembers;
 
-  const _LinkDetailForm({required this.draft, required this.topicConfig});
+  const _LinkDetailForm({required this.draft, required this.topicConfig, required this.availableMembers});
 
   @override
   Widget build(BuildContext context) {
@@ -198,6 +201,7 @@ class _LinkDetailForm extends StatelessWidget {
           value: draft.selectedMembers.isEmpty
               ? '未選択'
               : draft.selectedMembers.map((m) => m.memberName).join('、'),
+          enabled: availableMembers.isNotEmpty,
           onEditPressed: () => context
               .read<LinkDetailBloc>()
               .add(const LinkDetailEditMembersPressed()),
@@ -415,17 +419,20 @@ class _SelectionRow extends StatelessWidget {
   final String label;
   final String value;
   final VoidCallback onEditPressed;
+  final bool enabled;
 
   const _SelectionRow({
     required this.label,
     required this.value,
     required this.onEditPressed,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final disabledColor = Theme.of(context).colorScheme.onSurfaceVariant;
     return InkWell(
-      onTap: onEditPressed,
+      onTap: enabled ? onEditPressed : null,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
@@ -445,11 +452,13 @@ class _SelectionRow extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Text(
                   value,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: enabled ? null : disabledColor,
+                      ),
                 ),
               ),
             ),
-            const Icon(Icons.chevron_right),
+            Icon(Icons.chevron_right, color: enabled ? null : disabledColor),
           ],
         ),
       ),

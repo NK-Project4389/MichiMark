@@ -93,3 +93,4 @@
 | [2026-04-11_test__TC-MCD-001-010_MichiInfoCard削除全件PASS.md](./2026-04-11_test__TC-MCD-001-010_MichiInfoCard削除全件PASS.md) | MichiInfo カード削除機能 TC-MCD-001〜010 9PASS/1SKIP/0FAIL |
 | [2026-04-11_feat__PaymentInfo伝票削除機能.md](./2026-04-11_feat__PaymentInfo伝票削除機能.md) | Phase 17 PaymentInfo 伝票削除機能 実装・テスト完了（4PASS/1SKIP/0FAIL） |
 | [2026-04-11_feat__Phase16_17_削除機能完了.md](./2026-04-11_feat__Phase16_17_削除機能完了.md) | Phase 16・17 削除機能完了セッションサマリー・次回やること |
+| [2026-04-11_feat__R-1_メンバー未選択ガード完了.md](./2026-04-11_feat__R-1_メンバー未選択ガード完了.md) | R-1 メンバー未選択ガード・Slidable排他制御修正 完了 |
