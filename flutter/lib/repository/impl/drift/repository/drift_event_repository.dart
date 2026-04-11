@@ -65,4 +65,8 @@ class DriftEventRepository implements EventRepository {
   @override
   Future<void> deleteMarkLink(String markLinkId) async =>
       _dao.deleteMarkLink(markLinkId);
+
+  @override
+  Future<void> deletePayment(String paymentId) =>
+      _dao.deletePayment(paymentId);
 }

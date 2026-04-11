@@ -51,3 +51,12 @@ class PaymentInfoReloadRequested extends PaymentInfoEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// 伝票の削除ボタンがタップされたとき
+class PaymentInfoPaymentDeleteRequested extends PaymentInfoEvent {
+  final String paymentId;
+  const PaymentInfoPaymentDeleteRequested(this.paymentId);
+
+  @override
+  List<Object?> get props => [paymentId];
+}

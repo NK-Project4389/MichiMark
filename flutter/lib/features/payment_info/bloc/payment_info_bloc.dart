@@ -13,6 +13,7 @@ class PaymentInfoBloc extends Bloc<PaymentInfoEvent, PaymentInfoState> {
     on<PaymentInfoPlusButtonTapped>(_onPlusButtonTapped);
     on<PaymentInfoDelegateConsumed>(_onDelegateConsumed);
     on<PaymentInfoReloadRequested>(_onReloadRequested);
+    on<PaymentInfoPaymentDeleteRequested>(_onPaymentDeleteRequested);
   }
 
   final EventRepository _eventRepository;
@@ -78,6 +79,22 @@ class PaymentInfoBloc extends Bloc<PaymentInfoEvent, PaymentInfoState> {
     if (state is PaymentInfoLoaded) {
       final current = state as PaymentInfoLoaded;
       emit(current.copyWith());
+    }
+  }
+
+  Future<void> _onPaymentDeleteRequested(
+    PaymentInfoPaymentDeleteRequested event,
+    Emitter<PaymentInfoState> emit,
+  ) async {
+    if (state case PaymentInfoLoaded current) {
+      try {
+        await _eventRepository.deletePayment(event.paymentId);
+        final domain = await _eventRepository.fetch(_eventId);
+        final projection = EventDetailAdapter.toProjection(domain).paymentInfo;
+        emit(current.copyWith(projection: projection));
+      } on Exception {
+        // サイレント失敗（既存の projection を維持）
+      }
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import '../../../domain/topic/topic_theme_color.dart';
 import '../../../features/event_detail/projection/payment_info_projection.dart';
@@ -97,8 +98,28 @@ class _PaymentInfoList extends StatelessWidget {
                     separatorBuilder: (context, _) =>
                         const Divider(height: 1, indent: 56),
                     itemBuilder: (context, index) {
-                      return _PaymentListTile(
-                        item: projection.items[index],
+                      final item = projection.items[index];
+                      return Slidable(
+                        key: Key('payment_info_tile_slidable_${item.id}'),
+                        endActionPane: ActionPane(
+                          motion: const DrawerMotion(),
+                          extentRatio: 0.25,
+                          children: [
+                            SlidableAction(
+                              key: Key(
+                                  'payment_info_tile_delete_action_${item.id}'),
+                              onPressed: (_) => context
+                                  .read<PaymentInfoBloc>()
+                                  .add(PaymentInfoPaymentDeleteRequested(
+                                      item.id)),
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                              icon: Icons.delete,
+                              label: '削除',
+                            ),
+                          ],
+                        ),
+                        child: _PaymentListTile(item: item),
                       );
                     },
                   ),

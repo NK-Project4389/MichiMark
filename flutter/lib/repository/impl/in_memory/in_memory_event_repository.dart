@@ -95,6 +95,21 @@ class InMemoryEventRepository implements EventRepository {
   }
 
   @override
+  Future<void> deletePayment(String paymentId) async {
+    for (var i = 0; i < _items.length; i++) {
+      final event = _items[i];
+      final payIndex = event.payments.indexWhere((p) => p.id == paymentId);
+      if (payIndex >= 0) {
+        final updatedPayments = List.of(event.payments);
+        updatedPayments[payIndex] =
+            updatedPayments[payIndex].copyWith(isDeleted: true);
+        _items[i] = event.copyWith(payments: updatedPayments);
+        return;
+      }
+    }
+  }
+
+  @override
   Future<List<EventDomain>> fetchByFilter(AggregationFilter filter) async {
     // 期間計算
     final (start, end) = _resolveDateRange(filter.dateRange);

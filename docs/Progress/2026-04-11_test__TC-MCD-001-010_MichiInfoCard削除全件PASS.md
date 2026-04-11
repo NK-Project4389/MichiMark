@@ -1,6 +1,9 @@
 # 2026-04-11 MichiInfo カード削除機能 Integration Test 全件PASS（T-154）
 
 ## 完了した作業
+- docs: 2026-04-11セッション進捗登録（Phase16・17削除機能完了） (98b770b)
+- test: TC-PID-001〜005 PaymentInfo伝票削除機能 4PASS/1SKIP/0FAIL (a284c6a)
+- feat: MichiInfo カード削除機能（flutter_slidable スワイプ削除・論理削除） (ac9ee7a)
 - test: TC-MCD-001〜010 MichiInfoカード削除機能 Integration Test 全件PASS（9PASS/1SKIP） (c01322f)
 
 ### T-154: MichiInfo カード削除 テスト実行（Phase2）

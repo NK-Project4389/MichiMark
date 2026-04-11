@@ -46,4 +46,7 @@ abstract interface class EventRepository {
 
   /// MarkLink（Mark または Link）を論理削除する
   Future<void> deleteMarkLink(String markLinkId);
+
+  /// Payment（伝票）を論理削除し、関連する payment_split_members を物理削除する
+  Future<void> deletePayment(String paymentId);
 }

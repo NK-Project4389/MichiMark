@@ -208,6 +208,22 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
     );
   }
 
+  Future<void> deletePayment(String paymentId) async {
+    final now = DateTime.now();
+    await transaction(() async {
+      // 1. payment_split_members 物理削除
+      await (delete(paymentSplitMembers)
+            ..where((t) => t.paymentId.equals(paymentId)))
+          .go();
+      // 2. payments 論理削除
+      await (update(payments)..where((t) => t.id.equals(paymentId)))
+          .write(PaymentsCompanion(
+            isDeleted: const Value(true),
+            updatedAt: Value(now),
+          ));
+    });
+  }
+
   // ---------------------------------------------------------------------------
   // Event Domain 組み立て
   // ---------------------------------------------------------------------------
