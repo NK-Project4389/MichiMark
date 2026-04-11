@@ -89,3 +89,4 @@
 | [2026-04-11_chore__テスト許可設定整理・ログ保存.md](./2026-04-11_chore__テスト許可設定整理・ログ保存.md) | テスト許可設定整理・TestLogsログ保存機能追加（MichiMark/NomikaiShare） |
 | [2026-04-11_test__TC-MIB-001-005_InsertIndicator全件PASS.md](./2026-04-11_test__TC-MIB-001-005_InsertIndicator全件PASS.md) | MichiInfo InsertIndicator改善 TC-MIB-001〜005 全件PASS |
 | [2026-04-11_feat__イベント削除機能.md](./2026-04-11_feat__イベント削除機能.md) | Phase 14完了：イベント削除機能（スワイプ削除・カスケード削除）3PASS/0FAIL |
+| [2026-04-11_workflow__並行テスト実装フロー導入.md](./2026-04-11_workflow__並行テスト実装フロー導入.md) | 並行テストフロー導入・T-131 Spec作成・T-132〜134完了・エージェント強化 |

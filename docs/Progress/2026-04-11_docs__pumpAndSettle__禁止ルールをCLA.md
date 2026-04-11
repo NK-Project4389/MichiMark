@@ -1,6 +1,7 @@
 # 進捗記録 2026-04-11
 
 ## 完了した作業
+- feat: MichiInfo InsertIndicator改善（C案デザイン・先頭「＋」追加）+ イベント削除機能 (b11243c)
 - test: TC-ELD-001〜003 イベント削除機能 Integration Test 全件PASS (c0fd942)
 - test: MichiInfo InsertIndicator改善 Integration Test 追加（TC-MIB-001〜005 全件PASS） (fbd723c)
 - feat: reviewer不整合判断をarchitectへ委譲・タスクボード並行実施notes追加 (e19723c)
