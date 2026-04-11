@@ -35,6 +35,7 @@ class MemberSettingPage extends StatelessWidget {
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.add),
+                    color: const Color(0xFFF59E0B),
                     onPressed: () => context
                         .read<MemberSettingBloc>()
                         .add(const MemberSettingAddTapped()),

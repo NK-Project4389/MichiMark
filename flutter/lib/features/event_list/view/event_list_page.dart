@@ -61,6 +61,8 @@ class _EventListPageState extends State<EventListPage> {
             onPressed: () => context
                 .read<EventListBloc>()
                 .add(const EventListAddButtonPressed()),
+            backgroundColor: const Color(0xFFF59E0B),
+            foregroundColor: Colors.white,
             child: const Icon(Icons.add),
           ),
         );

@@ -37,6 +37,7 @@ class ActionSettingPage extends StatelessWidget {
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.add),
+                    color: const Color(0xFFF59E0B),
                     onPressed: () => context
                         .read<ActionSettingBloc>()
                         .add(const ActionSettingAddTapped()),

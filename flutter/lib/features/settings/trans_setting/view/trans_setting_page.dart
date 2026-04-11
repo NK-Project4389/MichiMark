@@ -37,6 +37,7 @@ class TransSettingPage extends StatelessWidget {
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.add),
+                    color: const Color(0xFFF59E0B),
                     onPressed: () => context
                         .read<TransSettingBloc>()
                         .add(const TransSettingAddTapped()),

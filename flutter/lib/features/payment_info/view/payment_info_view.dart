@@ -141,14 +141,13 @@ class _PaymentInfoList extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () => context
             .read<PaymentInfoBloc>()
             .add(const PaymentInfoPlusButtonTapped()),
-        backgroundColor: topicThemeColor?.primaryColor,
-        foregroundColor: topicThemeColor != null ? Colors.white : null,
-        icon: const Icon(Icons.add),
-        label: const Text('追加'),
+        backgroundColor: const Color(0xFFF59E0B),
+        foregroundColor: Colors.white,
+        child: const Icon(Icons.add),
       ),
     );
   }
