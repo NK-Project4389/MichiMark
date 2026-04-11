@@ -1,6 +1,7 @@
 # 2026-04-11 MichiInfo カード削除機能 Integration Test 全件PASS（T-154）
 
 ## 完了した作業
+- test: TC-MCD-001〜010 MichiInfoカード削除機能 Integration Test 全件PASS（9PASS/1SKIP） (c01322f)
 
 ### T-154: MichiInfo カード削除 テスト実行（Phase2）
 
