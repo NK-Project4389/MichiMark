@@ -48,6 +48,7 @@ class NumericInputRow extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => CustomNumericKeypad(
+        label: label,
         originalValue: value,
         unit: unit,
         isDecimal: isDecimal,

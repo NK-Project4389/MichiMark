@@ -18,12 +18,16 @@ class CustomNumericKeypad extends StatefulWidget {
   /// true: 小数点キーを活性化 / false: 小数点キーを非活性グレー表示
   final bool isDecimal;
 
+  /// 編集中フィールド名。Display ヘッダーに表示する（省略可能）
+  final String label;
+
   const CustomNumericKeypad({
     super.key,
     required this.onConfirmed,
     required this.originalValue,
     required this.unit,
     this.isDecimal = false,
+    this.label = '',
   });
 
   @override
@@ -447,7 +451,9 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
               padding: const EdgeInsets.only(bottom: 4),
               child: Text(
                 key: const Key('keypad_display_original'),
-                '変更前: ${widget.originalValue}${widget.unit.isNotEmpty ? ' ${widget.unit}' : ''}',
+                widget.label.isNotEmpty
+                    ? '${widget.label}  変更前: ${widget.originalValue}${widget.unit.isNotEmpty ? ' ${widget.unit}' : ''}'
+                    : '変更前: ${widget.originalValue}${widget.unit.isNotEmpty ? ' ${widget.unit}' : ''}',
                 style: TextStyle(
                   fontSize: 11 * sf,
                   color: colorScheme.onSurfaceVariant,
@@ -721,7 +727,7 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
     required double radius,
     required double sf,
   }) {
-    final label = _resultShown ? '確定' : '=';
+    final confirmLabel = (_operator != null && !_resultShown) ? '＝' : '確定';
     return GestureDetector(
       key: const Key('keypad_confirm'),
       onTap: _onEquals,
@@ -734,7 +740,7 @@ class _CustomNumericKeypadState extends State<CustomNumericKeypad> {
         ),
         alignment: Alignment.center,
         child: Text(
-          label,
+          confirmLabel,
           style: TextStyle(
             fontSize: 16 * sf,
             fontWeight: FontWeight.w600,

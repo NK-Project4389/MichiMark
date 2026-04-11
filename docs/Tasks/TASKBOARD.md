@@ -96,11 +96,15 @@
 | T-188 | 四則演算 レビュー | reviewer | `DONE` | | 承認・違反なし |
 | T-189b | 四則演算 テスト実行 | tester | `DONE` | | 19PASS/0SKIP/0FAIL |
 
-### Phase 3（Push-up 方式移行）
+### Phase 3（確定ボタンラベル変更 + label 表示）
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-189 | Push-up方式 要件書作成 | product-manager | `TODO` | | Phase 2 完了・実機FB後に判断 |
+| T-189 | Phase3 要件書・Spec作成 | product-manager / architect | `DONE` | | docs/Requirements/REQ-custom_numeric_keypad_phase3.md / FS-custom_numeric_keypad_phase3.md |
+| T-190a | Phase3 実装 | flutter-dev | `DONE` | | FS-custom_numeric_keypad_phase3.md 参照 |
+| T-190b | Phase3 テストコード実装 | tester | `DONE` | | TC-CNK-020〜024 実装済み |
+| T-191a | Phase3 レビュー | reviewer | `DONE` | | 承認・違反なし |
+| T-192a | Phase3 テスト実行 | tester | `DONE` | | 5PASS/0SKIP/0FAIL |
 
 ---
 
