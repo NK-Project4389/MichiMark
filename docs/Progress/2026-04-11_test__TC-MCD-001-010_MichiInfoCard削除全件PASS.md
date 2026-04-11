@@ -1,6 +1,11 @@
 # 2026-04-11 MichiInfo カード削除機能 Integration Test 全件PASS（T-154）
 
 ## 完了した作業
+- feat: F-1 Phase3 確定ボタンラベル変更実装・テスト全5件PASS (eef0ecf)
+- feat: F-1 Phase2 四則演算キーパッド実装・テスト全19件PASS (dd84a24)
+- feat: F-1 Phase1 カスタム数値キーパッド実装・テスト全件PASS（TC-CNK-001〜009） (118a933)
+- docs: TestFlight 1.0.0(8) アップロード完了・進捗更新 (72dcd12)
+- feat: R-1 メンバー未選択ガード実装・テスト完了（3PASS/3SKIP） (2cf562f)
 - docs: R-1 メンバー未選択ガード Spec・タスクボード追加（T-170〜174） (fcdff56)
 - fix: Slidable排他制御 SlidableAutoCloseBehaviorでラップ（EventList/MichiInfo/PaymentInfo） (1e859c9)
 - docs: TestFlight 1.0.0(7) アップロード完了・進捗更新 (7117f4d)
