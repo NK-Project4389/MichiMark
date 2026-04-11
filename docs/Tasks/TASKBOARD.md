@@ -26,8 +26,8 @@
 | T-130 | イベント削除機能 要件書作成 | product-manager | `DONE` | | 要件書: ユーザー提示仕様（カスケード削除・確認ダイアログなし・flutter_slidable使用） |
 | T-131 | イベント削除機能 Spec作成 | architect | `DONE` | | docs/Spec/Features/EventDelete_Spec.md |
 | T-132 | イベント削除機能 実装 | flutter-dev | `TODO` | | T-131完了。EventDelete_Spec.md 参照 |
-| T-133 | イベント削除機能 レビュー | reviewer | `BLOCKED` | | T-132完了後 |
-| T-134 | イベント削除機能 テスト | tester | `BLOCKED` | | T-133完了後 |
+| T-133 | イベント削除機能 レビュー | reviewer | `BLOCKED` | | T-132 + T-134フェーズ1完了後（実装・テストコード両方揃ってから起動） |
+| T-134 | イベント削除機能 テスト | tester | `TODO` | | フェーズ1（テストコード実装）はT-132と並行。フェーズ2（テスト実行）はT-133完了後 |
 
 ## Phase 15: バグ修正（B-1〜B-4）
 
@@ -53,12 +53,12 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-160 | MIB-001/002: インジケーターサイズ拡大・先頭「＋」追加 Spec作成 | architect | `TODO` | | 要件書: REQ-michi_info_insert_button_size（REQ-MIB-001・002）|
-| T-161 | MIB-001/002: 実装 | flutter-dev | `BLOCKED` | | T-160完了後 |
+| T-160 | MIB-001/002: インジケーターサイズ拡大・先頭「＋」追加 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_insert_button_size.md |
+| T-161 | MIB-001/002: 実装 | flutter-dev | `TODO` | | T-160完了。FS-michi_info_insert_button_size.md 参照 |
 | T-162 | MIB-001/002: レビュー | reviewer | `BLOCKED` | | T-161完了後 |
 | T-163 | MIB-001/002: テスト | tester | `BLOCKED` | | T-162完了後 |
-| T-164 | MIB-003: デザイン提案（「＋」アイコンのみ変更） | designer | `TODO` | | 要件書: REQ-MIB-003。罫線等変更なし・Amberカラー維持・視認性向上 |
-| T-165 | MIB-003: デザインレビュー・ユーザー確認 | product-manager | `BLOCKED` | | T-164完了後 |
+| T-164 | MIB-003: デザイン提案（「＋」アイコンのみ変更） | designer | `DONE` | | docs/Design/draft/michi_info_insert_icon_design.html |
+| T-165 | MIB-003: デザインレビュー・ユーザー確認 | product-manager | `IN_PROGRESS` | `2026-04-11_michi_info_insert_icon_design` | ユーザー確認待ち |
 
 ## Phase 17: PaymentInfo カード削除機能
 
