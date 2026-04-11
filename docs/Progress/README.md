@@ -87,3 +87,5 @@
 | [2026-04-11_roadmap_renewal_and_cleanup.md](./2026-04-11_roadmap_renewal_and_cleanup.md) | SwiftUI資材削除・Roadmap再設計（Phase A〜E）・タスク追加（Phase 16・17） |
 | [2026-04-11_fix__B1-B4バグ修正_IntTest全件PASS_TF予定.md](./2026-04-11_fix__B1-B4バグ修正_IntTest全件PASS_TF予定.md) | B-1〜B-4バグ修正・Integration Test 84PASS/0FAIL・TestFlight予定 |
 | [2026-04-11_chore__テスト許可設定整理・ログ保存.md](./2026-04-11_chore__テスト許可設定整理・ログ保存.md) | テスト許可設定整理・TestLogsログ保存機能追加（MichiMark/NomikaiShare） |
+| [2026-04-11_test__TC-MIB-001-005_InsertIndicator全件PASS.md](./2026-04-11_test__TC-MIB-001-005_InsertIndicator全件PASS.md) | MichiInfo InsertIndicator改善 TC-MIB-001〜005 全件PASS |
+| [2026-04-11_feat__イベント削除機能.md](./2026-04-11_feat__イベント削除機能.md) | Phase 14完了：イベント削除機能（スワイプ削除・カスケード削除）3PASS/0FAIL |
