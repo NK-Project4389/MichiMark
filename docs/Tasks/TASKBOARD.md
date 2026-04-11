@@ -79,9 +79,9 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-180 | カスタムキーパッド 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-custom_numeric_keypad.md |
-| T-181 | カスタムキーパッド Spec作成 | architect | `IN_PROGRESS` | 2026-04-11_custom_keypad_spec | REQ-custom_numeric_keypad.md 参照 |
-| T-182 | カスタムキーパッド 実装 | flutter-dev | `TODO` | | |
-| T-182b | カスタムキーパッド テストコード実装 | tester | `TODO` | | |
+| T-181 | カスタムキーパッド Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-custom_numeric_keypad.md |
+| T-182 | カスタムキーパッド 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-11_custom_keypad_impl | |
+| T-182b | カスタムキーパッド テストコード実装 | tester | `IN_PROGRESS` | 2026-04-11_custom_keypad_test | TC-CNK-001〜009 |
 | T-183 | カスタムキーパッド レビュー | reviewer | `TODO` | | |
 | T-184 | カスタムキーパッド テスト実行 | tester | `TODO` | | |
 
