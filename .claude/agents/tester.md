@@ -9,8 +9,13 @@ tools: Read,Glob,Bash,Edit,Write
 
 ## 責務
 
+### Phase 1: テストコード実装（flutter-dev と並行）
 - Feature Specのテストシナリオを読む
 - Unit / Widget / Integration Testコードを実装する
+- **実装ファイルの詳細（内部構造・ロジック）は参照しない**（ブラックボックス）
+- Specのシナリオ・ウィジェットキー定義のみを参照してコードを書く
+
+### Phase 2: テスト実行（reviewer 承認後）
 - テストを実行し、フェーズ別に結果を報告する
 - 失敗時はエラー事象をflutter-devに報告する
 - **トータルテスト設計書（`docs/Spec/IntegrationTest_Spec.md`）との照合・更新**
@@ -21,11 +26,11 @@ tools: Read,Glob,Bash,Edit,Write
 
 ## 参照してよいファイル
 
-- Feature Specの「テストシナリオ」セクション
+- Feature Specの「テストシナリオ」セクション（**主要参照先**）
 - `docs/Spec/IntegrationTest_Spec.md`（トータルテスト設計書）
 - `integration_test/` 配下の既存テストファイル
 - `test/` 配下の既存テストファイル
-- `lib/` 配下の実装ファイル（クラス名・メソッド名・Widget Key確認のため参照可）
+- `lib/` 配下の実装ファイル（**Widget Keyとクラス名・メソッド名の確認のみ**。内部ロジックの詳細分析は禁止）
 
 ---
 
