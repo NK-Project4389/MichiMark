@@ -115,3 +115,4 @@
 | [2026-04-12_test__T244-UI4-PaymentInfo削除UIアイコンテスト全件PASS.md](./2026-04-12_test__T244-UI4-PaymentInfo削除UIアイコンテスト全件PASS.md) | T-244 UI-4 PaymentInfo削除UI変更 Integration Test 3PASS/0FAIL/0SKIP |
 | [2026-04-12_test__T272-B6-ガソリン支払者チップ選択テスト全件PASS.md](./2026-04-12_test__T272-B6-ガソリン支払者チップ選択テスト全件PASS.md) | T-272 B-6 ガソリン支払者インラインチップ選択 Integration Test 8PASS/0FAIL/0SKIP |
 | [2026-04-12_test__T268-UI6-概要タブセクション名テスト全件PASS.md](./2026-04-12_test__T268-UI6-概要タブセクション名テスト全件PASS.md) | T-268 UI-6 概要タブセクション名追加 Integration Test 4PASS/0FAIL/0SKIP |
+| [2026-04-12_test__T224-UI2-BasicInfo参照タップ編集テスト全件PASS.md](./2026-04-12_test__T224-UI2-BasicInfo参照タップ編集テスト全件PASS.md) | T-224 UI-2 BasicInfo参照タップ編集 Integration Test 14PASS/0FAIL/0SKIP |

@@ -42,7 +42,7 @@
 | T-222a | BasicInfo参照タップ編集 実装 | flutter-dev | `DONE` | | FS-basic_info_tap_to_edit.md 参照 |
 | T-222b | BasicInfo参照タップ編集 テストコード実装 | tester | `DONE` | | TC-BTE-001〜007 実装済み（integration_test/basic_info_tap_to_edit_test.dart） |
 | T-223 | BasicInfo参照タップ編集 レビュー | reviewer | `DONE` | | 合格 |
-| T-224 | BasicInfo参照タップ編集 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | T-223 承認後 |
+| T-224 | BasicInfo参照タップ編集 テスト実行 | tester | `DONE` | | 14件PASS/0FAIL/0SKIP |
 
 ---
 
