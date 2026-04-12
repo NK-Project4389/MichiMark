@@ -93,8 +93,8 @@
 | T-269 | B-6: Phase C Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-gas_payer_chip_selection_phaseC.md |
 | T-270a | B-6: ガソリン支払い者チップ選択 実装 | flutter-dev | `DONE` | | FS-gas_payer_chip_selection_phaseC.md 参照 |
 | T-270b | B-6: テストコード実装 | tester | `DONE` | | TC-GPS-001〜008 実装済み（gas_payer_chip_test.dart） |
-| T-271 | B-6: レビュー | reviewer | `IN_PROGRESS` | 2026-04-12_自走 | T-270a/b 完了後 |
-| T-272 | B-6: テスト実行 | tester | `BLOCKED` | | T-271 承認後 |
+| T-271 | B-6: レビュー | reviewer | `DONE` | | 合格 |
+| T-272 | B-6: テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | T-271 承認後 |
 
 ---
 
