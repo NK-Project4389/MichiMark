@@ -1194,22 +1194,77 @@ class _MichiTimelinePainter extends CustomPainter {
 
     // ── 3. ドット ─────────────────────────────────────────
     if (isMark) {
-      // 白リング（背景との分離）
-      canvas.drawCircle(
-        Offset(_axisX, centerY),
-        _markDotRadius + _markDotRingWidth,
-        Paint()
-          ..color = Colors.white
-          ..style = PaintingStyle.fill,
-      );
-      // Teal 円ドット
-      canvas.drawCircle(
-        Offset(_axisX, centerY),
-        _markDotRadius,
-        Paint()
-          ..color = _markPrimaryColor
-          ..style = PaintingStyle.fill,
-      );
+      if (isFuel) {
+        // 給油あり: 縦長ドット（拡大）+ アイコン内包
+        final dotWidth = _markDotRadius * 2;
+        final dotHeight = _markDotRadius * 2 + _actionButtonsHeight;
+        final fuelDotRect = Rect.fromCenter(
+          center: Offset(_axisX, centerY),
+          width: dotWidth,
+          height: dotHeight,
+        );
+        // 白リング（背景との分離）
+        final ringRect = Rect.fromCenter(
+          center: Offset(_axisX, centerY),
+          width: dotWidth + _markDotRingWidth * 2,
+          height: dotHeight + _markDotRingWidth * 2,
+        );
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            ringRect,
+            Radius.circular(dotWidth / 2),
+          ),
+          Paint()
+            ..color = Colors.white
+            ..style = PaintingStyle.fill,
+        );
+        // Teal 角丸縦長ドット
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            fuelDotRect,
+            Radius.circular(dotWidth / 2),
+          ),
+          Paint()
+            ..color = _markPrimaryColor
+            ..style = PaintingStyle.fill,
+        );
+        // 給油アイコン（TextPainter で描画）
+        final iconPainter = TextPainter(
+          text: TextSpan(
+            text: String.fromCharCode(Icons.local_gas_station.codePoint),
+            style: TextStyle(
+              fontSize: 14,
+              fontFamily: Icons.local_gas_station.fontFamily,
+              package: Icons.local_gas_station.fontPackage,
+              color: Colors.white,
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        iconPainter.paint(
+          canvas,
+          Offset(
+            _axisX - iconPainter.width / 2,
+            centerY - iconPainter.height / 2,
+          ),
+        );
+      } else {
+        // 給油なし（従来通り）: 白リング + Teal 円ドット
+        canvas.drawCircle(
+          Offset(_axisX, centerY),
+          _markDotRadius + _markDotRingWidth,
+          Paint()
+            ..color = Colors.white
+            ..style = PaintingStyle.fill,
+        );
+        canvas.drawCircle(
+          Offset(_axisX, centerY),
+          _markDotRadius,
+          Paint()
+            ..color = _markPrimaryColor
+            ..style = PaintingStyle.fill,
+        );
+      }
     } else {
       // Emerald 角丸矩形ドット
       final dotRect = Rect.fromCenter(
@@ -1231,7 +1286,7 @@ class _MichiTimelinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_MichiTimelinePainter old) =>
-      markLinkType != old.markLinkType;
+      markLinkType != old.markLinkType || isFuel != old.isFuel;
 }
 
 // ────────────────────────────────────────────────────────
@@ -1252,6 +1307,7 @@ class _TimelineItemOverlay extends StatelessWidget {
 
   final TopicConfig topicConfig;
   final String eventId;
+  final bool isInsertMode;
 
   static const double _cardLeft = 40.0;
 
@@ -1262,6 +1318,7 @@ class _TimelineItemOverlay extends StatelessWidget {
     required this.currentStateLabel,
     required this.topicConfig,
     required this.eventId,
+    this.isInsertMode = false,
   });
 
   @override
@@ -1319,12 +1376,6 @@ class _TimelineItemOverlay extends StatelessWidget {
                 ],
               ),
             ),
-            if (item.isFuel)
-              const Icon(
-                Icons.local_gas_station,
-                size: 16,
-                color: _markPrimaryColor,
-              ),
             // ⚡ アイコンボタン（アクションタイム有効トピックのみ表示）
             if (isMark && topicConfig.showActionTimeButton)
               Padding(
@@ -1338,6 +1389,30 @@ class _TimelineItemOverlay extends StatelessWidget {
                           markOrLink: MarkOrLink.mark,
                         ),
                       ),
+                ),
+              ),
+            // 削除アイコン（挿入モード中は非表示）
+            if (!isInsertMode)
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: GestureDetector(
+                  onTap: () => context.read<MichiInfoBloc>().add(
+                        MichiInfoCardDeleteRequested(item.id),
+                      ),
+                  child: Container(
+                    key: Key('michiInfo_button_delete_${item.id}'),
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFEE2E2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.delete,
+                      size: 20,
+                      color: Color(0xFFDC2626),
+                    ),
+                  ),
                 ),
               ),
           ],
