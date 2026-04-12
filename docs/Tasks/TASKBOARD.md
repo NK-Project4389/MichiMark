@@ -82,7 +82,7 @@
 | T-252a | Detail画面UI改善 実装 | flutter-dev | `DONE` | | FS-detail_screen_ui_improvement.md 参照 |
 | T-252b | Detail画面UI改善 テストコード実装 | tester | `DONE` | | TC-DSI-001〜015 実装済み |
 | T-253 | Detail画面UI改善 レビュー | reviewer | `DONE` | | 合格 |
-| T-254 | Detail画面UI改善 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | T-253 承認後 |
+| T-254 | Detail画面UI改善 テスト実行 | tester | `DONE` | | 18件PASS・openLinkDetailヘルパー修正込み |
 
 ---
 

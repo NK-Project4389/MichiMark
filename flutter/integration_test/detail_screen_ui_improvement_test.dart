@@ -102,7 +102,7 @@ void main() {
     return true;
   }
 
-  /// LinkDetail画面を開く（既存Linkカードをタップ）。
+  /// LinkDetail画面を開く（シードデータのLink名「東名高速」をタップ）。
   Future<bool> openLinkDetail(WidgetTester tester) async {
     await startApp(tester);
 
@@ -113,66 +113,29 @@ void main() {
 
     await goToMichiTab(tester);
 
-    // Linkカードを探す（区間詳細を持つカード）
-    // Linkカードは区間情報（距離・燃費など）を持つ
-    final linkDetailKey = find.byKey(const Key('linkDetail_appBar_title'));
-    final linkButtonKey = find.byKey(const Key('linkDetail_button_save'));
-
-    // ミチInfo画面のLink部分をタップ（GestureDetector内のLink情報）
-    // LinkカードはMarkカードの間に表示されるため、スクロールして探す
-    for (var i = 0; i < 5; i++) {
-      if (linkDetailKey.evaluate().isNotEmpty || linkButtonKey.evaluate().isNotEmpty) break;
-      // ミチInfoのLink行をタップ試みる
-      // Link行はMarkの間に配置されるため、ListViewをスクロールして確認
+    // シードデータのLink名「東名高速」をテキストで探す（michi_info_layout_test.dart TS-04 参考）
+    final linkText = find.text('東名高速');
+    if (linkText.evaluate().isEmpty) {
+      // スクロールして探す
       final listView = find.byType(ListView);
-      if (listView.evaluate().isNotEmpty) {
-        await tester.drag(listView.first, const Offset(0, -100));
-        await tester.pump(const Duration(milliseconds: 200));
+      for (var i = 0; i < 5; i++) {
+        if (find.text('東名高速').evaluate().isNotEmpty) break;
+        if (listView.evaluate().isNotEmpty) {
+          await tester.drag(listView.first, const Offset(0, -200));
+          await tester.pump(const Duration(milliseconds: 300));
+        }
       }
+      if (find.text('東名高速').evaluate().isEmpty) return false;
     }
 
-    // LinkDetailへの遷移はMichiInfoのLink行タップ
-    // Linkカードのキーを探す（link_card_xxx など）
-    // 既存テストを参考に、区間情報のテキストをタップ
-    // ミチInfoでLink行をタップするには区間のタイトルや距離テキストを探す
-    // Specにはlink_cardのキーがないため、画面上のLink行をGestureDetectorで探す
-    final michiInfoContent = find.byType(ListView);
-    if (michiInfoContent.evaluate().isEmpty) return false;
+    await tester.ensureVisible(find.text('東名高速').first);
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.tap(find.text('東名高速').first);
 
-    // スクロールしながらLink行を探す（Mark行の間にある）
-    for (var i = 0; i < 10; i++) {
-      // GestureDetectorでLink行を探す（MarkカードのGestureDetectorと区別するため
-      // linkDetail_appBar_title が表示されたら成功
-      if (find.byKey(const Key('linkDetail_appBar_title')).evaluate().isNotEmpty) break;
-      if (find.byKey(const Key('linkDetail_button_save')).evaluate().isNotEmpty) break;
-
-      // GestureDetectorの全リストを取得してLink行候補をタップ
-      final gestures = find.byType(GestureDetector);
-      final gestureCount = gestures.evaluate().length;
-      if (gestureCount > 1) {
-        // 2番目以降のGestureDetectorがLinkカードの可能性がある
-        // MarkカードとLinkカードが交互に並ぶ構造のため、インデックス1あたりをタップ
-        try {
-          await tester.tap(gestures.at(1));
-        } catch (_) {}
-        for (var j = 0; j < 10; j++) {
-          await tester.pump(const Duration(milliseconds: 300));
-          if (find.byKey(const Key('linkDetail_appBar_title')).evaluate().isNotEmpty ||
-              find.byKey(const Key('linkDetail_button_save')).evaluate().isNotEmpty) break;
-        }
-        if (find.byKey(const Key('linkDetail_appBar_title')).evaluate().isNotEmpty ||
-            find.byKey(const Key('linkDetail_button_save')).evaluate().isNotEmpty) break;
-        // LinkDetailではなかった場合は戻る
-        app_router.router.go('/');
-        for (var j = 0; j < 10; j++) {
-          await tester.pump(const Duration(milliseconds: 300));
-          if (find.text('イベント').evaluate().isNotEmpty) break;
-        }
-        final reopened = await openEventDetail(tester, '箱根日帰りドライブ');
-        if (!reopened) return false;
-        await goToMichiTab(tester);
-      }
-      break;
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+      if (find.byKey(const Key('linkDetail_appBar_title')).evaluate().isNotEmpty ||
+          find.byKey(const Key('linkDetail_button_save')).evaluate().isNotEmpty) break;
     }
 
     return find.byKey(const Key('linkDetail_appBar_title')).evaluate().isNotEmpty ||
