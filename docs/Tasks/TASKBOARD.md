@@ -192,7 +192,7 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-240 | PaymentInfo削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_info_delete_icon.md |
-| T-241 | PaymentInfo削除UI変更 Spec作成 | architect | `IN_PROGRESS` | 2026-04-12_UI1-UI5-Spec作成 | |
+| T-241 | PaymentInfo削除UI変更 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_info_delete_icon.md |
 | T-242a | PaymentInfo削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-241 完了後 |
 | T-242b | PaymentInfo削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-241 完了後 |
 | T-243 | PaymentInfo削除UI変更 レビュー | reviewer | `BLOCKED` | | T-242a/b 完了後 |
