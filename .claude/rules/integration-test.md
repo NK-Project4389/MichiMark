@@ -2,21 +2,37 @@
 
 ## 実行デバイス設定
 
+### MichiMark（シャード並行実行）
+
+| ロール | シミュレーター | UDID |
+|---|---|---|
+| **shard 0（前半）** | iPhone 16 #1 | `DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6` |
+| **shard 1（後半）** | iPhone 16 #2 (MichiMark) | `21CE8289-283C-40FD-9A1E-43B5439CFF35` |
+
+### NomikaiShare（独立・競合なし）
+
 | アプリ | シミュレーター | UDID |
 |---|---|---|
-| **MichiMark** | iPhone 16 | `DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6` |
+| **NomikaiShare** | iPhone 16 Pro | ※NomikaiShare側の設定参照 |
+
+> MichiMark と NomikaiShare はシミュレーターが別機種なので完全に独立。同時実行しても競合しない。
+
+---
 
 ```bash
-# 単体テスト実行（ファイル指定は並行なし）
+# ── 単体テスト実行（ファイル指定・シャード不要）──
 flutter test integration_test/<feature>_test.dart -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6
 
-# 全件実行（本番リリース前）※ 必ず --concurrency=1 を付けること
-flutter test integration_test/ -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6 --concurrency=1
+# ── 全件実行：シャード並行（2ターミナルで同時実行）──
+# ターミナル1
+flutter test integration_test/ -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6 --total-shards=2 --shard-index=0
+
+# ターミナル2
+flutter test integration_test/ -d 21CE8289-283C-40FD-9A1E-43B5439CFF35 --total-shards=2 --shard-index=1
 ```
 
-> ⚠️ **並行実行禁止**: フォルダ指定でテストを走らせる場合は必ず `--concurrency=1` を付ける。
-> デフォルトは CPU コア数の並行実行になり、1台のシミュレーターに複数プロセスが競合してテストが不安定になる。
-> 並行テストの仕様が固まるまでこのルールを維持する。
+> ⚠️ **1シミュレーター = 1プロセス厳守**: 同一シミュレーターに複数プロセスを当てない。
+> シャードは必ず別々の UDID に向ける。
 
 NomikaiShare は別シミュレーター（iPhone 16 Pro）を使用。同時実行が可能。
 

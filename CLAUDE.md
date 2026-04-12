@@ -15,7 +15,9 @@
 | 実行 | `cd flutter && flutter run` |
 | 静的解析 | `cd flutter && dart analyze` |
 | テスト（Unit） | `cd flutter && flutter test` |
-| テスト（Integration） | `cd flutter && flutter test integration_test/ -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6 --concurrency=1` |
+| テスト（Integration・単体） | `cd flutter && flutter test integration_test/<feature>_test.dart -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6` |
+| テスト（Integration・全件 shard0） | `cd flutter && flutter test integration_test/ -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6 --total-shards=2 --shard-index=0` |
+| テスト（Integration・全件 shard1） | `cd flutter && flutter test integration_test/ -d 21CE8289-283C-40FD-9A1E-43B5439CFF35 --total-shards=2 --shard-index=1` |
 | Build（iOS） | `cd flutter && flutter build ios` |
 
 ## 行動原則
