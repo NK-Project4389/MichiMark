@@ -177,7 +177,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-230 | MichiInfo削除UI変更 デザイン提案 | designer | `TODO` | | 下書き: docs/Requirements/REQ-DRAFT-michi_info_delete_icon.md |
+| T-230 | MichiInfo削除UI変更 デザイン提案 | designer | `DONE` | | docs/Design/draft/michi_info_delete_icon_design.html |
 | T-231 | MichiInfo削除UI変更 要件書作成 | product-manager | `BLOCKED` | | T-230 デザイン確認後 |
 | T-232 | MichiInfo削除UI変更 Spec作成 | architect | `BLOCKED` | | T-231 完了後 |
 | T-232a | MichiInfo削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-232 完了後 |

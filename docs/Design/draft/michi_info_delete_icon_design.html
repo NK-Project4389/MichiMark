@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiInfo 削除アイコン デザイン提案 — MichiMark</title>
+  <style>
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #F4F7F9;
+      color: #1A1A2E;
+      line-height: 1.6;
+    }
+
+    /* ── Layout ── */
+    .page-header {
+      background: linear-gradient(135deg, #2B7A9B 0%, #2E9E6B 100%);
+      color: #fff;
+      padding: 40px 48px 32px;
+    }
+    .page-header h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .page-header .meta { font-size: 13px; opacity: 0.85; }
+    .page-header .meta span { margin-right: 20px; }
+
+    main { max-width: 1000px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    section { margin-bottom: 56px; }
+    h2 {
+      font-size: 18px; font-weight: 700;
+      border-left: 4px solid #2B7A9B;
+      padding-left: 12px;
+      margin-bottom: 24px;
+    }
+    h3 { font-size: 15px; font-weight: 700; margin: 20px 0 12px; color: #2B7A9B; }
+    p { font-size: 14px; margin-bottom: 10px; }
+
+    /* ── Color Palette ── */
+    .palette-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .swatch {
+      width: 80px; text-align: center;
+    }
+    .swatch-color {
+      width: 80px; height: 48px; border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    .swatch-label { font-size: 11px; color: #555; margin-top: 4px; }
+    .swatch-hex { font-size: 10px; color: #888; font-family: monospace; }
+
+    /* ── Card Previews ── */
+    .card-demo-area {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 20px 16px;
+    }
+    .card-demo-label {
+      font-size: 11px; font-weight: 600; color: #888;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    /* Mark Card */
+    .mark-card {
+      display: flex;
+      align-items: center;
+      height: 72px;
+      background: #FFFFFF;
+      border-radius: 10px;
+      border: 1.5px solid #B0D8E8;
+      padding: 0 12px 0 48px;
+      position: relative;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 4px rgba(43,122,155,0.08);
+    }
+    .mark-card::before {
+      content: '';
+      position: absolute;
+      left: 16px; top: 50%; transform: translateY(-50%);
+      width: 14px; height: 14px;
+      background: #2B7A9B;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 0 0 2px #2B7A9B;
+    }
+    .link-card {
+      display: flex;
+      align-items: center;
+      height: 34px;
+      background: #EDFAF4;
+      border-radius: 6px;
+      border: 1px solid #C3EBD8;
+      padding: 0 12px 0 48px;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .link-card::before {
+      content: '';
+      position: absolute;
+      left: 18px; top: 50%; transform: translateY(-50%);
+      width: 8px; height: 8px;
+      background: #2E9E6B;
+      border-radius: 2px;
+    }
+    .card-text-area { flex: 1; }
+    .card-name { font-size: 13px; font-weight: 700; color: #1A1A2E; }
+    .card-name.link { font-size: 11px; font-weight: 600; }
+    .card-meter { font-size: 11px; font-weight: 600; color: #2B7A9B; }
+    .card-icons { display: flex; align-items: center; gap: 4px; }
+
+    /* ── Icon Styles ── */
+    .icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    /* Plan A: ゴミ箱 赤 */
+    .icon-delete-red {
+      width: 28px; height: 28px;
+      background: #FEE2E2;
+      color: #DC2626;
+    }
+    /* Plan A: ゴミ箱 グレー */
+    .icon-delete-gray {
+      width: 28px; height: 28px;
+      background: transparent;
+      color: #94A3B8;
+    }
+    /* Plan B: × ボタン */
+    .icon-x-gray {
+      width: 20px; height: 20px;
+      background: #E2E8F0;
+      border-radius: 50%;
+      color: #64748B;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    /* Plan C: ゴミ箱 アウトライン Teal */
+    .icon-delete-teal-outline {
+      width: 28px; height: 28px;
+      background: transparent;
+      border: 1.5px solid #B0D8E8;
+      color: #2B7A9B;
+    }
+    /* Fuel icon */
+    .icon-fuel {
+      font-size: 14px; color: #2B7A9B; margin-right: 2px;
+    }
+    /* Action time button */
+    .icon-action {
+      width: 28px; height: 28px;
+      background: #7C3AED;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    /* ── Plan Grid ── */
+    .plan-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 680px) {
+      .plan-grid { grid-template-columns: 1fr; }
+    }
+    .plan-card {
+      background: #fff;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .plan-card.recommended {
+      border: 2px solid #2B7A9B;
+      position: relative;
+    }
+    .plan-card.recommended::after {
+      content: 'RECOMMENDED';
+      position: absolute;
+      top: -10px; right: 16px;
+      background: #2B7A9B;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .plan-title {
+      font-size: 14px; font-weight: 700; margin-bottom: 4px; color: #1A1A2E;
+    }
+    .plan-subtitle {
+      font-size: 12px; color: #64748B; margin-bottom: 16px;
+    }
+    .pros-cons { font-size: 13px; }
+    .pros-cons .pro { color: #16A34A; }
+    .pros-cons .con { color: #DC2626; }
+    .pros-cons li { margin-bottom: 4px; list-style: none; }
+    .pros-cons li::before { margin-right: 6px; }
+    .pros-cons .pro::before { content: '+ '; }
+    .pros-cons .con::before { content: '- '; }
+
+    /* ── Arrangement Grid ── */
+    .arrange-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 720px) {
+      .arrange-grid { grid-template-columns: 1fr; }
+    }
+    .arrange-card {
+      background: #fff;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .arrange-card.recommended { border: 2px solid #2B7A9B; position: relative; }
+    .arrange-card.recommended::after {
+      content: 'RECOMMENDED';
+      position: absolute;
+      top: -10px; right: 12px;
+      background: #2B7A9B;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .arrange-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+
+    /* ── Rationale table ── */
+    table {
+      width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px;
+    }
+    th, td {
+      border: 1px solid #E2E8F0;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th { background: #F1F5F9; font-weight: 700; }
+    tr:nth-child(even) td { background: #FAFBFC; }
+
+    /* ── PM Note ── */
+    .pm-note {
+      background: #FFFBEB;
+      border: 1.5px solid #FDE68A;
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+    .pm-note h3 { color: #92400E; font-size: 15px; margin-bottom: 12px; }
+    .pm-note p, .pm-note li { font-size: 13px; }
+    .pm-note ul { padding-left: 20px; }
+    .pm-note li { margin-bottom: 6px; }
+
+    /* ── Tag ── */
+    .tag {
+      display: inline-block;
+      font-size: 11px; font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-right: 4px;
+    }
+    .tag-teal { background: #E0F2FE; color: #0369A1; }
+    .tag-emerald { background: #D1FAE5; color: #065F46; }
+    .tag-red { background: #FEE2E2; color: #991B1B; }
+    .tag-violet { background: #EDE9FE; color: #5B21B6; }
+
+    hr { border: none; border-top: 1px solid #E2E8F0; margin: 32px 0; }
+
+    /* SVG icon placeholders */
+    .svg-trash { display: inline-block; font-style: normal; }
+  </style>
+</head>
+<body>
+
+<!-- ===== PAGE HEADER ===== -->
+<header class="page-header">
+  <h1>MichiInfo 削除アイコン デザイン提案</h1>
+  <div class="meta">
+    <span>対象: UI-3 REQ-DRAFT-michi_info_delete_icon</span>
+    <span>作成日: 2026-04-12</span>
+    <span>役割: designer</span>
+  </div>
+</header>
+
+<main>
+
+<!-- ===== 1. COLOR PALETTE ===== -->
+<section id="color-palette">
+  <h2>1. カラーパレット（現行 C-2 デザイン準拠）</h2>
+  <p>本提案は既存の C-2 カラーシステムをそのまま継承します。削除アイコンの色については以下の3パターンを検討します。</p>
+
+  <h3>既存カラー（変更なし）</h3>
+  <div class="palette-row">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#2B7A9B;"></div>
+      <div class="swatch-label">Mark Primary</div>
+      <div class="swatch-hex">#2B7A9B</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#2E9E6B;"></div>
+      <div class="swatch-label">Link Primary</div>
+      <div class="swatch-hex">#2E9E6B</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#EDFAF4;"></div>
+      <div class="swatch-label">Link Card BG</div>
+      <div class="swatch-hex">#EDFAF4</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#7C3AED;"></div>
+      <div class="swatch-label">ActionTime</div>
+      <div class="swatch-hex">#7C3AED</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#1A1A2E;"></div>
+      <div class="swatch-label">Text Dark</div>
+      <div class="swatch-hex">#1A1A2E</div>
+    </div>
+  </div>
+
+  <h3>削除アイコン用カラー候補</h3>
+  <div class="palette-row">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#DC2626;"></div>
+      <div class="swatch-label">Delete Red</div>
+      <div class="swatch-hex">#DC2626</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#FEE2E2;"></div>
+      <div class="swatch-label">Delete Red BG</div>
+      <div class="swatch-hex">#FEE2E2</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#94A3B8;"></div>
+      <div class="swatch-label">Neutral Gray</div>
+      <div class="swatch-hex">#94A3B8</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#E2E8F0;"></div>
+      <div class="swatch-label">Gray BG</div>
+      <div class="swatch-hex">#E2E8F0</div>
+    </div>
+  </div>
+  <p style="font-size:13px; color:#555;">
+    赤系: 削除アクションとしての危険度を視覚的に伝える。Gray系: 控えめに常時表示しても邪魔になりにくい。
+  </p>
+</section>
+
+<!-- ===== 2. TYPOGRAPHY ===== -->
+<section id="typography">
+  <h2>2. タイポグラフィ（参考・変更なし）</h2>
+  <table>
+    <thead>
+      <tr><th>用途</th><th>サイズ</th><th>ウェイト</th><th>カラー</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Mark カード名</td><td>13px</td><td>700</td><td>#1A1A2E</td></tr>
+      <tr><td>Link カード名</td><td>11px</td><td>600</td><td>#1A1A2E</td></tr>
+      <tr><td>Mark メーター値</td><td>11px</td><td>600</td><td>#2B7A9B</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:13px; color:#555; margin-top:12px;">
+    削除アイコンにラベルテキストは付けません（スペース節約・ミニマルUIの維持）。
+  </p>
+</section>
+
+<!-- ===== 3. COMPONENT PREVIEW ===== -->
+<section id="component-preview">
+  <h2>3. コンポーネントプレビュー</h2>
+
+  <!-- ── Icon Design Plans ── -->
+  <h3>3-1. 削除アイコン デザイン案（4案）</h3>
+  <div class="plan-grid">
+
+    <!-- Plan A: ゴミ箱・赤背景 -->
+    <div class="plan-card recommended">
+      <div class="plan-title">案 A: ゴミ箱アイコン（赤背景）</div>
+      <div class="plan-subtitle">28x28px 角丸 / 背景 #FEE2E2 / アイコン #DC2626</div>
+
+      <div class="card-demo-area" style="margin-bottom:16px;">
+        <div class="card-demo-label">Mark カードプレビュー</div>
+        <div class="mark-card">
+          <div class="card-text-area">
+            <div class="card-name">道の駅 まいづる</div>
+            <div class="card-meter">234,567 km</div>
+          </div>
+          <div class="card-icons">
+            <span class="icon-fuel">⛽</span>
+            <div class="icon-btn icon-delete-red">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="card-demo-label">Link カードプレビュー</div>
+        <div class="link-card">
+          <div class="card-text-area">
+            <div class="card-name link">国道 27号</div>
+          </div>
+          <div class="card-icons">
+            <div class="icon-btn icon-delete-red" style="width:22px;height:22px;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="pros-cons">
+        <li class="pro">削除操作であることが一目でわかる（赤 = 危険アクション）</li>
+        <li class="pro">ゴミ箱アイコンは国際的に削除の標準的なシグニファイア</li>
+        <li class="pro">WCAG AA 準拠（#DC2626 on #FEE2E2: コントラスト比 4.6:1）</li>
+        <li class="con">常時赤が目立ち、一覧が忙しく見える可能性あり</li>
+      </ul>
+    </div>
+
+    <!-- Plan B: ゴミ箱・グレー（常時表示向け） -->
+    <div class="plan-card">
+      <div class="plan-title">案 B: ゴミ箱アイコン（グレー・背景なし）</div>
+      <div class="plan-subtitle">28x28px / アイコン #94A3B8 / 背景なし</div>
+
+      <div class="card-demo-area" style="margin-bottom:16px;">
+        <div class="card-demo-label">Mark カードプレビュー</div>
+        <div class="mark-card">
+          <div class="card-text-area">
+            <div class="card-name">道の駅 まいづる</div>
+            <div class="card-meter">234,567 km</div>
+          </div>
+          <div class="card-icons">
+            <span class="icon-fuel">⛽</span>
+            <div class="icon-btn icon-delete-gray">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="card-demo-label">Link カードプレビュー</div>
+        <div class="link-card">
+          <div class="card-text-area">
+            <div class="card-name link">国道 27号</div>
+          </div>
+          <div class="card-icons">
+            <div class="icon-btn icon-delete-gray" style="width:22px;height:22px;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="pros-cons">
+        <li class="pro">常時表示でも一覧が静かで読みやすい</li>
+        <li class="pro">コンテンツ（カード名・メーター値）に視線が集中する</li>
+        <li class="con">タップ対象として認識されにくいリスクがある</li>
+        <li class="con">赤と比べると削除の「危険度」が伝わりにくい</li>
+      </ul>
+    </div>
+
+    <!-- Plan C: × ボタン -->
+    <div class="plan-card">
+      <div class="plan-title">案 C: × ボタン（丸型グレー）</div>
+      <div class="plan-subtitle">20x20px 丸型 / 背景 #E2E8F0 / × #64748B</div>
+
+      <div class="card-demo-area" style="margin-bottom:16px;">
+        <div class="card-demo-label">Mark カードプレビュー</div>
+        <div class="mark-card">
+          <div class="card-text-area">
+            <div class="card-name">道の駅 まいづる</div>
+            <div class="card-meter">234,567 km</div>
+          </div>
+          <div class="card-icons">
+            <span class="icon-fuel">⛽</span>
+            <div class="icon-btn icon-x-gray">✕</div>
+          </div>
+        </div>
+        <div class="card-demo-label">Link カードプレビュー</div>
+        <div class="link-card">
+          <div class="card-text-area">
+            <div class="card-name link">国道 27号</div>
+          </div>
+          <div class="card-icons">
+            <div class="icon-btn icon-x-gray" style="width:16px;height:16px;font-size:10px;">✕</div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="pros-cons">
+        <li class="pro">コンパクトで Link カード（34px 高さ）にも馴染む</li>
+        <li class="pro">モダンな iOS ライクなUIに近い</li>
+        <li class="con">「×」は閉じる操作とも混同されやすい</li>
+        <li class="con">削除であることのシグニファイアとしてゴミ箱より弱い</li>
+      </ul>
+    </div>
+
+    <!-- Plan D: ゴミ箱・Teal アウトライン -->
+    <div class="plan-card">
+      <div class="plan-title">案 D: ゴミ箱アイコン（Teal アウトライン）</div>
+      <div class="plan-subtitle">28x28px / ボーダー #B0D8E8 / アイコン #2B7A9B</div>
+
+      <div class="card-demo-area" style="margin-bottom:16px;">
+        <div class="card-demo-label">Mark カードプレビュー</div>
+        <div class="mark-card">
+          <div class="card-text-area">
+            <div class="card-name">道の駅 まいづる</div>
+            <div class="card-meter">234,567 km</div>
+          </div>
+          <div class="card-icons">
+            <span class="icon-fuel">⛽</span>
+            <div class="icon-btn icon-delete-teal-outline">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="card-demo-label">Link カードプレビュー</div>
+        <div class="link-card">
+          <div class="card-text-area">
+            <div class="card-name link">国道 27号</div>
+          </div>
+          <div class="card-icons">
+            <div class="icon-btn icon-delete-teal-outline" style="width:22px;height:22px; border-color:#C3EBD8; color:#2E9E6B;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="pros-cons">
+        <li class="pro">MichiMark テーマカラーに統一感がある</li>
+        <li class="pro">カードボーダーとトーンが揃いまとまりがある</li>
+        <li class="con">Teal はブランドカラーのため、削除ボタンに使うと誤認リスクあり</li>
+        <li class="con">削除の危険度が最も伝わりにくい</li>
+      </ul>
+    </div>
+
+  </div><!-- /plan-grid -->
+
+  <hr>
+
+  <!-- ── Arrangement Plans ── -->
+  <h3>3-2. 給油アイコン・削除アイコン 配置案（3案）</h3>
+  <p style="font-size:13px;color:#555;margin-bottom:16px;">
+    現在の Mark カード右側には「⛽ 給油アイコン（isFuel=true 時のみ）」と「⚡ ActionTime ボタン（topicConfig 依存）」が存在します。
+    削除アイコンを追加する際の配置を3案提示します。
+  </p>
+  <div class="arrange-grid">
+
+    <!-- Arrangement 1: 縦並び（サブカラム） -->
+    <div class="arrange-card">
+      <div class="arrange-title">配置案 1: 右端に削除アイコン固定（横並び右寄せ）</div>
+      <div class="card-demo-area" style="margin-bottom:12px;">
+        <div class="card-demo-label">Mark（給油あり・ActionTime なし）</div>
+        <div class="mark-card" style="height:72px;">
+          <div class="card-text-area">
+            <div class="card-name">道の駅 まいづる</div>
+            <div class="card-meter">234,567 km</div>
+          </div>
+          <div class="card-icons">
+            <span class="icon-fuel">⛽</span>
+            <div class="icon-btn icon-delete-red">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="card-demo-label" style="margin-top:8px;">Mark（給油あり・ActionTime あり）</div>
+        <div class="mark-card" style="height:72px;">
+          <div class="card-text-area">
+            <div class="card-name">道の駅 まいづる</div>
+            <div class="card-meter">234,567 km</div>
+          </div>
+          <div class="card-icons">
+            <span class="icon-fuel">⛽</span>
+            <div class="icon-btn icon-action">⚡</div>
+            <div class="icon-btn icon-delete-red">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="card-demo-label" style="margin-top:8px;">Link</div>
+        <div class="link-card">
+          <div class="card-text-area">
+            <div class="card-name link">国道 27号</div>
+          </div>
+          <div class="card-icons">
+            <div class="icon-btn icon-delete-red" style="width:22px;height:22px;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ul class="pros-cons" style="font-size:12px;">
+        <li class="pro">実装がシンプル（Row に追加するだけ）</li>
+        <li class="pro">削除が常に右端で位置が一定</li>
+        <li class="con">ActionTime + 給油 + 削除 が3列になり混雑する</li>
+      </ul>
+    </div>
+
+    <!-- Arrangement 2: 縦2段 -->
+    <div class="arrange-card recommended">
+      <div class="arrange-title">配置案 2: 右端2段（削除を下段）</div>
+      <div class="card-demo-area" style="margin-bottom:12px;">
+        <div class="card-demo-label">Mark（給油あり・ActionTime あり）</div>
+        <div class="mark-card" style="height:72px; align-items: stretch; padding-top:6px; padding-bottom:6px;">
+          <div class="card-text-area">
+            <div class="card-name">道の駅 まいづる</div>
+            <div class="card-meter">234,567 km</div>
+          </div>
+          <!-- 右端2段カラム -->
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:2px;">
+            <div style="display:flex;gap:4px;align-items:center;">
+              <span class="icon-fuel">⛽</span>
+              <div class="icon-btn icon-action">⚡</div>
+            </div>
+            <div class="icon-btn icon-delete-red" style="width:26px;height:20px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="card-demo-label" style="margin-top:8px;">Mark（給油なし・ActionTime なし）</div>
+        <div class="mark-card" style="height:72px;">
+          <div class="card-text-area">
+            <div class="card-name">道の駅 まいづる</div>
+            <div class="card-meter">234,567 km</div>
+          </div>
+          <div class="card-icons">
+            <div class="icon-btn icon-delete-red">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="card-demo-label" style="margin-top:8px;">Link</div>
+        <div class="link-card">
+          <div class="card-text-area">
+            <div class="card-name link">国道 27号</div>
+          </div>
+          <div class="card-icons">
+            <div class="icon-btn icon-delete-red" style="width:22px;height:22px;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ul class="pros-cons" style="font-size:12px;">
+        <li class="pro">カード幅を最大限確保（横に広がらない）</li>
+        <li class="pro">ActionTime・給油と削除が視覚的に分離され誤タップ低減</li>
+        <li class="pro">Markカード72pxの高さで縦2段が自然に収まる</li>
+        <li class="con">実装がやや複雑（Column で右側を2段構成にする）</li>
+        <li class="con">Linkカード（34px）では縦2段が使えないため削除のみ表示</li>
+      </ul>
+    </div>
+
+    <!-- Arrangement 3: 削除をテキスト左に移動 -->
+    <div class="arrange-card">
+      <div class="arrange-title">配置案 3: 給油/ActionTime を上段・削除を独立右端</div>
+      <div class="card-demo-area" style="margin-bottom:12px;">
+        <div class="card-demo-label">Mark（給油あり・ActionTime あり）</div>
+        <div class="mark-card" style="height:72px;">
+          <div class="card-text-area">
+            <div class="card-name">道の駅 まいづる</div>
+            <div class="card-meter">234,567 km</div>
+            <div style="display:flex; gap:4px; margin-top:4px; align-items:center;">
+              <span class="icon-fuel" style="font-size:12px;">⛽</span>
+              <div class="icon-btn icon-action" style="width:20px;height:20px;font-size:12px;">⚡</div>
+            </div>
+          </div>
+          <div class="card-icons">
+            <div class="icon-btn icon-delete-red">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="card-demo-label" style="margin-top:8px;">Link</div>
+        <div class="link-card">
+          <div class="card-text-area">
+            <div class="card-name link">国道 27号</div>
+          </div>
+          <div class="card-icons">
+            <div class="icon-btn icon-delete-red" style="width:22px;height:22px;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ul class="pros-cons" style="font-size:12px;">
+        <li class="pro">削除ボタンが常に右端の単独位置で見つけやすい</li>
+        <li class="pro">給油・ActionTime がテキストエリアに統合されすっきりする</li>
+        <li class="con">カードの情報密度が上がり Markカードが混雑に見える可能性</li>
+        <li class="con">現行の Markカード内レイアウトを大きく変更する必要がある</li>
+      </ul>
+    </div>
+
+  </div><!-- /arrange-grid -->
+
+  <hr>
+
+  <!-- ── Recommended Combination ── -->
+  <h3>3-3. 推奨組み合わせ: 案 A + 配置案 1</h3>
+  <p style="font-size:13px;color:#555;margin-bottom:16px;">
+    実装コストと UX バランスを踏まえ、<strong>アイコン案 A（ゴミ箱・赤背景）+ 配置案 1（右端横並び固定）</strong>を推奨します。
+    以下はトピックのバリエーションを含む全パターンのプレビューです。
+  </p>
+
+  <div class="card-demo-area">
+    <div class="card-demo-label">バリエーション一覧</div>
+
+    <!-- Mark + isFuel=false + ActionTime なし -->
+    <div style="font-size:11px;color:#888;margin:8px 0 4px;">Mark / 給油なし / ActionTime なし</div>
+    <div class="mark-card">
+      <div class="card-text-area">
+        <div class="card-name">道の駅 たんば</div>
+        <div class="card-meter">234,100 km</div>
+      </div>
+      <div class="card-icons">
+        <div class="icon-btn icon-delete-red">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mark + isFuel=true + ActionTime なし -->
+    <div style="font-size:11px;color:#888;margin:8px 0 4px;">Mark / 給油あり / ActionTime なし</div>
+    <div class="mark-card">
+      <div class="card-text-area">
+        <div class="card-name">道の駅 まいづる</div>
+        <div class="card-meter">234,567 km</div>
+      </div>
+      <div class="card-icons">
+        <span class="icon-fuel">⛽</span>
+        <div class="icon-btn icon-delete-red">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mark + isFuel=false + ActionTime あり -->
+    <div style="font-size:11px;color:#888;margin:8px 0 4px;">Mark / 給油なし / ActionTime あり</div>
+    <div class="mark-card">
+      <div class="card-text-area">
+        <div class="card-name">道の駅 はしだて</div>
+        <div class="card-meter">234,800 km</div>
+        <div style="margin-top:2px;">
+          <span class="tag tag-violet" style="font-size:10px;">滞留中</span>
+        </div>
+      </div>
+      <div class="card-icons">
+        <div class="icon-btn icon-action">⚡</div>
+        <div class="icon-btn icon-delete-red">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mark + isFuel=true + ActionTime あり -->
+    <div style="font-size:11px;color:#888;margin:8px 0 4px;">Mark / 給油あり / ActionTime あり（最大アイコン数）</div>
+    <div class="mark-card">
+      <div class="card-text-area">
+        <div class="card-name">SA 加西</div>
+        <div class="card-meter">235,200 km</div>
+        <div style="margin-top:2px;">
+          <span class="tag tag-violet" style="font-size:10px;">休憩中</span>
+        </div>
+      </div>
+      <div class="card-icons">
+        <span class="icon-fuel">⛽</span>
+        <div class="icon-btn icon-action">⚡</div>
+        <div class="icon-btn icon-delete-red">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Link -->
+    <div style="font-size:11px;color:#888;margin:8px 0 4px;">Link カード</div>
+    <div class="link-card">
+      <div class="card-text-area">
+        <div class="card-name link">国道 27号</div>
+      </div>
+      <div class="card-icons">
+        <div class="icon-btn icon-delete-red" style="width:22px;height:22px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /card-demo-area -->
+
+  <div style="margin-top:12px; font-size:13px; color:#555;">
+    <strong>補足:</strong> 最大アイコン数（⛽ + ⚡ + ゴミ箱）のケースでも card の右 padding 12px を保ったまま横幅に収まります。
+    各アイコン間 gap は 4px を推奨します。
+  </div>
+
+</section>
+
+<!-- ===== 4. RATIONALE ===== -->
+<section id="rationale">
+  <h2>4. 根拠・デザイン判断</h2>
+
+  <table>
+    <thead>
+      <tr><th>項目</th><th>判断</th><th>理由</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>アイコン形状</td>
+        <td>ゴミ箱アイコン</td>
+        <td>× より削除の意味が明確。Material Icons の <code>Icons.delete_outline</code> を推奨（filled より軽量な印象）</td>
+      </tr>
+      <tr>
+        <td>アイコンカラー</td>
+        <td>赤系（#DC2626）on 薄赤背景（#FEE2E2）</td>
+        <td>削除は破壊的アクションのため色でも警告を示すのが適切。コントラスト比 4.6:1 で WCAG AA 準拠</td>
+      </tr>
+      <tr>
+        <td>アイコンサイズ</td>
+        <td>Markカード 28×28px / Linkカード 22×22px</td>
+        <td>タップターゲット最小 44dp を確保しつつ、Linkカード34px高さに収まるサイズ調整</td>
+      </tr>
+      <tr>
+        <td>配置</td>
+        <td>右端横並び（削除は常に最右端）</td>
+        <td>削除ボタンを最も外側に配置することで誤タップを低減。給油・ActionTime は削除の左隣に自然な順序で並ぶ</td>
+      </tr>
+      <tr>
+        <td>常時表示</td>
+        <td>常時表示（スワイプ廃止）</td>
+        <td>スワイプ削除のディスカバビリティ問題を解消するのが本要件の目的。常時表示が最もシンプルな解決策</td>
+      </tr>
+      <tr>
+        <td>誤削除対策</td>
+        <td>本提案のスコープ外</td>
+        <td>削除確認ダイアログ（AlertDialog）の実装は既存 REQ-michi_info_card_delete.md に準拠。本提案はアイコンのビジュアルデザインのみ対象</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== PM NOTE ===== -->
+<section id="pm-note">
+  <h2>5. product-manager 向け要件叩きコメント</h2>
+  <div class="pm-note">
+    <h3>推奨案: アイコン案 A + 配置案 1</h3>
+    <p style="margin-bottom:12px;">
+      以下の判断で推奨案を選定しています。product-manager のレビュー・ユーザー承認後に要件書として確定してください。
+    </p>
+    <ul>
+      <li><strong>アイコン案 A（ゴミ箱・赤背景）を推奨</strong> — 削除の意味が最も明確で、危険なアクションであることを赤色で示す。常時表示でも誤操作を防ぐ心理的ブレーキになる。</li>
+      <li><strong>配置案 1（右端横並び）を推奨</strong> — 実装コストが最も低く（既存 Row に末尾追加）、削除が常に最右端で位置が一定。</li>
+      <li><strong>アイコンサイズ</strong> — Markカード 28×28px、Linkカード 22×22px。flutter_slidable 廃止後のカード高さ変更は不要。</li>
+      <li><strong>削除確認ダイアログ</strong> — 常時表示になるため誤タップリスクが上がる。既存の削除フローに確認ダイアログが実装済みかを architect と確認することを推奨。</li>
+      <li><strong>代替案の検討余地</strong> — 一覧がカードで埋まる場合に赤が多すぎると感じるならアイコン案 B（グレー）に変更可能。その場合は誤認リスクを補う UX（例: タップ時に赤くハイライト）の追加を検討すること。</li>
+    </ul>
+    <p style="margin-top:12px; font-size:12px; color:#92400E;">
+      参照デザインレポート: <code>docs/Design/draft/michi_info_delete_icon_design.html</code>
+    </p>
+  </div>
+</section>
+
+</main>
+</body>
+</html>
