@@ -27,8 +27,8 @@
 | T-211 | イベント削除UI変更 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-event_delete_ui_redesign.md |
 | T-212a | イベント削除UI変更 実装 | flutter-dev | `DONE` | | FS-event_delete_ui_redesign.md 参照 |
 | T-212b | イベント削除UI変更 テストコード実装 | tester | `DONE` | | TC-EDR-001〜006 実装済み |
-| T-213 | イベント削除UI変更 レビュー | reviewer | `IN_PROGRESS` | 2026-04-12_自走 | T-212a/b 完了後 |
-| T-214 | イベント削除UI変更 テスト実行 | tester | `BLOCKED` | | T-213 承認後 |
+| T-213 | イベント削除UI変更 レビュー | reviewer | `DONE` | | 合格 |
+| T-214 | イベント削除UI変更 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | T-213 承認後 |
 
 ---
 
@@ -41,8 +41,8 @@
 | T-222 | BasicInfo参照タップ編集 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-basic_info_tap_to_edit.md |
 | T-222a | BasicInfo参照タップ編集 実装 | flutter-dev | `DONE` | | FS-basic_info_tap_to_edit.md 参照 |
 | T-222b | BasicInfo参照タップ編集 テストコード実装 | tester | `DONE` | | TC-BTE-001〜007 実装済み（integration_test/basic_info_tap_to_edit_test.dart） |
-| T-223 | BasicInfo参照タップ編集 レビュー | reviewer | `IN_PROGRESS` | 2026-04-12_自走 | T-222a/b 完了後 |
-| T-224 | BasicInfo参照タップ編集 テスト実行 | tester | `BLOCKED` | | T-223 承認後 |
+| T-223 | BasicInfo参照タップ編集 レビュー | reviewer | `DONE` | | 合格 |
+| T-224 | BasicInfo参照タップ編集 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | T-223 承認後 |
 
 ---
 
@@ -68,8 +68,8 @@
 | T-241 | PaymentInfo削除UI変更 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_info_delete_icon.md |
 | T-242a | PaymentInfo削除UI変更 実装 | flutter-dev | `DONE` | | FS-payment_info_delete_icon.md 参照 |
 | T-242b | PaymentInfo削除UI変更 テストコード実装 | tester | `DONE` | | TC-PID2-001〜003 実装済み |
-| T-243 | PaymentInfo削除UI変更 レビュー | reviewer | `IN_PROGRESS` | 2026-04-12_自走 | T-242a/b 完了後 |
-| T-244 | PaymentInfo削除UI変更 テスト実行 | tester | `BLOCKED` | | T-243 承認後 |
+| T-243 | PaymentInfo削除UI変更 レビュー | reviewer | `DONE` | | 合格 |
+| T-244 | PaymentInfo削除UI変更 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | T-243 承認後 |
 
 ---
 
@@ -105,8 +105,8 @@
 | T-265 | 概要タブセクション名 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-overview_tab_section_labels.md |
 | T-266a | 概要タブセクション名 実装 | flutter-dev | `DONE` | | FS-overview_tab_section_labels.md 参照 |
 | T-266b | 概要タブセクション名 テストコード実装 | tester | `DONE` | | TC-OSL-001〜002 実装済み |
-| T-267 | 概要タブセクション名 レビュー | reviewer | `IN_PROGRESS` | 2026-04-12_自走 | T-266a/b 完了後 |
-| T-268 | 概要タブセクション名 テスト実行 | tester | `BLOCKED` | | T-267 承認後 |
+| T-267 | 概要タブセクション名 レビュー | reviewer | `DONE` | | 合格 |
+| T-268 | 概要タブセクション名 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | T-267 承認後 |
 
 ---
 
