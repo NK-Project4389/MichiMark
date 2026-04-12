@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import '../../../domain/topic/topic_theme_color.dart';
 import '../../../features/event_detail/projection/payment_info_projection.dart';
@@ -92,39 +91,16 @@ class _PaymentInfoList extends StatelessWidget {
           Expanded(
             child: projection.items.isEmpty
                 ? const Center(child: Text('支払情報がありません'))
-                : SlidableAutoCloseBehavior(
-                    child: ListView.separated(
+                : ListView.separated(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     itemCount: projection.items.length,
                     separatorBuilder: (context, _) =>
                         const Divider(height: 1, indent: 56),
                     itemBuilder: (context, index) {
                       final item = projection.items[index];
-                      return Slidable(
-                        key: Key('payment_info_tile_slidable_${item.id}'),
-                        endActionPane: ActionPane(
-                          motion: const DrawerMotion(),
-                          extentRatio: 0.25,
-                          children: [
-                            SlidableAction(
-                              key: Key(
-                                  'payment_info_tile_delete_action_${item.id}'),
-                              onPressed: (_) => context
-                                  .read<PaymentInfoBloc>()
-                                  .add(PaymentInfoPaymentDeleteRequested(
-                                      item.id)),
-                              backgroundColor: Colors.red,
-                              foregroundColor: Colors.white,
-                              icon: Icons.delete,
-                              label: '削除',
-                            ),
-                          ],
-                        ),
-                        child: _PaymentListTile(item: item),
-                      );
+                      return _PaymentListTile(item: item);
                     },
                   ),
-                ),
           ),
           const Divider(height: 1),
           Padding(
@@ -160,6 +136,8 @@ class _PaymentListTile extends StatelessWidget {
 
   static const _payerChipColor = Color(0xFF2B7A9B);
   static const _splitChipColor = Color(0xFF2E9E6B);
+  static const _deleteIconColor = Color(0xFFDC2626);
+  static const _deleteBackgroundColor = Color(0xFFFEE2E2);
 
   const _PaymentListTile({required this.item});
 
@@ -169,85 +147,117 @@ class _PaymentListTile extends StatelessWidget {
     final memo = item.memo;
     final hasMemo = memo != null && memo.isNotEmpty;
 
-    return InkWell(
-      onTap: () => context
-          .read<PaymentInfoBloc>()
-          .add(PaymentInfoPaymentTapped(item.id)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 2, right: 16),
-              child: Icon(Icons.payment),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 行1: 金額
-                  Text(
-                    item.displayAmount,
-                    style: textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: () => context
+                  .read<PaymentInfoBloc>()
+                  .add(PaymentInfoPaymentTapped(item.id)),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 2, right: 16),
+                      child: Icon(Icons.payment),
                     ),
-                  ),
-                  // 行2: メモ（存在する場合のみ・italic で表示）
-                  if (hasMemo) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      memo,
-                      style: textTheme.bodyLarge?.copyWith(
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 4),
-                  // 行3: 支払者チップ
-                  Row(
-                    children: [
-                      Text('支払', style: textTheme.bodySmall),
-                      const SizedBox(width: 6),
-                      _MemberChip(
-                        name: item.payer.memberName,
-                        backgroundColor: _payerChipColor,
-                      ),
-                    ],
-                  ),
-                  // 行4: 割り勘メンバー（存在する場合のみ）
-                  if (item.splitMembers.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 3),
-                          child: Text('割り勘', style: textTheme.bodySmall),
-                        ),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Wrap(
-                            spacing: 4,
-                            runSpacing: 4,
-                            children: item.splitMembers
-                                .map(
-                                  (m) => _MemberChip(
-                                    name: m.memberName,
-                                    backgroundColor: _splitChipColor,
-                                  ),
-                                )
-                                .toList(),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 行1: 金額
+                          Text(
+                            item.displayAmount,
+                            style: textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
+                          // 行2: メモ（存在する場合のみ・italic で表示）
+                          if (hasMemo) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              memo,
+                              style: textTheme.bodyLarge?.copyWith(
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ],
+                          const SizedBox(height: 4),
+                          // 行3: 支払者チップ
+                          Row(
+                            children: [
+                              Text('支払', style: textTheme.bodySmall),
+                              const SizedBox(width: 6),
+                              _MemberChip(
+                                name: item.payer.memberName,
+                                backgroundColor: _payerChipColor,
+                              ),
+                            ],
+                          ),
+                          // 行4: 割り勘メンバー（存在する場合のみ）
+                          if (item.splitMembers.isNotEmpty) ...[
+                            const SizedBox(height: 4),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 3),
+                                  child:
+                                      Text('割り勘', style: textTheme.bodySmall),
+                                ),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Wrap(
+                                    spacing: 4,
+                                    runSpacing: 4,
+                                    children: item.splitMembers
+                                        .map(
+                                          (m) => _MemberChip(
+                                            name: m.memberName,
+                                            backgroundColor: _splitChipColor,
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
                   ],
-                ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+          // 削除アイコンボタン（常時表示）
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: GestureDetector(
+              key: Key('paymentInfo_button_delete_${item.id}'),
+              onTap: () => context
+                  .read<PaymentInfoBloc>()
+                  .add(PaymentInfoPaymentDeleteRequested(item.id)),
+              child: Container(
+                width: 44,
+                decoration: BoxDecoration(
+                  color: _deleteBackgroundColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.delete,
+                  color: _deleteIconColor,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
