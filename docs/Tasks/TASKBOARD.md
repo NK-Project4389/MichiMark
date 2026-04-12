@@ -107,7 +107,7 @@
 | T-266a | 概要タブセクション名 実装 | flutter-dev | `DONE` | | FS-overview_tab_section_labels.md 参照 |
 | T-266b | 概要タブセクション名 テストコード実装 | tester | `DONE` | | TC-OSL-001〜002 実装済み |
 | T-267 | 概要タブセクション名 レビュー | reviewer | `DONE` | | 合格 |
-| T-268 | 概要タブセクション名 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | 競合解消後再実行 |
+| T-268 | 概要タブセクション名 テスト実行 | tester | `DONE` | | 4PASS/0FAIL/0SKIP（TC-OSL-001〜002 全件PASS） |
 
 ---
 
