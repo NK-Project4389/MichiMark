@@ -389,6 +389,22 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
                 .add(const EventDetailDismissPressed());
           },
         ),
+        // ミチタブが非アクティブになったとき追加モードをリセットする
+        BlocListener<EventDetailBloc, EventDetailState>(
+          listenWhen: (prev, curr) {
+            if (prev is! EventDetailLoaded || curr is! EventDetailLoaded) {
+              return false;
+            }
+            return prev.draft.selectedTab == EventDetailTab.michiInfo &&
+                curr.draft.selectedTab != EventDetailTab.michiInfo;
+          },
+          listener: (context, state) {
+            if (!context.mounted) return;
+            context
+                .read<MichiInfoBloc>()
+                .add(const MichiInfoTabDeactivated());
+          },
+        ),
         // MichiInfoReloadedDelegate受信後にcachedEventを更新する（給油情報など集計反映のため）
         BlocListener<MichiInfoBloc, MichiInfoState>(
           listenWhen: (prev, curr) =>

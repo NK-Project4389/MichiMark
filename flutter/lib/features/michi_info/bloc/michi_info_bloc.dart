@@ -44,6 +44,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     on<MichiInfoInsertLinkPressed>(_onInsertLinkPressed);
     on<MichiInfoInsertPointCancelled>(_onInsertPointCancelled);
     on<MichiInfoCardDeleteRequested>(_onCardDeleteRequested);
+    on<MichiInfoTabDeactivated>(_onTabDeactivated);
   }
 
   final EventRepository _eventRepository;
@@ -504,6 +505,20 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       } on Exception {
         // サイレント失敗（既存の projection を維持）
       }
+    }
+  }
+
+  /// ミチタブ非アクティブ: 挿入モードをリセット
+  Future<void> _onTabDeactivated(
+    MichiInfoTabDeactivated event,
+    Emitter<MichiInfoState> emit,
+  ) async {
+    if (state case MichiInfoLoaded current) {
+      if (!current.isInsertMode && current.pendingInsertAfterSeq == null) return;
+      emit(current.copyWith(
+        isInsertMode: false,
+        pendingInsertAfterSeq: null,
+      ));
     }
   }
 

@@ -183,3 +183,12 @@ class MichiInfoCardDeleteRequested extends MichiInfoEvent {
   @override
   List<Object?> get props => [markLinkId];
 }
+
+/// ミチタブが非アクティブになったとき（他のタブに切り替わった）
+/// 追加モード（挿入モード）をリセットするために使用する
+class MichiInfoTabDeactivated extends MichiInfoEvent {
+  const MichiInfoTabDeactivated();
+
+  @override
+  List<Object?> get props => [];
+}

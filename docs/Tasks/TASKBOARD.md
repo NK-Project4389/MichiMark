@@ -128,8 +128,8 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-201 | Phase B Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-event_detail_inline_selection_ui_phaseB.md |
-| T-202a | Phase B MarkDetail・LinkDetail・PaymentDetail 実装 | flutter-dev | `BLOCKED` | | T-201 完了待ち |
-| T-202b | Phase B テストコード実装 | tester | `BLOCKED` | | T-201 完了待ち |
+| T-202a | Phase B MarkDetail・LinkDetail・PaymentDetail 実装 | flutter-dev | `TODO` | | FS-event_detail_inline_selection_ui_phaseB.md 参照 |
+| T-202b | Phase B テストコード実装 | tester | `TODO` | | FS-event_detail_inline_selection_ui_phaseB.md 参照 |
 | T-203 | Phase B レビュー | reviewer | `BLOCKED` | | T-202a/b 完了後に着手 |
 | T-204 | Phase B テスト実行 | tester | `BLOCKED` | | T-203 承認後に着手 |
 
@@ -139,10 +139,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-205 | タブ切り替え追加モード終了 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_B5-impl | 要件: docs/Requirements/REQ-DRAFT-michi_info_tab_switch_add_mode.md |
-| T-205b | タブ切り替え追加モード終了 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_B5-test | 要件: docs/Requirements/REQ-DRAFT-michi_info_tab_switch_add_mode.md |
-| T-206 | タブ切り替え追加モード終了 レビュー | reviewer | `BLOCKED` | | T-205/205b 完了後 |
-| T-207 | タブ切り替え追加モード終了 テスト実行 | tester | `BLOCKED` | | T-206 承認後 |
+| T-205 | タブ切り替え追加モード終了 実装 | flutter-dev | `DONE` | | MichiInfoTabDeactivated イベント追加・_onTabDeactivated ハンドラ実装 |
+| T-205b | タブ切り替え追加モード終了 テストコード実装 | tester | `DONE` | | TC-B5-001〜002 実装済み |
+| T-206 | タブ切り替え追加モード終了 レビュー | reviewer | `DONE` | | 承認・違反なし |
+| T-207 | タブ切り替え追加モード終了 テスト実行 | tester | `DONE` | | 2PASS/0FAIL/0SKIP |
 
 ---
 
