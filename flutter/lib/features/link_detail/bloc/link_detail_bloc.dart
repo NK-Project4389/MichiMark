@@ -25,8 +25,7 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
     on<LinkDetailIsFuelToggled>(_onIsFuelToggled);
     on<LinkDetailFuelFieldsChanged>(_onFuelFieldsChanged);
     on<LinkDetailTopicConfigUpdated>(_onTopicConfigUpdated);
-    on<LinkDetailEditGasPayerPressed>(_onEditGasPayerPressed);
-    on<LinkDetailGasPayerSelected>(_onGasPayerSelected);
+    on<LinkDetailGasPayerChipToggled>(_onGasPayerChipToggled);
   }
 
   final EventRepository _eventRepository;
@@ -310,27 +309,16 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
     }
   }
 
-  Future<void> _onEditGasPayerPressed(
-    LinkDetailEditGasPayerPressed event,
+  Future<void> _onGasPayerChipToggled(
+    LinkDetailGasPayerChipToggled event,
     Emitter<LinkDetailState> emit,
   ) async {
     if (state is LinkDetailLoaded) {
       final current = state as LinkDetailLoaded;
+      final isSameMember = current.draft.selectedGasPayer?.id == event.member.id;
+      final newGasPayer = isSameMember ? null : event.member;
       emit(current.copyWith(
-        delegate: const LinkDetailOpenGasPayerSelectionDelegate(),
-      ));
-    }
-  }
-
-  Future<void> _onGasPayerSelected(
-    LinkDetailGasPayerSelected event,
-    Emitter<LinkDetailState> emit,
-  ) async {
-    if (state is LinkDetailLoaded) {
-      final current = state as LinkDetailLoaded;
-      final gasPayer = event.members.firstOrNull;
-      emit(current.copyWith(
-        draft: current.draft.copyWith(selectedGasPayer: gasPayer),
+        draft: current.draft.copyWith(selectedGasPayer: newGasPayer),
       ));
     }
   }

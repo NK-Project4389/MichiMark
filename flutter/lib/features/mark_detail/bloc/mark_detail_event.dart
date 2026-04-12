@@ -151,21 +151,13 @@ class MarkDetailTopicConfigUpdated extends MarkDetailEvent {
   List<Object?> get props => [config];
 }
 
-/// ガソリン支払者の選択ボタンが押されたとき
-class MarkDetailEditGasPayerPressed extends MarkDetailEvent {
-  const MarkDetailEditGasPayerPressed();
+/// ガソリン支払者チップがタップされたとき（インライン選択）
+class MarkDetailGasPayerChipToggled extends MarkDetailEvent {
+  final MemberDomain member;
+  const MarkDetailGasPayerChipToggled(this.member);
 
   @override
-  List<Object?> get props => [];
-}
-
-/// 選択画面からガソリン支払者が返却されたとき
-class MarkDetailGasPayerSelected extends MarkDetailEvent {
-  final List<MemberDomain> members;
-  const MarkDetailGasPayerSelected(this.members);
-
-  @override
-  List<Object?> get props => [members];
+  List<Object?> get props => [member];
 }
 
 /// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき

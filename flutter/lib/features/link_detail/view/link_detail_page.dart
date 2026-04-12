@@ -77,24 +77,6 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
               .add(LinkDetailActionsSelected(selected));
         }
 
-      case LinkDetailOpenGasPayerSelectionDelegate():
-        final result = await context.push<SelectionResult>(
-          '/selection',
-          extra: SelectionArgs(
-            type: SelectionType.gasPayMember,
-            selectedIds: draft.selectedGasPayer != null
-                ? {draft.selectedGasPayer!.id}
-                : {},
-            candidateMembers: availableMembers.isNotEmpty ? availableMembers : null,
-          ),
-        );
-        if (!context.mounted) return;
-        if (result case MembersSelectionResult(:final selected)) {
-          context
-              .read<LinkDetailBloc>()
-              .add(LinkDetailGasPayerSelected(selected));
-        }
-
       case LinkDetailSavedDelegate():
         if (!context.mounted) return;
         context.pop();
@@ -188,7 +170,8 @@ class _LinkDetailForm extends StatelessWidget {
             pricePerGasInput: draft.pricePerGasInput,
             gasQuantityInput: draft.gasQuantityInput,
             gasPriceInput: draft.gasPriceInput,
-            selectedGasPayerName: draft.selectedGasPayer?.memberName,
+            availableMembers: availableMembers,
+            selectedGasPayer: draft.selectedGasPayer,
           ),
         ],
         const SizedBox(height: 24),
@@ -360,14 +343,16 @@ class _FuelRow extends StatelessWidget {
   final String pricePerGasInput;
   final String gasQuantityInput;
   final String gasPriceInput;
-  final String? selectedGasPayerName;
+  final List<MemberDomain> availableMembers;
+  final MemberDomain? selectedGasPayer;
 
   const _FuelRow({
     required this.isFuel,
     required this.pricePerGasInput,
     required this.gasQuantityInput,
     required this.gasPriceInput,
-    this.selectedGasPayerName,
+    required this.availableMembers,
+    this.selectedGasPayer,
   });
 
   @override
@@ -407,15 +392,56 @@ class _FuelRow extends StatelessWidget {
             ),
           ),
           const Divider(height: 1),
-          _SelectionRow(
-            label: 'ガソリン支払者',
-            value: selectedGasPayerName ?? '',
-            onEditPressed: () => context
-                .read<LinkDetailBloc>()
-                .add(const LinkDetailEditGasPayerPressed()),
+          _GasPayerChipSection(
+            availableMembers: availableMembers,
+            selectedGasPayer: selectedGasPayer,
           ),
         ],
       ],
+    );
+  }
+}
+
+// ── ガソリン支払者チップセクション（インライン選択・single） ──────────────────
+
+class _GasPayerChipSection extends StatelessWidget {
+  final List<MemberDomain> availableMembers;
+  final MemberDomain? selectedGasPayer;
+
+  const _GasPayerChipSection({
+    required this.availableMembers,
+    this.selectedGasPayer,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('ガソリン支払者', style: labelStyle),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: availableMembers.map((member) {
+              final isSelected = selectedGasPayer?.id == member.id;
+              return FilterChip(
+                key: Key('linkDetail_chip_gasPayer_${member.id}'),
+                label: Text(member.memberName),
+                selected: isSelected,
+                onSelected: (_) => context
+                    .read<LinkDetailBloc>()
+                    .add(LinkDetailGasPayerChipToggled(member)),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -464,48 +490,3 @@ class _MemberChipSection extends StatelessWidget {
   }
 }
 
-class _SelectionRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final VoidCallback onEditPressed;
-
-  const _SelectionRow({
-    required this.label,
-    required this.value,
-    required this.onEditPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onEditPressed,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 120,
-              child: Text(
-                label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  value,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
-            ),
-            const Icon(Icons.chevron_right),
-          ],
-        ),
-      ),
-    );
-  }
-}

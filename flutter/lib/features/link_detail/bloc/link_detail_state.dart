@@ -22,13 +22,6 @@ class LinkDetailOpenActionsSelectionDelegate extends LinkDetailDelegate {
   List<Object?> get props => [];
 }
 
-class LinkDetailOpenGasPayerSelectionDelegate extends LinkDetailDelegate {
-  const LinkDetailOpenGasPayerSelectionDelegate();
-
-  @override
-  List<Object?> get props => [];
-}
-
 class LinkDetailSavedDelegate extends LinkDetailDelegate {
   final String markLinkId;
   final LinkDetailDraft draft;

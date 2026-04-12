@@ -29,8 +29,7 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
     on<MarkDetailIsFuelToggled>(_onIsFuelToggled);
     on<MarkDetailFuelFieldsChanged>(_onFuelFieldsChanged);
     on<MarkDetailTopicConfigUpdated>(_onTopicConfigUpdated);
-    on<MarkDetailEditGasPayerPressed>(_onEditGasPayerPressed);
-    on<MarkDetailGasPayerSelected>(_onGasPayerSelected);
+    on<MarkDetailGasPayerChipToggled>(_onGasPayerChipToggled);
   }
 
   final EventRepository _eventRepository;
@@ -344,27 +343,16 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
     }
   }
 
-  Future<void> _onEditGasPayerPressed(
-    MarkDetailEditGasPayerPressed event,
+  Future<void> _onGasPayerChipToggled(
+    MarkDetailGasPayerChipToggled event,
     Emitter<MarkDetailState> emit,
   ) async {
     if (state is MarkDetailLoaded) {
       final current = state as MarkDetailLoaded;
+      final isSameMember = current.draft.selectedGasPayer?.id == event.member.id;
+      final newGasPayer = isSameMember ? null : event.member;
       emit(current.copyWith(
-        delegate: const MarkDetailOpenGasPayerSelectionDelegate(),
-      ));
-    }
-  }
-
-  Future<void> _onGasPayerSelected(
-    MarkDetailGasPayerSelected event,
-    Emitter<MarkDetailState> emit,
-  ) async {
-    if (state is MarkDetailLoaded) {
-      final current = state as MarkDetailLoaded;
-      final gasPayer = event.members.firstOrNull;
-      emit(current.copyWith(
-        draft: current.draft.copyWith(selectedGasPayer: gasPayer),
+        draft: current.draft.copyWith(selectedGasPayer: newGasPayer),
       ));
     }
   }

@@ -122,21 +122,13 @@ class LinkDetailTopicConfigUpdated extends LinkDetailEvent {
   List<Object?> get props => [config];
 }
 
-/// ガソリン支払者の選択ボタンが押されたとき
-class LinkDetailEditGasPayerPressed extends LinkDetailEvent {
-  const LinkDetailEditGasPayerPressed();
+/// ガソリン支払者チップがタップされたとき（インライン選択）
+class LinkDetailGasPayerChipToggled extends LinkDetailEvent {
+  final MemberDomain member;
+  const LinkDetailGasPayerChipToggled(this.member);
 
   @override
-  List<Object?> get props => [];
-}
-
-/// 選択画面からガソリン支払者が返却されたとき
-class LinkDetailGasPayerSelected extends LinkDetailEvent {
-  final List<MemberDomain> members;
-  const LinkDetailGasPayerSelected(this.members);
-
-  @override
-  List<Object?> get props => [members];
+  List<Object?> get props => [member];
 }
 
 /// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき
