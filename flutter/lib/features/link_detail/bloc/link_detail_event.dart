@@ -62,21 +62,13 @@ class LinkDetailDistanceChanged extends LinkDetailEvent {
   List<Object?> get props => [input];
 }
 
-/// メンバー編集ボタンが押されたとき
-class LinkDetailEditMembersPressed extends LinkDetailEvent {
-  const LinkDetailEditMembersPressed();
+/// メンバーチップがタップされたとき（インライン選択）
+class LinkDetailMemberChipToggled extends LinkDetailEvent {
+  final MemberDomain member;
+  const LinkDetailMemberChipToggled(this.member);
 
   @override
-  List<Object?> get props => [];
-}
-
-/// 選択画面からメンバーが返却されたとき
-class LinkDetailMembersSelected extends LinkDetailEvent {
-  final List<MemberDomain> members;
-  const LinkDetailMembersSelected(this.members);
-
-  @override
-  List<Object?> get props => [members];
+  List<Object?> get props => [member];
 }
 
 /// アクション編集ボタンが押されたとき

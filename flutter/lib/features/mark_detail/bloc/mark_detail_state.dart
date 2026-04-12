@@ -15,13 +15,6 @@ class MarkDetailDismissDelegate extends MarkDetailDelegate {
   List<Object?> get props => [];
 }
 
-class MarkDetailOpenMembersSelectionDelegate extends MarkDetailDelegate {
-  const MarkDetailOpenMembersSelectionDelegate();
-
-  @override
-  List<Object?> get props => [];
-}
-
 class MarkDetailOpenActionsSelectionDelegate extends MarkDetailDelegate {
   const MarkDetailOpenActionsSelectionDelegate();
 

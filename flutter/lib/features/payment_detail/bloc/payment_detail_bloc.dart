@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/transaction/payment/payment_domain.dart';
 import '../../../repository/event_repository.dart';
 import '../draft/payment_detail_draft.dart';
@@ -13,10 +14,8 @@ class PaymentDetailBloc
         super(const PaymentDetailLoading()) {
     on<PaymentDetailStarted>(_onStarted);
     on<PaymentDetailAmountChanged>(_onAmountChanged);
-    on<PaymentDetailEditMemberPressed>(_onEditMemberPressed);
-    on<PaymentDetailMemberSelected>(_onMemberSelected);
-    on<PaymentDetailEditSplitMembersPressed>(_onEditSplitMembersPressed);
-    on<PaymentDetailSplitMembersSelected>(_onSplitMembersSelected);
+    on<PaymentDetailPayMemberChipToggled>(_onPayMemberChipToggled);
+    on<PaymentDetailSplitMemberChipToggled>(_onSplitMemberChipToggled);
     on<PaymentDetailMemoChanged>(_onMemoChanged);
     on<PaymentDetailSaveTapped>(_onSaveTapped);
     on<PaymentDetailCancelTapped>(_onCancelTapped);
@@ -78,50 +77,58 @@ class PaymentDetailBloc
     }
   }
 
-  Future<void> _onEditMemberPressed(
-    PaymentDetailEditMemberPressed event,
+  Future<void> _onPayMemberChipToggled(
+    PaymentDetailPayMemberChipToggled event,
     Emitter<PaymentDetailState> emit,
   ) async {
     if (state is PaymentDetailLoaded) {
       final current = state as PaymentDetailLoaded;
-      emit(current.copyWith(
-        delegate: const PaymentDetailOpenMemberSelectionDelegate(),
-      ));
+      final draft = current.draft;
+      final MemberDomain? newPayMember;
+      if (draft.paymentMember?.id == event.member.id) {
+        // 同一メンバーをタップ → 選択解除
+        newPayMember = null;
+      } else {
+        // 別メンバーをタップ → 選択切り替え
+        newPayMember = event.member;
+      }
+      // 新支払者がsplitMembersに含まれていない場合は追加
+      List<MemberDomain> splitMembers = List.from(draft.splitMembers);
+      final payMember = newPayMember;
+      if (payMember != null && !splitMembers.any((m) => m.id == payMember.id)) {
+        splitMembers.add(payMember);
+      }
+      // paymentMemberをnullにできるよう直接コンストラクタで新しいDraftを生成
+      final newDraft = PaymentDetailDraft(
+        id: draft.id,
+        paymentSeq: draft.paymentSeq,
+        paymentAmount: draft.paymentAmount,
+        paymentMember: newPayMember,
+        splitMembers: splitMembers,
+        paymentMemo: draft.paymentMemo,
+      );
+      emit(current.copyWith(draft: newDraft));
     }
   }
 
-  Future<void> _onMemberSelected(
-    PaymentDetailMemberSelected event,
+  Future<void> _onSplitMemberChipToggled(
+    PaymentDetailSplitMemberChipToggled event,
     Emitter<PaymentDetailState> emit,
   ) async {
     if (state is PaymentDetailLoaded) {
       final current = state as PaymentDetailLoaded;
+      final draft = current.draft;
+      // 支払者は常にON固定（無視）
+      if (draft.paymentMember?.id == event.member.id) return;
+      final splitMembers = List<MemberDomain>.from(draft.splitMembers);
+      final alreadySelected = splitMembers.any((m) => m.id == event.member.id);
+      if (alreadySelected) {
+        splitMembers.removeWhere((m) => m.id == event.member.id);
+      } else {
+        splitMembers.add(event.member);
+      }
       emit(current.copyWith(
-        draft: current.draft.copyWith(paymentMember: event.member),
-      ));
-    }
-  }
-
-  Future<void> _onEditSplitMembersPressed(
-    PaymentDetailEditSplitMembersPressed event,
-    Emitter<PaymentDetailState> emit,
-  ) async {
-    if (state is PaymentDetailLoaded) {
-      final current = state as PaymentDetailLoaded;
-      emit(current.copyWith(
-        delegate: const PaymentDetailOpenSplitMembersSelectionDelegate(),
-      ));
-    }
-  }
-
-  Future<void> _onSplitMembersSelected(
-    PaymentDetailSplitMembersSelected event,
-    Emitter<PaymentDetailState> emit,
-  ) async {
-    if (state is PaymentDetailLoaded) {
-      final current = state as PaymentDetailLoaded;
-      emit(current.copyWith(
-        draft: current.draft.copyWith(splitMembers: event.members),
+        draft: draft.copyWith(splitMembers: splitMembers),
       ));
     }
   }

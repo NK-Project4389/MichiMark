@@ -27,38 +27,22 @@ class PaymentDetailAmountChanged extends PaymentDetailEvent {
   List<Object?> get props => [value];
 }
 
-/// 支払者選択ボタンが押されたとき
-class PaymentDetailEditMemberPressed extends PaymentDetailEvent {
-  const PaymentDetailEditMemberPressed();
-
-  @override
-  List<Object?> get props => [];
-}
-
-/// 選択画面から支払者が返却されたとき
-class PaymentDetailMemberSelected extends PaymentDetailEvent {
+/// 支払者チップがタップされたとき（インライン選択・single）
+class PaymentDetailPayMemberChipToggled extends PaymentDetailEvent {
   final MemberDomain member;
-  const PaymentDetailMemberSelected(this.member);
+  const PaymentDetailPayMemberChipToggled(this.member);
 
   @override
   List<Object?> get props => [member];
 }
 
-/// 割り勘メンバー選択ボタンが押されたとき
-class PaymentDetailEditSplitMembersPressed extends PaymentDetailEvent {
-  const PaymentDetailEditSplitMembersPressed();
+/// 割り勘メンバーチップがタップされたとき（インライン選択・multiple、支払者は常にON固定）
+class PaymentDetailSplitMemberChipToggled extends PaymentDetailEvent {
+  final MemberDomain member;
+  const PaymentDetailSplitMemberChipToggled(this.member);
 
   @override
-  List<Object?> get props => [];
-}
-
-/// 選択画面から割り勘メンバーが返却されたとき
-class PaymentDetailSplitMembersSelected extends PaymentDetailEvent {
-  final List<MemberDomain> members;
-  const PaymentDetailSplitMembersSelected(this.members);
-
-  @override
-  List<Object?> get props => [members];
+  List<Object?> get props => [member];
 }
 
 /// メモが変更されたとき

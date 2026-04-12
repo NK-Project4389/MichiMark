@@ -15,13 +15,6 @@ class LinkDetailDismissDelegate extends LinkDetailDelegate {
   List<Object?> get props => [];
 }
 
-class LinkDetailOpenMembersSelectionDelegate extends LinkDetailDelegate {
-  const LinkDetailOpenMembersSelectionDelegate();
-
-  @override
-  List<Object?> get props => [];
-}
-
 class LinkDetailOpenActionsSelectionDelegate extends LinkDetailDelegate {
   const LinkDetailOpenActionsSelectionDelegate();
 

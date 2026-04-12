@@ -30,21 +30,6 @@ class PaymentDetailDismissDelegate extends PaymentDetailDelegate {
   List<Object?> get props => [];
 }
 
-class PaymentDetailOpenMemberSelectionDelegate extends PaymentDetailDelegate {
-  const PaymentDetailOpenMemberSelectionDelegate();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class PaymentDetailOpenSplitMembersSelectionDelegate
-    extends PaymentDetailDelegate {
-  const PaymentDetailOpenSplitMembersSelectionDelegate();
-
-  @override
-  List<Object?> get props => [];
-}
-
 // ---------------------------------------------------------------------------
 
 sealed class PaymentDetailState extends Equatable {

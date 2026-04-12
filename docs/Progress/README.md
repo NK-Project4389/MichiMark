@@ -102,3 +102,4 @@
 | [2026-04-12_chore__タスクボード追加・要件書下書き作成.md](./2026-04-12_chore__タスクボード追加・要件書下書き作成.md) | B-5/UI-1〜5/REL-1 タスクボード追加・要件書下書き7件作成 |
 | [2026-04-12_feat__R2-PhaseA-BasicInfo-インライン選択UI完了.md](./2026-04-12_feat__R2-PhaseA-BasicInfo-インライン選択UI完了.md) | R-2 Phase A BasicInfo インライン選択UI完了（TC-BII 12PASS/4SKIP） |
 | [2026-04-12_feat__T201-PhaseB-Spec_B5-タブ切替追加モード修正.md](./2026-04-12_feat__T201-PhaseB-Spec_B5-タブ切替追加モード修正.md) | T-201 Phase B Spec作成・B-5 タブ切替追加モード修正（2PASS/0FAIL） |
+| [2026-04-12_feat__R2-PhaseB-Detail画面メンバー選択インライン化.md](./2026-04-12_feat__R2-PhaseB-Detail画面メンバー選択インライン化.md) | R-2 Phase B MarkDetail・LinkDetail・PaymentDetail メンバー選択インライン化（T-202a完了） |

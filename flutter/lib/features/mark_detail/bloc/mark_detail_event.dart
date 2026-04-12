@@ -82,21 +82,13 @@ class MarkDetailDateChanged extends MarkDetailEvent {
   List<Object?> get props => [date];
 }
 
-/// メンバー編集ボタンが押されたとき
-class MarkDetailEditMembersPressed extends MarkDetailEvent {
-  const MarkDetailEditMembersPressed();
+/// メンバーチップがタップされたとき（インライン選択）
+class MarkDetailMemberChipToggled extends MarkDetailEvent {
+  final MemberDomain member;
+  const MarkDetailMemberChipToggled(this.member);
 
   @override
-  List<Object?> get props => [];
-}
-
-/// 選択画面からメンバーが返却されたとき
-class MarkDetailMembersSelected extends MarkDetailEvent {
-  final List<MemberDomain> members;
-  const MarkDetailMembersSelected(this.members);
-
-  @override
-  List<Object?> get props => [members];
+  List<Object?> get props => [member];
 }
 
 /// 累積メーター入力が変更されたとき

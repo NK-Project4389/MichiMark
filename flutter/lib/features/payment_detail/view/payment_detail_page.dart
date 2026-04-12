@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../domain/master/member/member_domain.dart';
-import '../../../features/selection/selection_args.dart';
-import '../../../features/selection/selection_result.dart';
 import '../../../widgets/numeric_input_row.dart';
 import '../bloc/payment_detail_bloc.dart';
 import '../bloc/payment_detail_event.dart';
@@ -61,45 +59,6 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message)),
         );
-
-      case PaymentDetailOpenMemberSelectionDelegate():
-        final result = await context.push<SelectionResult>(
-          '/selection',
-          extra: SelectionArgs(
-            type: SelectionType.payMember,
-            selectedIds: draft.paymentMember != null
-                ? {draft.paymentMember!.id}
-                : const {},
-            candidateMembers: availableMembers.isEmpty ? null : availableMembers,
-          ),
-        );
-        if (!context.mounted) return;
-        if (result case MembersSelectionResult(:final selected)) {
-          if (selected.isNotEmpty) {
-            context
-                .read<PaymentDetailBloc>()
-                .add(PaymentDetailMemberSelected(selected.first));
-          }
-        }
-
-      case PaymentDetailOpenSplitMembersSelectionDelegate():
-        final result = await context.push<SelectionResult>(
-          '/selection',
-          extra: SelectionArgs(
-            type: SelectionType.splitMembers,
-            selectedIds: draft.splitMembers.map((m) => m.id).toSet(),
-            fixedSelectedIds: draft.paymentMember != null
-                ? {draft.paymentMember!.id}
-                : const {},
-            candidateMembers: availableMembers.isEmpty ? null : availableMembers,
-          ),
-        );
-        if (!context.mounted) return;
-        if (result case MembersSelectionResult(:final selected)) {
-          context
-              .read<PaymentDetailBloc>()
-              .add(PaymentDetailSplitMembersSelected(selected));
-        }
     }
   }
 }
@@ -168,24 +127,15 @@ class _PaymentDetailForm extends StatelessWidget {
               .add(PaymentDetailAmountChanged(v)),
         ),
         const Divider(height: 1),
-        _SelectionRow(
-          label: '支払者',
-          value: draft.paymentMember?.memberName ?? '未選択',
-          enabled: availableMembers.isNotEmpty,
-          onEditPressed: () => context
-              .read<PaymentDetailBloc>()
-              .add(const PaymentDetailEditMemberPressed()),
+        _PayMemberChipSection(
+          availableMembers: availableMembers,
+          selectedPayMember: draft.paymentMember,
         ),
         const Divider(height: 1),
-        _SelectionRow(
-          label: '割り勘',
-          value: draft.splitMembers.isEmpty
-              ? '未選択'
-              : draft.splitMembers.map((m) => m.memberName).join('、'),
-          enabled: availableMembers.isNotEmpty,
-          onEditPressed: () => context
-              .read<PaymentDetailBloc>()
-              .add(const PaymentDetailEditSplitMembersPressed()),
+        _SplitMemberChipSection(
+          availableMembers: availableMembers,
+          splitMembers: draft.splitMembers,
+          paymentMember: draft.paymentMember,
         ),
         const Divider(height: 1),
         _MemoField(value: draft.paymentMemo),
@@ -262,52 +212,96 @@ class _MemoFieldState extends State<_MemoField> {
   }
 }
 
-class _SelectionRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final VoidCallback onEditPressed;
-  final bool enabled;
+// ── 支払者チップセクション（インライン選択・single） ───────────────────────
 
-  const _SelectionRow({
-    required this.label,
-    required this.value,
-    required this.onEditPressed,
-    this.enabled = true,
+class _PayMemberChipSection extends StatelessWidget {
+  final List<MemberDomain> availableMembers;
+  final MemberDomain? selectedPayMember;
+
+  const _PayMemberChipSection({
+    required this.availableMembers,
+    required this.selectedPayMember,
   });
 
   @override
   Widget build(BuildContext context) {
-    final disabledColor = Theme.of(context).colorScheme.onSurfaceVariant;
-    return InkWell(
-      onTap: enabled ? onEditPressed : null,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 120,
-              child: Text(
-                label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  value,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: enabled ? null : disabledColor,
-                      ),
-                ),
-              ),
-            ),
-            Icon(Icons.chevron_right, color: enabled ? null : disabledColor),
-          ],
-        ),
+    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('支払者', style: labelStyle),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: availableMembers.map((member) {
+              final isSelected = selectedPayMember?.id == member.id;
+              return FilterChip(
+                key: Key('paymentDetail_chip_payMember_${member.id}'),
+                label: Text(member.memberName),
+                selected: isSelected,
+                onSelected: (_) => context
+                    .read<PaymentDetailBloc>()
+                    .add(PaymentDetailPayMemberChipToggled(member)),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── 割り勘メンバーチップセクション（インライン選択・multiple、支払者常にON固定） ─
+
+class _SplitMemberChipSection extends StatelessWidget {
+  final List<MemberDomain> availableMembers;
+  final List<MemberDomain> splitMembers;
+  final MemberDomain? paymentMember;
+
+  const _SplitMemberChipSection({
+    required this.availableMembers,
+    required this.splitMembers,
+    required this.paymentMember,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('割り勘', style: labelStyle),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: availableMembers.map((member) {
+              final isPayMember = paymentMember?.id == member.id;
+              final isSelected =
+                  isPayMember || splitMembers.any((m) => m.id == member.id);
+              return FilterChip(
+                key: Key('paymentDetail_chip_splitMember_${member.id}'),
+                label: Text(member.memberName),
+                selected: isSelected,
+                // 支払者は常にON固定（非活性）
+                onSelected: isPayMember
+                    ? null
+                    : (_) => context
+                        .read<PaymentDetailBloc>()
+                        .add(PaymentDetailSplitMemberChipToggled(member)),
+              );
+            }).toList(),
+          ),
+        ],
       ),
     );
   }

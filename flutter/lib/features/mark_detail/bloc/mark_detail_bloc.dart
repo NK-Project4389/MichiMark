@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/transaction/mark_link/mark_link_domain.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../repository/event_repository.dart';
@@ -19,8 +20,7 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
     on<MarkDetailDismissPressed>(_onDismissPressed);
     on<MarkDetailNameChanged>(_onNameChanged);
     on<MarkDetailDateChanged>(_onDateChanged);
-    on<MarkDetailEditMembersPressed>(_onEditMembersPressed);
-    on<MarkDetailMembersSelected>(_onMembersSelected);
+    on<MarkDetailMemberChipToggled>(_onMemberChipToggled);
     on<MarkDetailMeterValueChanged>(_onMeterValueChanged);
     on<MarkDetailEditActionsPressed>(_onEditActionsPressed);
     on<MarkDetailActionsSelected>(_onActionsSelected);
@@ -128,26 +128,21 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
     }
   }
 
-  Future<void> _onEditMembersPressed(
-    MarkDetailEditMembersPressed event,
+  Future<void> _onMemberChipToggled(
+    MarkDetailMemberChipToggled event,
     Emitter<MarkDetailState> emit,
   ) async {
     if (state is MarkDetailLoaded) {
       final current = state as MarkDetailLoaded;
+      final selectedMembers = List<MemberDomain>.from(current.draft.selectedMembers);
+      final alreadySelected = selectedMembers.any((m) => m.id == event.member.id);
+      if (alreadySelected) {
+        selectedMembers.removeWhere((m) => m.id == event.member.id);
+      } else {
+        selectedMembers.add(event.member);
+      }
       emit(current.copyWith(
-        delegate: const MarkDetailOpenMembersSelectionDelegate(),
-      ));
-    }
-  }
-
-  Future<void> _onMembersSelected(
-    MarkDetailMembersSelected event,
-    Emitter<MarkDetailState> emit,
-  ) async {
-    if (state is MarkDetailLoaded) {
-      final current = state as MarkDetailLoaded;
-      emit(current.copyWith(
-        draft: current.draft.copyWith(selectedMembers: event.members),
+        draft: current.draft.copyWith(selectedMembers: selectedMembers),
       ));
     }
   }

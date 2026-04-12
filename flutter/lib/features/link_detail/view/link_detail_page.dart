@@ -62,22 +62,6 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
         if (!context.mounted) return;
         context.pop();
 
-      case LinkDetailOpenMembersSelectionDelegate():
-        final result = await context.push<SelectionResult>(
-          '/selection',
-          extra: SelectionArgs(
-            type: SelectionType.linkMembers,
-            selectedIds: draft.selectedMembers.map((m) => m.id).toSet(),
-            candidateMembers: availableMembers.isNotEmpty ? availableMembers : null,
-          ),
-        );
-        if (!context.mounted) return;
-        if (result case MembersSelectionResult(:final selected)) {
-          context
-              .read<LinkDetailBloc>()
-              .add(LinkDetailMembersSelected(selected));
-        }
-
       case LinkDetailOpenActionsSelectionDelegate():
         final result = await context.push<SelectionResult>(
           '/selection',
@@ -196,15 +180,9 @@ class _LinkDetailForm extends StatelessWidget {
           ),
         ],
         const Divider(height: 1),
-        _SelectionRow(
-          label: 'メンバー',
-          value: draft.selectedMembers.isEmpty
-              ? '未選択'
-              : draft.selectedMembers.map((m) => m.memberName).join('、'),
-          enabled: availableMembers.isNotEmpty,
-          onEditPressed: () => context
-              .read<LinkDetailBloc>()
-              .add(const LinkDetailEditMembersPressed()),
+        _MemberChipSection(
+          availableMembers: availableMembers,
+          selectedMembers: draft.selectedMembers,
         ),
         const Divider(height: 1),
         _MemoField(value: draft.memo),
@@ -415,24 +393,65 @@ class _FuelRow extends StatelessWidget {
   }
 }
 
+// ── メンバーチップセクション（インライン選択・multiple） ────────────────────
+
+class _MemberChipSection extends StatelessWidget {
+  final List<MemberDomain> availableMembers;
+  final List<MemberDomain> selectedMembers;
+
+  const _MemberChipSection({
+    required this.availableMembers,
+    required this.selectedMembers,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('メンバー', style: labelStyle),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: availableMembers.map((member) {
+              final isSelected = selectedMembers.any((m) => m.id == member.id);
+              return FilterChip(
+                key: Key('linkDetail_chip_member_${member.id}'),
+                label: Text(member.memberName),
+                selected: isSelected,
+                onSelected: (_) => context
+                    .read<LinkDetailBloc>()
+                    .add(LinkDetailMemberChipToggled(member)),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _SelectionRow extends StatelessWidget {
   final String label;
   final String value;
   final VoidCallback onEditPressed;
-  final bool enabled;
 
   const _SelectionRow({
     required this.label,
     required this.value,
     required this.onEditPressed,
-    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final disabledColor = Theme.of(context).colorScheme.onSurfaceVariant;
     return InkWell(
-      onTap: enabled ? onEditPressed : null,
+      onTap: onEditPressed,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
@@ -452,13 +471,11 @@ class _SelectionRow extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Text(
                   value,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: enabled ? null : disabledColor,
-                      ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
             ),
-            Icon(Icons.chevron_right, color: enabled ? null : disabledColor),
+            const Icon(Icons.chevron_right),
           ],
         ),
       ),
