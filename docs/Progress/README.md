@@ -111,3 +111,4 @@
 | [2026-04-12_test__T261b-B6-ガソリン支払者チップ選択テストコード実装.md](./2026-04-12_test__T261b-B6-ガソリン支払者チップ選択テストコード実装.md) | T-261b B-6 ガソリン支払い者チップ選択 テストコード実装（TC-GPS-001〜008） |
 | [2026-04-12_feat__T232a-UI3-MichiInfo削除UIアイコン常時表示実装.md](./2026-04-12_feat__T232a-UI3-MichiInfo削除UIアイコン常時表示実装.md) | T-232a UI-3 MichiInfo削除UI変更（スワイプ廃止・削除アイコン常時表示・給油ドット統合） |
 | [2026-04-12_architect__T269-B6-PhaseC-Spec作成完了.md](./2026-04-12_architect__T269-B6-PhaseC-Spec作成完了.md) | T-269 B-6 Phase C Spec作成完了（ガソリン支払者インラインチップ選択） |
+| [2026-04-12_test__T234-UI3-MichiInfo削除UIアイコンテスト全件PASS.md](./2026-04-12_test__T234-UI3-MichiInfo削除UIアイコンテスト全件PASS.md) | T-234 UI-3 MichiInfo削除UIアイコン Integration Test 5PASS/2SKIP/0FAIL |
