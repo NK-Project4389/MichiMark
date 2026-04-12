@@ -116,3 +116,4 @@
 | [2026-04-12_test__T272-B6-ガソリン支払者チップ選択テスト全件PASS.md](./2026-04-12_test__T272-B6-ガソリン支払者チップ選択テスト全件PASS.md) | T-272 B-6 ガソリン支払者インラインチップ選択 Integration Test 8PASS/0FAIL/0SKIP |
 | [2026-04-12_test__T268-UI6-概要タブセクション名テスト全件PASS.md](./2026-04-12_test__T268-UI6-概要タブセクション名テスト全件PASS.md) | T-268 UI-6 概要タブセクション名追加 Integration Test 4PASS/0FAIL/0SKIP |
 | [2026-04-12_test__T224-UI2-BasicInfo参照タップ編集テスト全件PASS.md](./2026-04-12_test__T224-UI2-BasicInfo参照タップ編集テスト全件PASS.md) | T-224 UI-2 BasicInfo参照タップ編集 Integration Test 14PASS/0FAIL/0SKIP |
+| [2026-04-12_testflight__1_0_0_12_UI1-6_B6_全テストPASS.md](./2026-04-12_testflight__1_0_0_12_UI1-6_B6_全テストPASS.md) | TestFlight 1.0.0(12) アップロード完了（UI-1〜6 + B-6 全テスト58PASS/0FAIL/6SKIP） |
