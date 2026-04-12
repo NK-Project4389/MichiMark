@@ -108,16 +108,30 @@
 
 ---
 
-## R-2: メンバー選択UI タグ式リニューアル
+## R-2: イベント詳細画面 インライン選択UI（タグ・メンバー・Trans・支払者）
+
+> 旧R-2（メンバー選択UIタグ式リニューアル）を廃止・統合。REQ-event_detail_inline_selection_ui 参照。
+
+### Phase A: BasicInfo インライン化
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-190 | メンバー選択UIタグ式リニューアル 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-member_selection_tag_style.md |
-| T-191 | メンバー選択UIタグ式リニューアル Spec作成 | architect | `TODO` | | REQ-member_selection_tag_style.md 参照 |
-| T-192 | モード1: BasicInfo `_MemberInputSection` 実装 | flutter-dev | `BLOCKED` | | T-191 完了待ち |
-| T-193 | モード2: SelectionPage メンバー系UI改善 実装 | flutter-dev | `BLOCKED` | | T-191 完了待ち |
-| T-194 | メンバー選択UIタグ式リニューアル レビュー | reviewer | `BLOCKED` | | T-192/T-193 完了後に着手 |
-| T-195 | メンバー選択UIタグ式リニューアル テスト | tester | `BLOCKED` | | T-194 承認後に着手 |
+| T-196 | Phase A 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-event_detail_inline_selection_ui.md |
+| T-197 | Phase A Spec作成 | architect | `TODO` | | REQ-event_detail_inline_selection_ui.md 参照 |
+| T-198a | Phase A BasicInfo 実装（Trans・Members・Tags・GasPayMember インライン化） | flutter-dev | `BLOCKED` | | T-197 完了待ち |
+| T-198b | Phase A テストコード実装 | tester | `BLOCKED` | | T-197 完了待ち |
+| T-199 | Phase A レビュー | reviewer | `BLOCKED` | | T-198a/b 完了後に着手 |
+| T-200 | Phase A テスト実行 | tester | `BLOCKED` | | T-199 承認後に着手 |
+
+### Phase B: 各Detail画面 メンバー選択インライン化
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-201 | Phase B Spec作成 | architect | `BLOCKED` | | T-197 完了後に並行着手可 |
+| T-202a | Phase B MarkDetail・LinkDetail・PaymentDetail 実装 | flutter-dev | `BLOCKED` | | T-201 完了待ち |
+| T-202b | Phase B テストコード実装 | tester | `BLOCKED` | | T-201 完了待ち |
+| T-203 | Phase B レビュー | reviewer | `BLOCKED` | | T-202a/b 完了後に着手 |
+| T-204 | Phase B テスト実行 | tester | `BLOCKED` | | T-203 承認後に着手 |
 
 ---
 
