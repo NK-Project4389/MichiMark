@@ -163,7 +163,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-220 | BasicInfo参照タップ編集 デザイン提案 | designer | `TODO` | | 下書き: docs/Requirements/REQ-DRAFT-basic_info_tap_to_edit.md |
+| T-220 | BasicInfo参照タップ編集 デザイン提案 | designer | `DONE` | | docs/Design/draft/basic_info_tap_to_edit_design.html |
 | T-221 | BasicInfo参照タップ編集 要件書作成 | product-manager | `BLOCKED` | | T-220 デザイン確認後 |
 | T-222 | BasicInfo参照タップ編集 Spec作成 | architect | `BLOCKED` | | T-221 完了後 |
 | T-222a | BasicInfo参照タップ編集 実装 | flutter-dev | `BLOCKED` | | T-222 完了後 |

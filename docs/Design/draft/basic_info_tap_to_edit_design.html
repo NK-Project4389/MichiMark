@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark BasicInfo 参照タップ編集UI デザイン提案</title>
+  <style>
+    :root {
+      --teal-dark:   #1A4A5E;
+      --teal-mid:    #2B7A9B;
+      --teal-light:  #3A9DC4;
+      --teal-pale:   #E8F4F8;
+      --teal-border: #B3D9E8;
+
+      --surface:     #FFFFFF;
+      --surface-alt: #F5F7FA;
+      --divider:     #E9ECEF;
+
+      --text-primary:   #1A1A2E;
+      --text-secondary: #6C757D;
+      --text-label:     #8A94A0;
+      --text-value:     #1A1A2E;
+
+      --chevron-color:  #ADB5BD;
+      --tap-hint-bg:    #F0F8FC;
+      --tap-hint-border:#C8E6F3;
+
+      --success: #28A745;
+      --warning: #FFC107;
+      --danger:  #DC3545;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+      background: var(--surface-alt);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #1A4A5E 0%, #2B7A9B 50%, #3A9DC4 100%);
+      color: white;
+      padding: 48px 40px 40px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 24px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 18px;
+    }
+    .page-header h1 {
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+    .page-header p {
+      font-size: 14px;
+      opacity: 0.85;
+    }
+    .meta-row {
+      display: flex;
+      gap: 24px;
+      margin-top: 20px;
+      font-size: 13px;
+      opacity: 0.8;
+    }
+    .meta-item { display: flex; align-items: center; gap: 6px; }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 32px;
+    }
+
+    section {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 6px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--teal-pale);
+    }
+
+    section .section-lead {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      margin-top: 8px;
+    }
+
+    /* ===== COLOR PALETTE ===== */
+    .palette-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .swatch-block {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    .swatch-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    .type-row {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--divider);
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-meta { width: 200px; flex-shrink: 0; font-size: 12px; color: var(--text-secondary); }
+    .type-sample { flex: 1; }
+
+    /* ===== COMPONENT PREVIEW ===== */
+    .proposal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 680px) { .proposal-grid { grid-template-columns: 1fr; } }
+
+    .proposal-card {
+      border: 2px solid var(--divider);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .proposal-card.recommended {
+      border-color: var(--teal-mid);
+      box-shadow: 0 0 0 3px rgba(43,122,155,0.12);
+    }
+
+    .proposal-header {
+      padding: 14px 18px;
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--divider);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .proposal-header .plan-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--teal-dark);
+    }
+    .proposal-header .rec-badge {
+      background: var(--teal-mid);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ─── Phone mockup ─── */
+    .phone-wrap {
+      padding: 20px;
+      background: #F8FAFB;
+      display: flex;
+      justify-content: center;
+    }
+    .phone {
+      width: 260px;
+      background: #FFFFFF;
+      border-radius: 20px;
+      border: 1.5px solid #D0DCE4;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .phone-status {
+      background: var(--teal-dark);
+      color: white;
+      font-size: 10px;
+      padding: 6px 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .phone-tabbar {
+      background: var(--teal-mid);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 8px 0 6px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    .phone-content {
+      padding: 12px 0;
+    }
+
+    /* ─── Row styles ─── */
+    .read-row {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid #F0F2F4;
+      cursor: default;
+      transition: background 0.12s;
+    }
+    .read-row:last-child { border-bottom: none; }
+    .row-label {
+      width: 88px;
+      flex-shrink: 0;
+      font-size: 10px;
+      color: var(--text-label);
+    }
+    .row-value {
+      flex: 1;
+      font-size: 12px;
+      color: var(--text-value);
+    }
+
+    /* Plan A: シェブロン */
+    .plan-a .read-row { cursor: pointer; }
+    .plan-a .read-row:hover { background: var(--tap-hint-bg); }
+    .plan-a .chevron {
+      color: var(--chevron-color);
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    /* Plan B: 行全体をカード化 */
+    .plan-b .read-row {
+      margin: 3px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--teal-border);
+      background: var(--teal-pale);
+      cursor: pointer;
+    }
+    .plan-b .read-row:hover { background: #D9EEF7; }
+    .plan-b .phone-content { padding: 8px 0; }
+
+    /* Plan C: アンダーライン */
+    .plan-c .read-row { cursor: pointer; }
+    .plan-c .read-row:hover { background: #FAFCFD; }
+    .plan-c .row-value {
+      color: var(--teal-mid);
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+    }
+    .plan-c .edit-icon {
+      font-size: 10px;
+      color: var(--teal-light);
+      margin-left: 4px;
+      opacity: 0.7;
+    }
+
+    /* Plan D: 右端に編集ヒントアイコン（ペン小） */
+    .plan-d .read-row { cursor: pointer; }
+    .plan-d .read-row:hover { background: var(--tap-hint-bg); }
+    .plan-d .tap-icon {
+      font-size: 10px;
+      color: var(--teal-light);
+      opacity: 0.55;
+      margin-left: 2px;
+    }
+
+    /* ─── Merit / Demerit ─── */
+    .merit-block {
+      padding: 16px 18px;
+      background: var(--surface-alt);
+    }
+    .merit-block h4 {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .merit-list { list-style: none; }
+    .merit-list li {
+      font-size: 12px;
+      padding: 3px 0;
+      padding-left: 18px;
+      position: relative;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    .merit-list li::before {
+      position: absolute;
+      left: 0;
+      font-size: 11px;
+    }
+    .merit-list.pros li::before { content: '✓'; color: var(--success); }
+    .merit-list.cons li::before { content: '✗'; color: var(--danger); }
+
+    /* ===== BEFORE / AFTER ===== */
+    .ba-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 600px) { .ba-grid { grid-template-columns: 1fr; } }
+    .ba-card { border-radius: var(--radius-md); overflow: hidden; border: 1.5px solid var(--divider); }
+    .ba-label {
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 16px;
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--divider);
+    }
+    .ba-label.before { color: var(--text-secondary); }
+    .ba-label.after  { color: var(--teal-mid); }
+
+    /* ===== RATIONALE ===== */
+    .rationale-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 720px) { .rationale-grid { grid-template-columns: 1fr; } }
+    .rationale-item {
+      background: var(--surface-alt);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+    .rationale-item h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 6px;
+    }
+    .rationale-item p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* ===== RECOMMENDATION BOX ===== */
+    .rec-box {
+      background: linear-gradient(135deg, var(--teal-pale) 0%, #D6EEF8 100%);
+      border: 1.5px solid var(--teal-border);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      margin-bottom: 28px;
+    }
+    .rec-box h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 8px;
+    }
+    .rec-box p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ===== PM DRAFT BOX ===== */
+    .pm-draft {
+      background: #FFFDF0;
+      border: 1.5px dashed #DDB64B;
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+    }
+    .pm-draft h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #A07020;
+      margin-bottom: 12px;
+    }
+    .pm-draft pre {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      color: #4A3A10;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* ===== INTERACTIVE DEMO ===== */
+    .demo-area {
+      display: flex;
+      justify-content: center;
+      padding: 28px;
+      background: #F8FAFB;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+    }
+    .demo-phone {
+      width: 300px;
+      background: #FFFFFF;
+      border-radius: 20px;
+      border: 1.5px solid #D0DCE4;
+      overflow: hidden;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+    }
+    .demo-status {
+      background: var(--teal-dark);
+      color: white;
+      font-size: 10px;
+      padding: 7px 16px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .demo-nav {
+      background: white;
+      border-bottom: 1px solid var(--divider);
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--teal-dark);
+    }
+    .demo-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--divider);
+    }
+    .demo-tab {
+      flex: 1;
+      text-align: center;
+      padding: 8px 0;
+      font-size: 11px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .demo-tab.active {
+      color: var(--teal-mid);
+      border-bottom-color: var(--teal-mid);
+      font-weight: 700;
+    }
+    .demo-hint {
+      font-size: 11px;
+      color: var(--teal-mid);
+      text-align: center;
+      padding: 6px;
+      background: var(--teal-pale);
+      border-bottom: 1px solid var(--teal-border);
+      opacity: 0.85;
+    }
+    .demo-content { padding: 4px 0 16px; }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      border-bottom: 1px solid #F0F2F4;
+      cursor: pointer;
+      border-radius: 8px;
+      margin: 2px 8px;
+      transition: background 0.15s, transform 0.08s;
+    }
+    .demo-row:last-child { border-bottom: none; }
+    .demo-row:hover {
+      background: var(--teal-pale);
+    }
+    .demo-row:active {
+      background: #C8E6F3;
+      transform: scale(0.985);
+    }
+    .demo-label {
+      width: 96px;
+      flex-shrink: 0;
+      font-size: 11px;
+      color: var(--text-label);
+    }
+    .demo-value {
+      flex: 1;
+      font-size: 13px;
+      color: var(--text-value);
+      font-weight: 500;
+    }
+    .demo-chevron {
+      font-size: 12px;
+      color: var(--chevron-color);
+    }
+    .demo-caption {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-top: 8px;
+    }
+    .demo-toast {
+      display: none;
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--teal-dark);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="badge">designer / UI-2 / T-220</div>
+  <h1>BasicInfo 参照タップ編集UI<br>デザイン提案</h1>
+  <p>編集アイコン廃止 — 参照行タップで編集遷移するUIの視覚的表現</p>
+  <div class="meta-row">
+    <div class="meta-item">作成日: 2026-04-12</div>
+    <div class="meta-item">対象: BasicInfo 参照モード（_BasicInfoReadView）</div>
+    <div class="meta-item">要件: REQ-DRAFT-basic_info_tap_to_edit</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- ===== COLOR PALETTE ===== -->
+  <section id="color-palette">
+    <h2>カラーパレット（本提案で使用）</h2>
+    <p class="section-lead">既存MichiMarkブランドカラー（Teal系）に準拠。新色は追加しない。</p>
+    <div class="palette-grid">
+      <div class="swatch">
+        <div class="swatch-block" style="background:#1A4A5E;"></div>
+        <div class="swatch-label">Teal Dark<br>#1A4A5E</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#2B7A9B;"></div>
+        <div class="swatch-label">Teal Mid<br>#2B7A9B</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#3A9DC4;"></div>
+        <div class="swatch-label">Teal Light<br>#3A9DC4</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#E8F4F8; border:1px solid #B3D9E8;"></div>
+        <div class="swatch-label">Teal Pale<br>#E8F4F8</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#B3D9E8;"></div>
+        <div class="swatch-label">Teal Border<br>#B3D9E8</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#ADB5BD;"></div>
+        <div class="swatch-label">Chevron Gray<br>#ADB5BD</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#E9ECEF; border:1px solid #dee2e6;"></div>
+        <div class="swatch-label">Divider<br>#E9ECEF</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#1A1A2E;"></div>
+        <div class="swatch-label">Text Primary<br>#1A1A2E</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TYPOGRAPHY ===== -->
+  <section id="typography">
+    <h2>タイポグラフィ</h2>
+    <p class="section-lead">参照モードで使用するテキストスタイル。既存アプリのTheme準拠。</p>
+    <div class="type-row">
+      <div class="type-meta">ラベル（フィールド名）<br>bodySmall / onSurfaceVariant</div>
+      <div class="type-sample" style="font-size:12px; color:#8A94A0;">イベント名</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">値（設定済み）<br>bodyMedium / text-primary</div>
+      <div class="type-sample" style="font-size:14px; color:#1A1A2E; font-weight:500;">北海道ドライブ 2026</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">値（未設定）<br>bodyMedium / onSurfaceVariant</div>
+      <div class="type-sample" style="font-size:14px; color:#8A94A0; font-style:italic;">未設定</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">タップヒント文言<br>caption / tealMid</div>
+      <div class="type-sample" style="font-size:11px; color:#2B7A9B;">タップして編集</div>
+    </div>
+  </section>
+
+  <!-- ===== COMPONENT PREVIEW ===== -->
+  <section id="component-preview">
+    <h2>コンポーネントプレビュー — 4案比較</h2>
+    <p class="section-lead">
+      現状の _BasicInfoReadView は「ラベル + テキスト値」の横並び行で構成。
+      各案はこの構造を維持しつつ、タップ可能を示す視覚表現を付加する。
+    </p>
+
+    <!-- Before / After 概要 -->
+    <h3 style="font-size:15px; font-weight:700; color:var(--teal-dark); margin-bottom:14px;">現状 vs 変更後イメージ</h3>
+    <div class="ba-grid" style="margin-bottom:32px;">
+      <div class="ba-card">
+        <div class="ba-label before">Before — 現状（編集アイコンあり）</div>
+        <div class="phone-content" style="padding:16px 14px;">
+          <div style="font-size:11px; color:#999; text-align:right; margin-bottom:8px;">
+            ✏️ 編集アイコン（右上）
+          </div>
+          <div style="display:flex; align-items:center; padding:8px 0; border-bottom:1px solid #F0F2F4;">
+            <span style="width:90px; font-size:11px; color:#8A94A0;">イベント名</span>
+            <span style="font-size:13px; color:#1A1A2E;">北海道ドライブ 2026</span>
+          </div>
+          <div style="display:flex; align-items:center; padding:8px 0; border-bottom:1px solid #F0F2F4;">
+            <span style="width:90px; font-size:11px; color:#8A94A0;">交通手段</span>
+            <span style="font-size:13px; color:#1A1A2E;">マイカー</span>
+          </div>
+          <div style="display:flex; align-items:center; padding:8px 0; border-bottom:1px solid #F0F2F4;">
+            <span style="width:90px; font-size:11px; color:#8A94A0;">メンバー</span>
+            <span style="font-size:13px; color:#1A1A2E;">田中、鈴木</span>
+          </div>
+          <div style="display:flex; align-items:center; padding:8px 0;">
+            <span style="width:90px; font-size:11px; color:#8A94A0;">タグ</span>
+            <span style="font-size:13px; color:#8A94A0; font-style:italic;">未設定</span>
+          </div>
+        </div>
+      </div>
+      <div class="ba-card" style="border-color:var(--teal-mid);">
+        <div class="ba-label after">After — 変更後（A案: シェブロン採用時）</div>
+        <div class="phone-content" style="padding:4px 0 16px;">
+          <div style="font-size:10px; color:var(--teal-mid); text-align:center; padding:5px; background:var(--teal-pale); margin-bottom:4px;">
+            タップして編集できます
+          </div>
+          <div style="display:flex; align-items:center; padding:9px 14px; border-bottom:1px solid #F0F2F4; cursor:pointer; background:white;">
+            <span style="width:90px; font-size:11px; color:#8A94A0;">イベント名</span>
+            <span style="flex:1; font-size:13px; color:#1A1A2E;">北海道ドライブ 2026</span>
+            <span style="font-size:12px; color:#ADB5BD;">›</span>
+          </div>
+          <div style="display:flex; align-items:center; padding:9px 14px; border-bottom:1px solid #F0F2F4; background:#EEF7FB;">
+            <span style="width:90px; font-size:11px; color:#8A94A0;">交通手段</span>
+            <span style="flex:1; font-size:13px; color:#1A1A2E;">マイカー</span>
+            <span style="font-size:12px; color:#ADB5BD;">›</span>
+          </div>
+          <div style="display:flex; align-items:center; padding:9px 14px; border-bottom:1px solid #F0F2F4;">
+            <span style="width:90px; font-size:11px; color:#8A94A0;">メンバー</span>
+            <span style="flex:1; font-size:13px; color:#1A1A2E;">田中、鈴木</span>
+            <span style="font-size:12px; color:#ADB5BD;">›</span>
+          </div>
+          <div style="display:flex; align-items:center; padding:9px 14px;">
+            <span style="width:90px; font-size:11px; color:#8A94A0;">タグ</span>
+            <span style="flex:1; font-size:13px; color:#8A94A0; font-style:italic;">未設定</span>
+            <span style="font-size:12px; color:#ADB5BD;">›</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4案プレビュー -->
+    <div class="proposal-grid">
+
+      <!-- Plan A: シェブロン + ホバー背景 -->
+      <div class="proposal-card recommended">
+        <div class="proposal-header">
+          <span class="plan-label">A案 — シェブロン（推奨）</span>
+          <span class="rec-badge">推奨</span>
+        </div>
+        <div class="phone-wrap plan-a">
+          <div class="phone">
+            <div class="phone-status"><span>9:41</span><span>••••</span></div>
+            <div class="phone-tabbar">BasicInfo</div>
+            <div style="font-size:9px; color:var(--teal-mid); text-align:center; padding:5px 8px; background:var(--teal-pale); border-bottom:1px solid var(--teal-border);">タップして編集できます</div>
+            <div class="phone-content plan-a">
+              <div class="read-row" style="cursor:pointer;">
+                <span class="row-label">イベント名</span>
+                <span class="row-value">北海道ドライブ</span>
+                <span class="chevron">›</span>
+              </div>
+              <div class="read-row" style="cursor:pointer; background:var(--tap-hint-bg);">
+                <span class="row-label">交通手段</span>
+                <span class="row-value">マイカー</span>
+                <span class="chevron">›</span>
+              </div>
+              <div class="read-row" style="cursor:pointer;">
+                <span class="row-label">メンバー</span>
+                <span class="row-value">田中、鈴木</span>
+                <span class="chevron">›</span>
+              </div>
+              <div class="read-row" style="cursor:pointer;">
+                <span class="row-label">タグ</span>
+                <span class="row-value" style="color:#8A94A0; font-style:italic;">未設定</span>
+                <span class="chevron">›</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="merit-block">
+          <h4>メリット</h4>
+          <ul class="merit-list pros">
+            <li>iOSリスト標準パターン — ユーザーが直感的に理解しやすい</li>
+            <li>既存の行レイアウトを最小限の変更で拡張できる</li>
+            <li>ホバー背景でタップフィードバックを補強</li>
+            <li>未設定行にも統一してシェブロンが付き迷いなし</li>
+          </ul>
+          <h4 style="margin-top:10px;">デメリット</h4>
+          <ul class="merit-list cons">
+            <li>シェブロンは「別画面への遷移」を意味するため、フィールドごとに別画面を開くUIであることが前提</li>
+            <li>行全体をタップ可能にするためタップ領域を広げる実装が必要</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Plan B: カード背景 -->
+      <div class="proposal-card">
+        <div class="proposal-header">
+          <span class="plan-label">B案 — Tealカード背景</span>
+        </div>
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-status"><span>9:41</span><span>••••</span></div>
+            <div class="phone-tabbar">BasicInfo</div>
+            <div class="phone-content plan-b">
+              <div class="read-row">
+                <span class="row-label">イベント名</span>
+                <span class="row-value">北海道ドライブ</span>
+              </div>
+              <div class="read-row">
+                <span class="row-label">交通手段</span>
+                <span class="row-value">マイカー</span>
+              </div>
+              <div class="read-row">
+                <span class="row-label">メンバー</span>
+                <span class="row-value">田中、鈴木</span>
+              </div>
+              <div class="read-row">
+                <span class="row-label">タグ</span>
+                <span class="row-value" style="color:#8A94A0; font-style:italic;">未設定</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="merit-block">
+          <h4>メリット</h4>
+          <ul class="merit-list pros">
+            <li>Tealカラーが「操作可能」を視覚的に伝える</li>
+            <li>各行が明確にボタン的に見える</li>
+          </ul>
+          <h4 style="margin-top:10px;">デメリット</h4>
+          <ul class="merit-list cons">
+            <li>Teal背景が情報よりも目立ち、コンテンツ可読性が落ちる</li>
+            <li>行数が多いと画面全体が着色されすぎて疲れる</li>
+            <li>「ボタン化」のアフォーダンスが強すぎて、単なる閲覧と区別がつきにくい</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Plan C: アンダーライン + ペンアイコン -->
+      <div class="proposal-card">
+        <div class="proposal-header">
+          <span class="plan-label">C案 — 点線アンダーライン</span>
+        </div>
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-status"><span>9:41</span><span>••••</span></div>
+            <div class="phone-tabbar">BasicInfo</div>
+            <div class="phone-content plan-c">
+              <div class="read-row">
+                <span class="row-label">イベント名</span>
+                <span class="row-value">北海道ドライブ<span class="edit-icon">✏</span></span>
+              </div>
+              <div class="read-row">
+                <span class="row-label">交通手段</span>
+                <span class="row-value">マイカー<span class="edit-icon">✏</span></span>
+              </div>
+              <div class="read-row">
+                <span class="row-label">メンバー</span>
+                <span class="row-value">田中、鈴木<span class="edit-icon">✏</span></span>
+              </div>
+              <div class="read-row">
+                <span class="row-label">タグ</span>
+                <span class="row-value" style="color:var(--teal-mid); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;">未設定<span class="edit-icon">✏</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="merit-block">
+          <h4>メリット</h4>
+          <ul class="merit-list pros">
+            <li>「編集可能テキスト」のWeb的表現に馴染みがある</li>
+            <li>テキスト部分のみで視覚的ヒントが完結する</li>
+          </ul>
+          <h4 style="margin-top:10px;">デメリット</h4>
+          <ul class="merit-list cons">
+            <li>点線アンダーラインはモバイルアプリでは一般的でなく、ユーザーが気づかない可能性</li>
+            <li>テキストが短い・未設定の場合にアンダーラインが目立たない</li>
+            <li>ペンアイコンを残すなら「廃止」の要件と矛盾する</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Plan D: 微小タップアイコン -->
+      <div class="proposal-card">
+        <div class="proposal-header">
+          <span class="plan-label">D案 — タップアイコン（指マーク）</span>
+        </div>
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-status"><span>9:41</span><span>••••</span></div>
+            <div class="phone-tabbar">BasicInfo</div>
+            <div class="phone-content plan-d">
+              <div class="read-row">
+                <span class="row-label">イベント名</span>
+                <span class="row-value">北海道ドライブ</span>
+                <span class="tap-icon">👆</span>
+              </div>
+              <div class="read-row">
+                <span class="row-label">交通手段</span>
+                <span class="row-value">マイカー</span>
+                <span class="tap-icon">👆</span>
+              </div>
+              <div class="read-row">
+                <span class="row-label">メンバー</span>
+                <span class="row-value">田中、鈴木</span>
+                <span class="tap-icon">👆</span>
+              </div>
+              <div class="read-row">
+                <span class="row-label">タグ</span>
+                <span class="row-value" style="color:#8A94A0; font-style:italic;">未設定</span>
+                <span class="tap-icon">👆</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="merit-block">
+          <h4>メリット</h4>
+          <ul class="merit-list pros">
+            <li>「タップ」の操作を直接示す</li>
+            <li>実装コストが低い</li>
+          </ul>
+          <h4 style="margin-top:10px;">デメリット</h4>
+          <ul class="merit-list cons">
+            <li>絵文字アイコンは環境によって見た目が変わる</li>
+            <li>デザイントーンがカジュアルすぎて他の画面と一貫性を失う</li>
+            <li>アイコンが「装飾」と誤認される可能性が高い</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== INTERACTIVE DEMO ===== -->
+  <section id="interactive-demo">
+    <h2>インタラクティブデモ — A案（推奨案）</h2>
+    <p class="section-lead">行をクリックして編集遷移のフィードバックを確認できます。</p>
+    <div class="demo-area">
+      <div>
+        <div class="demo-phone">
+          <div class="demo-status"><span>9:41</span><span>••••</span></div>
+          <div class="demo-nav">北海道ドライブ 2026</div>
+          <div class="demo-tabs">
+            <div class="demo-tab">概要</div>
+            <div class="demo-tab active">BasicInfo</div>
+            <div class="demo-tab">記録</div>
+          </div>
+          <div class="demo-hint">タップして編集できます</div>
+          <div class="demo-content">
+            <div class="demo-row" onclick="showToast('「イベント名」の編集画面へ遷移')">
+              <span class="demo-label">イベント名</span>
+              <span class="demo-value">北海道ドライブ 2026</span>
+              <span class="demo-chevron">›</span>
+            </div>
+            <div class="demo-row" onclick="showToast('「交通手段」の編集画面へ遷移')">
+              <span class="demo-label">交通手段</span>
+              <span class="demo-value">マイカー</span>
+              <span class="demo-chevron">›</span>
+            </div>
+            <div class="demo-row" onclick="showToast('「メンバー」の編集画面へ遷移')">
+              <span class="demo-label">メンバー</span>
+              <span class="demo-value">田中、鈴木</span>
+              <span class="demo-chevron">›</span>
+            </div>
+            <div class="demo-row" onclick="showToast('「タグ」の編集画面へ遷移')">
+              <span class="demo-label">タグ</span>
+              <span class="demo-value" style="color:#8A94A0; font-style:italic;">未設定</span>
+              <span class="demo-chevron">›</span>
+            </div>
+            <div class="demo-row" onclick="showToast('「燃費」の編集画面へ遷移')">
+              <span class="demo-label">燃費</span>
+              <span class="demo-value">14.5 km/L</span>
+              <span class="demo-chevron">›</span>
+            </div>
+          </div>
+        </div>
+        <p class="demo-caption">行をクリックすると遷移フィードバックが表示されます</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RATIONALE ===== -->
+  <section id="rationale">
+    <h2>デザイン根拠</h2>
+    <p class="section-lead">A案（シェブロン + ホバー背景）を推奨する理由。</p>
+
+    <div class="rec-box">
+      <h3>推奨案: A案 — シェブロン + ホバー背景 + ヒントバナー</h3>
+      <p>
+        iOSの標準リストUIで広く使われているシェブロン（›）パターンは「タップすると別画面へ進む」という
+        ユーザーの既存メンタルモデルと一致する。MichiMarkのBasicInfo参照モードでは
+        各フィールドをタップすると編集フォームへ遷移するため、このパターンが最も自然に適合する。<br><br>
+        加えて、初回表示時にのみ「タップして編集できます」という小さなヒントバナーを画面上部に表示することで、
+        初めて使うユーザーへの気づきを補完できる（常時表示ではなく初回のみが理想）。
+      </p>
+    </div>
+
+    <div class="rationale-grid">
+      <div class="rationale-item">
+        <h4>iOSメンタルモデルへの適合</h4>
+        <p>›（シェブロン）は「タップで詳細・編集へ進む」をネイティブが示す標準パターン。ユーザーが学習コスト0で理解できる。</p>
+      </div>
+      <div class="rationale-item">
+        <h4>WCAG AAコントラスト確認</h4>
+        <p>ラベルテキスト（#8A94A0 on #FFFFFF）: コントラスト比 約3.5:1。値テキスト（#1A1A2E on #FFFFFF）: 約16:1。ホバー背景（#E8F4F8）でも値テキストのコントラストは維持される。</p>
+      </div>
+      <div class="rationale-item">
+        <h4>実装コストの最小化</h4>
+        <p>現状の _ReadRow Widgetに「末尾にシェブロンアイコンを追加」「行全体をGestureDetectorでラップ」するだけで実現可能。レイアウト変更が最小限。</p>
+      </div>
+      <div class="rationale-item">
+        <h4>シンプル・ミニマルの維持</h4>
+        <p>B案のTeal背景は視覚ノイズが大きい。A案は通常状態でシェブロンのみ追加するため、情報密度を高めずにアフォーダンスを付与できる。</p>
+      </div>
+      <div class="rationale-item">
+        <h4>未設定値への一貫適用</h4>
+        <p>「未設定」「未選択」の行にもシェブロンを表示することで、設定を促すCTAとしても機能する。視覚的に設定済み行と区別されるため、どこを編集すべきかが一目でわかる。</p>
+      </div>
+      <div class="rationale-item">
+        <h4>MichiMarkブランドへの適合</h4>
+        <p>シェブロンカラーは中立グレー（#ADB5BD）を使用し、Tealはホバー背景とヒントバナーに限定。ブランドカラーの使いすぎを避け、MichiMarkらしいシンプルな外観を維持。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PM DRAFT ===== -->
+  <section id="pm-draft">
+    <h2>product-manager向け 要件の叩き</h2>
+    <p class="section-lead">以下の内容を docs/Design/draft/ に格納します。product-managerはユーザーと確認後に docs/Requirements/ へ移動してください。</p>
+    <div class="pm-draft">
+      <h3>要件の叩き（product-manager確認用）</h3>
+      <pre>
+# デザイン要件の叩き: BasicInfo 参照タップ編集UI（UI-2）
+
+## 概要
+BasicInfoセクションの参照モードにおいて、編集アイコン（ペンアイコン）を廃止し、
+各フィールド行をタップすることで編集フォームへ遷移するUIに変更する。
+タップ可能であることを示すビジュアル表現として「A案：シェブロン + ホバー背景 + ヒントバナー」を推奨する。
+
+## デザイン推奨案: A案（シェブロン + ホバー背景 + ヒントバナー）
+
+## 変更項目
+- [ ] _BasicInfoReadView の右上 IconButton（Icons.edit）を撤去
+- [ ] _ReadRow の末尾にシェブロンアイコン（Icons.chevron_right）を追加
+- [ ] _ReadRow 全体をタップ可能にする（InkWell または GestureDetector でラップ）
+- [ ] タップ時に BasicInfoEditModeEntered を発行する（既存イベントを流用）
+- [ ] 初回表示時にのみ「タップして編集できます」のヒントバナーを上部に表示（任意・初回のみ）
+  ※ ヒントバナーの初回判定方法はarchitectが設計する
+
+## タップ可能ビジュアル仕様（A案）
+- シェブロンアイコン: Icons.chevron_right、サイズ 18、色 #ADB5BD（グレー）
+- タップ時ハイライト: InkWell のデフォルトリップル or 背景色 #E8F4F8（Teal Pale）
+- ヒントバナー（任意）:
+  - テキスト: 「タップして編集できます」
+  - 背景色: #E8F4F8 / テキスト色: #2B7A9B
+  - 表示条件: 初回表示のみ（SharedPreferences等で管理、設計はarchitectに委ねる）
+
+## 参照デザインレポート
+docs/Design/draft/basic_info_tap_to_edit_design.html
+
+## 備考
+- C案（アンダーライン）はペンアイコン廃止要件と矛盾するため除外
+- D案（タップアイコン）はトーンの不一致があり不採用
+- B案（Tealカード背景）は視覚ノイズが大きいため不採用
+- ヒントバナーの実装は省略可能（シェブロンのみでもアフォーダンスは十分）
+      </pre>
+    </div>
+  </section>
+
+</div>
+
+<!-- Toast -->
+<div class="demo-toast" id="toast"></div>
+
+<script>
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.style.display = 'none'; }, 1800);
+  }
+</script>
+
+</body>
+</html>
