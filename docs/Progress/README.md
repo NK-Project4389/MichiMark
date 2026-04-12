@@ -104,3 +104,4 @@
 | [2026-04-12_feat__T201-PhaseB-Spec_B5-タブ切替追加モード修正.md](./2026-04-12_feat__T201-PhaseB-Spec_B5-タブ切替追加モード修正.md) | T-201 Phase B Spec作成・B-5 タブ切替追加モード修正（2PASS/0FAIL） |
 | [2026-04-12_feat__R2-PhaseB-Detail画面メンバー選択インライン化.md](./2026-04-12_feat__R2-PhaseB-Detail画面メンバー選択インライン化.md) | R-2 Phase B MarkDetail・LinkDetail・PaymentDetail メンバー選択インライン化（T-202a完了） |
 | [2026-04-12_feat__R2-PhaseB-全Detail画面メンバー選択インライン化完了.md](./2026-04-12_feat__R2-PhaseB-全Detail画面メンバー選択インライン化完了.md) | R-2 Phase B 全完了（22PASS/0FAIL/0SKIP） |
+| [2026-04-12_testflight__1_0_0_11_R2-PhaseB完了アップロード.md](./2026-04-12_testflight__1_0_0_11_R2-PhaseB完了アップロード.md) | TestFlight 1.0.0(11) アップロード完了（R-2 Phase B・B-5含む） |
