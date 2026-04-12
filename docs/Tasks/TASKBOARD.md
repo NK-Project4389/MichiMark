@@ -179,7 +179,7 @@
 |---|---|---|---|---|---|
 | T-230 | MichiInfo削除UI変更 デザイン提案 | designer | `DONE` | | docs/Design/draft/michi_info_delete_icon_design.html |
 | T-231 | MichiInfo削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_delete_icon.md |
-| T-232 | MichiInfo削除UI変更 Spec作成 | architect | `IN_PROGRESS` | 2026-04-12_UI1-UI5-Spec作成 | |
+| T-232 | MichiInfo削除UI変更 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_delete_icon.md |
 | T-232a | MichiInfo削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-232 完了後 |
 | T-232b | MichiInfo削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-232 完了後 |
 | T-233 | MichiInfo削除UI変更 レビュー | reviewer | `BLOCKED` | | T-232a/b 完了後 |
