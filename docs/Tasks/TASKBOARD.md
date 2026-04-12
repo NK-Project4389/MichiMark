@@ -135,6 +135,92 @@
 
 ---
 
+## B-5: MichiInfo タブ切り替え時追加モード終了バグ修正
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-205 | タブ切り替え追加モード終了 実装 | flutter-dev | `TODO` | | タブ切り替え時にpendingInsertMode等の追加状態をリセットする |
+| T-205b | タブ切り替え追加モード終了 テストコード実装 | tester | `TODO` | | |
+| T-206 | タブ切り替え追加モード終了 レビュー | reviewer | `BLOCKED` | | T-205/205b 完了後 |
+| T-207 | タブ切り替え追加モード終了 テスト実行 | tester | `BLOCKED` | | T-206 承認後 |
+
+---
+
+## UI-1: イベント削除UI変更（スワイプ廃止→詳細画面削除アイコン）
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-210 | イベント削除UI変更 要件書作成 | product-manager | `TODO` | | イベント一覧スワイプ削除廃止・詳細画面ヘッダ右側に削除アイコン+「イベント削除」テキスト追加 |
+| T-211 | イベント削除UI変更 Spec作成 | architect | `BLOCKED` | | T-210 完了後 |
+| T-212a | イベント削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-211 完了後 |
+| T-212b | イベント削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-211 完了後 |
+| T-213 | イベント削除UI変更 レビュー | reviewer | `BLOCKED` | | T-212a/b 完了後 |
+| T-214 | イベント削除UI変更 テスト実行 | tester | `BLOCKED` | | T-213 承認後 |
+
+---
+
+## UI-2: BasicInfo参照タップ編集UI改善（デザイン調整あり）
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-220 | BasicInfo参照タップ編集 デザイン提案 | designer | `TODO` | | 編集アイコン削除・タップで編集画面遷移・タップ可能を視覚的に示すデザイン案作成 |
+| T-221 | BasicInfo参照タップ編集 要件書作成 | product-manager | `BLOCKED` | | T-220 デザイン確認後 |
+| T-222 | BasicInfo参照タップ編集 Spec作成 | architect | `BLOCKED` | | T-221 完了後 |
+| T-222a | BasicInfo参照タップ編集 実装 | flutter-dev | `BLOCKED` | | T-222 完了後 |
+| T-222b | BasicInfo参照タップ編集 テストコード実装 | tester | `BLOCKED` | | T-222 完了後 |
+| T-223 | BasicInfo参照タップ編集 レビュー | reviewer | `BLOCKED` | | T-222a/b 完了後 |
+| T-224 | BasicInfo参照タップ編集 テスト実行 | tester | `BLOCKED` | | T-223 承認後 |
+
+---
+
+## UI-3: MichiInfo Mark/Link削除UI変更（デザイン調整あり）
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-230 | MichiInfo削除UI変更 デザイン提案 | designer | `TODO` | | スワイプ削除廃止・カード右側に削除アイコン配置・給油アイコン配置案含む |
+| T-231 | MichiInfo削除UI変更 要件書作成 | product-manager | `BLOCKED` | | T-230 デザイン確認後 |
+| T-232 | MichiInfo削除UI変更 Spec作成 | architect | `BLOCKED` | | T-231 完了後 |
+| T-232a | MichiInfo削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-232 完了後 |
+| T-232b | MichiInfo削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-232 完了後 |
+| T-233 | MichiInfo削除UI変更 レビュー | reviewer | `BLOCKED` | | T-232a/b 完了後 |
+| T-234 | MichiInfo削除UI変更 テスト実行 | tester | `BLOCKED` | | T-233 承認後 |
+
+---
+
+## UI-4: PaymentInfo カード削除UI変更
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-240 | PaymentInfo削除UI変更 要件書作成 | product-manager | `TODO` | | スワイプ削除廃止・カード右側に削除アイコン配置 |
+| T-241 | PaymentInfo削除UI変更 Spec作成 | architect | `BLOCKED` | | T-240 完了後 |
+| T-242a | PaymentInfo削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-241 完了後 |
+| T-242b | PaymentInfo削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-241 完了後 |
+| T-243 | PaymentInfo削除UI変更 レビュー | reviewer | `BLOCKED` | | T-242a/b 完了後 |
+| T-244 | PaymentInfo削除UI変更 テスト実行 | tester | `BLOCKED` | | T-243 承認後 |
+
+---
+
+## UI-5: MarkDetail/LinkDetail/PaymentDetail UI改善
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-250 | Detail画面UI改善 要件書作成 | product-manager | `TODO` | | 戻るボタン廃止・キャンセルボタン追加・ヘッダ「(画面名称):(名称)」形式・キャンセル/保存ボタン給油トグル下に左右中央寄せ |
+| T-251 | Detail画面UI改善 Spec作成 | architect | `BLOCKED` | | T-250 完了後 |
+| T-252a | Detail画面UI改善 実装 | flutter-dev | `BLOCKED` | | T-251 完了後 |
+| T-252b | Detail画面UI改善 テストコード実装 | tester | `BLOCKED` | | T-251 完了後 |
+| T-253 | Detail画面UI改善 レビュー | reviewer | `BLOCKED` | | T-252a/b 完了後 |
+| T-254 | Detail画面UI改善 テスト実行 | tester | `BLOCKED` | | T-253 承認後 |
+
+---
+
+## REL-1: AppStore無料版リリース準備
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-260 | AppStore無料版リリース準備 | orchestrator | `TODO` | | リリース要件確認・App Store Connect設定・メタデータ・スクリーンショット等 |
+
+---
+
 ## R-1: メンバー未選択時の入力ガード
 
 | ID | タスク | 役割 | status | locked_by | notes |
