@@ -69,7 +69,7 @@
 | T-242a | PaymentInfo削除UI変更 実装 | flutter-dev | `DONE` | | FS-payment_info_delete_icon.md 参照 |
 | T-242b | PaymentInfo削除UI変更 テストコード実装 | tester | `DONE` | | TC-PID2-001〜003 実装済み |
 | T-243 | PaymentInfo削除UI変更 レビュー | reviewer | `DONE` | | 合格 |
-| T-244 | PaymentInfo削除UI変更 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | T-243 承認後 |
+| T-244 | PaymentInfo削除UI変更 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | 競合解消後再実行 |
 
 ---
 
@@ -94,7 +94,7 @@
 | T-270a | B-6: ガソリン支払い者チップ選択 実装 | flutter-dev | `DONE` | | FS-gas_payer_chip_selection_phaseC.md 参照 |
 | T-270b | B-6: テストコード実装 | tester | `DONE` | | TC-GPS-001〜008 実装済み（gas_payer_chip_test.dart） |
 | T-271 | B-6: レビュー | reviewer | `DONE` | | 合格 |
-| T-272 | B-6: テスト実行 | tester | `TODO` | | startApp クリーンアップ修正済み（router.go→pump→GetIt.reset パターンに統一）・tester 再実行待ち |
+| T-272 | B-6: テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | startApp クリーンアップ修正済み |
 
 ---
 
@@ -107,7 +107,7 @@
 | T-266a | 概要タブセクション名 実装 | flutter-dev | `DONE` | | FS-overview_tab_section_labels.md 参照 |
 | T-266b | 概要タブセクション名 テストコード実装 | tester | `DONE` | | TC-OSL-001〜002 実装済み |
 | T-267 | 概要タブセクション名 レビュー | reviewer | `DONE` | | 合格 |
-| T-268 | 概要タブセクション名 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | T-267 承認後 |
+| T-268 | 概要タブセクション名 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | 競合解消後再実行 |
 
 ---
 
