@@ -150,7 +150,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-210 | イベント削除UI変更 要件書作成 | product-manager | `TODO` | | 下書き: docs/Requirements/REQ-DRAFT-event_delete_ui_redesign.md |
+| T-210 | イベント削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-event_delete_ui_redesign.md |
 | T-211 | イベント削除UI変更 Spec作成 | architect | `BLOCKED` | | T-210 完了後 |
 | T-212a | イベント削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-211 完了後 |
 | T-212b | イベント削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-211 完了後 |
@@ -204,7 +204,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-250 | Detail画面UI改善 要件書作成 | product-manager | `TODO` | | 下書き: docs/Requirements/REQ-DRAFT-detail_screen_ui_improvement.md |
+| T-250 | Detail画面UI改善 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-detail_screen_ui_improvement.md |
 | T-251 | Detail画面UI改善 Spec作成 | architect | `BLOCKED` | | T-250 完了後 |
 | T-252a | Detail画面UI改善 実装 | flutter-dev | `BLOCKED` | | T-251 完了後 |
 | T-252b | Detail画面UI改善 テストコード実装 | tester | `BLOCKED` | | T-251 完了後 |
