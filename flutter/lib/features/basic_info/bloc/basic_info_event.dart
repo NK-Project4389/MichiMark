@@ -30,55 +30,13 @@ class BasicInfoEventNameChanged extends BasicInfoEvent {
   List<Object?> get props => [name];
 }
 
-/// 交通手段編集ボタンが押されたとき
-class BasicInfoEditTransPressed extends BasicInfoEvent {
-  const BasicInfoEditTransPressed();
-
-  @override
-  List<Object?> get props => [];
-}
-
-/// 選択画面から交通手段が返却されたとき
-class BasicInfoTransSelected extends BasicInfoEvent {
-  final TransDomain? trans;
-  const BasicInfoTransSelected(this.trans);
+/// TransチップがタップされたときMFY（同一TransでOFF、別TransでON）
+class BasicInfoTransChipToggled extends BasicInfoEvent {
+  final TransDomain trans;
+  const BasicInfoTransChipToggled(this.trans);
 
   @override
   List<Object?> get props => [trans];
-}
-
-/// メンバー編集ボタンが押されたとき
-class BasicInfoEditMembersPressed extends BasicInfoEvent {
-  const BasicInfoEditMembersPressed();
-
-  @override
-  List<Object?> get props => [];
-}
-
-/// 選択画面からメンバーが返却されたとき
-class BasicInfoMembersSelected extends BasicInfoEvent {
-  final List<MemberDomain> members;
-  const BasicInfoMembersSelected(this.members);
-
-  @override
-  List<Object?> get props => [members];
-}
-
-/// タグ編集ボタンが押されたとき（選択画面遷移用。現在は基本画面から未使用）
-class BasicInfoEditTagsPressed extends BasicInfoEvent {
-  const BasicInfoEditTagsPressed();
-
-  @override
-  List<Object?> get props => [];
-}
-
-/// 選択画面からタグが返却されたとき（選択画面遷移用。現在は基本画面から未使用）
-class BasicInfoTagsSelected extends BasicInfoEvent {
-  final List<TagDomain> tags;
-  const BasicInfoTagsSelected(this.tags);
-
-  @override
-  List<Object?> get props => [tags];
 }
 
 /// タグ入力フィールドのテキストが変化したとき
@@ -117,21 +75,49 @@ class BasicInfoTagRemoved extends BasicInfoEvent {
   List<Object?> get props => [tag];
 }
 
-/// ガソリン支払メンバー編集ボタンが押されたとき
-class BasicInfoEditPayMemberPressed extends BasicInfoEvent {
-  const BasicInfoEditPayMemberPressed();
+/// メンバー入力欄のテキストが変化したとき
+class BasicInfoMemberInputChanged extends BasicInfoEvent {
+  final String input;
+  const BasicInfoMemberInputChanged(this.input);
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [input];
 }
 
-/// 選択画面からガソリン支払メンバーが返却されたとき
-class BasicInfoPayMemberSelected extends BasicInfoEvent {
-  final MemberDomain? payMember;
-  const BasicInfoPayMemberSelected(this.payMember);
+/// サジェストリストからメンバーが選択されたとき
+class BasicInfoMemberSuggestionSelected extends BasicInfoEvent {
+  final MemberDomain member;
+  const BasicInfoMemberSuggestionSelected(this.member);
 
   @override
-  List<Object?> get props => [payMember];
+  List<Object?> get props => [member];
+}
+
+/// メンバー入力欄でキーボード確定時（マスタ一致→追加、未登録→マスタ登録+追加）
+class BasicInfoMemberInputConfirmed extends BasicInfoEvent {
+  final String input;
+  const BasicInfoMemberInputConfirmed(this.input);
+
+  @override
+  List<Object?> get props => [input];
+}
+
+/// 選択済みメンバーが削除されたとき
+class BasicInfoMemberRemoved extends BasicInfoEvent {
+  final MemberDomain member;
+  const BasicInfoMemberRemoved(this.member);
+
+  @override
+  List<Object?> get props => [member];
+}
+
+/// GasPayMemberチップがタップされたとき（同一MemberでOFF、別MemberでON）
+class BasicInfoPayMemberChipToggled extends BasicInfoEvent {
+  final MemberDomain member;
+  const BasicInfoPayMemberChipToggled(this.member);
+
+  @override
+  List<Object?> get props => [member];
 }
 
 /// 燃費入力が変更されたとき

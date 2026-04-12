@@ -1,13 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/master/tag/tag_domain.dart';
+import '../../../domain/master/trans/trans_domain.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../domain/topic/topic_domain.dart';
 import '../../../domain/transaction/event/event_domain.dart';
 import '../../../repository/event_repository.dart';
+import '../../../repository/member_repository.dart';
 import '../../../repository/repository_error.dart';
 import '../../../repository/tag_repository.dart';
 import '../../../repository/topic_repository.dart';
+import '../../../repository/trans_repository.dart';
 import '../draft/basic_info_draft.dart';
 import 'basic_info_event.dart';
 import 'basic_info_state.dart';
@@ -17,24 +21,26 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
     required EventRepository eventRepository,
     required TopicRepository topicRepository,
     required TagRepository tagRepository,
+    required MemberRepository memberRepository,
+    required TransRepository transRepository,
   })  : _eventRepository = eventRepository,
         _topicRepository = topicRepository,
         _tagRepository = tagRepository,
+        _memberRepository = memberRepository,
+        _transRepository = transRepository,
         super(const BasicInfoLoading()) {
     on<BasicInfoStarted>(_onStarted);
     on<BasicInfoEventNameChanged>(_onEventNameChanged);
-    on<BasicInfoEditTransPressed>(_onEditTransPressed);
-    on<BasicInfoTransSelected>(_onTransSelected);
-    on<BasicInfoEditMembersPressed>(_onEditMembersPressed);
-    on<BasicInfoMembersSelected>(_onMembersSelected);
-    on<BasicInfoEditTagsPressed>(_onEditTagsPressed);
-    on<BasicInfoTagsSelected>(_onTagsSelected);
+    on<BasicInfoTransChipToggled>(_onTransChipToggled);
     on<BasicInfoTagInputChanged>(_onTagInputChanged);
     on<BasicInfoTagSuggestionSelected>(_onTagSuggestionSelected);
     on<BasicInfoTagInputConfirmed>(_onTagInputConfirmed);
     on<BasicInfoTagRemoved>(_onTagRemoved);
-    on<BasicInfoEditPayMemberPressed>(_onEditPayMemberPressed);
-    on<BasicInfoPayMemberSelected>(_onPayMemberSelected);
+    on<BasicInfoMemberInputChanged>(_onMemberInputChanged);
+    on<BasicInfoMemberSuggestionSelected>(_onMemberSuggestionSelected);
+    on<BasicInfoMemberInputConfirmed>(_onMemberInputConfirmed);
+    on<BasicInfoMemberRemoved>(_onMemberRemoved);
+    on<BasicInfoPayMemberChipToggled>(_onPayMemberChipToggled);
     on<BasicInfoKmPerGasChanged>(_onKmPerGasChanged);
     on<BasicInfoPricePerGasChanged>(_onPricePerGasChanged);
     on<BasicInfoEditModeEntered>(_onEditModeEntered);
@@ -46,7 +52,51 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
   final EventRepository _eventRepository;
   final TopicRepository _topicRepository;
   final TagRepository _tagRepository;
+  final MemberRepository _memberRepository;
+  final TransRepository _transRepository;
   String _eventId = '';
+
+  /// 直近10件のイベントから頻出メンバーサジェストを生成する（選択済み除外）
+  List<MemberDomain> _buildInitialMemberSuggestions(
+    List<EventDomain> recentEvents,
+    List<MemberDomain> selectedMembers,
+  ) {
+    final selectedIds = selectedMembers.map((m) => m.id).toSet();
+    // 直近10件のイベントから全メンバーを収集し、出現頻度順に並べる
+    final countMap = <String, int>{};
+    final memberMap = <String, MemberDomain>{};
+    for (final event in recentEvents) {
+      for (final member in event.members) {
+        countMap[member.id] = (countMap[member.id] ?? 0) + 1;
+        memberMap[member.id] = member;
+      }
+    }
+    final suggestions = memberMap.values
+        .where((m) => !selectedIds.contains(m.id))
+        .toList()
+      ..sort((a, b) => (countMap[b.id] ?? 0).compareTo(countMap[a.id] ?? 0));
+    return suggestions;
+  }
+
+  /// メンバーサジェストを構築する。
+  /// input が空の場合は直近イベントサジェスト（選択済み除外）を返す。
+  /// input がある場合は allMembers を部分一致フィルタ（選択済み除外）。
+  List<MemberDomain> _buildMemberSuggestions(
+    BasicInfoLoaded current,
+    String input,
+    List<MemberDomain> baseSuggestions,
+  ) {
+    final selectedIds = current.draft.selectedMembers.map((m) => m.id).toSet();
+    if (input.isEmpty) {
+      return baseSuggestions.where((m) => !selectedIds.contains(m.id)).toList();
+    }
+    final lower = input.toLowerCase();
+    return current.allMembers
+        .where((m) =>
+            !selectedIds.contains(m.id) &&
+            m.memberName.toLowerCase().contains(lower))
+        .toList();
+  }
 
   Future<void> _onStarted(
     BasicInfoStarted event,
@@ -75,7 +125,19 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
       );
       final topicConfig = TopicConfig.fromTopicType(topicDomain?.topicType ?? event.initialTopicType);
       final allTags = await _tagRepository.fetchAll();
-      emit(BasicInfoLoaded(draft: draft, topicConfig: topicConfig, allTags: allTags));
+      final allTrans = await _transRepository.fetchAll();
+      final allMembers = await _memberRepository.fetchAll();
+      // 直近10件のイベントを取得してメンバーサジェストを生成
+      final recentEvents = (await _eventRepository.fetchAll()).take(10).toList();
+      final memberSuggestions = _buildInitialMemberSuggestions(recentEvents, draft.selectedMembers);
+      emit(BasicInfoLoaded(
+        draft: draft,
+        topicConfig: topicConfig,
+        allTags: allTags,
+        allTrans: allTrans,
+        allMembers: allMembers,
+        memberSuggestions: memberSuggestions,
+      ));
     } on NotFoundError {
       // 通常はEventDetailBlocが先に新規イベントをDBに保存するためここには入らないが念のため維持
       final initialTopicType = event.initialTopicType;
@@ -88,7 +150,15 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
       );
       final topicConfig = TopicConfig.fromTopicType(initialTopicType);
       final allTags = await _tagRepository.fetchAll();
-      emit(BasicInfoLoaded(draft: draft, topicConfig: topicConfig, allTags: allTags));
+      final allTrans = await _transRepository.fetchAll();
+      final allMembers = await _memberRepository.fetchAll();
+      emit(BasicInfoLoaded(
+        draft: draft,
+        topicConfig: topicConfig,
+        allTags: allTags,
+        allTrans: allTrans,
+        allMembers: allMembers,
+      ));
     } on Exception catch (e) {
       emit(BasicInfoError(message: e.toString()));
     }
@@ -106,86 +176,35 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
     }
   }
 
-  Future<void> _onEditTransPressed(
-    BasicInfoEditTransPressed event,
+  Future<void> _onTransChipToggled(
+    BasicInfoTransChipToggled event,
     Emitter<BasicInfoState> emit,
   ) async {
-    if (state is BasicInfoLoaded) {
-      final current = state as BasicInfoLoaded;
-      emit(current.copyWith(
-        delegate: const BasicInfoOpenTransSelectionDelegate(),
-      ));
-    }
-  }
-
-  Future<void> _onTransSelected(
-    BasicInfoTransSelected event,
-    Emitter<BasicInfoState> emit,
-  ) async {
-    if (state is BasicInfoLoaded) {
-      final current = state as BasicInfoLoaded;
-      // 交通手段に燃費が設定されていれば自動で反映する（0.1km/Lの10倍整数値 → 表示文字列に変換）
-      // movingCostEstimated モードのみ反映する（REQ-FEU-003）
-      final kmPerGas = event.trans?.kmPerGas;
-      final isEstimatedMode = current.draft.selectedTopic?.topicType == TopicType.movingCostEstimated;
-      final newKmPerGasInput = (kmPerGas != null && isEstimatedMode)
-          ? (kmPerGas / 10.0).toStringAsFixed(1)
-          : current.draft.kmPerGasInput;
-      emit(current.copyWith(
-        draft: current.draft.copyWith(
-          selectedTrans: event.trans,
-          kmPerGasInput: newKmPerGasInput,
-        ),
-      ));
-    }
-  }
-
-  Future<void> _onEditMembersPressed(
-    BasicInfoEditMembersPressed event,
-    Emitter<BasicInfoState> emit,
-  ) async {
-    if (state is BasicInfoLoaded) {
-      final current = state as BasicInfoLoaded;
-      emit(current.copyWith(
-        delegate: const BasicInfoOpenMembersSelectionDelegate(),
-      ));
-    }
-  }
-
-  Future<void> _onMembersSelected(
-    BasicInfoMembersSelected event,
-    Emitter<BasicInfoState> emit,
-  ) async {
-    if (state is BasicInfoLoaded) {
-      final current = state as BasicInfoLoaded;
-      emit(current.copyWith(
-        draft: current.draft.copyWith(selectedMembers: event.members),
-      ));
-    }
-  }
-
-  Future<void> _onEditTagsPressed(
-    BasicInfoEditTagsPressed event,
-    Emitter<BasicInfoState> emit,
-  ) async {
-    if (state is BasicInfoLoaded) {
-      final current = state as BasicInfoLoaded;
-      emit(current.copyWith(
-        delegate: const BasicInfoOpenTagsSelectionDelegate(),
-      ));
-    }
-  }
-
-  Future<void> _onTagsSelected(
-    BasicInfoTagsSelected event,
-    Emitter<BasicInfoState> emit,
-  ) async {
-    if (state is BasicInfoLoaded) {
-      final current = state as BasicInfoLoaded;
-      emit(current.copyWith(
-        draft: current.draft.copyWith(selectedTags: event.tags),
-      ));
-    }
+    if (state is! BasicInfoLoaded) return;
+    final current = state as BasicInfoLoaded;
+    final isSelected = current.draft.selectedTrans?.id == event.trans.id;
+    // 同一TransをタップでOFF、別TransをタップでON（単一選択）
+    // TransDomain変更時に燃費自動反映ロジックを適用する（movingCostEstimatedモードのみ）
+    final TransDomain? newTrans = isSelected ? null : event.trans;
+    final kmPerGas = newTrans?.kmPerGas;
+    final isEstimatedMode =
+        current.draft.selectedTopic?.topicType == TopicType.movingCostEstimated;
+    final newKmPerGasInput = (kmPerGas != null && isEstimatedMode)
+        ? (kmPerGas / 10.0).toStringAsFixed(1)
+        : current.draft.kmPerGasInput;
+    // copyWithはnullクリアに対応していないため、Draftを直接再構築する
+    final newDraft = BasicInfoDraft(
+      eventName: current.draft.eventName,
+      selectedTrans: newTrans,
+      selectedMembers: current.draft.selectedMembers,
+      selectedTags: current.draft.selectedTags,
+      selectedPayMember: current.draft.selectedPayMember,
+      kmPerGasInput: newKmPerGasInput,
+      pricePerGasInput: current.draft.pricePerGasInput,
+      selectedTopic: current.draft.selectedTopic,
+      isEditing: current.draft.isEditing,
+    );
+    emit(current.copyWith(draft: newDraft));
   }
 
   Future<void> _onTagInputChanged(
@@ -195,7 +214,7 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
     if (state is! BasicInfoLoaded) return;
     final current = state as BasicInfoLoaded;
     final input = event.input.trim();
-    final suggestions = _buildSuggestions(current, input);
+    final suggestions = _buildTagSuggestions(current, input);
     emit(current.copyWith(tagSuggestions: suggestions));
   }
 
@@ -215,7 +234,7 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
         .toList();
 
     final newTags = [...current.draft.selectedTags, updatedTag];
-    final suggestions = _buildSuggestions(
+    final suggestions = _buildTagSuggestions(
       current.copyWith(allTags: updatedAllTags, draft: current.draft.copyWith(selectedTags: newTags)),
       '',
     );
@@ -226,10 +245,10 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
     ));
   }
 
-  /// サジェストリストを構築する。
+  /// タグサジェストリストを構築する。
   /// input が空の場合は全マスタタグ（未選択）を updatedAt 降順で返す。
   /// input がある場合は部分一致フィルタをかける。
-  List<TagDomain> _buildSuggestions(BasicInfoLoaded current, String input) {
+  List<TagDomain> _buildTagSuggestions(BasicInfoLoaded current, String input) {
     final selectedIds = current.draft.selectedTags.map((t) => t.id).toSet();
     final candidates = current.allTags
         .where((t) => !selectedIds.contains(t.id))
@@ -298,10 +317,10 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
         .where((t) => t.id != event.tag.id)
         .toList();
     final newDraft = current.draft.copyWith(selectedTags: newTags);
-    // 解除したタグをレコメンドに戻す（入力中テキストでフィルタ済みの状態を維持）
-    final suggestions = _buildSuggestions(
+    // 解除したタグをレコメンドに戻す
+    final suggestions = _buildTagSuggestions(
       current.copyWith(draft: newDraft),
-      '', // 現在の入力テキストは_TagInputSectionが管理しているためBlocでは空扱い
+      '',
     );
     emit(current.copyWith(
       draft: newDraft,
@@ -309,28 +328,140 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
     ));
   }
 
-  Future<void> _onEditPayMemberPressed(
-    BasicInfoEditPayMemberPressed event,
+  Future<void> _onMemberInputChanged(
+    BasicInfoMemberInputChanged event,
     Emitter<BasicInfoState> emit,
   ) async {
-    if (state is BasicInfoLoaded) {
-      final current = state as BasicInfoLoaded;
-      emit(current.copyWith(
-        delegate: const BasicInfoOpenPayMemberSelectionDelegate(),
-      ));
-    }
+    if (state is! BasicInfoLoaded) return;
+    final current = state as BasicInfoLoaded;
+    final input = event.input.trim();
+    // 入力空→memberSuggestions（直近サジェスト）から選択済みを除外
+    // 入力あり→allMembersを部分一致フィルタ（選択済み除外）
+    final suggestions = _buildMemberSuggestions(current, input, current.memberSuggestions);
+    emit(current.copyWith(memberSuggestions: suggestions));
   }
 
-  Future<void> _onPayMemberSelected(
-    BasicInfoPayMemberSelected event,
+  Future<void> _onMemberSuggestionSelected(
+    BasicInfoMemberSuggestionSelected event,
     Emitter<BasicInfoState> emit,
   ) async {
-    if (state is BasicInfoLoaded) {
-      final current = state as BasicInfoLoaded;
-      emit(current.copyWith(
-        draft: current.draft.copyWith(selectedPayMember: event.payMember),
-      ));
+    if (state is! BasicInfoLoaded) return;
+    final current = state as BasicInfoLoaded;
+    // 重複チェック
+    final alreadySelected =
+        current.draft.selectedMembers.any((m) => m.id == event.member.id);
+    if (alreadySelected) return;
+
+    final newMembers = [...current.draft.selectedMembers, event.member];
+    final newDraft = current.draft.copyWith(selectedMembers: newMembers);
+    // 追加したメンバーをサジェストから除外して再フィルタリング
+    final newSuggestions = current.memberSuggestions
+        .where((m) => m.id != event.member.id)
+        .toList();
+    emit(current.copyWith(
+      draft: newDraft,
+      memberSuggestions: newSuggestions,
+    ));
+  }
+
+  Future<void> _onMemberInputConfirmed(
+    BasicInfoMemberInputConfirmed event,
+    Emitter<BasicInfoState> emit,
+  ) async {
+    if (state is! BasicInfoLoaded) return;
+    final current = state as BasicInfoLoaded;
+    final input = event.input.trim();
+    if (input.isEmpty) return;
+
+    // 既に選択済みなら無視
+    final alreadySelected = current.draft.selectedMembers
+        .any((m) => m.memberName.toLowerCase() == input.toLowerCase());
+    if (alreadySelected) return;
+
+    // allMembersに同名（大文字小文字区別なし）が存在するか確認
+    final matchList = current.allMembers
+        .where((m) => m.memberName.toLowerCase() == input.toLowerCase())
+        .toList();
+
+    final MemberDomain member;
+    final List<MemberDomain> newAllMembers;
+    if (matchList.isNotEmpty) {
+      // マスタに存在する → そのまま追加
+      member = matchList.first;
+      newAllMembers = current.allMembers;
+    } else {
+      // 未登録 → MemberRepositoryに新規登録後、draftに追加
+      final now = DateTime.now();
+      member = MemberDomain(
+        id: const Uuid().v4(),
+        memberName: input,
+        createdAt: now,
+        updatedAt: now,
+      );
+      await _memberRepository.save(member);
+      newAllMembers = [...current.allMembers, member];
     }
+
+    final newMembers = [...current.draft.selectedMembers, member];
+    final newSuggestions = current.memberSuggestions
+        .where((m) => m.id != member.id)
+        .toList();
+    emit(current.copyWith(
+      draft: current.draft.copyWith(selectedMembers: newMembers),
+      allMembers: newAllMembers,
+      memberSuggestions: newSuggestions,
+    ));
+  }
+
+  Future<void> _onMemberRemoved(
+    BasicInfoMemberRemoved event,
+    Emitter<BasicInfoState> emit,
+  ) async {
+    if (state is! BasicInfoLoaded) return;
+    final current = state as BasicInfoLoaded;
+    final newMembers = current.draft.selectedMembers
+        .where((m) => m.id != event.member.id)
+        .toList();
+    // 削除メンバーがPayMemberと同一の場合はPayMemberをクリア
+    final shouldClearPayMember =
+        current.draft.selectedPayMember?.id == event.member.id;
+    // copyWithはnullクリアに対応していないため、Draftを直接再構築する
+    final newDraft = BasicInfoDraft(
+      eventName: current.draft.eventName,
+      selectedTrans: current.draft.selectedTrans,
+      selectedMembers: newMembers,
+      selectedTags: current.draft.selectedTags,
+      selectedPayMember:
+          shouldClearPayMember ? null : current.draft.selectedPayMember,
+      kmPerGasInput: current.draft.kmPerGasInput,
+      pricePerGasInput: current.draft.pricePerGasInput,
+      selectedTopic: current.draft.selectedTopic,
+      isEditing: current.draft.isEditing,
+    );
+    emit(current.copyWith(draft: newDraft));
+  }
+
+  Future<void> _onPayMemberChipToggled(
+    BasicInfoPayMemberChipToggled event,
+    Emitter<BasicInfoState> emit,
+  ) async {
+    if (state is! BasicInfoLoaded) return;
+    final current = state as BasicInfoLoaded;
+    // 同一MemberをタップでOFF、別MemberをタップでON（単一選択）
+    final isSelected = current.draft.selectedPayMember?.id == event.member.id;
+    // copyWithはnullクリアに対応していないため、Draftを直接再構築する
+    final newDraft = BasicInfoDraft(
+      eventName: current.draft.eventName,
+      selectedTrans: current.draft.selectedTrans,
+      selectedMembers: current.draft.selectedMembers,
+      selectedTags: current.draft.selectedTags,
+      selectedPayMember: isSelected ? null : event.member,
+      kmPerGasInput: current.draft.kmPerGasInput,
+      pricePerGasInput: current.draft.pricePerGasInput,
+      selectedTopic: current.draft.selectedTopic,
+      isEditing: current.draft.isEditing,
+    );
+    emit(current.copyWith(draft: newDraft));
   }
 
   Future<void> _onKmPerGasChanged(
@@ -365,14 +496,14 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
       final current = state as BasicInfoLoaded;
       final enteredDraft = current.draft.copyWith(isEditing: true);
       // 編集モード開始時に全マスタタグをレコメンドとして設定する
-      final suggestions = _buildSuggestions(
+      final tagSuggestions = _buildTagSuggestions(
         current.copyWith(draft: enteredDraft),
         '',
       );
       emit(current.copyWith(
         originalDraft: current.draft,
         draft: enteredDraft,
-        tagSuggestions: suggestions,
+        tagSuggestions: tagSuggestions,
       ));
     }
   }
@@ -432,6 +563,9 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
           draft: loaded.draft,
           delegate: null,
           topicConfig: loaded.topicConfig,
+          allTrans: loaded.allTrans,
+          allMembers: loaded.allMembers,
+          memberSuggestions: loaded.memberSuggestions,
           allTags: loaded.allTags,
           tagSuggestions: loaded.tagSuggestions,
           isSaving: false,

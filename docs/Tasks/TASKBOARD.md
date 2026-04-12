@@ -118,16 +118,16 @@
 |---|---|---|---|---|---|
 | T-196 | Phase A 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-event_detail_inline_selection_ui.md |
 | T-197 | Phase A Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-event_detail_inline_selection_ui_phaseA.md |
-| T-198a | Phase A BasicInfo 実装（Trans・Members・Tags・GasPayMember インライン化） | flutter-dev | `IN_PROGRESS` | 2026-04-12_R2-PhaseA-impl | FS-event_detail_inline_selection_ui_phaseA.md 参照 |
-| T-198b | Phase A テストコード実装（TC-BII-001〜016） | tester | `IN_PROGRESS` | 2026-04-12_R2-PhaseA-test | FS-event_detail_inline_selection_ui_phaseA.md 参照 |
-| T-199 | Phase A レビュー | reviewer | `BLOCKED` | | T-198a/b 完了後に着手 |
-| T-200 | Phase A テスト実行 | tester | `BLOCKED` | | T-199 承認後に着手 |
+| T-198a | Phase A BasicInfo 実装（Trans・Members・Tags・GasPayMember インライン化） | flutter-dev | `DONE` | | |
+| T-198b | Phase A テストコード実装（TC-BII-001〜016） | tester | `DONE` | | TC-BII-001〜016 実装済み |
+| T-199 | Phase A レビュー | reviewer | `DONE` | | 承認・違反なし |
+| T-200 | Phase A テスト実行 | tester | `DONE` | | 12PASS/0FAIL/4SKIP |
 
 ### Phase B: 各Detail画面 メンバー選択インライン化
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-201 | Phase B Spec作成 | architect | `BLOCKED` | | T-197 完了後に並行着手可 |
+| T-201 | Phase B Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-event_detail_inline_selection_ui_phaseB.md |
 | T-202a | Phase B MarkDetail・LinkDetail・PaymentDetail 実装 | flutter-dev | `BLOCKED` | | T-201 完了待ち |
 | T-202b | Phase B テストコード実装 | tester | `BLOCKED` | | T-201 完了待ち |
 | T-203 | Phase B レビュー | reviewer | `BLOCKED` | | T-202a/b 完了後に着手 |
@@ -139,8 +139,8 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-205 | タブ切り替え追加モード終了 実装 | flutter-dev | `TODO` | | 要件: docs/Requirements/REQ-DRAFT-michi_info_tab_switch_add_mode.md |
-| T-205b | タブ切り替え追加モード終了 テストコード実装 | tester | `TODO` | | 要件: docs/Requirements/REQ-DRAFT-michi_info_tab_switch_add_mode.md |
+| T-205 | タブ切り替え追加モード終了 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_B5-impl | 要件: docs/Requirements/REQ-DRAFT-michi_info_tab_switch_add_mode.md |
+| T-205b | タブ切り替え追加モード終了 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_B5-test | 要件: docs/Requirements/REQ-DRAFT-michi_info_tab_switch_add_mode.md |
 | T-206 | タブ切り替え追加モード終了 レビュー | reviewer | `BLOCKED` | | T-205/205b 完了後 |
 | T-207 | タブ切り替え追加モード終了 テスト実行 | tester | `BLOCKED` | | T-206 承認後 |
 

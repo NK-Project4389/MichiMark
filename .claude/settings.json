@@ -23,6 +23,7 @@
       "Bash(cp *)",
       "Bash(rm -rf /tmp/*)",
       "Bash(cat > /tmp/*)",
+      "Bash(cat > /Users/kurosakinobuyuki/ClaudeCode/App/MichiMark/*)",
       "Bash(diff *)",
       "Bash(python3 *)",
       "Bash(cd flutter && python3 *)",

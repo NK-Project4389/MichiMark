@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/master/tag/tag_domain.dart';
+import '../../../domain/master/trans/trans_domain.dart';
 import '../../../domain/topic/topic_config.dart';
-import '../../../features/selection/selection_args.dart';
-import '../../../features/selection/selection_result.dart';
 import '../../../widgets/numeric_input_row.dart';
 import '../bloc/basic_info_bloc.dart';
 import '../bloc/basic_info_event.dart';
@@ -12,35 +11,33 @@ import '../bloc/basic_info_state.dart';
 import '../draft/basic_info_draft.dart';
 
 /// BasicInfo タブの表示・編集View。
-/// await context.push を使うため StatefulWidget とする（mounted チェック必須）。
-class BasicInfoView extends StatefulWidget {
+class BasicInfoView extends StatelessWidget {
   const BasicInfoView({super.key});
 
   @override
-  State<BasicInfoView> createState() => _BasicInfoViewState();
-}
-
-class _BasicInfoViewState extends State<BasicInfoView> {
-  @override
   Widget build(BuildContext context) {
-    return BlocConsumer<BasicInfoBloc, BasicInfoState>(
-      listener: (context, state) async {
-        if (state is BasicInfoLoaded) {
-          if (state.delegate != null) {
-            await _handleDelegate(state.delegate!, state.draft);
-          }
-        }
-      },
+    return BlocBuilder<BasicInfoBloc, BasicInfoState>(
       builder: (context, state) {
         return switch (state) {
           BasicInfoLoading() =>
             const Center(child: CircularProgressIndicator()),
           BasicInfoError(:final message) => Center(child: Text(message)),
-          BasicInfoLoaded(:final draft, :final topicConfig, :final tagSuggestions, :final isSaving) =>
+          BasicInfoLoaded(
+            :final draft,
+            :final topicConfig,
+            :final allTrans,
+            :final allMembers,
+            :final memberSuggestions,
+            :final tagSuggestions,
+            :final isSaving,
+          ) =>
             draft.isEditing
                 ? _BasicInfoForm(
                     draft: draft,
                     topicConfig: topicConfig,
+                    allTrans: allTrans,
+                    allMembers: allMembers,
+                    memberSuggestions: memberSuggestions,
                     tagSuggestions: tagSuggestions,
                     isSaving: isSaving,
                   )
@@ -51,91 +48,6 @@ class _BasicInfoViewState extends State<BasicInfoView> {
         };
       },
     );
-  }
-
-  Future<void> _handleDelegate(
-    BasicInfoDelegate delegate,
-    BasicInfoDraft draft,
-  ) async {
-    // delegateを消費してnullにリセット（再タップを有効にする）
-    if (!mounted) return;
-    context.read<BasicInfoBloc>().add(const BasicInfoDelegateConsumed());
-
-    switch (delegate) {
-      case BasicInfoOpenTransSelectionDelegate():
-        final result = await context.push<SelectionResult>(
-          '/selection',
-          extra: SelectionArgs(
-            type: SelectionType.eventTrans,
-            selectedIds:
-                draft.selectedTrans != null ? {draft.selectedTrans!.id} : {},
-          ),
-        );
-        if (!mounted) return;
-        if (result case TransSelectionResult(:final selected)) {
-          context
-              .read<BasicInfoBloc>()
-              .add(BasicInfoTransSelected(selected));
-        }
-
-      case BasicInfoOpenMembersSelectionDelegate():
-        final result = await context.push<SelectionResult>(
-          '/selection',
-          extra: SelectionArgs(
-            type: SelectionType.eventMembers,
-            selectedIds: draft.selectedMembers.map((m) => m.id).toSet(),
-          ),
-        );
-        if (!mounted) return;
-        if (result case MembersSelectionResult(:final selected)) {
-          context
-              .read<BasicInfoBloc>()
-              .add(BasicInfoMembersSelected(selected));
-        }
-
-      case BasicInfoOpenTagsSelectionDelegate():
-        final result = await context.push<SelectionResult>(
-          '/selection',
-          extra: SelectionArgs(
-            type: SelectionType.eventTags,
-            selectedIds: draft.selectedTags.map((t) => t.id).toSet(),
-          ),
-        );
-        if (!mounted) return;
-        if (result case TagsSelectionResult(:final selected)) {
-          context
-              .read<BasicInfoBloc>()
-              .add(BasicInfoTagsSelected(selected));
-        }
-
-      case BasicInfoOpenPayMemberSelectionDelegate():
-        final result = await context.push<SelectionResult>(
-          '/selection',
-          extra: SelectionArgs(
-            type: SelectionType.gasPayMember,
-            selectedIds: draft.selectedPayMember != null
-                ? {draft.selectedPayMember!.id}
-                : {},
-            candidateMembers: draft.selectedMembers.isEmpty
-                ? null
-                : draft.selectedMembers,
-          ),
-        );
-        if (!mounted) return;
-        if (result case MembersSelectionResult(:final selected)) {
-          context
-              .read<BasicInfoBloc>()
-              .add(BasicInfoPayMemberSelected(selected.firstOrNull));
-        }
-
-      case BasicInfoSavedDelegate():
-        // 保存完了: 特に画面遷移なし（isEditingがfalseになっているので参照モードに戻る）
-        break;
-
-      case BasicInfoSavedAndDismissDelegate():
-        // 「保存して戻る」: EventDetailPageのBlocListenerで画面を閉じる
-        break;
-    }
   }
 }
 
@@ -247,26 +159,29 @@ class _ReadRow extends StatelessWidget {
   }
 }
 
+// ── 編集フォーム ──────────────────────────────────────────────────────────
+
 class _BasicInfoForm extends StatelessWidget {
   final BasicInfoDraft draft;
   final TopicConfig topicConfig;
+  final List<TransDomain> allTrans;
+  final List<MemberDomain> allMembers;
+  final List<MemberDomain> memberSuggestions;
   final List<TagDomain> tagSuggestions;
   final bool isSaving;
 
   const _BasicInfoForm({
     required this.draft,
     required this.topicConfig,
+    required this.allTrans,
+    required this.allMembers,
+    required this.memberSuggestions,
     required this.tagSuggestions,
     required this.isSaving,
   });
 
   @override
   Widget build(BuildContext context) {
-    // eventIdをBlocのstateから取得するのが難しいため、
-    // BasicInfoSavePressedのeventIdは空文字を渡し、Blocが_eventIdを使用する
-    // ただしSpecにはeventIdを渡す設計なので、ここではBasicInfoBlocのstateから参照する
-    // BasicInfoBlocは_onStartedでeventIdを受け取っているため、BasicInfoSavePressedのeventIdは
-    // BasicInfoBloc内で_eventIdとして保持する必要がある
     return Stack(
       children: [
         ListView(
@@ -276,22 +191,15 @@ class _BasicInfoForm extends StatelessWidget {
           children: [
             _EventNameField(value: draft.eventName),
             const Divider(height: 1),
-            _SelectionRow(
-              label: '交通手段',
-              value: draft.selectedTrans?.transName ?? '未選択',
-              onEditPressed: () => context
-                  .read<BasicInfoBloc>()
-                  .add(const BasicInfoEditTransPressed()),
+            _TransChipSection(
+              allTrans: allTrans,
+              selectedTrans: draft.selectedTrans,
             ),
             const Divider(height: 1),
-            _SelectionRow(
-              label: 'メンバー',
-              value: draft.selectedMembers.isEmpty
-                  ? '未選択'
-                  : draft.selectedMembers.map((m) => m.memberName).join('、'),
-              onEditPressed: () => context
-                  .read<BasicInfoBloc>()
-                  .add(const BasicInfoEditMembersPressed()),
+            _MemberInputSection(
+              selectedMembers: draft.selectedMembers,
+              memberSuggestions: memberSuggestions,
+              allMembers: allMembers,
             ),
             const Divider(height: 1),
             _TagInputSection(
@@ -324,13 +232,9 @@ class _BasicInfoForm extends StatelessWidget {
             ],
             if (topicConfig.showPayMember) ...[
               const Divider(height: 1),
-              _SelectionRow(
-                label: 'ガソリン支払者',
-                value: draft.selectedPayMember?.memberName ?? '未選択',
-                enabled: draft.selectedMembers.isNotEmpty,
-                onEditPressed: () => context
-                    .read<BasicInfoBloc>()
-                    .add(const BasicInfoEditPayMemberPressed()),
+              _GasPayMemberChipSection(
+                selectedMembers: draft.selectedMembers,
+                selectedPayMember: draft.selectedPayMember,
               ),
             ],
           ],
@@ -370,6 +274,8 @@ class _BasicInfoForm extends StatelessWidget {
     );
   }
 }
+
+// ── イベント名入力 ────────────────────────────────────────────────────────
 
 class _EventNameField extends StatefulWidget {
   final String value;
@@ -432,7 +338,240 @@ class _EventNameFieldState extends State<_EventNameField> {
   }
 }
 
-/// タグのインライン入力・サジェスト・チップ表示セクション
+// ── 交通手段チップセクション ──────────────────────────────────────────────
+
+/// 全交通手段マスタをチップで横並び表示する。単一選択。
+class _TransChipSection extends StatelessWidget {
+  final List<TransDomain> allTrans;
+  final TransDomain? selectedTrans;
+
+  const _TransChipSection({
+    required this.allTrans,
+    required this.selectedTrans,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('交通手段', style: labelStyle),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: allTrans.map((trans) {
+              final isSelected = selectedTrans?.id == trans.id;
+              return FilterChip(
+                key: Key('basicInfo_chip_trans_${trans.id}'),
+                label: Text(trans.transName),
+                selected: isSelected,
+                onSelected: (_) => context
+                    .read<BasicInfoBloc>()
+                    .add(BasicInfoTransChipToggled(trans)),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── メンバー入力セクション ────────────────────────────────────────────────
+
+/// 選択済みメンバーチップ（×ボタン付き）と入力欄をWrapで横並び表示。
+/// 入力欄フォーカスでドロップダウン（CompositedTransformFollower）を表示。
+class _MemberInputSection extends StatefulWidget {
+  final List<MemberDomain> selectedMembers;
+  final List<MemberDomain> memberSuggestions;
+  final List<MemberDomain> allMembers;
+
+  const _MemberInputSection({
+    required this.selectedMembers,
+    required this.memberSuggestions,
+    required this.allMembers,
+  });
+
+  @override
+  State<_MemberInputSection> createState() => _MemberInputSectionState();
+}
+
+class _MemberInputSectionState extends State<_MemberInputSection> {
+  final TextEditingController _controller = TextEditingController();
+  final LayerLink _layerLink = LayerLink();
+  OverlayEntry? _overlayEntry;
+
+  @override
+  void dispose() {
+    _removeOverlay();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _showOverlay(BuildContext context, List<MemberDomain> suggestions, String currentInput) {
+    _removeOverlay();
+    final hasAddNew = currentInput.trim().isNotEmpty &&
+        !widget.selectedMembers.any(
+          (m) => m.memberName.toLowerCase() == currentInput.trim().toLowerCase(),
+        ) &&
+        !suggestions.any(
+          (m) => m.memberName.toLowerCase() == currentInput.trim().toLowerCase(),
+        );
+    if (suggestions.isEmpty && !hasAddNew) return;
+
+    _overlayEntry = OverlayEntry(
+      builder: (overlayContext) => Positioned(
+        width: 260,
+        child: CompositedTransformFollower(
+          link: _layerLink,
+          showWhenUnlinked: false,
+          offset: const Offset(0, 36),
+          child: Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(8),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 160),
+              child: ListView(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                children: [
+                  ...suggestions.map(
+                    (member) => ListTile(
+                      key: Key('basicInfo_item_memberSuggestion_${member.id}'),
+                      dense: true,
+                      title: Text(member.memberName),
+                      onTap: () {
+                        context
+                            .read<BasicInfoBloc>()
+                            .add(BasicInfoMemberSuggestionSelected(member));
+                        _controller.clear();
+                        _removeOverlay();
+                      },
+                    ),
+                  ),
+                  if (hasAddNew)
+                    ListTile(
+                      key: const Key('basicInfo_item_memberAddNew'),
+                      dense: true,
+                      title: Text('"${currentInput.trim()}" を追加'),
+                      leading: const Icon(Icons.add, size: 18),
+                      onTap: () {
+                        final input = _controller.text;
+                        context
+                            .read<BasicInfoBloc>()
+                            .add(BasicInfoMemberInputConfirmed(input));
+                        _controller.clear();
+                        _removeOverlay();
+                      },
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  void _clearInput() {
+    _controller.clear();
+    context.read<BasicInfoBloc>().add(const BasicInfoMemberInputChanged(''));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('メンバー', style: labelStyle),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              ...widget.selectedMembers.map(
+                (member) => Chip(
+                  key: Key('basicInfo_chip_member_${member.id}'),
+                  label: Text(member.memberName),
+                  onDeleted: () => context
+                      .read<BasicInfoBloc>()
+                      .add(BasicInfoMemberRemoved(member)),
+                ),
+              ),
+              CompositedTransformTarget(
+                link: _layerLink,
+                child: SizedBox(
+                  width: 140,
+                  child: TextField(
+                    key: const Key('basicInfo_field_memberInput'),
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      hintText: 'メンバーを追加',
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 4),
+                    ),
+                    onTap: () {
+                      context
+                          .read<BasicInfoBloc>()
+                          .add(const BasicInfoMemberInputChanged(''));
+                      _showOverlay(
+                        context,
+                        widget.memberSuggestions,
+                        _controller.text,
+                      );
+                    },
+                    onChanged: (input) {
+                      context
+                          .read<BasicInfoBloc>()
+                          .add(BasicInfoMemberInputChanged(input));
+                      _showOverlay(
+                        context,
+                        widget.memberSuggestions,
+                        input,
+                      );
+                    },
+                    onSubmitted: (input) {
+                      context
+                          .read<BasicInfoBloc>()
+                          .add(BasicInfoMemberInputConfirmed(input));
+                      _clearInput();
+                      _removeOverlay();
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── タグ入力セクション ────────────────────────────────────────────────────
+
+/// 選択済みタグチップ（×ボタン付き）と入力欄をWrapで横並び表示。
+/// 入力欄フォーカスでドロップダウン（CompositedTransformFollower）を表示。
 class _TagInputSection extends StatefulWidget {
   final List<TagDomain> selectedTags;
   final List<TagDomain> tagSuggestions;
@@ -448,11 +587,85 @@ class _TagInputSection extends StatefulWidget {
 
 class _TagInputSectionState extends State<_TagInputSection> {
   final TextEditingController _controller = TextEditingController();
+  final LayerLink _layerLink = LayerLink();
+  OverlayEntry? _overlayEntry;
 
   @override
   void dispose() {
+    _removeOverlay();
     _controller.dispose();
     super.dispose();
+  }
+
+  void _showOverlay(BuildContext context, List<TagDomain> suggestions, String currentInput) {
+    _removeOverlay();
+    final hasAddNew = currentInput.trim().isNotEmpty &&
+        !widget.selectedTags.any(
+          (t) => t.tagName.toLowerCase() == currentInput.trim().toLowerCase(),
+        ) &&
+        !suggestions.any(
+          (t) => t.tagName.toLowerCase() == currentInput.trim().toLowerCase(),
+        );
+    if (suggestions.isEmpty && !hasAddNew) return;
+
+    _overlayEntry = OverlayEntry(
+      builder: (overlayContext) => Positioned(
+        width: 260,
+        child: CompositedTransformFollower(
+          link: _layerLink,
+          showWhenUnlinked: false,
+          offset: const Offset(0, 36),
+          child: Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(8),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 160),
+              child: ListView(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                children: [
+                  ...suggestions.take(4).map(
+                    (tag) => ListTile(
+                      key: Key('basicInfo_item_tagSuggestion_${tag.id}'),
+                      dense: true,
+                      title: Text(tag.tagName),
+                      onTap: () {
+                        context
+                            .read<BasicInfoBloc>()
+                            .add(BasicInfoTagSuggestionSelected(tag));
+                        _clearInput();
+                        _removeOverlay();
+                      },
+                    ),
+                  ),
+                  if (hasAddNew)
+                    ListTile(
+                      key: const Key('basicInfo_item_tagAddNew'),
+                      dense: true,
+                      title: Text('"${currentInput.trim()}" を追加'),
+                      leading: const Icon(Icons.add, size: 18),
+                      onTap: () {
+                        final input = _controller.text;
+                        context
+                            .read<BasicInfoBloc>()
+                            .add(BasicInfoTagInputConfirmed(input));
+                        _clearInput();
+                        _removeOverlay();
+                      },
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
   }
 
   void _clearInput() {
@@ -465,124 +678,128 @@ class _TagInputSectionState extends State<_TagInputSection> {
     final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: Theme.of(context).colorScheme.onSurfaceVariant,
         );
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('タグ', style: labelStyle),
-          if (widget.selectedTags.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: widget.selectedTags
-                  .map((tag) => Chip(
-                        label: Text(tag.tagName),
-                        onDeleted: () => context
-                            .read<BasicInfoBloc>()
-                            .add(BasicInfoTagRemoved(tag)),
-                      ))
-                  .toList(),
-            ),
-          ],
           const SizedBox(height: 8),
-          TextField(
-            controller: _controller,
-            decoration: const InputDecoration(
-              hintText: '新しいタグを追加',
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              isDense: true,
-              contentPadding: EdgeInsets.symmetric(vertical: 4),
-            ),
-            onChanged: (input) => context
-                .read<BasicInfoBloc>()
-                .add(BasicInfoTagInputChanged(input)),
-            onSubmitted: (input) {
-              context.read<BasicInfoBloc>().add(BasicInfoTagInputConfirmed(input));
-              _clearInput();
-            },
-          ),
-          if (widget.tagSuggestions.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(
-              '最近使用したタグ',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              ...widget.selectedTags.map(
+                (tag) => Chip(
+                  key: Key('basicInfo_chip_tag_${tag.id}'),
+                  label: Text(tag.tagName),
+                  onDeleted: () => context
+                      .read<BasicInfoBloc>()
+                      .add(BasicInfoTagRemoved(tag)),
+                ),
+              ),
+              CompositedTransformTarget(
+                link: _layerLink,
+                child: SizedBox(
+                  width: 140,
+                  child: TextField(
+                    key: const Key('basicInfo_field_tagInput'),
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      hintText: '新しいタグを追加',
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 4),
+                    ),
+                    onTap: () {
+                      context
+                          .read<BasicInfoBloc>()
+                          .add(const BasicInfoTagInputChanged(''));
+                      _showOverlay(
+                        context,
+                        widget.tagSuggestions,
+                        _controller.text,
+                      );
+                    },
+                    onChanged: (input) {
+                      context
+                          .read<BasicInfoBloc>()
+                          .add(BasicInfoTagInputChanged(input));
+                      _showOverlay(
+                        context,
+                        widget.tagSuggestions,
+                        input,
+                      );
+                    },
+                    onSubmitted: (input) {
+                      context
+                          .read<BasicInfoBloc>()
+                          .add(BasicInfoTagInputConfirmed(input));
+                      _clearInput();
+                      _removeOverlay();
+                    },
                   ),
-            ),
-            const SizedBox(height: 4),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: widget.tagSuggestions
-                  .map((tag) => ActionChip(
-                        label: Text(tag.tagName),
-                        onPressed: () {
-                          context
-                              .read<BasicInfoBloc>()
-                              .add(BasicInfoTagSuggestionSelected(tag));
-                          _clearInput();
-                        },
-                      ))
-                  .toList(),
-            ),
-          ],
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 }
 
-class _SelectionRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final VoidCallback onEditPressed;
-  final bool enabled;
+// ── ガソリン支払者チップセクション ────────────────────────────────────────
 
-  const _SelectionRow({
-    required this.label,
-    required this.value,
-    required this.onEditPressed,
-    this.enabled = true,
+/// イベントメンバー全員をチップで表示。単一選択（支払者を選ぶ）。
+class _GasPayMemberChipSection extends StatelessWidget {
+  final List<MemberDomain> selectedMembers;
+  final MemberDomain? selectedPayMember;
+
+  const _GasPayMemberChipSection({
+    required this.selectedMembers,
+    required this.selectedPayMember,
   });
 
   @override
   Widget build(BuildContext context) {
-    final disabledColor = Theme.of(context).colorScheme.onSurfaceVariant;
-    return InkWell(
-      onTap: enabled ? onEditPressed : null,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 120,
-              child: Text(
-                label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-              ),
+    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('ガソリン支払者', style: labelStyle),
+          const SizedBox(height: 8),
+          if (selectedMembers.isEmpty)
+            Text(
+              key: const Key('basicInfo_text_payMemberHint'),
+              'メンバーを先に選択してください',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            )
+          else
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: selectedMembers.map((member) {
+                final isSelected = selectedPayMember?.id == member.id;
+                return FilterChip(
+                  key: Key('basicInfo_chip_payMember_${member.id}'),
+                  label: Text(member.memberName),
+                  selected: isSelected,
+                  onSelected: (_) => context
+                      .read<BasicInfoBloc>()
+                      .add(BasicInfoPayMemberChipToggled(member)),
+                );
+              }).toList(),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  value,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: enabled ? null : disabledColor,
-                      ),
-                ),
-              ),
-            ),
-            Icon(Icons.chevron_right, color: enabled ? null : disabledColor),
-          ],
-        ),
+        ],
       ),
     );
   }

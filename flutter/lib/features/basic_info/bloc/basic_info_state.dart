@@ -1,39 +1,13 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/master/tag/tag_domain.dart';
+import '../../../domain/master/trans/trans_domain.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../draft/basic_info_draft.dart';
 
 /// BasicInfoのDelegate（画面遷移・操作意図の通知）
 sealed class BasicInfoDelegate extends Equatable {
   const BasicInfoDelegate();
-}
-
-class BasicInfoOpenTransSelectionDelegate extends BasicInfoDelegate {
-  const BasicInfoOpenTransSelectionDelegate();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class BasicInfoOpenMembersSelectionDelegate extends BasicInfoDelegate {
-  const BasicInfoOpenMembersSelectionDelegate();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class BasicInfoOpenTagsSelectionDelegate extends BasicInfoDelegate {
-  const BasicInfoOpenTagsSelectionDelegate();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class BasicInfoOpenPayMemberSelectionDelegate extends BasicInfoDelegate {
-  const BasicInfoOpenPayMemberSelectionDelegate();
-
-  @override
-  List<Object?> get props => [];
 }
 
 class BasicInfoSavedDelegate extends BasicInfoDelegate {
@@ -71,6 +45,15 @@ class BasicInfoLoaded extends BasicInfoState {
   /// 現在のTopicに基づく表示制御設定
   final TopicConfig topicConfig;
 
+  /// 交通手段マスタ全件キャッシュ（チップ表示用）
+  final List<TransDomain> allTrans;
+
+  /// メンバーマスタ全件キャッシュ（サジェスト検索用）
+  final List<MemberDomain> allMembers;
+
+  /// 現在表示中のメンバーサジェスト一覧
+  final List<MemberDomain> memberSuggestions;
+
   /// タグマスタ全件キャッシュ（サジェスト検索用）
   final List<TagDomain> allTags;
 
@@ -87,6 +70,9 @@ class BasicInfoLoaded extends BasicInfoState {
     required this.draft,
     this.delegate,
     required this.topicConfig,
+    this.allTrans = const [],
+    this.allMembers = const [],
+    this.memberSuggestions = const [],
     this.allTags = const [],
     this.tagSuggestions = const [],
     this.isSaving = false,
@@ -97,6 +83,9 @@ class BasicInfoLoaded extends BasicInfoState {
     BasicInfoDraft? draft,
     BasicInfoDelegate? delegate,
     TopicConfig? topicConfig,
+    List<TransDomain>? allTrans,
+    List<MemberDomain>? allMembers,
+    List<MemberDomain>? memberSuggestions,
     List<TagDomain>? allTags,
     List<TagDomain>? tagSuggestions,
     bool? isSaving,
@@ -106,6 +95,9 @@ class BasicInfoLoaded extends BasicInfoState {
       draft: draft ?? this.draft,
       delegate: delegate,
       topicConfig: topicConfig ?? this.topicConfig,
+      allTrans: allTrans ?? this.allTrans,
+      allMembers: allMembers ?? this.allMembers,
+      memberSuggestions: memberSuggestions ?? this.memberSuggestions,
       allTags: allTags ?? this.allTags,
       tagSuggestions: tagSuggestions ?? this.tagSuggestions,
       isSaving: isSaving ?? this.isSaving,
@@ -114,7 +106,18 @@ class BasicInfoLoaded extends BasicInfoState {
   }
 
   @override
-  List<Object?> get props => [draft, delegate, topicConfig, allTags, tagSuggestions, isSaving, originalDraft];
+  List<Object?> get props => [
+        draft,
+        delegate,
+        topicConfig,
+        allTrans,
+        allMembers,
+        memberSuggestions,
+        allTags,
+        tagSuggestions,
+        isSaving,
+        originalDraft,
+      ];
 }
 
 class BasicInfoError extends BasicInfoState {

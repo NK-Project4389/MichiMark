@@ -6,8 +6,10 @@ import '../../../domain/topic/topic_domain.dart';
 import '../../../domain/topic/topic_theme_color.dart';
 import '../../../repository/action_repository.dart';
 import '../../../repository/event_repository.dart';
+import '../../../repository/member_repository.dart';
 import '../../../repository/tag_repository.dart';
 import '../../../repository/topic_repository.dart';
+import '../../../repository/trans_repository.dart';
 import '../../basic_info/bloc/basic_info_bloc.dart';
 import '../../basic_info/bloc/basic_info_event.dart';
 import '../../basic_info/bloc/basic_info_state.dart';
@@ -121,6 +123,8 @@ class _EventDetailScaffold extends StatelessWidget {
             eventRepository: getIt<EventRepository>(),
             topicRepository: getIt<TopicRepository>(),
             tagRepository: getIt<TagRepository>(),
+            memberRepository: getIt<MemberRepository>(),
+            transRepository: getIt<TransRepository>(),
           )..add(BasicInfoStarted(eventId, initialTopicType: initialTopicType)),
         ),
         BlocProvider(
@@ -331,7 +335,12 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
                     .read<EventDetailBloc>()
                     .add(const EventDetailDelegateConsumed());
 
-              default:
+              case EventDetailDismissDelegate():
+              case EventDetailOpenMarkDelegate():
+              case EventDetailOpenLinkDelegate():
+              case EventDetailOpenPaymentDelegate():
+              case EventDetailAddMarkLinkDelegate():
+                // これらのDelegateはEventDetailPageの_handleDelegateで処理する
                 break;
             }
           },
