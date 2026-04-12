@@ -103,7 +103,7 @@
 |---|---|---|---|---|---|
 | T-264 | 概要タブセクション名 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-overview_tab_section_labels.md |
 | T-265 | 概要タブセクション名 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-overview_tab_section_labels.md |
-| T-266a | 概要タブセクション名 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_自走 | FS-overview_tab_section_labels.md 参照 |
+| T-266a | 概要タブセクション名 実装 | flutter-dev | `DONE` | | FS-overview_tab_section_labels.md 参照 |
 | T-266b | 概要タブセクション名 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_自走 | FS-overview_tab_section_labels.md 参照 |
 | T-267 | 概要タブセクション名 レビュー | reviewer | `BLOCKED` | | T-266a/b 完了後 |
 | T-268 | 概要タブセクション名 テスト実行 | tester | `BLOCKED` | | T-267 承認後 |
