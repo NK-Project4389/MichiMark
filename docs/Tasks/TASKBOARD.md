@@ -39,7 +39,7 @@
 | T-220 | BasicInfo参照タップ編集 デザイン提案 | designer | `DONE` | | docs/Design/draft/basic_info_tap_to_edit_design.html |
 | T-221 | BasicInfo参照タップ編集 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-basic_info_tap_to_edit.md |
 | T-222 | BasicInfo参照タップ編集 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-basic_info_tap_to_edit.md |
-| T-222a | BasicInfo参照タップ編集 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_自走 | FS-basic_info_tap_to_edit.md 参照 |
+| T-222a | BasicInfo参照タップ編集 実装 | flutter-dev | `DONE` | | FS-basic_info_tap_to_edit.md 参照 |
 | T-222b | BasicInfo参照タップ編集 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_自走 | FS-basic_info_tap_to_edit.md 参照 |
 | T-223 | BasicInfo参照タップ編集 レビュー | reviewer | `BLOCKED` | | T-222a/b 完了後 |
 | T-224 | BasicInfo参照タップ編集 テスト実行 | tester | `BLOCKED` | | T-223 承認後 |

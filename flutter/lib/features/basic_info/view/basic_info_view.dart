@@ -64,12 +64,15 @@ class _BasicInfoReadView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ListView(
+    return GestureDetector(
+      key: const Key('basicInfoRead_container_section'),
+      onTap: () => context.read<BasicInfoBloc>().add(const BasicInfoEditModeEntered()),
+      child: Container(
+        color: const Color(0xFFE8F4F8),
+        child: ListView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
           children: [
             _ReadRow(label: 'イベント名', value: draft.eventName.isEmpty ? '未設定' : draft.eventName),
             const SizedBox(height: 12),
@@ -112,18 +115,18 @@ class _BasicInfoReadView extends StatelessWidget {
                 value: draft.selectedPayMember?.memberName ?? '未選択',
               ),
             ],
+            const SizedBox(height: 12),
+            Text(
+              key: const Key('basicInfoRead_text_tapHint'),
+              'タップして編集',
+              textAlign: TextAlign.right,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
           ],
         ),
-        Positioned(
-          right: 8,
-          top: 4,
-          child: IconButton(
-            icon: const Icon(Icons.edit),
-            tooltip: '編集',
-            onPressed: () => context.read<BasicInfoBloc>().add(const BasicInfoEditModeEntered()),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -182,70 +185,67 @@ class _BasicInfoForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return ListView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        ListView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.only(bottom: 80),
-          children: [
-            _EventNameField(value: draft.eventName),
-            const Divider(height: 1),
-            _TransChipSection(
-              allTrans: allTrans,
-              selectedTrans: draft.selectedTrans,
-            ),
-            const Divider(height: 1),
-            _MemberInputSection(
-              selectedMembers: draft.selectedMembers,
-              memberSuggestions: memberSuggestions,
-              allMembers: allMembers,
-            ),
-            const Divider(height: 1),
-            _TagInputSection(
-              selectedTags: draft.selectedTags,
-              tagSuggestions: tagSuggestions,
-            ),
-            if (topicConfig.showKmPerGas) ...[
-              const Divider(height: 1),
-              NumericInputRow(
-                key: const Key('km_per_gas_input_row'),
-                label: '燃費',
-                unit: 'km/L',
-                value: draft.kmPerGasInput,
-                isDecimal: true,
-                onChanged: (input) => context
-                    .read<BasicInfoBloc>()
-                    .add(BasicInfoKmPerGasChanged(input)),
-              ),
-            ],
-            if (topicConfig.showPricePerGas) ...[
-              const Divider(height: 1),
-              NumericInputRow(
-                label: 'ガソリン単価',
-                unit: '円/L',
-                value: draft.pricePerGasInput,
-                onChanged: (input) => context
-                    .read<BasicInfoBloc>()
-                    .add(BasicInfoPricePerGasChanged(input)),
-              ),
-            ],
-            if (topicConfig.showPayMember) ...[
-              const Divider(height: 1),
-              _GasPayMemberChipSection(
-                selectedMembers: draft.selectedMembers,
-                selectedPayMember: draft.selectedPayMember,
-              ),
-            ],
-          ],
+        _EventNameField(value: draft.eventName),
+        const Divider(height: 1),
+        _TransChipSection(
+          allTrans: allTrans,
+          selectedTrans: draft.selectedTrans,
         ),
-        Positioned(
-          right: 16,
-          bottom: 16,
+        const Divider(height: 1),
+        _MemberInputSection(
+          selectedMembers: draft.selectedMembers,
+          memberSuggestions: memberSuggestions,
+          allMembers: allMembers,
+        ),
+        const Divider(height: 1),
+        _TagInputSection(
+          selectedTags: draft.selectedTags,
+          tagSuggestions: tagSuggestions,
+        ),
+        if (topicConfig.showKmPerGas) ...[
+          const Divider(height: 1),
+          NumericInputRow(
+            key: const Key('km_per_gas_input_row'),
+            label: '燃費',
+            unit: 'km/L',
+            value: draft.kmPerGasInput,
+            isDecimal: true,
+            onChanged: (input) => context
+                .read<BasicInfoBloc>()
+                .add(BasicInfoKmPerGasChanged(input)),
+          ),
+        ],
+        if (topicConfig.showPricePerGas) ...[
+          const Divider(height: 1),
+          NumericInputRow(
+            label: 'ガソリン単価',
+            unit: '円/L',
+            value: draft.pricePerGasInput,
+            onChanged: (input) => context
+                .read<BasicInfoBloc>()
+                .add(BasicInfoPricePerGasChanged(input)),
+          ),
+        ],
+        if (topicConfig.showPayMember) ...[
+          const Divider(height: 1),
+          _GasPayMemberChipSection(
+            selectedMembers: draft.selectedMembers,
+            selectedPayMember: draft.selectedPayMember,
+          ),
+        ],
+        const Divider(height: 1),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton(
+                key: const Key('basicInfoForm_button_cancel'),
                 onPressed: isSaving
                     ? null
                     : () => context
@@ -262,6 +262,7 @@ class _BasicInfoForm extends StatelessWidget {
                 )
               else
                 ElevatedButton(
+                  key: const Key('basicInfoForm_button_save'),
                   onPressed: () => context
                       .read<BasicInfoBloc>()
                       .add(const BasicInfoSavePressed()),
