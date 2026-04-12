@@ -117,9 +117,9 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-196 | Phase A 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-event_detail_inline_selection_ui.md |
-| T-197 | Phase A Spec作成 | architect | `TODO` | | REQ-event_detail_inline_selection_ui.md 参照 |
-| T-198a | Phase A BasicInfo 実装（Trans・Members・Tags・GasPayMember インライン化） | flutter-dev | `BLOCKED` | | T-197 完了待ち |
-| T-198b | Phase A テストコード実装 | tester | `BLOCKED` | | T-197 完了待ち |
+| T-197 | Phase A Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-event_detail_inline_selection_ui_phaseA.md |
+| T-198a | Phase A BasicInfo 実装（Trans・Members・Tags・GasPayMember インライン化） | flutter-dev | `TODO` | | FS-event_detail_inline_selection_ui_phaseA.md 参照 |
+| T-198b | Phase A テストコード実装（TC-BII-001〜016） | tester | `TODO` | | FS-event_detail_inline_selection_ui_phaseA.md 参照 |
 | T-199 | Phase A レビュー | reviewer | `BLOCKED` | | T-198a/b 完了後に着手 |
 | T-200 | Phase A テスト実行 | tester | `BLOCKED` | | T-199 承認後に着手 |
 
