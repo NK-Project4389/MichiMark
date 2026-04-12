@@ -7,6 +7,9 @@
 ---
 
 ## 完了した作業
+- feat(UI-1): EventDetailPage 削除ボタン・ダイアログ・Delegate処理追加 (5153b5d)
+- docs: T-212a/b T-232a T-242b T-266b DONE・Reviewer IN_PROGRESS 更新 (f1bbee7)
+- feat: UI-1/UI-3/UI-6 実装・テストコード・flutter_slidable廃止 (fdb1167)
 - test: T-222b BasicInfo タップ編集UI TC-BTE-001〜007 テストコード実装 (34ef71f)
 
 ### T-252a: MarkDetail/LinkDetail/PaymentDetail UI改善 実装
