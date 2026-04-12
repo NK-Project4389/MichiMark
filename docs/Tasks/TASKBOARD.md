@@ -54,7 +54,7 @@
 | T-231 | MichiInfo削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_delete_icon.md |
 | T-232 | MichiInfo削除UI変更 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_delete_icon.md |
 | T-232a | MichiInfo削除UI変更 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_自走 | FS-michi_info_delete_icon.md 参照 |
-| T-232b | MichiInfo削除UI変更 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_自走 | FS-michi_info_delete_icon.md 参照 |
+| T-232b | MichiInfo削除UI変更 テストコード実装 | tester | `DONE` | | TC-MID-001〜007 実装済み（006/007 はCustomPainterのためSKIP） |
 | T-233 | MichiInfo削除UI変更 レビュー | reviewer | `BLOCKED` | | T-232a/b 完了後 |
 | T-234 | MichiInfo削除UI変更 テスト実行 | tester | `BLOCKED` | | T-233 承認後 |
 

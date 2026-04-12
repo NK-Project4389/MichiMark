@@ -1181,3 +1181,130 @@ Version: 1.0
 - 削除完了後も AlertDialog が表示されない
 
 ---
+---
+
+## TC-MID: MichiInfo 削除アイコン常時表示（UI-3）
+
+### テストシナリオ一覧
+
+| ID | シナリオ名 | 優先度 |
+|---|---|---|
+| TC-MID-001 | Mark カードを左スワイプしても旧スライドアクション削除ボタンが表示されない | High |
+| TC-MID-002 | Link カードを左スワイプしても旧スライドアクション削除ボタンが表示されない | High |
+| TC-MID-003 | Mark カード右端に赤背景ゴミ箱アイコンが常時表示されている | High |
+| TC-MID-004 | Link カード右端に赤背景ゴミ箱アイコンが常時表示されている | High |
+| TC-MID-005 | 削除アイコンをタップすると該当カードが即座に削除される（確認ダイアログなし） | High |
+| TC-MID-006 | 給油あり Mark の接点ドットが拡大されて給油アイコンが内部に表示される（目視確認） | Medium |
+| TC-MID-007 | 給油なし Mark の接点ドットは通常サイズで表示される（目視確認） | Medium |
+
+**使用シードデータ:** event-001（箱根日帰りドライブ）— ml-001(Mark, isFuel=false) → ml-002(Link) → ml-003(Mark, isFuel=false) → ml-004(Link) → ml-005(Mark, isFuel=true: 大涌谷)
+
+---
+
+### 前提条件
+
+- シードデータ event-001「箱根日帰りドライブ」の MichiInfo タブが表示されていること
+- `flutter_slidable` スワイプUIは撤去済みであること（UI-3 適用後）
+- 各カード右端に `Key('michiInfo_button_delete_${item.id}')` の削除アイコンが常時表示されること
+
+---
+
+### TC-MID-001: Mark カードを左スワイプしても旧スライドアクション削除ボタンが表示されない
+
+**前提:** event-001 の MichiInfo タブが表示されている
+
+**操作手順:**
+1. MichiInfo タブを表示する
+2. ml-001（Mark: 自宅出発）を左スワイプする
+
+**期待結果:**
+- `Key('michi_info_card_delete_action_ml-001')` が存在しない（旧スワイプ削除ボタンが出ない）
+- スワイプ後も `Key('michiInfo_button_delete_ml-001')` は引き続き表示される
+
+---
+
+### TC-MID-002: Link カードを左スワイプしても旧スライドアクション削除ボタンが表示されない
+
+**前提:** event-001 の MichiInfo タブが表示されている
+
+**操作手順:**
+1. MichiInfo タブを表示する
+2. ml-002（Link: 東名高速）を左スワイプする
+
+**期待結果:**
+- `Key('michi_info_card_delete_action_ml-002')` が存在しない（旧スワイプ削除ボタンが出ない）
+
+---
+
+### TC-MID-003: Mark カード右端に赤背景ゴミ箱アイコンが常時表示されている
+
+**前提:** event-001 の MichiInfo タブが表示されている
+
+**操作手順:**
+1. MichiInfo タブを表示する（スワイプ等の操作なし）
+
+**期待結果:**
+- `Key('michiInfo_button_delete_ml-001')` が findsOneWidget（初期表示から存在する）
+
+---
+
+### TC-MID-004: Link カード右端に赤背景ゴミ箱アイコンが常時表示されている
+
+**前提:** event-001 の MichiInfo タブが表示されている
+
+**操作手順:**
+1. MichiInfo タブを表示する（スワイプ等の操作なし）
+
+**期待結果:**
+- `Key('michiInfo_button_delete_ml-002')` が findsOneWidget（初期表示から存在する）
+
+---
+
+### TC-MID-005: 削除アイコンをタップすると該当カードが即座に削除される（確認ダイアログなし）
+
+**前提:** event-001「箱根日帰りドライブ」に Mark が 2 件以上存在する
+
+**操作手順:**
+1. MichiInfo タブを表示する
+2. `Key('michiInfo_button_delete_ml-001')` をタップする
+
+**期待結果:**
+- タップ直後に AlertDialog / ConfirmationDialog が表示されない（即削除）
+- `Key('michiInfo_button_delete_ml-001')` が findsNothing（カードが削除された）
+- `Key('michiInfo_button_delete_ml-002')` が findsOneWidget（他のカードは残存）
+- 削除完了後も AlertDialog が表示されない
+
+---
+
+### TC-MID-006: 給油あり Mark の接点ドットが拡大されて給油アイコンが内部に表示される
+
+**前提:** シードデータに `isFuel = true` の Mark（ml-005: 大涌谷）が存在する
+
+**操作手順:**
+1. MichiInfo タブを表示する
+2. 給油あり Mark カードのタイムライン接点ドット領域を目視確認する
+
+**期待結果:**
+- 接点ドットが通常の円より縦方向に大きく描画されている
+- ドット内部に給油アイコン（⛽）が表示されている
+- カード行内（テキスト右横）には給油アイコンが表示されていない
+
+**注記:** 接点ドットは `_MichiTimelinePainter`（CustomPainter）内に描画されるため、Widget キーでの直接検証は不可。目視またはスクリーンショット比較で確認すること。Integration Test では `markTestSkipped` によりスキップされる。
+
+---
+
+### TC-MID-007: 給油なし Mark の接点ドットは通常サイズで表示される
+
+**前提:** シードデータに `isFuel = false` の Mark（ml-001: 自宅出発）が存在する
+
+**操作手順:**
+1. MichiInfo タブを表示する
+2. 給油なし Mark カードのタイムライン接点ドット領域を目視確認する
+
+**期待結果:**
+- 接点ドットが通常の円サイズ（変更前と同等）で表示されている
+- ドット内部に給油アイコンが表示されていない
+
+**注記:** 接点ドットは `_MichiTimelinePainter`（CustomPainter）内に描画されるため、Widget キーでの直接検証は不可。目視またはスクリーンショット比較で確認すること。Integration Test では `markTestSkipped` によりスキップされる。
+
+---
