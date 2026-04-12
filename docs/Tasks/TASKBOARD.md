@@ -151,7 +151,7 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-210 | イベント削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-event_delete_ui_redesign.md |
-| T-211 | イベント削除UI変更 Spec作成 | architect | `BLOCKED` | | T-210 完了後 |
+| T-211 | イベント削除UI変更 Spec作成 | architect | `IN_PROGRESS` | 2026-04-12_UI1-UI5-Spec作成 | |
 | T-212a | イベント削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-211 完了後 |
 | T-212b | イベント削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-211 完了後 |
 | T-213 | イベント削除UI変更 レビュー | reviewer | `BLOCKED` | | T-212a/b 完了後 |
@@ -165,7 +165,7 @@
 |---|---|---|---|---|---|
 | T-220 | BasicInfo参照タップ編集 デザイン提案 | designer | `DONE` | | docs/Design/draft/basic_info_tap_to_edit_design.html |
 | T-221 | BasicInfo参照タップ編集 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-basic_info_tap_to_edit.md |
-| T-222 | BasicInfo参照タップ編集 Spec作成 | architect | `BLOCKED` | | T-221 完了後 |
+| T-222 | BasicInfo参照タップ編集 Spec作成 | architect | `IN_PROGRESS` | 2026-04-12_UI1-UI5-Spec作成 | |
 | T-222a | BasicInfo参照タップ編集 実装 | flutter-dev | `BLOCKED` | | T-222 完了後 |
 | T-222b | BasicInfo参照タップ編集 テストコード実装 | tester | `BLOCKED` | | T-222 完了後 |
 | T-223 | BasicInfo参照タップ編集 レビュー | reviewer | `BLOCKED` | | T-222a/b 完了後 |
@@ -179,7 +179,7 @@
 |---|---|---|---|---|---|
 | T-230 | MichiInfo削除UI変更 デザイン提案 | designer | `DONE` | | docs/Design/draft/michi_info_delete_icon_design.html |
 | T-231 | MichiInfo削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_delete_icon.md |
-| T-232 | MichiInfo削除UI変更 Spec作成 | architect | `BLOCKED` | | T-231 完了後 |
+| T-232 | MichiInfo削除UI変更 Spec作成 | architect | `IN_PROGRESS` | 2026-04-12_UI1-UI5-Spec作成 | |
 | T-232a | MichiInfo削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-232 完了後 |
 | T-232b | MichiInfo削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-232 完了後 |
 | T-233 | MichiInfo削除UI変更 レビュー | reviewer | `BLOCKED` | | T-232a/b 完了後 |
@@ -192,7 +192,7 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-240 | PaymentInfo削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_info_delete_icon.md |
-| T-241 | PaymentInfo削除UI変更 Spec作成 | architect | `BLOCKED` | | T-240 完了後 |
+| T-241 | PaymentInfo削除UI変更 Spec作成 | architect | `IN_PROGRESS` | 2026-04-12_UI1-UI5-Spec作成 | |
 | T-242a | PaymentInfo削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-241 完了後 |
 | T-242b | PaymentInfo削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-241 完了後 |
 | T-243 | PaymentInfo削除UI変更 レビュー | reviewer | `BLOCKED` | | T-242a/b 完了後 |
@@ -205,7 +205,7 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-250 | Detail画面UI改善 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-detail_screen_ui_improvement.md |
-| T-251 | Detail画面UI改善 Spec作成 | architect | `BLOCKED` | | T-250 完了後 |
+| T-251 | Detail画面UI改善 Spec作成 | architect | `IN_PROGRESS` | 2026-04-12_UI1-UI5-Spec作成 | |
 | T-252a | Detail画面UI改善 実装 | flutter-dev | `BLOCKED` | | T-251 完了後 |
 | T-252b | Detail画面UI改善 テストコード実装 | tester | `BLOCKED` | | T-251 完了後 |
 | T-253 | Detail画面UI改善 レビュー | reviewer | `BLOCKED` | | T-252a/b 完了後 |
