@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
@@ -660,8 +659,7 @@ class _MichiInfoListState extends State<_MichiInfoList> {
               ),
             ),
           // メインスクロールビュー
-          SlidableAutoCloseBehavior(
-          child: CustomScrollView(
+          CustomScrollView(
             controller: _scrollController,
             slivers: [
               SliverPadding(
@@ -700,6 +698,7 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                                     widget.markActionStateLabels,
                                 topicConfig: widget.topicConfig,
                                 eventId: widget.eventId,
+                                isInsertMode: true,
                               );
                             }
                           },
@@ -712,45 +711,20 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
                             final item = items[index];
-                            return Slidable(
-                              key: Key('michi_info_card_slidable_${item.id}'),
-                              enabled: !widget.isInsertMode,
-                              endActionPane: ActionPane(
-                                motion: const DrawerMotion(),
-                                extentRatio: 0.25,
-                                children: [
-                                  SlidableAction(
-                                    key: Key(
-                                      'michi_info_card_delete_action_${item.id}',
+                            return _TimelineItem(
+                              item: item,
+                              gapAfter: timelineData.gapAfterItem[index],
+                              onTap: () => context.read<MichiInfoBloc>().add(
+                                    MichiInfoItemTapped(
+                                      markLinkId: item.id,
+                                      type: item.markLinkType,
                                     ),
-                                    onPressed: (_) =>
-                                        context.read<MichiInfoBloc>().add(
-                                              MichiInfoCardDeleteRequested(
-                                                item.id,
-                                              ),
-                                            ),
-                                    backgroundColor: Colors.red,
-                                    foregroundColor: Colors.white,
-                                    icon: Icons.delete,
-                                    label: '削除',
                                   ),
-                                ],
-                              ),
-                              child: _TimelineItem(
-                                item: item,
-                                gapAfter: timelineData.gapAfterItem[index],
-                                onTap: () => context.read<MichiInfoBloc>().add(
-                                      MichiInfoItemTapped(
-                                        markLinkId: item.id,
-                                        type: item.markLinkType,
-                                      ),
-                                    ),
-                                markActionItems: markActionItems,
-                                markActionStateLabels:
-                                    widget.markActionStateLabels,
-                                topicConfig: widget.topicConfig,
-                                eventId: widget.eventId,
-                              ),
+                              markActionItems: markActionItems,
+                              markActionStateLabels:
+                                  widget.markActionStateLabels,
+                              topicConfig: widget.topicConfig,
+                              eventId: widget.eventId,
                             );
                           },
                           childCount: items.length,
@@ -758,7 +732,6 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                       ),
               ),
             ],
-          ),
           ),
           // 右上固定の凡例
           const Positioned(
@@ -1019,6 +992,7 @@ class _TimelineItem extends StatelessWidget {
   final Map<String, String> markActionStateLabels;
   final TopicConfig topicConfig;
   final String eventId;
+  final bool isInsertMode;
 
   const _TimelineItem({
     required this.item,
@@ -1028,6 +1002,7 @@ class _TimelineItem extends StatelessWidget {
     required this.markActionStateLabels,
     required this.topicConfig,
     required this.eventId,
+    this.isInsertMode = false,
   });
 
   @override
@@ -1053,6 +1028,7 @@ class _TimelineItem extends StatelessWidget {
                       child: CustomPaint(
                         painter: _MichiTimelinePainter(
                           markLinkType: item.markLinkType,
+                          isFuel: item.isFuel,
                         ),
                       ),
                     ),
@@ -1065,6 +1041,7 @@ class _TimelineItem extends StatelessWidget {
                         currentStateLabel: markActionStateLabels[item.id],
                         topicConfig: topicConfig,
                         eventId: eventId,
+                        isInsertMode: isInsertMode,
                       ),
                     ),
                   ],
@@ -1121,9 +1098,11 @@ class _MichiTimelinePainter extends CustomPainter {
   static const double _linkCornerRadius = 8.0;
 
   final MarkOrLink markLinkType;
+  final bool isFuel;
 
   const _MichiTimelinePainter({
     required this.markLinkType,
+    this.isFuel = false,
   });
 
   @override

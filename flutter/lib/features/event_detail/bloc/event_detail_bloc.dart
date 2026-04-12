@@ -26,6 +26,9 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     on<EventDetailOpenPaymentRequested>(_onOpenPaymentRequested);
     on<EventDetailAddMarkLinkRequested>(_onAddMarkLinkRequested);
     on<EventDetailCachedEventUpdateRequested>(_onCachedEventUpdateRequested);
+    on<EventDetailDeleteButtonPressed>(_onDeleteButtonPressed);
+    on<EventDetailDeleteConfirmed>(_onDeleteConfirmed);
+    on<EventDetailDeleteDialogDismissed>(_onDeleteDialogDismissed);
     on<EventDetailDelegateConsumed>(_onDelegateConsumed);
   }
 
@@ -170,6 +173,42 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
   String? _resolveDisplayName(TopicDomain? topic) {
     if (topic == null) return null;
     return TopicConfig.forType(topic.topicType).displayName;
+  }
+
+  Future<void> _onDeleteButtonPressed(
+    EventDetailDeleteButtonPressed event,
+    Emitter<EventDetailState> emit,
+  ) async {
+    if (state case final EventDetailLoaded current) {
+      emit(current.copyWith(showDeleteConfirmDialog: true));
+    }
+  }
+
+  Future<void> _onDeleteConfirmed(
+    EventDetailDeleteConfirmed event,
+    Emitter<EventDetailState> emit,
+  ) async {
+    if (state is! EventDetailLoaded) return;
+    final current = state as EventDetailLoaded;
+    final eventId = current.projection.eventId;
+    try {
+      await _eventRepository.delete(eventId);
+      emit(current.copyWith(
+        showDeleteConfirmDialog: false,
+        delegate: const EventDetailDeletedDelegate(),
+      ));
+    } on Exception catch (e) {
+      emit(EventDetailError(message: e.toString()));
+    }
+  }
+
+  Future<void> _onDeleteDialogDismissed(
+    EventDetailDeleteDialogDismissed event,
+    Emitter<EventDetailState> emit,
+  ) async {
+    if (state case final EventDetailLoaded current) {
+      emit(current.copyWith(showDeleteConfirmDialog: false));
+    }
   }
 
   Future<void> _onDelegateConsumed(

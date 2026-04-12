@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 import '../../../domain/topic/topic_config.dart';
@@ -153,16 +152,14 @@ class _EventListBody extends StatelessWidget {
       return const Center(child: Text('イベントがありません'));
     }
 
-    return SlidableAutoCloseBehavior(
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        itemCount: projection.events.length,
-        separatorBuilder: (context, _) => const SizedBox(height: 12),
-        itemBuilder: (context, index) {
-          final item = projection.events[index];
-          return _EventListItem(item: item);
-        },
-      ),
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      itemCount: projection.events.length,
+      separatorBuilder: (context, _) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        final item = projection.events[index];
+        return _EventListItem(item: item);
+      },
     );
   }
 }
@@ -177,29 +174,12 @@ class _EventListItem extends StatelessWidget {
     final borderColor = item.themeColor?.primaryColor
         ?? TopicThemeColor.defaultBorderColor;
 
-    return Slidable(
-      key: Key('event_list_item_slidable_${item.id}'),
-      endActionPane: ActionPane(
-        motion: const DrawerMotion(),
-        extentRatio: 0.25,
-        children: [
-          SlidableAction(
-            key: Key('event_list_delete_action_${item.id}'),
-            onPressed: (_) => context
-                .read<EventListBloc>()
-                .add(EventListDeleteRequested(item.id)),
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            icon: Icons.delete,
-            label: '削除',
-          ),
-        ],
-      ),
-      child: GestureDetector(
-        onTap: () => context
-            .read<EventListBloc>()
-            .add(EventListItemTapped(item.id)),
-        child: ClipRRect(
+    return GestureDetector(
+      key: Key('eventList_item_${item.id}'),
+      onTap: () => context
+          .read<EventListBloc>()
+          .add(EventListItemTapped(item.id)),
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Container(
           decoration: BoxDecoration(
@@ -265,7 +245,6 @@ class _EventListItem extends StatelessWidget {
             ),
           ),
         ),
-      ),
       ),
     );
   }

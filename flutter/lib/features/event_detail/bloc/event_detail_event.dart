@@ -79,6 +79,30 @@ class EventDetailCachedEventUpdateRequested extends EventDetailEvent {
   List<Object?> get props => [];
 }
 
+/// 削除アイコンがタップされたとき
+class EventDetailDeleteButtonPressed extends EventDetailEvent {
+  const EventDetailDeleteButtonPressed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 確認ダイアログで「削除」がタップされたとき
+class EventDetailDeleteConfirmed extends EventDetailEvent {
+  const EventDetailDeleteConfirmed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 削除確認ダイアログが閉じられたとき（キャンセル時のフラグリセット）
+class EventDetailDeleteDialogDismissed extends EventDetailEvent {
+  const EventDetailDeleteDialogDismissed();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// delegateを消費済みにする（nullリセット）
 class EventDetailDelegateConsumed extends EventDetailEvent {
   const EventDetailDelegateConsumed();

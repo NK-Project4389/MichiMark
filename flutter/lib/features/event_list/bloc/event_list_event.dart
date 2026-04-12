@@ -38,15 +38,6 @@ class EventListSettingsButtonPressed extends EventListEvent {
   List<Object?> get props => [];
 }
 
-/// イベントの削除が要求されたとき
-class EventListDeleteRequested extends EventListEvent {
-  final String eventId;
-  const EventListDeleteRequested(this.eventId);
-
-  @override
-  List<Object?> get props => [eventId];
-}
-
 /// BottomSheetでTopicTypeが選択されたとき
 class EventListTopicSelectedForNewEvent extends EventListEvent {
   final TopicType topicType;

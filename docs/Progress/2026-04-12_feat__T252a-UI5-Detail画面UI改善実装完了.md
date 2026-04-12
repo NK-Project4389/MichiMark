@@ -7,6 +7,7 @@
 ---
 
 ## 完了した作業
+- test: T-222b BasicInfo タップ編集UI TC-BTE-001〜007 テストコード実装 (34ef71f)
 
 ### T-252a: MarkDetail/LinkDetail/PaymentDetail UI改善 実装
 

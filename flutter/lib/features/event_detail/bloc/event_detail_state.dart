@@ -48,6 +48,14 @@ class EventDetailAddMarkLinkDelegate extends EventDetailDelegate {
   List<Object?> get props => [];
 }
 
+/// イベント削除完了後に一覧へ戻る
+class EventDetailDeletedDelegate extends EventDetailDelegate {
+  const EventDetailDeletedDelegate();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// TopicConfig変更を子Blocへ伝播するようPageに通知する（起動時の一方向初期化用）
 class EventDetailTopicConfigPropagateDelegate extends EventDetailDelegate {
   final TopicConfig topicConfig;
@@ -81,6 +89,8 @@ class EventDetailLoaded extends EventDetailState {
   final TopicThemeColor? topicThemeColor;
   /// Topicの日本語表示名。Topic未設定時はnull（REQ-008）
   final String? topicDisplayName;
+  /// 削除確認ダイアログの表示フラグ。trueのときPageが確認ダイアログを表示する
+  final bool showDeleteConfirmDialog;
 
   const EventDetailLoaded({
     required this.projection,
@@ -90,6 +100,7 @@ class EventDetailLoaded extends EventDetailState {
     this.cachedEvent,
     this.topicThemeColor,
     this.topicDisplayName,
+    this.showDeleteConfirmDialog = false,
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -111,6 +122,7 @@ class EventDetailLoaded extends EventDetailState {
     String? topicDisplayName,
     bool clearTopicThemeColor = false,
     bool clearTopicDisplayName = false,
+    bool? showDeleteConfirmDialog,
   }) {
     return EventDetailLoaded(
       projection: projection ?? this.projection,
@@ -120,6 +132,7 @@ class EventDetailLoaded extends EventDetailState {
       cachedEvent: cachedEvent ?? this.cachedEvent,
       topicThemeColor: clearTopicThemeColor ? null : (topicThemeColor ?? this.topicThemeColor),
       topicDisplayName: clearTopicDisplayName ? null : (topicDisplayName ?? this.topicDisplayName),
+      showDeleteConfirmDialog: showDeleteConfirmDialog ?? this.showDeleteConfirmDialog,
     );
   }
 
@@ -132,6 +145,7 @@ class EventDetailLoaded extends EventDetailState {
         cachedEvent,
         topicThemeColor,
         topicDisplayName,
+        showDeleteConfirmDialog,
       ];
 }
 
