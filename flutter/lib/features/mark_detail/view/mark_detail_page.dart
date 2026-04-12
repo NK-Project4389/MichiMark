@@ -130,16 +130,15 @@ class _MarkDetailScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final title = draft.markLinkName.isEmpty
+        ? '地点詳細'
+        : '地点詳細：${draft.markLinkName}';
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () => context
-              .read<MarkDetailBloc>()
-              .add(const MarkDetailDismissPressed()),
-        ),
+        automaticallyImplyLeading: false,
         title: Text(
-          draft.markLinkName.isEmpty ? '地点詳細' : draft.markLinkName,
+          title,
+          key: const Key('markDetail_appBar_title'),
         ),
         centerTitle: true,
       ),
@@ -148,21 +147,7 @@ class _MarkDetailScaffold extends StatelessWidget {
         topicConfig: topicConfig,
         dateFormat: dateFormat,
         availableMembers: availableMembers,
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: isSaving
-            ? null
-            : () => context
-                .read<MarkDetailBloc>()
-                .add(const MarkDetailSaveTapped()),
-        icon: isSaving
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-              )
-            : const Icon(Icons.save_outlined),
-        label: Text(isSaving ? '保存中' : '保存'),
+        isSaving: isSaving,
       ),
     );
   }
@@ -173,12 +158,14 @@ class _MarkDetailForm extends StatelessWidget {
   final TopicConfig topicConfig;
   final DateFormat dateFormat;
   final List<MemberDomain> availableMembers;
+  final bool isSaving;
 
   const _MarkDetailForm({
     required this.draft,
     required this.topicConfig,
     required this.dateFormat,
     required this.availableMembers,
+    required this.isSaving,
   });
 
   @override
@@ -216,7 +203,39 @@ class _MarkDetailForm extends StatelessWidget {
             selectedGasPayerName: draft.selectedGasPayer?.memberName,
           ),
         ],
-        const SizedBox(height: 16),
+        const SizedBox(height: 24),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              OutlinedButton(
+                key: const Key('markDetail_button_cancel'),
+                onPressed: () => context
+                    .read<MarkDetailBloc>()
+                    .add(const MarkDetailDismissPressed()),
+                child: const Text('キャンセル'),
+              ),
+              const SizedBox(width: 16),
+              ElevatedButton(
+                key: const Key('markDetail_button_save'),
+                onPressed: isSaving
+                    ? null
+                    : () => context
+                        .read<MarkDetailBloc>()
+                        .add(const MarkDetailSaveTapped()),
+                child: isSaving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('保存'),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
       ],
     );
   }

@@ -76,30 +76,17 @@ class _PaymentDetailScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => context
-              .read<PaymentDetailBloc>()
-              .add(const PaymentDetailCancelTapped()),
+        automaticallyImplyLeading: false,
+        title: const Text(
+          '支払詳細',
+          key: Key('paymentDetail_appBar_title'),
         ),
-        title: const Text('支払詳細'),
         centerTitle: true,
       ),
-      body: _PaymentDetailForm(draft: draft, availableMembers: availableMembers),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: isSaving
-            ? null
-            : () => context
-                .read<PaymentDetailBloc>()
-                .add(const PaymentDetailSaveTapped()),
-        icon: isSaving
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-              )
-            : const Icon(Icons.save_outlined),
-        label: Text(isSaving ? '保存中' : '保存'),
+      body: _PaymentDetailForm(
+        draft: draft,
+        availableMembers: availableMembers,
+        isSaving: isSaving,
       ),
     );
   }
@@ -110,8 +97,13 @@ class _PaymentDetailScaffold extends StatelessWidget {
 class _PaymentDetailForm extends StatelessWidget {
   final PaymentDetailDraft draft;
   final List<MemberDomain> availableMembers;
+  final bool isSaving;
 
-  const _PaymentDetailForm({required this.draft, required this.availableMembers});
+  const _PaymentDetailForm({
+    required this.draft,
+    required this.availableMembers,
+    required this.isSaving,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +131,39 @@ class _PaymentDetailForm extends StatelessWidget {
         ),
         const Divider(height: 1),
         _MemoField(value: draft.paymentMemo),
-        const SizedBox(height: 16),
+        const SizedBox(height: 24),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              OutlinedButton(
+                key: const Key('paymentDetail_button_cancel'),
+                onPressed: () => context
+                    .read<PaymentDetailBloc>()
+                    .add(const PaymentDetailCancelTapped()),
+                child: const Text('キャンセル'),
+              ),
+              const SizedBox(width: 16),
+              ElevatedButton(
+                key: const Key('paymentDetail_button_save'),
+                onPressed: isSaving
+                    ? null
+                    : () => context
+                        .read<PaymentDetailBloc>()
+                        .add(const PaymentDetailSaveTapped()),
+                child: isSaving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('保存'),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
       ],
     );
   }

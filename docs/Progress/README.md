@@ -107,3 +107,4 @@
 | [2026-04-12_testflight__1_0_0_11_R2-PhaseB完了アップロード.md](./2026-04-12_testflight__1_0_0_11_R2-PhaseB完了アップロード.md) | TestFlight 1.0.0(11) アップロード完了（R-2 Phase B・B-5含む） |
 | [2026-04-12_chore__タスクボード追加_B6_UI6.md](./2026-04-12_chore__タスクボード追加_B6_UI6.md) | B-6 ガソリン支払い者チップ選択バグ・UI-6 概要タブセクション名タスク追加 |
 | [2026-04-12_docs__UI1-UI5-要件書-Spec作成完了.md](./2026-04-12_docs__UI1-UI5-要件書-Spec作成完了.md) | UI-1〜UI-5 要件書・デザイン提案・Spec 全作成完了 |
+| [2026-04-12_feat__T252a-UI5-Detail画面UI改善実装完了.md](./2026-04-12_feat__T252a-UI5-Detail画面UI改善実装完了.md) | T-252a UI-5 MarkDetail/LinkDetail/PaymentDetail UI改善 実装完了 |

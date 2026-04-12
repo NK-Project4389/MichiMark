@@ -79,7 +79,7 @@
 |---|---|---|---|---|---|
 | T-250 | Detail画面UI改善 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-detail_screen_ui_improvement.md |
 | T-251 | Detail画面UI改善 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-detail_screen_ui_improvement.md |
-| T-252a | Detail画面UI改善 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_自走 | FS-detail_screen_ui_improvement.md 参照 |
+| T-252a | Detail画面UI改善 実装 | flutter-dev | `DONE` | | FS-detail_screen_ui_improvement.md 参照 |
 | T-252b | Detail画面UI改善 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_自走 | FS-detail_screen_ui_improvement.md 参照 |
 | T-253 | Detail画面UI改善 レビュー | reviewer | `BLOCKED` | | T-252a/b 完了後 |
 | T-254 | Detail画面UI改善 テスト実行 | tester | `BLOCKED` | | T-253 承認後 |

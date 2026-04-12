@@ -123,34 +123,23 @@ class _LinkDetailScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final title = draft.markLinkName.isEmpty
+        ? '区間詳細'
+        : '区間詳細：${draft.markLinkName}';
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () => context
-              .read<LinkDetailBloc>()
-              .add(const LinkDetailDismissPressed()),
-        ),
+        automaticallyImplyLeading: false,
         title: Text(
-          draft.markLinkName.isEmpty ? '区間詳細' : draft.markLinkName,
+          title,
+          key: const Key('linkDetail_appBar_title'),
         ),
         centerTitle: true,
       ),
-      body: _LinkDetailForm(draft: draft, topicConfig: topicConfig, availableMembers: availableMembers),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: isSaving
-            ? null
-            : () => context
-                .read<LinkDetailBloc>()
-                .add(const LinkDetailSaveTapped()),
-        icon: isSaving
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-              )
-            : const Icon(Icons.save_outlined),
-        label: Text(isSaving ? '保存中' : '保存'),
+      body: _LinkDetailForm(
+        draft: draft,
+        topicConfig: topicConfig,
+        availableMembers: availableMembers,
+        isSaving: isSaving,
       ),
     );
   }
@@ -160,8 +149,14 @@ class _LinkDetailForm extends StatelessWidget {
   final LinkDetailDraft draft;
   final TopicConfig topicConfig;
   final List<MemberDomain> availableMembers;
+  final bool isSaving;
 
-  const _LinkDetailForm({required this.draft, required this.topicConfig, required this.availableMembers});
+  const _LinkDetailForm({
+    required this.draft,
+    required this.topicConfig,
+    required this.availableMembers,
+    required this.isSaving,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +191,39 @@ class _LinkDetailForm extends StatelessWidget {
             selectedGasPayerName: draft.selectedGasPayer?.memberName,
           ),
         ],
-        const SizedBox(height: 16),
+        const SizedBox(height: 24),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              OutlinedButton(
+                key: const Key('linkDetail_button_cancel'),
+                onPressed: () => context
+                    .read<LinkDetailBloc>()
+                    .add(const LinkDetailDismissPressed()),
+                child: const Text('キャンセル'),
+              ),
+              const SizedBox(width: 16),
+              ElevatedButton(
+                key: const Key('linkDetail_button_save'),
+                onPressed: isSaving
+                    ? null
+                    : () => context
+                        .read<LinkDetailBloc>()
+                        .add(const LinkDetailSaveTapped()),
+                child: isSaving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('保存'),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
       ],
     );
   }
