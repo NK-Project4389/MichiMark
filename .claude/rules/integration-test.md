@@ -11,9 +11,10 @@
 
 ### NomikaiShare（独立・競合なし）
 
-| アプリ | シミュレーター | UDID |
+| ロール | シミュレーター | UDID |
 |---|---|---|
-| **NomikaiShare** | iPhone 16 Pro | ※NomikaiShare側の設定参照 |
+| **shard 0** | iPhone 16 Pro #1 | `CD71EBB3-8C8F-4A72-9529-04117342F862` |
+| **shard 1** | iPhone 16 Pro #2 (NomikaiShare) | `297A6330-C9FE-4FD3-8E4D-C4DF3095F2FA` |
 
 > MichiMark と NomikaiShare はシミュレーターが別機種なので完全に独立。同時実行しても競合しない。
 
