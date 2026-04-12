@@ -7,6 +7,11 @@
 ---
 
 ## 完了した作業
+- docs: B-6 Phase C タスク追加（T-269〜272） (cab6756)
+- docs: T-233/253 レビュー合格・T-234/254 tester IN_PROGRESS (d4f7e8d)
+- docs: T-233/253 レビュー合格・T-234/254 tester IN_PROGRESS (d4f7e8d)
+- docs: T-213/223/243/267 レビュー合格・T-214/224/244/268 tester IN_PROGRESS (317a37a)
+- docs: T-252a 進捗ファイル更新 (969d093)
 - feat(UI-1): EventDetailPage 削除ボタン・ダイアログ・Delegate処理追加 (5153b5d)
 - docs: T-212a/b T-232a T-242b T-266b DONE・Reviewer IN_PROGRESS 更新 (f1bbee7)
 - feat: UI-1/UI-3/UI-6 実装・テストコード・flutter_slidable廃止 (fdb1167)
