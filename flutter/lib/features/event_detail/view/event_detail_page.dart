@@ -81,6 +81,8 @@ class EventDetailPage extends StatelessWidget {
     switch (delegate) {
       case EventDetailDismissDelegate():
         context.pop();
+      case EventDetailDeletedDelegate():
+        context.pop();
       case EventDetailOpenMarkDelegate(:final markLinkId):
         context.go('/event/mark/$markLinkId');
       case EventDetailOpenLinkDelegate(:final markLinkId):
@@ -203,6 +205,26 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
         ? 'イベント詳細'
         : widget.projection.basicInfo.eventName;
 
+    final deleteButton = IconButton(
+      key: const Key('eventDetail_button_delete'),
+      icon: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.delete_outline),
+          Text(
+            'イベント削除',
+            style: TextStyle(
+              fontSize: 9,
+              color: themeColor != null ? Colors.white : null,
+            ),
+          ),
+        ],
+      ),
+      onPressed: () => context
+          .read<EventDetailBloc>()
+          .add(const EventDetailDeleteButtonPressed()),
+    );
+
     if (themeColor == null) {
       // Topic未設定: デフォルトのAppBar表示
       return AppBar(
@@ -212,6 +234,7 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
         ),
         title: Text(eventName),
         centerTitle: true,
+        actions: [deleteButton],
       );
     }
 
@@ -250,6 +273,7 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
           ),
         ),
       ),
+      actions: [deleteButton],
     );
   }
 
@@ -301,6 +325,44 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
     );
   }
 
+  void _showDeleteConfirmDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          key: const Key('eventDetail_dialog_deleteConfirm'),
+          title: const Text('イベントを削除しますか？'),
+          content: const Text('このイベントに関連するすべての情報が削除されます。'),
+          actions: [
+            TextButton(
+              key: const Key('eventDetail_button_deleteCancel'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                context
+                    .read<EventDetailBloc>()
+                    .add(const EventDetailDeleteDialogDismissed());
+              },
+              child: const Text('キャンセル'),
+            ),
+            TextButton(
+              key: const Key('eventDetail_button_deleteConfirm'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                context
+                    .read<EventDetailBloc>()
+                    .add(const EventDetailDeleteConfirmed());
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+              ),
+              child: const Text('削除'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // EventDetailBlocのDelegateを監視し、子BlocへTopicConfig伝播を行う
@@ -336,6 +398,7 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
                     .add(const EventDetailDelegateConsumed());
 
               case EventDetailDismissDelegate():
+              case EventDetailDeletedDelegate():
               case EventDetailOpenMarkDelegate():
               case EventDetailOpenLinkDelegate():
               case EventDetailOpenPaymentDelegate():
@@ -343,6 +406,19 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
                 // これらのDelegateはEventDetailPageの_handleDelegateで処理する
                 break;
             }
+          },
+        ),
+        // 削除確認ダイアログ表示フラグを監視する
+        BlocListener<EventDetailBloc, EventDetailState>(
+          listenWhen: (prev, curr) {
+            if (prev is! EventDetailLoaded || curr is! EventDetailLoaded) {
+              return false;
+            }
+            return !prev.showDeleteConfirmDialog && curr.showDeleteConfirmDialog;
+          },
+          listener: (context, state) {
+            if (!context.mounted) return;
+            _showDeleteConfirmDialog(context);
           },
         ),
         // Overviewタブ選択時にOverviewStartedを発火する

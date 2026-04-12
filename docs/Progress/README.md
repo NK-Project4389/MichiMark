@@ -109,3 +109,4 @@
 | [2026-04-12_docs__UI1-UI5-要件書-Spec作成完了.md](./2026-04-12_docs__UI1-UI5-要件書-Spec作成完了.md) | UI-1〜UI-5 要件書・デザイン提案・Spec 全作成完了 |
 | [2026-04-12_feat__T252a-UI5-Detail画面UI改善実装完了.md](./2026-04-12_feat__T252a-UI5-Detail画面UI改善実装完了.md) | T-252a UI-5 MarkDetail/LinkDetail/PaymentDetail UI改善 実装完了 |
 | [2026-04-12_test__T261b-B6-ガソリン支払者チップ選択テストコード実装.md](./2026-04-12_test__T261b-B6-ガソリン支払者チップ選択テストコード実装.md) | T-261b B-6 ガソリン支払い者チップ選択 テストコード実装（TC-GPS-001〜008） |
+| [2026-04-12_feat__T232a-UI3-MichiInfo削除UIアイコン常時表示実装.md](./2026-04-12_feat__T232a-UI3-MichiInfo削除UIアイコン常時表示実装.md) | T-232a UI-3 MichiInfo削除UI変更（スワイプ廃止・削除アイコン常時表示・給油ドット統合） |
