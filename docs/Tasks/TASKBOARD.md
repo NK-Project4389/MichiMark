@@ -25,8 +25,8 @@
 |---|---|---|---|---|---|
 | T-210 | イベント削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-event_delete_ui_redesign.md |
 | T-211 | イベント削除UI変更 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-event_delete_ui_redesign.md |
-| T-212a | イベント削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-211 完了後 |
-| T-212b | イベント削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-211 完了後 |
+| T-212a | イベント削除UI変更 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_自走 | FS-event_delete_ui_redesign.md 参照 |
+| T-212b | イベント削除UI変更 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_自走 | FS-event_delete_ui_redesign.md 参照 |
 | T-213 | イベント削除UI変更 レビュー | reviewer | `BLOCKED` | | T-212a/b 完了後 |
 | T-214 | イベント削除UI変更 テスト実行 | tester | `BLOCKED` | | T-213 承認後 |
 
@@ -39,8 +39,8 @@
 | T-220 | BasicInfo参照タップ編集 デザイン提案 | designer | `DONE` | | docs/Design/draft/basic_info_tap_to_edit_design.html |
 | T-221 | BasicInfo参照タップ編集 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-basic_info_tap_to_edit.md |
 | T-222 | BasicInfo参照タップ編集 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-basic_info_tap_to_edit.md |
-| T-222a | BasicInfo参照タップ編集 実装 | flutter-dev | `BLOCKED` | | T-222 完了後 |
-| T-222b | BasicInfo参照タップ編集 テストコード実装 | tester | `BLOCKED` | | T-222 完了後 |
+| T-222a | BasicInfo参照タップ編集 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_自走 | FS-basic_info_tap_to_edit.md 参照 |
+| T-222b | BasicInfo参照タップ編集 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_自走 | FS-basic_info_tap_to_edit.md 参照 |
 | T-223 | BasicInfo参照タップ編集 レビュー | reviewer | `BLOCKED` | | T-222a/b 完了後 |
 | T-224 | BasicInfo参照タップ編集 テスト実行 | tester | `BLOCKED` | | T-223 承認後 |
 
@@ -53,8 +53,8 @@
 | T-230 | MichiInfo削除UI変更 デザイン提案 | designer | `DONE` | | docs/Design/draft/michi_info_delete_icon_design.html |
 | T-231 | MichiInfo削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_delete_icon.md |
 | T-232 | MichiInfo削除UI変更 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_delete_icon.md |
-| T-232a | MichiInfo削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-232 完了後 |
-| T-232b | MichiInfo削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-232 完了後 |
+| T-232a | MichiInfo削除UI変更 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_自走 | FS-michi_info_delete_icon.md 参照 |
+| T-232b | MichiInfo削除UI変更 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_自走 | FS-michi_info_delete_icon.md 参照 |
 | T-233 | MichiInfo削除UI変更 レビュー | reviewer | `BLOCKED` | | T-232a/b 完了後 |
 | T-234 | MichiInfo削除UI変更 テスト実行 | tester | `BLOCKED` | | T-233 承認後 |
 
@@ -66,8 +66,8 @@
 |---|---|---|---|---|---|
 | T-240 | PaymentInfo削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_info_delete_icon.md |
 | T-241 | PaymentInfo削除UI変更 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_info_delete_icon.md |
-| T-242a | PaymentInfo削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-241 完了後 |
-| T-242b | PaymentInfo削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-241 完了後 |
+| T-242a | PaymentInfo削除UI変更 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_自走 | FS-payment_info_delete_icon.md 参照 |
+| T-242b | PaymentInfo削除UI変更 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_自走 | FS-payment_info_delete_icon.md 参照 |
 | T-243 | PaymentInfo削除UI変更 レビュー | reviewer | `BLOCKED` | | T-242a/b 完了後 |
 | T-244 | PaymentInfo削除UI変更 テスト実行 | tester | `BLOCKED` | | T-243 承認後 |
 
@@ -79,8 +79,8 @@
 |---|---|---|---|---|---|
 | T-250 | Detail画面UI改善 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-detail_screen_ui_improvement.md |
 | T-251 | Detail画面UI改善 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-detail_screen_ui_improvement.md |
-| T-252a | Detail画面UI改善 実装 | flutter-dev | `BLOCKED` | | T-251 完了後 |
-| T-252b | Detail画面UI改善 テストコード実装 | tester | `BLOCKED` | | T-251 完了後 |
+| T-252a | Detail画面UI改善 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_自走 | FS-detail_screen_ui_improvement.md 参照 |
+| T-252b | Detail画面UI改善 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_自走 | FS-detail_screen_ui_improvement.md 参照 |
 | T-253 | Detail画面UI改善 レビュー | reviewer | `BLOCKED` | | T-252a/b 完了後 |
 | T-254 | Detail画面UI改善 テスト実行 | tester | `BLOCKED` | | T-253 承認後 |
 
@@ -90,8 +90,8 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-261 | B-6: ガソリン支払い者チップ選択 実装 | flutter-dev | `TODO` | | |
-| T-261b | B-6: ガソリン支払い者チップ選択 テストコード実装 | tester | `TODO` | | T-261 と並行 |
+| T-261 | B-6: ガソリン支払い者チップ選択 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_自走 | |
+| T-261b | B-6: ガソリン支払い者チップ選択 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_自走 | |
 | T-262 | B-6: ガソリン支払い者チップ選択 レビュー | reviewer | `BLOCKED` | | T-261/b 完了後 |
 | T-263 | B-6: ガソリン支払い者チップ選択 テスト実行 | tester | `BLOCKED` | | T-262 承認後 |
 
@@ -101,10 +101,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-264 | 概要タブセクション名 要件書作成 | product-manager | `TODO` | | BasicInfoセクション→「基本情報」、OverViewセクション→「集計」 |
-| T-265 | 概要タブセクション名 Spec作成 | architect | `BLOCKED` | | T-264 完了後 |
-| T-266a | 概要タブセクション名 実装 | flutter-dev | `BLOCKED` | | T-265 完了後 |
-| T-266b | 概要タブセクション名 テストコード実装 | tester | `BLOCKED` | | T-265 完了後 |
+| T-264 | 概要タブセクション名 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-overview_tab_section_labels.md |
+| T-265 | 概要タブセクション名 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-overview_tab_section_labels.md |
+| T-266a | 概要タブセクション名 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_自走 | FS-overview_tab_section_labels.md 参照 |
+| T-266b | 概要タブセクション名 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_自走 | FS-overview_tab_section_labels.md 参照 |
 | T-267 | 概要タブセクション名 レビュー | reviewer | `BLOCKED` | | T-266a/b 完了後 |
 | T-268 | 概要タブセクション名 テスト実行 | tester | `BLOCKED` | | T-267 承認後 |
 
