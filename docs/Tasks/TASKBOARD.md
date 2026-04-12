@@ -128,8 +128,8 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-201 | Phase B Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-event_detail_inline_selection_ui_phaseB.md |
-| T-202a | Phase B MarkDetail・LinkDetail・PaymentDetail 実装 | flutter-dev | `TODO` | | FS-event_detail_inline_selection_ui_phaseB.md 参照 |
-| T-202b | Phase B テストコード実装 | tester | `TODO` | | FS-event_detail_inline_selection_ui_phaseB.md 参照 |
+| T-202a | Phase B MarkDetail・LinkDetail・PaymentDetail 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-12_R2-phaseB-impl | FS-event_detail_inline_selection_ui_phaseB.md 参照 |
+| T-202b | Phase B テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_R2-phaseB-test | FS-event_detail_inline_selection_ui_phaseB.md 参照 |
 | T-203 | Phase B レビュー | reviewer | `BLOCKED` | | T-202a/b 完了後に着手 |
 | T-204 | Phase B テスト実行 | tester | `BLOCKED` | | T-203 承認後に着手 |
 
@@ -191,7 +191,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-240 | PaymentInfo削除UI変更 要件書作成 | product-manager | `TODO` | | 下書き: docs/Requirements/REQ-DRAFT-payment_info_delete_icon.md |
+| T-240 | PaymentInfo削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_info_delete_icon.md |
 | T-241 | PaymentInfo削除UI変更 Spec作成 | architect | `BLOCKED` | | T-240 完了後 |
 | T-242a | PaymentInfo削除UI変更 実装 | flutter-dev | `BLOCKED` | | T-241 完了後 |
 | T-242b | PaymentInfo削除UI変更 テストコード実装 | tester | `BLOCKED` | | T-241 完了後 |
