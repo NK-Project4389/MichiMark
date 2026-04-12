@@ -513,6 +513,13 @@ void main() {
     }
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.text(savedEventName), findsOneWidget);
+    // AppBar にも同名テキストが表示されるため、BasicInfo コンテナ内で確認
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('basicInfoRead_container_section')),
+        matching: find.text(savedEventName),
+      ),
+      findsWidgets,
+    );
   });
 }
