@@ -224,6 +224,19 @@
 
 ---
 
+## UI-6: 概要タブ セクション名追加（基本情報・集計）
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-264 | 概要タブセクション名 要件書作成 | product-manager | `TODO` | | BasicInfoセクション→「基本情報」、OverViewセクション→「集計」 |
+| T-265 | 概要タブセクション名 Spec作成 | architect | `BLOCKED` | | T-264 完了後 |
+| T-266a | 概要タブセクション名 実装 | flutter-dev | `BLOCKED` | | T-265 完了後 |
+| T-266b | 概要タブセクション名 テストコード実装 | tester | `BLOCKED` | | T-265 完了後 |
+| T-267 | 概要タブセクション名 レビュー | reviewer | `BLOCKED` | | T-266a/b 完了後 |
+| T-268 | 概要タブセクション名 テスト実行 | tester | `BLOCKED` | | T-267 承認後 |
+
+---
+
 ## REL-1: AppStore無料版リリース準備
 
 | ID | タスク | 役割 | status | locked_by | notes |
