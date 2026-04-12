@@ -15,7 +15,7 @@
 | 実行 | `cd flutter && flutter run` |
 | 静的解析 | `cd flutter && dart analyze` |
 | テスト（Unit） | `cd flutter && flutter test` |
-| テスト（Integration） | `cd flutter && flutter test integration_test/` |
+| テスト（Integration） | `cd flutter && flutter test integration_test/ -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6 --concurrency=1` |
 | Build（iOS） | `cd flutter && flutter build ios` |
 
 ## 行動原則
@@ -29,3 +29,4 @@
 - ロール・サイクル・開発・運用ルール → `.claude/rules/`
 - エージェント定義 → `.claude/agents/`
 - 設計憲章 → `docs/Architecture/MichiMark_Design_Constitution.md`
+- Integration Testパターン・デバイス設定・落とし穴 → `.claude/rules/integration-test.md`

@@ -7,12 +7,16 @@
 | **MichiMark** | iPhone 16 | `DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6` |
 
 ```bash
-# 単体テスト実行
+# 単体テスト実行（ファイル指定は並行なし）
 flutter test integration_test/<feature>_test.dart -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6
 
-# 全件実行（本番リリース前）
-flutter test integration_test/ -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6
+# 全件実行（本番リリース前）※ 必ず --concurrency=1 を付けること
+flutter test integration_test/ -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6 --concurrency=1
 ```
+
+> ⚠️ **並行実行禁止**: フォルダ指定でテストを走らせる場合は必ず `--concurrency=1` を付ける。
+> デフォルトは CPU コア数の並行実行になり、1台のシミュレーターに複数プロセスが競合してテストが不安定になる。
+> 並行テストの仕様が固まるまでこのルールを維持する。
 
 NomikaiShare は別シミュレーター（iPhone 16 Pro）を使用。同時実行が可能。
 
