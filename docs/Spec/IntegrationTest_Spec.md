@@ -1308,3 +1308,122 @@ Version: 1.0
 **注記:** 接点ドットは `_MichiTimelinePainter`（CustomPainter）内に描画されるため、Widget キーでの直接検証は不可。目視またはスクリーンショット比較で確認すること。Integration Test では `markTestSkipped` によりスキップされる。
 
 ---
+
+## TC-BTE: BasicInfo タップ編集モード切替
+
+Spec: `docs/Spec/Features/FS-basic_info_tap_to_edit.md`
+対象タスク: T-222 UI-2
+
+### テストシナリオ一覧
+
+| ID | シナリオ名 | 優先度 |
+|---|---|---|
+| TC-BTE-001 | BasicInfoセクションに編集アイコンが表示されないこと | High |
+| TC-BTE-002 | 参照モード時にTeal薄背景コンテナが表示されること | High |
+| TC-BTE-003 | 参照モード時に「タップして編集」テキストが表示されること | High |
+| TC-BTE-004 | 参照モードのセクションをタップすると編集モードに切り替わること | High |
+| TC-BTE-005 | 編集モード時にフォーム下部にキャンセル・保存ボタンが表示されること | High |
+| TC-BTE-006 | キャンセルボタンをタップすると参照モードに戻ること | High |
+| TC-BTE-007 | 保存ボタンをタップすると保存されて参照モードに戻ること | High |
+
+---
+
+### TC-BTE-001: BasicInfoセクションに編集アイコンが表示されないこと
+
+**前提:** BasicInfoタブが参照モードで表示されている
+
+**操作手順:**
+1. BasicInfoタブを表示する
+
+**期待結果:**
+- `find.byIcon(Icons.edit)` が `findsNothing`
+
+---
+
+### TC-BTE-002: 参照モード時にTeal薄背景コンテナが表示されること
+
+**前提:** BasicInfoタブが参照モードで表示されている
+
+**操作手順:**
+1. BasicInfoタブを表示する
+
+**期待結果:**
+- `Key('basicInfoRead_container_section')` を持つウィジェットが存在する
+
+---
+
+### TC-BTE-003: 参照モード時に「タップして編集」テキストが表示されること
+
+**前提:** BasicInfoタブが参照モードで表示されている
+
+**操作手順:**
+1. BasicInfoタブを表示する
+
+**期待結果:**
+- `Key('basicInfoRead_text_tapHint')` を持つウィジェットが存在する
+
+---
+
+### TC-BTE-004: 参照モードのセクションをタップすると編集モードに切り替わること
+
+**前提:** BasicInfoタブが参照モードで表示されている
+
+**操作手順:**
+1. BasicInfoタブを表示する
+2. `Key('basicInfoRead_container_section')` をタップする
+
+**期待結果:**
+- `Key('basicInfoRead_container_section')` が非表示になる（`findsNothing`）
+- `Key('basicInfoRead_text_tapHint')` が非表示になる（`findsNothing`）
+- `Key('basicInfoForm_button_cancel')` が表示される
+- `Key('basicInfoForm_button_save')` が表示される
+
+---
+
+### TC-BTE-005: 編集モード時にフォーム下部にキャンセル・保存ボタンが表示されること
+
+**前提:** BasicInfoタブが編集モードで表示されている（TC-BTE-004のタップ後）
+
+**操作手順:**
+1. TC-BTE-004の操作を実施し、編集モードに切り替える
+2. フォーム下部にスクロールする
+
+**期待結果:**
+- `Key('basicInfoForm_button_cancel')` が表示されている
+- `Key('basicInfoForm_button_save')` が表示されている
+- 2つのボタンが横並びで表示されている
+
+---
+
+### TC-BTE-006: キャンセルボタンをタップすると参照モードに戻ること
+
+**前提:** BasicInfoタブが編集モードで表示されている
+
+**操作手順:**
+1. TC-BTE-004の操作を実施し、編集モードに切り替える
+2. イベント名フィールドを任意の文字列に変更する
+3. `Key('basicInfoForm_button_cancel')` をタップする
+
+**期待結果:**
+- `Key('basicInfoRead_container_section')` が表示される
+- `Key('basicInfoRead_text_tapHint')` が表示される
+- 変更したイベント名が元の値に戻っている（変更が破棄されている）
+
+---
+
+### TC-BTE-007: 保存ボタンをタップすると保存されて参照モードに戻ること
+
+**前提:** BasicInfoタブが編集モードで表示されている
+
+**操作手順:**
+1. TC-BTE-004の操作を実施し、編集モードに切り替える
+2. イベント名フィールドに「テスト保存イベント」と入力する
+3. `Key('basicInfoForm_button_save')` をタップする
+4. 保存処理が完了するまで待機する（最大5秒）
+
+**期待結果:**
+- `Key('basicInfoRead_container_section')` が表示される
+- `Key('basicInfoRead_text_tapHint')` が表示される
+- 参照モードに「テスト保存イベント」が表示されている
+
+---
