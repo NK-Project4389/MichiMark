@@ -69,7 +69,7 @@
 | T-242a | PaymentInfo削除UI変更 実装 | flutter-dev | `DONE` | | FS-payment_info_delete_icon.md 参照 |
 | T-242b | PaymentInfo削除UI変更 テストコード実装 | tester | `DONE` | | TC-PID2-001〜003 実装済み |
 | T-243 | PaymentInfo削除UI変更 レビュー | reviewer | `DONE` | | 合格 |
-| T-244 | PaymentInfo削除UI変更 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | 競合解消後再実行 |
+| T-244 | PaymentInfo削除UI変更 テスト実行 | tester | `DONE` | | 3PASS/0FAIL/0SKIP |
 
 ---
 
