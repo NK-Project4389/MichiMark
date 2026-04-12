@@ -30,7 +30,16 @@ void main() {
   /// アプリを起動して EventListPage が表示されるまで待つ。
   /// シードデータが存在することを前提とする。
   Future<void> startApp(WidgetTester tester) async {
+    // ① 前の画面を安全に閉じる（router が既に初期化済みの場合のみ）
+    try {
+      app_router.router.go('/');
+    } catch (_) {}
+    await tester.pump(const Duration(milliseconds: 200));
+
+    // ② GetIt リセット（BLoC の dispose が走った後）
     await GetIt.I.reset();
+
+    // ③ 新しいルートを設定してアプリ起動
     app_router.router.go('/');
     app.main();
     // EventListPage の AppBar title「イベント」が表示されるまで待つ
