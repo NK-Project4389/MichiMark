@@ -6,6 +6,8 @@
 ---
 
 ## 完了した作業
+- feat(R-2 Phase B): MarkDetail・LinkDetail・PaymentDetail メンバー選択インライン化（T-202a） (b763fb0)
+- docs: 進捗記録 T-201 Phase B Spec / B-5 完了セッション (6a91527)
 
 ### T-201: R-2 Phase B Spec作成
 - `docs/Spec/Features/FS-event_detail_inline_selection_ui_phaseB.md` 作成

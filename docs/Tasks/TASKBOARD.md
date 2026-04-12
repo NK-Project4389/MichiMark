@@ -129,9 +129,9 @@
 |---|---|---|---|---|---|
 | T-201 | Phase B Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-event_detail_inline_selection_ui_phaseB.md |
 | T-202a | Phase B MarkDetail・LinkDetail・PaymentDetail 実装 | flutter-dev | `DONE` | | FS-event_detail_inline_selection_ui_phaseB.md 参照。dart analyze エラーゼロ確認済み |
-| T-202b | Phase B テストコード実装 | tester | `IN_PROGRESS` | 2026-04-12_R2-phaseB-test | FS-event_detail_inline_selection_ui_phaseB.md 参照 |
-| T-203 | Phase B レビュー | reviewer | `BLOCKED` | | T-202a/b 完了後に着手 |
-| T-204 | Phase B テスト実行 | tester | `BLOCKED` | | T-203 承認後に着手 |
+| T-202b | Phase B テストコード実装 | tester | `DONE` | | TC-PBM-001〜014b（22ケース）実装済み |
+| T-203 | Phase B レビュー | reviewer | `DONE` | | 承認・違反なし |
+| T-204 | Phase B テスト実行 | tester | `DONE` | | 22PASS/0FAIL/0SKIP |
 
 ---
 

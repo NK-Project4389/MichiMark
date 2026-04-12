@@ -103,3 +103,4 @@
 | [2026-04-12_feat__R2-PhaseA-BasicInfo-インライン選択UI完了.md](./2026-04-12_feat__R2-PhaseA-BasicInfo-インライン選択UI完了.md) | R-2 Phase A BasicInfo インライン選択UI完了（TC-BII 12PASS/4SKIP） |
 | [2026-04-12_feat__T201-PhaseB-Spec_B5-タブ切替追加モード修正.md](./2026-04-12_feat__T201-PhaseB-Spec_B5-タブ切替追加モード修正.md) | T-201 Phase B Spec作成・B-5 タブ切替追加モード修正（2PASS/0FAIL） |
 | [2026-04-12_feat__R2-PhaseB-Detail画面メンバー選択インライン化.md](./2026-04-12_feat__R2-PhaseB-Detail画面メンバー選択インライン化.md) | R-2 Phase B MarkDetail・LinkDetail・PaymentDetail メンバー選択インライン化（T-202a完了） |
+| [2026-04-12_feat__R2-PhaseB-全Detail画面メンバー選択インライン化完了.md](./2026-04-12_feat__R2-PhaseB-全Detail画面メンバー選択インライン化完了.md) | R-2 Phase B 全完了（22PASS/0FAIL/0SKIP） |
