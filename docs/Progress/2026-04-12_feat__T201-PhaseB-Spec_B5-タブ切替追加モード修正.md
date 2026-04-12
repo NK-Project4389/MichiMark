@@ -6,6 +6,9 @@
 ---
 
 ## 完了した作業
+- chore: UI-6 概要タブセクション名追加タスク追加 (T-264〜268) (2db5280)
+- chore: B-6 給油計算ガソリン支払い者チップ選択バグ修正タスク追加 (T-261〜263) (0cbc811)
+- docs: TestFlight 1.0.0(11) アップロード完了記録 (44cd050)
 - feat: R-2 Phase B Detail画面メンバー選択インライン化完了（22PASS/0FAIL/0SKIP） (e32fe8b)
 - feat(R-2 Phase B): MarkDetail・LinkDetail・PaymentDetail メンバー選択インライン化（T-202a） (b763fb0)
 - docs: 進捗記録 T-201 Phase B Spec / B-5 完了セッション (6a91527)
