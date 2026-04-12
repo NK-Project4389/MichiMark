@@ -484,14 +484,35 @@ class _OverviewTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          BasicInfoView(),
-          Divider(height: 1),
-          EventDetailOverviewPage(),
+          _SectionLabel(key: const Key('overview_sectionLabel_basicInfo'), label: '基本情報'),
+          const BasicInfoView(),
+          const Divider(height: 1),
+          _SectionLabel(key: const Key('overview_sectionLabel_overview'), label: '集計'),
+          const EventDetailOverviewPage(),
         ],
+      ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  final String label;
+  const _SectionLabel({required super.key, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
