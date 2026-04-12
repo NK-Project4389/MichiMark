@@ -55,8 +55,8 @@
 | T-232 | MichiInfo削除UI変更 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_delete_icon.md |
 | T-232a | MichiInfo削除UI変更 実装 | flutter-dev | `DONE` | | FS-michi_info_delete_icon.md 参照 |
 | T-232b | MichiInfo削除UI変更 テストコード実装 | tester | `DONE` | | TC-MID-001〜007 実装済み（006/007 はCustomPainterのためSKIP） |
-| T-233 | MichiInfo削除UI変更 レビュー | reviewer | `IN_PROGRESS` | 2026-04-12_自走 | T-232a/b 完了後 |
-| T-234 | MichiInfo削除UI変更 テスト実行 | tester | `BLOCKED` | | T-233 承認後 |
+| T-233 | MichiInfo削除UI変更 レビュー | reviewer | `DONE` | | 合格 |
+| T-234 | MichiInfo削除UI変更 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | T-233 承認後 |
 
 ---
 
@@ -81,8 +81,8 @@
 | T-251 | Detail画面UI改善 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-detail_screen_ui_improvement.md |
 | T-252a | Detail画面UI改善 実装 | flutter-dev | `DONE` | | FS-detail_screen_ui_improvement.md 参照 |
 | T-252b | Detail画面UI改善 テストコード実装 | tester | `DONE` | | TC-DSI-001〜015 実装済み |
-| T-253 | Detail画面UI改善 レビュー | reviewer | `IN_PROGRESS` | 2026-04-12_自走 | T-252a/b 完了後 |
-| T-254 | Detail画面UI改善 テスト実行 | tester | `BLOCKED` | | T-253 承認後 |
+| T-253 | Detail画面UI改善 レビュー | reviewer | `DONE` | | 合格 |
+| T-254 | Detail画面UI改善 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | T-253 承認後 |
 
 ---
 
