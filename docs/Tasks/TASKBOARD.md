@@ -86,14 +86,15 @@
 
 ---
 
-## B-6: 給油計算 ガソリン支払い者がチップ選択になっていないバグ修正
+## B-6: 給油計算 ガソリン支払い者インラインチップ選択（Phase C）
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-261 | B-6: ガソリン支払い者チップ選択 実装 | flutter-dev | `BLOCKED` | | Phase B スコープ外・ユーザー判断待ち |
-| T-261b | B-6: ガソリン支払い者チップ選択 テストコード実装 | tester | `DONE` | | TC-GPS-001〜008 実装済み |
-| T-262 | B-6: ガソリン支払い者チップ選択 レビュー | reviewer | `BLOCKED` | | T-261/b 完了後 |
-| T-263 | B-6: ガソリン支払い者チップ選択 テスト実行 | tester | `BLOCKED` | | T-262 承認後 |
+| T-269 | B-6: Phase C Spec作成 | architect | `IN_PROGRESS` | 2026-04-12_自走 | Phase B スコープ外のため新Spec |
+| T-270a | B-6: ガソリン支払い者チップ選択 実装 | flutter-dev | `BLOCKED` | | T-269 完了後 |
+| T-270b | B-6: テストコード実装 | tester | `DONE` | | TC-GPS-001〜008 実装済み（gas_payer_chip_test.dart） |
+| T-271 | B-6: レビュー | reviewer | `BLOCKED` | | T-270a/b 完了後 |
+| T-272 | B-6: テスト実行 | tester | `BLOCKED` | | T-271 承認後 |
 
 ---
 
