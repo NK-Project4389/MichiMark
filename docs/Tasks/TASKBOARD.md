@@ -56,7 +56,7 @@
 | T-232a | MichiInfo削除UI変更 実装 | flutter-dev | `DONE` | | FS-michi_info_delete_icon.md 参照 |
 | T-232b | MichiInfo削除UI変更 テストコード実装 | tester | `DONE` | | TC-MID-001〜007 実装済み（006/007 はCustomPainterのためSKIP） |
 | T-233 | MichiInfo削除UI変更 レビュー | reviewer | `DONE` | | 合格 |
-| T-234 | MichiInfo削除UI変更 テスト実行 | tester | `IN_PROGRESS` | 2026-04-12_自走 | T-233 承認後 |
+| T-234 | MichiInfo削除UI変更 テスト実行 | tester | `DONE` | | 5PASS/2SKIP/0FAIL（TC-MID-001〜005 PASS・006/007 SKIP） |
 
 ---
 
@@ -94,7 +94,7 @@
 | T-270a | B-6: ガソリン支払い者チップ選択 実装 | flutter-dev | `DONE` | | FS-gas_payer_chip_selection_phaseC.md 参照 |
 | T-270b | B-6: テストコード実装 | tester | `DONE` | | TC-GPS-001〜008 実装済み（gas_payer_chip_test.dart） |
 | T-271 | B-6: レビュー | reviewer | `DONE` | | 合格 |
-| T-272 | B-6: テスト実行 | tester | `BLOCKED` | | TC-GPS-005/006 FAIL・flutter-dev調査中 |
+| T-272 | B-6: テスト実行 | tester | `TODO` | | startApp クリーンアップ修正済み（router.go→pump→GetIt.reset パターンに統一）・tester 再実行待ち |
 
 ---
 
