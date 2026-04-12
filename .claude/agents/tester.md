@@ -94,28 +94,12 @@ flutter/integration_test/
 
 ## Integration Test実装パターン
 
-```dart
-// setUpAll は不要
+`.claude/rules/integration-test.md` の「実装パターン」を参照すること。
 
-Future<void> goToXxxPage(WidgetTester tester) async {
-  app_router.router.go('/target-path'); // runApp より先にセット → スプラッシュスキップ
-  app.main();                           // 各テストで個別に起動
-  for (var i = 0; i < 20; i++) {
-    await tester.pump(const Duration(milliseconds: 500));
-    if (find.byKey(const Key('target_widget_key')).evaluate().isNotEmpty) return;
-  }
-  fail('[タイムアウト] ページが10秒以内にロードされませんでした');
-}
-
-testWidgets('TC-001: 地点の新規登録', (tester) async {
-  await goToXxxPage(tester);
-  // Specのシナリオに従って操作・検証
-});
-```
-
-**ポイント：**
-- `router.go('/path')` を `app.main()` より**先に**呼ぶことでスプラッシュをスキップできる
-- GoRouter はグローバルシングルトンのため、`runApp` 前に設定した location が適用される
+**必須ポイント：**
+- `GetIt.I.reset()` → `router.go('/')` → `app.main()` の順で起動する
+- `router.go('/path')` は `app.main()` より**先に**呼ぶ（スプラッシュスキップ）
+- リファレンス実装: `integration_test/basic_info_tap_to_edit_test.dart`
 
 ---
 
@@ -264,57 +248,6 @@ flutter-devが問題を切り分ける:
 
 ## よくある落とし穴（Integration Test）
 
-### pumpAndSettle() は使わない（無限ハング）【MichiMark必須ルール】
+落とし穴の詳細・コード例は `.claude/rules/integration-test.md` を参照すること。
 
-**症状**: テストが数十分経っても終わらない。
-
-**原因**: `pumpAndSettle()` は「アニメーションが全部止まるまで無限に待つ」仕様。
-MichiInfo の CustomPainter など常に再描画し続けるウィジェットがあると永遠に終わらない。
-
-**ルール: Integration Test 内での `pumpAndSettle()` 使用は禁止。必ず `pump(Duration(...))` を使うこと。**
-
-```dart
-// ❌ NG
-await tester.pumpAndSettle();
-
-// ✅ OK
-await tester.pump(const Duration(milliseconds: 500));
-```
-
-### ボタンが画面外に押し出される
-
-`tester.tap()` の前に `ensureVisible` を挿入する。
-
-```dart
-await tester.ensureVisible(find.byKey(const Key('save_button')));
-await tester.pump(const Duration(milliseconds: 500));
-await tester.tap(find.byKey(const Key('save_button')));
-```
-
-### ListView.builder は画面外のアイテムを描画しない
-
-数を数えるのではなく、対象グループをスクロールで表示してから検証する。
-
-```dart
-// ❌ NG
-expect(find.byKey(Key('item_card')).evaluate().length, count1 + 1);
-
-// ✅ OK
-for (var i = 0; i < 10; i++) {
-  if (find.byKey(Key('group_TARGET')).evaluate().isNotEmpty) break;
-  await tester.drag(find.byType(ListView).first, const Offset(0, -400));
-  await tester.pump(const Duration(milliseconds: 200));
-}
-expect(find.byKey(Key('group_TARGET')), findsOneWidget);
-```
-
-### ListView.builder 内のウィジェットキーは一意にする
-
-```dart
-// ❌ NG
-.map((item) => ListTile(key: const Key('item'), ...))
-
-// ✅ OK
-.asMap().entries.map((entry) =>
-  ListTile(key: Key('item_${entry.key}'), ...))
-```
+**【絶対禁止】`pumpAndSettle()` は使わない** — MichiInfo の CustomPainter が常に再描画するため無限ハングする。必ず `pump(Duration(...))` を使う。

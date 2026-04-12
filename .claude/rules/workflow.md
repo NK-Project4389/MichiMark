@@ -65,11 +65,10 @@ tester（テスト実行）
 
 ## tester 必須ルール（全サイクル共通）
 
-- **tester は flutter-dev と並行してテストコードを実装する**（reviewer承認待ち不要）
-- **テスト実行は reviewer 承認後に行う**（実行前に整合確認が必要）
-- tester を省略してよいケースは存在しない（ドキュメントのみの変更・ルール変更を除く）
-- tester が FAIL を報告した場合、FAIL の原因を修正してから再度 tester → 全件 PASS を確認するまで push しない
-- tester がテスト不可と判断した場合のみ、理由をユーザーに報告して手動確認を促す
+詳細は `.claude/agents/tester.md` を参照。
+
+- **tester は省略不可**（ドキュメントのみの変更・ルール変更を除く）
+- **FAIL → 全件 PASS まで push しない**
 
 ## Flutter移行タスクのフロー
 
