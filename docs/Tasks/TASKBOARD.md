@@ -203,9 +203,9 @@
 | T-309 | MichiInfoカードトピック別表示 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_card_topic_view.md |
 | T-310 | MichiInfoカードトピック別表示 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_card_topic_view.md |
 | T-311a | MichiInfoカードトピック別表示 実装 | flutter-dev | `DONE` | | |
-| T-311b | MichiInfoカードトピック別表示 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_UI8-F2-F4実装 | |
-| T-312 | MichiInfoカードトピック別表示 レビュー | reviewer | `TODO` | | |
-| T-313 | MichiInfoカードトピック別表示 テスト実行 | tester | `TODO` | | |
+| T-311b | MichiInfoカードトピック別表示 テストコード実装 | tester | `DONE` | | TC-MCV-001〜007 11件実装済み |
+| T-312 | MichiInfoカードトピック別表示 レビュー | reviewer | `DONE` | | 承認 |
+| T-313 | MichiInfoカードトピック別表示 テスト実行 | tester | `DONE` | | 11PASS/0FAIL/0SKIP（TC-MCV-001〜007 全件PASS） |
 
 ---
 

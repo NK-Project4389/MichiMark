@@ -127,3 +127,4 @@
 | [2026-04-13_test__UI7-B7-F3-UI9-UI10-UI11_全件PASS.md](./2026-04-13_test__UI7-B7-F3-UI9-UI10-UI11_全件PASS.md) | UI-7・B-7・F-3・UI-9・UI-10・UI-11 Integration Test 40PASS/0FAIL/0SKIP（showCupertinoDialog<bool>修正・Container Key修正） |
 - [2026-04-14](./2026-04-14_feat__F_4_MichiInfoカード_トピック別表示.md)
 | [2026-04-14_test__T297-F2-移動コスト収支バランス全件PASS.md](./2026-04-14_test__T297-F2-移動コスト収支バランス全件PASS.md) | T-297 F-2 移動コスト集計収支バランス Integration Test 8PASS/0FAIL/0SKIP |
+| [2026-04-14_test__T313-F4-MichiInfoカードトピック別表示テスト全件PASS.md](./2026-04-14_test__T313-F4-MichiInfoカードトピック別表示テスト全件PASS.md) | T-313 F-4 MichiInfoカードトピック別表示切り替え Integration Test 11PASS/0FAIL/0SKIP |
