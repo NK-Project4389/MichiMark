@@ -115,11 +115,11 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-280 | 削除確認ダイアログ 要件書作成 | product-manager | `TODO` | | MichiInfo・PaymentInfo両対応 |
-| T-281 | 削除確認ダイアログ Spec作成 | architect | `TODO` | | |
-| T-282a | 削除確認ダイアログ 実装 | flutter-dev | `TODO` | | |
-| T-282b | 削除確認ダイアログ テストコード実装 | tester | `TODO` | | |
-| T-283 | 削除確認ダイアログ レビュー | reviewer | `TODO` | | |
+| T-280 | 削除確認ダイアログ 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-delete_confirmation_dialog.md |
+| T-281 | 削除確認ダイアログ Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-delete_confirmation_dialog.md |
+| T-282a | 削除確認ダイアログ 実装 | flutter-dev | `DONE` | | MichiInfo/PaymentInfo両対応・CupertinoDialog・StatefulWidget化 |
+| T-282b | 削除確認ダイアログ テストコード実装 | tester | `DONE` | | TC-DCD-001〜006b 17件実装済み |
+| T-283 | 削除確認ダイアログ レビュー | reviewer | `IN_PROGRESS` | 2026-04-13_UI-7 | |
 | T-284 | 削除確認ダイアログ テスト実行 | tester | `TODO` | | |
 
 ---
@@ -143,9 +143,9 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-290 | 削除後集計即時反映 バグ修正実装 | flutter-dev | `TODO` | | 削除時に集計が更新されない |
-| T-290b | 削除後集計即時反映 テストコード実装 | tester | `TODO` | | |
-| T-291 | 削除後集計即時反映 レビュー | reviewer | `TODO` | | |
+| T-290 | 削除後集計即時反映 バグ修正実装 | flutter-dev | `DONE` | | MichiInfoReloadedDelegate / PaymentInfoReloadedDelegate を削除ハンドラに追加 |
+| T-290b | 削除後集計即時反映 テストコード実装 | tester | `DONE` | | TC-DAU-001〜002c 6件実装済み |
+| T-291 | 削除後集計即時反映 レビュー | reviewer | `IN_PROGRESS` | 2026-04-13_B-7 | Spec更新完了・再レビュー |
 | T-292 | 削除後集計即時反映 テスト実行 | tester | `TODO` | | |
 
 ---
@@ -169,11 +169,11 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-298 | 給油集計文言追加 要件書作成 | product-manager | `TODO` | | |
-| T-299 | 給油集計文言追加 Spec作成 | architect | `TODO` | | |
-| T-300a | 給油集計文言追加 実装 | flutter-dev | `TODO` | | |
-| T-300b | 給油集計文言追加 テストコード実装 | tester | `TODO` | | |
-| T-301 | 給油集計文言追加 レビュー | reviewer | `TODO` | | |
+| T-298 | 給油集計文言追加 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-fuel_aggregation_fulltank_label.md |
+| T-299 | 給油集計文言追加 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-fuel_aggregation_fulltank_label.md |
+| T-300a | 給油集計文言追加 実装 | flutter-dev | `DONE` | | Projection hasFuelData追加・Adapter算出・View サブテキスト追加 |
+| T-300b | 給油集計文言追加 テストコード実装 | tester | `DONE` | | TC-FFL-001〜002 4件実装済み |
+| T-301 | 給油集計文言追加 レビュー | reviewer | `IN_PROGRESS` | 2026-04-13_F-3 | |
 | T-302 | 給油集計文言追加 テスト実行 | tester | `TODO` | | |
 
 ---
@@ -184,11 +184,11 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-303 | 精算行誤認防止 デザイン提案 | designer | `TODO` | | HTMLレポートで提案・docs/Design/draft/ に出力 |
-| T-304 | 精算行誤認防止 要件書作成 | product-manager | `TODO` | | designerの叩きをレビュー後 |
-| T-305 | 精算行誤認防止 Spec作成 | architect | `TODO` | | |
-| T-306a | 精算行誤認防止 実装 | flutter-dev | `TODO` | | |
-| T-306b | 精算行誤認防止 テストコード実装 | tester | `TODO` | | |
+| T-303 | 精算行誤認防止 デザイン提案 | designer | `DONE` | | docs/Design/draft/payment_settlement_display_design.html（B案採用） |
+| T-304 | 精算行誤認防止 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_settlement_display.md |
+| T-305 | 精算行誤認防止 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_settlement_display.md |
+| T-306a | 精算行誤認防止 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-13_UI-9 | |
+| T-306b | 精算行誤認防止 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-13_UI-9 | |
 | T-307 | 精算行誤認防止 レビュー | reviewer | `TODO` | | |
 | T-308 | 精算行誤認防止 テスト実行 | tester | `TODO` | | |
 
@@ -213,10 +213,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-314 | 移動コスト名称非表示 要件書作成 | product-manager | `TODO` | | MarkDetail・LinkDetail両対応 |
-| T-315 | 移動コスト名称非表示 Spec作成 | architect | `TODO` | | |
-| T-316a | 移動コスト名称非表示 実装 | flutter-dev | `TODO` | | |
-| T-316b | 移動コスト名称非表示 テストコード実装 | tester | `TODO` | | |
+| T-314 | 移動コスト名称非表示 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-moving_cost_name_hidden.md |
+| T-315 | 移動コスト名称非表示 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-moving_cost_name_hidden.md（movingCostEstimatedも非表示確定） |
+| T-316a | 移動コスト名称非表示 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-13_UI-10 | |
+| T-316b | 移動コスト名称非表示 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-13_UI-10 | |
 | T-317 | 移動コスト名称非表示 レビュー | reviewer | `TODO` | | |
 | T-318 | 移動コスト名称非表示 テスト実行 | tester | `TODO` | | |
 
@@ -228,11 +228,11 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-319 | メンバー全選択全解除 要件書作成 | product-manager | `TODO` | | 支払者解除不可ルール含む |
-| T-320 | メンバー全選択全解除 Spec作成 | architect | `TODO` | | |
-| T-321a | メンバー全選択全解除 実装 | flutter-dev | `TODO` | | |
-| T-321b | メンバー全選択全解除 テストコード実装 | tester | `TODO` | | |
-| T-322 | メンバー全選択全解除 レビュー | reviewer | `TODO` | | |
+| T-319 | メンバー全選択全解除 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-member_select_all_clear.md |
+| T-320 | メンバー全選択全解除 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-member_select_all_clear.md |
+| T-321a | メンバー全選択全解除 実装 | flutter-dev | `DONE` | | 6イベント追加・3Bloc・3View対応 |
+| T-321b | メンバー全選択全解除 テストコード実装 | tester | `DONE` | | TC-MSA-001〜006b 7件実装済み（Specキー名準拠） |
+| T-322 | メンバー全選択全解除 レビュー | reviewer | `IN_PROGRESS` | 2026-04-13_UI-11 | |
 | T-323 | メンバー全選択全解除 テスト実行 | tester | `TODO` | | |
 
 ---
@@ -242,6 +242,66 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-260 | AppStore無料版リリース準備 | orchestrator | `TODO` | | 下書き: docs/Requirements/REQ-DRAFT-appstore_free_release.md |
+
+---
+
+## INV-1: 招待機能 バックエンド実装
+
+> ⚠️ REL-1（AppStoreリリース）完了後に着手する
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-324 | 招待機能バックエンド 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_backend.md（叩き作成済み） |
+| T-325 | 招待機能バックエンド Spec作成 | architect | `BLOCKED` | | REL-1完了・既存DBスキーマ確認後に着手 |
+| T-326a | 招待機能バックエンド 実装 | flutter-dev | `BLOCKED` | | |
+| T-326b | 招待機能バックエンド テストコード実装 | tester | `BLOCKED` | | |
+| T-327 | 招待機能バックエンド レビュー | reviewer | `BLOCKED` | | |
+| T-328 | 招待機能バックエンド テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## INV-2: 招待機能 中間Webページ（Next.js）
+
+> ⚠️ REL-1（AppStoreリリース）完了・INV-1完了後に着手する
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-329 | 招待Webページ 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_web_page.md（叩き作成済み） |
+| T-330 | 招待Webページ Spec作成 | architect | `BLOCKED` | | INV-1完了後に着手 |
+| T-331a | 招待Webページ 実装 | flutter-dev | `BLOCKED` | | Next.js実装 |
+| T-331b | 招待Webページ テストコード実装 | tester | `BLOCKED` | | |
+| T-332 | 招待Webページ レビュー | reviewer | `BLOCKED` | | |
+| T-333 | 招待Webページ テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## INV-3: 招待機能 招待コード入力画面（Flutter）
+
+> ⚠️ REL-1（AppStoreリリース）完了・INV-1完了後に着手する
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-334 | 招待コード入力 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_code_input.md（叩き作成済み） |
+| T-335 | 招待コード入力 Spec作成 | architect | `BLOCKED` | | INV-1完了後に着手 |
+| T-336a | 招待コード入力 実装 | flutter-dev | `BLOCKED` | | |
+| T-336b | 招待コード入力 テストコード実装 | tester | `BLOCKED` | | |
+| T-337 | 招待コード入力 レビュー | reviewer | `BLOCKED` | | |
+| T-338 | 招待コード入力 テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## INV-4: 招待機能 招待リンク生成・共有（Flutter）
+
+> ⚠️ REL-1（AppStoreリリース）完了・INV-1/INV-2完了後に着手する
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-339 | 招待リンク生成・共有 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_link_share.md（叩き作成済み） |
+| T-340 | 招待リンク生成・共有 Spec作成 | architect | `BLOCKED` | | INV-1/2完了後に着手・既存権限モデル調査が前提 |
+| T-341a | 招待リンク生成・共有 実装 | flutter-dev | `BLOCKED` | | |
+| T-341b | 招待リンク生成・共有 テストコード実装 | tester | `BLOCKED` | | |
+| T-342 | 招待リンク生成・共有 レビュー | reviewer | `BLOCKED` | | |
+| T-343 | 招待リンク生成・共有 テスト実行 | tester | `BLOCKED` | | |
 
 ---
 
