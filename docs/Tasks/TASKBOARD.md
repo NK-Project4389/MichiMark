@@ -120,7 +120,7 @@
 | T-282a | 削除確認ダイアログ 実装 | flutter-dev | `DONE` | | MichiInfo/PaymentInfo両対応・CupertinoDialog・StatefulWidget化 |
 | T-282b | 削除確認ダイアログ テストコード実装 | tester | `DONE` | | TC-DCD-001〜006b 17件実装済み |
 | T-283 | 削除確認ダイアログ レビュー | reviewer | `DONE` | | 承認 |
-| T-284 | 削除確認ダイアログ テスト実行 | tester | `TODO` | | 14PASS/3FAIL → flutter-dev調査中 |
+| T-284 | 削除確認ダイアログ テスト実行 | tester | `DONE` | | 17PASS/0FAIL（showCupertinoDialog<bool>修正後・全件PASS） |
 
 ---
 
@@ -190,7 +190,7 @@
 | T-306a | 精算行誤認防止 実装 | flutter-dev | `DONE` | | Card→Container置き換え・Specキー名準拠 |
 | T-306b | 精算行誤認防止 テストコード実装 | tester | `DONE` | | TC-PSD-001〜002 実装済み |
 | T-307 | 精算行誤認防止 レビュー | reviewer | `DONE` | | 承認 |
-| T-308 | 精算行誤認防止 テスト実行 | tester | `DONE` | | 0PASS/0FAIL/3SKIP（旅費データなしのためSKIP・All tests passed!） |
+| T-308 | 精算行誤認防止 テスト実行 | tester | `DONE` | | TC-PSD-001〜002 3PASS/0FAIL/0SKIP |
 
 ---
 
@@ -233,7 +233,7 @@
 | T-321a | メンバー全選択全解除 実装 | flutter-dev | `DONE` | | 6イベント追加・3Bloc・3View対応 |
 | T-321b | メンバー全選択全解除 テストコード実装 | tester | `DONE` | | TC-MSA-001〜006b 7件実装済み（Specキー名準拠） |
 | T-322 | メンバー全選択全解除 レビュー | reviewer | `DONE` | | 承認 |
-| T-323 | メンバー全選択全解除 テスト実行 | tester | `DONE` | | 7PASS/0FAIL/0SKIP |
+| T-323 | メンバー全選択全解除 テスト実行 | tester | `TODO` | | 全7件SKIP（shard1 DB初期化後に再実行中） |
 
 ---
 
@@ -245,15 +245,30 @@
 
 ---
 
-## INV-1: 招待機能 バックエンド実装
+## INFRA-1: Firebase基盤整備
 
-> ⚠️ REL-1（AppStoreリリース）完了後に着手する
+> ⚠️ REL-1（AppStoreリリース）完了後に着手する。INV-1〜4すべての前提。
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-324 | 招待機能バックエンド 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_backend.md（叩き作成済み） |
-| T-325 | 招待機能バックエンド Spec作成 | architect | `BLOCKED` | | REL-1完了・既存DBスキーマ確認後に着手 |
-| T-326a | 招待機能バックエンド 実装 | flutter-dev | `BLOCKED` | | |
+| T-344 | Firebase基盤整備 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-firebase_infra.md（叩き作成済み） |
+| T-345 | Firebase基盤整備 Spec作成 | architect | `BLOCKED` | | REL-1完了後に着手 |
+| T-346a | Firebase基盤整備 実装 | flutter-dev | `BLOCKED` | | Anonymous Auth＋Apple Sign In＋Firestore移行 |
+| T-346b | Firebase基盤整備 テストコード実装 | tester | `BLOCKED` | | |
+| T-347 | Firebase基盤整備 レビュー | reviewer | `BLOCKED` | | |
+| T-348 | Firebase基盤整備 テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## INV-1: 招待機能 バックエンド実装
+
+> ⚠️ REL-1（AppStoreリリース）完了・INFRA-1完了後に着手する
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-324 | 招待機能バックエンド 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_backend.md |
+| T-325 | 招待機能バックエンド Spec作成 | architect | `BLOCKED` | | INFRA-1完了後に着手 |
+| T-326a | 招待機能バックエンド 実装（Next.js） | flutter-dev | `BLOCKED` | | |
 | T-326b | 招待機能バックエンド テストコード実装 | tester | `BLOCKED` | | |
 | T-327 | 招待機能バックエンド レビュー | reviewer | `BLOCKED` | | |
 | T-328 | 招待機能バックエンド テスト実行 | tester | `BLOCKED` | | |
@@ -262,13 +277,13 @@
 
 ## INV-2: 招待機能 中間Webページ（Next.js）
 
-> ⚠️ REL-1（AppStoreリリース）完了・INV-1完了後に着手する
+> ⚠️ INV-1完了後に着手する
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-329 | 招待Webページ 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_web_page.md（叩き作成済み） |
+| T-329 | 招待Webページ 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_web_page.md |
 | T-330 | 招待Webページ Spec作成 | architect | `BLOCKED` | | INV-1完了後に着手 |
-| T-331a | 招待Webページ 実装 | flutter-dev | `BLOCKED` | | Next.js実装 |
+| T-331a | 招待Webページ 実装（Next.js） | flutter-dev | `BLOCKED` | | |
 | T-331b | 招待Webページ テストコード実装 | tester | `BLOCKED` | | |
 | T-332 | 招待Webページ レビュー | reviewer | `BLOCKED` | | |
 | T-333 | 招待Webページ テスト実行 | tester | `BLOCKED` | | |
@@ -277,11 +292,11 @@
 
 ## INV-3: 招待機能 招待コード入力画面（Flutter）
 
-> ⚠️ REL-1（AppStoreリリース）完了・INV-1完了後に着手する
+> ⚠️ INV-1完了後に着手する（INV-2と並行可能）
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-334 | 招待コード入力 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_code_input.md（叩き作成済み） |
+| T-334 | 招待コード入力 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_code_input.md |
 | T-335 | 招待コード入力 Spec作成 | architect | `BLOCKED` | | INV-1完了後に着手 |
 | T-336a | 招待コード入力 実装 | flutter-dev | `BLOCKED` | | |
 | T-336b | 招待コード入力 テストコード実装 | tester | `BLOCKED` | | |
@@ -292,12 +307,12 @@
 
 ## INV-4: 招待機能 招待リンク生成・共有（Flutter）
 
-> ⚠️ REL-1（AppStoreリリース）完了・INV-1/INV-2完了後に着手する
+> ⚠️ INV-1・INV-2完了後に着手する
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-339 | 招待リンク生成・共有 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_link_share.md（叩き作成済み） |
-| T-340 | 招待リンク生成・共有 Spec作成 | architect | `BLOCKED` | | INV-1/2完了後に着手・既存権限モデル調査が前提 |
+| T-339 | 招待リンク生成・共有 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_link_share.md |
+| T-340 | 招待リンク生成・共有 Spec作成 | architect | `BLOCKED` | | INV-1/2完了後に着手 |
 | T-341a | 招待リンク生成・共有 実装 | flutter-dev | `BLOCKED` | | |
 | T-341b | 招待リンク生成・共有 テストコード実装 | tester | `BLOCKED` | | |
 | T-342 | 招待リンク生成・共有 レビュー | reviewer | `BLOCKED` | | |

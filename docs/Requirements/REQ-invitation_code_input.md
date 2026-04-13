@@ -1,4 +1,4 @@
-# 要件書：招待機能 招待コード入力画面（Flutter）
+# 要件書：招待機能 招待コード入力画面（INV-3）
 
 ## 概要
 
@@ -9,9 +9,23 @@
 - 招待されたユーザーとして、招待コードを手入力してイベントに参加したい
 - コードが無効・期限切れ・使用済みの場合は適切なエラーメッセージを確認したい
 
+## 前提
+
+- INFRA-1（Firebase基盤整備）の完了が必須
+- INV-1（バックエンドAPI）の完了が必須
+
+## 権限モデル
+
+参加時の権限は招待コード生成時にオーナーが設定した `role` に従う。
+
+| 権限 | 説明 |
+|---|---|
+| `editor`（デフォルト） | MichiInfo・PaymentInfo の編集可能、BasicInfo は閲覧のみ |
+| `viewer` | すべて閲覧のみ |
+
 ## スコープ
 
-### 画面：InviteCodeInputView
+### 画面：InviteCodeInputPage
 
 **入力フィールド**
 - 招待コード入力（XXX-9999形式）
@@ -32,14 +46,14 @@
 ### API呼び出し
 
 ```
-POST /invitations/code
-Body: { code: "ABC-1234", user_id: [ログイン中のユーザーID] }
+POST /api/invitations/code
+Body: { code: "ABC-1234", uid: [Firebase Anonymous Auth の UID] }
 ```
 
 ### 成功時の動作
 
 - 「[イベント名]に参加しました！」アラート表示
-- イベント詳細画面へ遷移（`event_id` を使って）
+- イベント詳細画面へ遷移（`eventId` を使って）
 
 ### エラー時の動作
 
@@ -57,11 +71,12 @@ Body: { code: "ABC-1234", user_id: [ログイン中のユーザーID] }
 
 ## 前提・制約
 
-- INV-1（バックエンド）の完了が前提
+- INV-1（バックエンドAPI）の完了が必須
 - 設計憲章に従い BLoC パターンで実装する
 - AppStore 無料版リリース（REL-1）完了後に着手する
 
 ## 関連タスク
 
+- INFRA-1: Firebase基盤整備（依存）
 - INV-1: バックエンド実装（依存）
 - INV-4: 招待リンク生成・共有機能（Flutter）
