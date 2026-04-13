@@ -111,6 +111,132 @@
 
 ---
 
+## UI-7: MichiInfo / PaymentInfo 削除確認ダイアログ追加
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-280 | 削除確認ダイアログ 要件書作成 | product-manager | `TODO` | | MichiInfo・PaymentInfo両対応 |
+| T-281 | 削除確認ダイアログ Spec作成 | architect | `TODO` | | |
+| T-282a | 削除確認ダイアログ 実装 | flutter-dev | `TODO` | | |
+| T-282b | 削除確認ダイアログ テストコード実装 | tester | `TODO` | | |
+| T-283 | 削除確認ダイアログ レビュー | reviewer | `TODO` | | |
+| T-284 | 削除確認ダイアログ テスト実行 | tester | `TODO` | | |
+
+---
+
+## UI-8: イベント追加ボタン 選択肢スキップ遷移
+
+> 地点登録のみ / 区間登録のみ利用可能な場合、選択肢画面を経由せず直接登録画面へ遷移する
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-285 | イベント追加スキップ遷移 要件書作成 | product-manager | `TODO` | | 地点登録のみ・区間登録のみ両対応 |
+| T-286 | イベント追加スキップ遷移 Spec作成 | architect | `TODO` | | |
+| T-287a | イベント追加スキップ遷移 実装 | flutter-dev | `TODO` | | |
+| T-287b | イベント追加スキップ遷移 テストコード実装 | tester | `TODO` | | |
+| T-288 | イベント追加スキップ遷移 レビュー | reviewer | `TODO` | | |
+| T-289 | イベント追加スキップ遷移 テスト実行 | tester | `TODO` | | |
+
+---
+
+## B-7: 削除後 集計即時反映バグ修正
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-290 | 削除後集計即時反映 バグ修正実装 | flutter-dev | `TODO` | | 削除時に集計が更新されない |
+| T-290b | 削除後集計即時反映 テストコード実装 | tester | `TODO` | | |
+| T-291 | 削除後集計即時反映 レビュー | reviewer | `TODO` | | |
+| T-292 | 削除後集計即時反映 テスト実行 | tester | `TODO` | | |
+
+---
+
+## F-2: 移動コスト集計 収支バランス追加
+
+> 旅費集計と同様の収支バランス表示を燃費・給油集計にも追加
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-293 | 移動コスト集計収支バランス 要件書作成 | product-manager | `TODO` | | 燃費・給油両対応 |
+| T-294 | 移動コスト集計収支バランス Spec作成 | architect | `TODO` | | |
+| T-295a | 移動コスト集計収支バランス 実装 | flutter-dev | `TODO` | | |
+| T-295b | 移動コスト集計収支バランス テストコード実装 | tester | `TODO` | | |
+| T-296 | 移動コスト集計収支バランス レビュー | reviewer | `TODO` | | |
+| T-297 | 移動コスト集計収支バランス テスト実行 | tester | `TODO` | | |
+
+---
+
+## F-3: 給油集計 「満タン給油で算出」文言追加
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-298 | 給油集計文言追加 要件書作成 | product-manager | `TODO` | | |
+| T-299 | 給油集計文言追加 Spec作成 | architect | `TODO` | | |
+| T-300a | 給油集計文言追加 実装 | flutter-dev | `TODO` | | |
+| T-300b | 給油集計文言追加 テストコード実装 | tester | `TODO` | | |
+| T-301 | 給油集計文言追加 レビュー | reviewer | `TODO` | | |
+| T-302 | 給油集計文言追加 テスト実行 | tester | `TODO` | | |
+
+---
+
+## UI-9: 旅費集計「支払いごとの精算」誤認防止デザイン変更
+
+> タップできるように見えてしまう問題を解消するデザイン変更
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-303 | 精算行誤認防止 デザイン提案 | designer | `TODO` | | HTMLレポートで提案・docs/Design/draft/ に出力 |
+| T-304 | 精算行誤認防止 要件書作成 | product-manager | `TODO` | | designerの叩きをレビュー後 |
+| T-305 | 精算行誤認防止 Spec作成 | architect | `TODO` | | |
+| T-306a | 精算行誤認防止 実装 | flutter-dev | `TODO` | | |
+| T-306b | 精算行誤認防止 テストコード実装 | tester | `TODO` | | |
+| T-307 | 精算行誤認防止 レビュー | reviewer | `TODO` | | |
+| T-308 | 精算行誤認防止 テスト実行 | tester | `TODO` | | |
+
+---
+
+## F-4: MichiInfoカード トピック別表示切り替え部品
+
+> MichiInfoの一覧カードをトピックに応じて表示内容を変更できるカード部品に刷新
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-309 | MichiInfoカードトピック別表示 要件書作成 | product-manager | `TODO` | | |
+| T-310 | MichiInfoカードトピック別表示 Spec作成 | architect | `TODO` | | |
+| T-311a | MichiInfoカードトピック別表示 実装 | flutter-dev | `TODO` | | |
+| T-311b | MichiInfoカードトピック別表示 テストコード実装 | tester | `TODO` | | |
+| T-312 | MichiInfoカードトピック別表示 レビュー | reviewer | `TODO` | | |
+| T-313 | MichiInfoカードトピック別表示 テスト実行 | tester | `TODO` | | |
+
+---
+
+## UI-10: 移動コストトピック MarkDetail/LinkDetail 名称項目非表示
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-314 | 移動コスト名称非表示 要件書作成 | product-manager | `TODO` | | MarkDetail・LinkDetail両対応 |
+| T-315 | 移動コスト名称非表示 Spec作成 | architect | `TODO` | | |
+| T-316a | 移動コスト名称非表示 実装 | flutter-dev | `TODO` | | |
+| T-316b | 移動コスト名称非表示 テストコード実装 | tester | `TODO` | | |
+| T-317 | 移動コスト名称非表示 レビュー | reviewer | `TODO` | | |
+| T-318 | 移動コスト名称非表示 テスト実行 | tester | `TODO` | | |
+
+---
+
+## UI-11: メンバー選択 全選択/全解除ボタン追加
+
+> MarkDetail・LinkDetail・PaymentDetailのメンバー選択に全選択・全解除ボタン追加。支払者は解除不可。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-319 | メンバー全選択全解除 要件書作成 | product-manager | `TODO` | | 支払者解除不可ルール含む |
+| T-320 | メンバー全選択全解除 Spec作成 | architect | `TODO` | | |
+| T-321a | メンバー全選択全解除 実装 | flutter-dev | `TODO` | | |
+| T-321b | メンバー全選択全解除 テストコード実装 | tester | `TODO` | | |
+| T-322 | メンバー全選択全解除 レビュー | reviewer | `TODO` | | |
+| T-323 | メンバー全選択全解除 テスト実行 | tester | `TODO` | | |
+
+---
+
 ## REL-1: AppStore無料版リリース準備
 
 | ID | タスク | 役割 | status | locked_by | notes |
