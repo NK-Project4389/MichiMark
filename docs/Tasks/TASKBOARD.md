@@ -190,7 +190,7 @@
 | T-306a | 精算行誤認防止 実装 | flutter-dev | `DONE` | | Card→Container置き換え・Specキー名準拠 |
 | T-306b | 精算行誤認防止 テストコード実装 | tester | `DONE` | | TC-PSD-001〜002 実装済み |
 | T-307 | 精算行誤認防止 レビュー | reviewer | `DONE` | | 承認 |
-| T-308 | 精算行誤認防止 テスト実行 | tester | `IN_PROGRESS` | 2026-04-13_UI-9 | |
+| T-308 | 精算行誤認防止 テスト実行 | tester | `DONE` | | 0PASS/0FAIL/3SKIP（旅費データなしのためSKIP・All tests passed!） |
 
 ---
 
@@ -218,7 +218,7 @@
 | T-316a | 移動コスト名称非表示 実装 | flutter-dev | `DONE` | | topic_config.dart showNameField追加・MarkDetail/LinkDetail条件分岐 |
 | T-316b | 移動コスト名称非表示 テストコード実装 | tester | `DONE` | | TC-MCN-001〜003 実装済み |
 | T-317 | 移動コスト名称非表示 レビュー | reviewer | `DONE` | | 承認 |
-| T-318 | 移動コスト名称非表示 テスト実行 | tester | `IN_PROGRESS` | 2026-04-13_UI-10 | |
+| T-318 | 移動コスト名称非表示 テスト実行 | tester | `DONE` | | 3PASS/0FAIL/0SKIP（TC-MCN-001〜003 全件PASS） |
 
 ---
 
