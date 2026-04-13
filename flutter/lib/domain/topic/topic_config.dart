@@ -56,6 +56,15 @@ class TopicConfig extends Equatable {
   /// MarkDetail/LinkDetailの名称フィールドを表示するか（REQ-moving_cost_name_hidden）
   final bool showNameField;
 
+  /// Markカードに日付を表示するか（F-4 MichiInfoカードトピック別表示切り替え）
+  final bool showMarkDate;
+
+  /// Markカードに参加メンバー名を表示するか（F-4 MichiInfoカードトピック別表示切り替え）
+  final bool showMarkMembers;
+
+  /// Linkカードに日付を表示するか（F-4 MichiInfoカードトピック別表示切り替え）
+  final bool showLinkDate;
+
   const TopicConfig({
     required this.showMeterValue,
     required this.showFuelDetail,
@@ -71,6 +80,9 @@ class TopicConfig extends Equatable {
     this.themeColor = TopicThemeColor.brandTeal,
     this.displayName = '',
     this.showNameField = true,
+    this.showMarkDate = false,
+    this.showMarkMembers = false,
+    this.showLinkDate = false,
   });
 
   /// TopicTypeからTopicConfigを生成するファクトリ（エイリアス）。
@@ -96,6 +108,9 @@ class TopicConfig extends Equatable {
           themeColor: TopicThemeColor.emeraldGreen,
           displayName: '移動コスト（給油から計算）',
           showNameField: false,
+          showMarkDate: true,
+          showMarkMembers: false,
+          showLinkDate: true,
         ),
       TopicType.movingCostEstimated => const TopicConfig(
           showMeterValue: true,
@@ -112,6 +127,9 @@ class TopicConfig extends Equatable {
           themeColor: TopicThemeColor.emeraldGreen,
           displayName: '移動コスト（燃費で推定）',
           showNameField: false,
+          showMarkDate: true,
+          showMarkMembers: false,
+          showLinkDate: true,
         ),
       TopicType.travelExpense => const TopicConfig(
           showMeterValue: false,
@@ -128,6 +146,9 @@ class TopicConfig extends Equatable {
           themeColor: TopicThemeColor.amberOrange,
           displayName: '旅費可視化',
           showNameField: true,
+          showMarkDate: true,
+          showMarkMembers: true,
+          showLinkDate: false,
         ),
     };
   }
@@ -148,5 +169,8 @@ class TopicConfig extends Equatable {
         themeColor,
         displayName,
         showNameField,
+        showMarkDate,
+        showMarkMembers,
+        showLinkDate,
       ];
 }

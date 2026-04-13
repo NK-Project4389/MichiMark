@@ -15,6 +15,7 @@ import '../../../features/link_detail/link_detail_args.dart';
 import '../../../features/mark_detail/mark_detail_args.dart';
 import '../../../features/shared/projection/action_item_projection.dart';
 import '../../../features/shared/projection/mark_link_item_projection.dart';
+import '../../../features/shared/projection/member_item_projection.dart';
 import '../../../repository/action_repository.dart';
 import '../../../repository/event_repository.dart';
 import '../bloc/michi_info_bloc.dart';
@@ -153,7 +154,25 @@ class _MichiInfoViewState extends State<MichiInfoView> {
 
         // BottomSheet トリガー（pendingInsertAfterSeq が non-null になったとき）
         if (state.delegate == null && state.pendingInsertAfterSeq != null) {
-          await _showInsertBottomSheet(state.topicConfig);
+          final items = state.topicConfig.addMenuItems;
+          if (items.length == 1) {
+            // 選択肢が 1 件のみ → ボトムシートをスキップして直接 dispatch
+            final item = items[0];
+            if (!mounted) return;
+            if (item == AddMenuItemType.mark) {
+              context
+                  .read<MichiInfoBloc>()
+                  .add(const MichiInfoInsertMarkPressed());
+            } else {
+              context
+                  .read<MichiInfoBloc>()
+                  .add(const MichiInfoInsertLinkPressed());
+            }
+          } else if (items.length == 2) {
+            // 選択肢が 2 件 → 従来通りボトムシートを表示
+            await _showInsertBottomSheet(state.topicConfig);
+          }
+          // items.length == 0 は安全ガード（到達しない想定）
           return;
         }
 
@@ -1327,6 +1346,19 @@ class _TimelineItemOverlay extends StatefulWidget {
 }
 
 class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
+  /// メンバーリストを表示用文字列に変換する。
+  /// 0名: null（非表示）、1名: 「田中」、2名: 「田中・鈴木」、
+  /// 3名以上: 「田中・鈴木 +N人」（先頭2名＋残数）
+  String? _buildMembersText(List<MemberItemProjection> members) {
+    if (members.isEmpty) return null;
+    if (members.length == 1) return members[0].memberName;
+    if (members.length == 2) {
+      return '${members[0].memberName}・${members[1].memberName}';
+    }
+    final rest = members.length - 2;
+    return '${members[0].memberName}・${members[1].memberName} +$rest人';
+  }
+
   Future<void> _onDeleteTapped() async {
     final confirmed = await showCupertinoDialog<bool>(
       context: context,
@@ -1382,40 +1414,20 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
         child: Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    name,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: const Color(0xFF1A1A2E),
-                          fontWeight: isMark
-                              ? FontWeight.w700
-                              : FontWeight.w600,
-                          fontSize: isMark ? 13 : 11,
-                        ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (isMark && item.displayMeterValue != null)
-                    Text(
-                      item.displayMeterValue!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 11,
-                            color: _markPrimaryColor,
-                            fontWeight: FontWeight.w600,
-                          ),
+              child: isMark
+                  ? _buildMarkCardContent(
+                      context: context,
+                      item: item,
+                      name: name,
+                      topicConfig: topicConfig,
+                      currentStateLabel: currentStateLabel,
+                    )
+                  : _buildLinkCardContent(
+                      context: context,
+                      item: item,
+                      name: name,
+                      topicConfig: topicConfig,
                     ),
-                  // 状態バッジ（アクションタイム有効トピックのみ表示）
-                  if (isMark && topicConfig.showActionTimeButton)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: _ActionStateBadge(
-                        label: currentStateLabel ?? '滞留中',
-                      ),
-                    ),
-                ],
-              ),
             ),
             // ⚡ アイコンボタン（アクションタイム有効トピックのみ表示）
             if (isMark && topicConfig.showActionTimeButton)
@@ -1457,6 +1469,159 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
           ],
         ),
       ),
+    );
+  }
+
+  /// Mark（地点）カードのコンテンツColumnを構築する。
+  ///
+  /// レイアウト（Specセクション5）:
+  /// - showNameField=false（movingCost系）: 日付（最上段）→ 累積メーター・メンバー行
+  /// - showNameField=true（travelExpense）: 名称（最上段）→ 日付行 → 累積メーター・メンバー行
+  Widget _buildMarkCardContent({
+    required BuildContext context,
+    required MarkLinkItemProjection item,
+    required String name,
+    required TopicConfig topicConfig,
+    required String? currentStateLabel,
+  }) {
+    final membersText = topicConfig.showMarkMembers
+        ? _buildMembersText(item.members)
+        : null;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // showNameField=false の場合: 日付を最上段に表示
+        if (!topicConfig.showNameField && topicConfig.showMarkDate)
+          Text(
+            key: Key('michiInfo_text_markDate_${item.id}'),
+            item.displayDate,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: 11,
+                  color: const Color(0xFF6B7280),
+                  fontWeight: FontWeight.w500,
+                ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        // showNameField=true の場合: 名称を最上段に表示
+        if (topicConfig.showNameField)
+          Text(
+            name,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: const Color(0xFF1A1A2E),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        // showNameField=true かつ showMarkDate=true の場合: 日付を名称の下に表示
+        if (topicConfig.showNameField && topicConfig.showMarkDate)
+          Text(
+            key: Key('michiInfo_text_markDate_${item.id}'),
+            item.displayDate,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: 11,
+                  color: const Color(0xFF6B7280),
+                  fontWeight: FontWeight.w500,
+                ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        // 累積メーター・メンバー行
+        if (item.displayMeterValue != null || membersText != null)
+          Row(
+            children: [
+              if (item.displayMeterValue != null)
+                Text(
+                  item.displayMeterValue!,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 11,
+                        color: _markPrimaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              if (item.displayMeterValue != null && membersText != null)
+                const SizedBox(width: 6),
+              if (membersText != null)
+                Flexible(
+                  child: Text(
+                    key: Key('michiInfo_text_markMembers_${item.id}'),
+                    membersText,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 11,
+                          color: const Color(0xFF6B7280),
+                          fontWeight: FontWeight.w500,
+                        ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+            ],
+          ),
+        // 状態バッジ（アクションタイム有効トピックのみ表示）
+        if (topicConfig.showActionTimeButton)
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: _ActionStateBadge(
+              label: currentStateLabel ?? '滞留中',
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// Link（区間）カードのコンテンツColumnを構築する。
+  ///
+  /// レイアウト（Specセクション5）:
+  /// - 日付テキスト（showLinkDate=true の場合）
+  /// - 名称テキスト（showNameField=true の場合）
+  /// - 区間距離テキスト（showLinkDistance=true かつ displayDistanceValue!=null の場合）
+  Widget _buildLinkCardContent({
+    required BuildContext context,
+    required MarkLinkItemProjection item,
+    required String name,
+    required TopicConfig topicConfig,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // 日付テキスト（showLinkDate=true の場合）
+        if (topicConfig.showLinkDate)
+          Text(
+            key: Key('michiInfo_text_linkDate_${item.id}'),
+            item.displayDate,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: 11,
+                  color: const Color(0xFF6B7280),
+                  fontWeight: FontWeight.w500,
+                ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        // 名称テキスト（showNameField=true の場合）
+        if (topicConfig.showNameField)
+          Text(
+            name,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: const Color(0xFF1A1A2E),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 11,
+                ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        // 区間距離テキスト（showLinkDistance=true かつ displayDistanceValue!=null の場合）
+        if (topicConfig.showLinkDistance &&
+            item.displayDistanceValue != null)
+          Text(
+            key: Key('michiInfo_text_linkDistance_${item.id}'),
+            item.displayDistanceValue!,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: 11,
+                  color: _linkPrimaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
+            overflow: TextOverflow.ellipsis,
+          ),
+      ],
     );
   }
 }
