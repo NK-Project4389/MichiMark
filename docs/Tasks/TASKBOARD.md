@@ -174,7 +174,7 @@
 | T-300a | 給油集計文言追加 実装 | flutter-dev | `DONE` | | Projection hasFuelData追加・Adapter算出・View サブテキスト追加 |
 | T-300b | 給油集計文言追加 テストコード実装 | tester | `DONE` | | TC-FFL-001〜002 4件実装済み |
 | T-301 | 給油集計文言追加 レビュー | reviewer | `DONE` | | 承認 |
-| T-302 | 給油集計文言追加 テスト実行 | tester | `IN_PROGRESS` | 2026-04-13_F-3 | |
+| T-302 | 給油集計文言追加 テスト実行 | tester | `DONE` | | 4PASS/0FAIL/0SKIP（TC-FFL-001〜002 全件PASS） |
 
 ---
 

@@ -119,3 +119,4 @@
 | [2026-04-12_testflight__1_0_0_12_UI1-6_B6_全テストPASS.md](./2026-04-12_testflight__1_0_0_12_UI1-6_B6_全テストPASS.md) | TestFlight 1.0.0(12) アップロード完了（UI-1〜6 + B-6 全テスト58PASS/0FAIL/6SKIP） |
 - [2026-04-13](./2026-04-13_chore__タスクボードに9件の要望_修正タスクを追加_U.md)
 | [2026-04-13_test__T292-B7-削除後集計即時反映テスト全件PASS.md](./2026-04-13_test__T292-B7-削除後集計即時反映テスト全件PASS.md) | T-292 B-7 削除後集計即時反映 Integration Test 6PASS/0FAIL/0SKIP |
+| [2026-04-13_test__T302-F3-給油集計満タン給油文言テスト全件PASS.md](./2026-04-13_test__T302-F3-給油集計満タン給油文言テスト全件PASS.md) | T-302 F-3 給油集計「満タン給油で算出」文言 Integration Test 4PASS/0FAIL/0SKIP |
