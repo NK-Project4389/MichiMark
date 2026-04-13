@@ -125,3 +125,5 @@
 | [2026-04-13_test__T318-UI10-移動コスト名称非表示テスト全件PASS.md](./2026-04-13_test__T318-UI10-移動コスト名称非表示テスト全件PASS.md) | T-318 UI-10 移動コスト名称非表示 Integration Test 3PASS/0FAIL/0SKIP |
 | [2026-04-13_test__T323-UI11-メンバー選択全選択全解除テスト全件PASS.md](./2026-04-13_test__T323-UI11-メンバー選択全選択全解除テスト全件PASS.md) | T-323 UI-11 メンバー全選択/全解除 Integration Test 7PASS/0FAIL/0SKIP |
 | [2026-04-13_test__UI7-B7-F3-UI9-UI10-UI11_全件PASS.md](./2026-04-13_test__UI7-B7-F3-UI9-UI10-UI11_全件PASS.md) | UI-7・B-7・F-3・UI-9・UI-10・UI-11 Integration Test 40PASS/0FAIL/0SKIP（showCupertinoDialog<bool>修正・Container Key修正） |
+- [2026-04-14](./2026-04-14_feat__F_4_MichiInfoカード_トピック別表示.md)
+| [2026-04-14_test__T297-F2-移動コスト収支バランス全件PASS.md](./2026-04-14_test__T297-F2-移動コスト収支バランス全件PASS.md) | T-297 F-2 移動コスト集計収支バランス Integration Test 8PASS/0FAIL/0SKIP |

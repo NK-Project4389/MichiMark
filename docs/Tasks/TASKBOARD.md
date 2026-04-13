@@ -161,7 +161,7 @@
 | T-295a | 移動コスト集計収支バランス 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_UI8-F2-F4実装 | |
 | T-295b | 移動コスト集計収支バランス テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_UI8-F2-F4実装 | |
 | T-296 | 移動コスト集計収支バランス レビュー | reviewer | `TODO` | | |
-| T-297 | 移動コスト集計収支バランス テスト実行 | tester | `TODO` | | |
+| T-297 | 移動コスト集計収支バランス テスト実行 | tester | `DONE` | | 8PASS/0FAIL/0SKIP（TC-MCB-001〜006 全件PASS） |
 
 ---
 
