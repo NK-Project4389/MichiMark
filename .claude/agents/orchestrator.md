@@ -72,6 +72,25 @@ docs/Spec/Features/ の該当Specを読む
 
 ---
 
+## 自動スケジュール（impl-schedule）
+
+ユーザーが以下のような発言をした場合、確認なしに `/impl-schedule` を実行する。
+
+- 「寝ている時に実装して」
+- 「就寝中にお願い」
+- 「起きたら完成させて」
+- 「実装以降は寝ている時にお願い」
+- これらに類する「就寝中・不在中に実装を進めてほしい」という趣旨の発言
+
+### 実行前の確認事項
+
+`/impl-schedule` を実行する前に以下を確認する。
+
+1. `docs/Tasks/TASKBOARD.md` に `TODO` のタスクが存在するか
+2. 存在しない場合はユーザーに「TODOタスクがありません」と報告して終了
+
+---
+
 ## 参照ドキュメント
 
 - `docs/Architecture/MichiMark_Design_Constitution.md`
