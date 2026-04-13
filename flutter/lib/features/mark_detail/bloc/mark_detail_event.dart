@@ -176,6 +176,22 @@ class MarkDetailMembersAllCleared extends MarkDetailEvent {
   List<Object?> get props => [];
 }
 
+/// キャンセル確認ダイアログで「破棄する」が選択されたとき
+class MarkDetailCancelDiscardConfirmed extends MarkDetailEvent {
+  const MarkDetailCancelDiscardConfirmed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// キャンセル確認ダイアログが閉じられたとき（「編集を続ける」選択）
+class MarkDetailCancelDialogDismissed extends MarkDetailEvent {
+  const MarkDetailCancelDialogDismissed();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき
 class MarkDetailFuelFieldsChanged extends MarkDetailEvent {
   final String pricePerGas;

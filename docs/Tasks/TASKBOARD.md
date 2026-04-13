@@ -354,7 +354,7 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-357 | UI-13: Detail画面キャンセル確認 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-detail_cancel_confirmation.md |
-| T-358a | UI-13: Detail画面キャンセル確認 実装 | flutter-dev | `TODO` | | |
+| T-358a | UI-13: Detail画面キャンセル確認 実装 | flutter-dev | `DONE` | | MarkDetail・LinkDetail・PaymentDetail: initialDraft/showCancelConfirmDialog追加、DismissPressed差分判定、CancelDiscardConfirmed/CancelDialogDismissed Event追加、CupertinoAlertDialog Widget追加 |
 | T-358b | UI-13: Detail画面キャンセル確認 テストコード実装 | tester | `DONE` | | TC-DCC-001〜012 16件実装済み（integration_test/detail_cancel_confirmation_test.dart） |
 | T-359 | UI-13: レビュー | reviewer | `TODO` | | |
 | T-360 | UI-13: テスト実行 | tester | `TODO` | | |

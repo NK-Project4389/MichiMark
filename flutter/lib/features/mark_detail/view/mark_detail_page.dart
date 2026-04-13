@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -47,13 +48,25 @@ class _MarkDetailPageState extends State<MarkDetailPage> {
           MarkDetailError(:final message) => Scaffold(
               body: Center(child: Text(message)),
             ),
-          MarkDetailLoaded(:final draft, :final topicConfig, :final isSaving, :final availableMembers) =>
-            _MarkDetailScaffold(
-              draft: draft,
-              topicConfig: topicConfig,
-              dateFormat: _dateFormat,
-              isSaving: isSaving,
-              availableMembers: availableMembers,
+          MarkDetailLoaded(
+            :final draft,
+            :final topicConfig,
+            :final isSaving,
+            :final availableMembers,
+            :final showCancelConfirmDialog,
+          ) =>
+            Stack(
+              children: [
+                _MarkDetailScaffold(
+                  draft: draft,
+                  topicConfig: topicConfig,
+                  dateFormat: _dateFormat,
+                  isSaving: isSaving,
+                  availableMembers: availableMembers,
+                ),
+                if (showCancelConfirmDialog)
+                  _MarkDetailCancelConfirmDialog(),
+              ],
             ),
         };
       },
@@ -118,6 +131,7 @@ class _MarkDetailScaffold extends StatelessWidget {
         ? '地点詳細'
         : '地点詳細：${draft.markLinkName}';
     return Scaffold(
+      key: const Key('markDetail_screen'),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
@@ -588,6 +602,36 @@ class _FuelRow extends StatelessWidget {
             selectedGasPayer: selectedGasPayer,
           ),
         ],
+      ],
+    );
+  }
+}
+
+// ── キャンセル確認ダイアログ ───────────────────────────────────────────────
+
+class _MarkDetailCancelConfirmDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoAlertDialog(
+      key: const Key('markDetail_dialog_cancelConfirm'),
+      title: const Text('変更を破棄しますか？'),
+      content: const Text('保存されていない変更は失われます。'),
+      actions: [
+        CupertinoDialogAction(
+          key: const Key('markDetail_button_discardConfirm'),
+          isDestructiveAction: true,
+          onPressed: () => context
+              .read<MarkDetailBloc>()
+              .add(const MarkDetailCancelDiscardConfirmed()),
+          child: const Text('破棄する'),
+        ),
+        CupertinoDialogAction(
+          key: const Key('markDetail_button_continueEdit'),
+          onPressed: () => context
+              .read<MarkDetailBloc>()
+              .add(const MarkDetailCancelDialogDismissed()),
+          child: const Text('編集を続ける'),
+        ),
       ],
     );
   }

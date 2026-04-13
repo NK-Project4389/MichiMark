@@ -21,6 +21,8 @@ class PaymentDetailBloc
     on<PaymentDetailCancelTapped>(_onCancelTapped);
     on<PaymentDetailSplitMembersAllSelected>(_onSplitMembersAllSelected);
     on<PaymentDetailSplitMembersAllCleared>(_onSplitMembersAllCleared);
+    on<PaymentDetailCancelDiscardConfirmed>(_onCancelDiscardConfirmed);
+    on<PaymentDetailCancelDialogDismissed>(_onCancelDialogDismissed);
   }
 
   final EventRepository _eventRepository;
@@ -42,7 +44,7 @@ class PaymentDetailBloc
           id: const Uuid().v4(),
           paymentSeq: 0,
         );
-        emit(PaymentDetailLoaded(draft: draft, availableMembers: availableMembers));
+        emit(PaymentDetailLoaded(draft: draft, initialDraft: draft, availableMembers: availableMembers));
         return;
       }
       // 既存編集: Repositoryからデータ取得
@@ -61,7 +63,7 @@ class PaymentDetailBloc
         splitMembers: payment.splitMembers,
         paymentMemo: payment.paymentMemo ?? '',
       );
-      emit(PaymentDetailLoaded(draft: draft, availableMembers: availableMembers));
+      emit(PaymentDetailLoaded(draft: draft, initialDraft: draft, availableMembers: availableMembers));
     } on Exception catch (e) {
       emit(PaymentDetailError(message: e.toString()));
     }
@@ -212,9 +214,37 @@ class PaymentDetailBloc
   ) async {
     if (state is PaymentDetailLoaded) {
       final current = state as PaymentDetailLoaded;
+      if (current.draft == current.initialDraft) {
+        // 差分なし: そのまま Dismiss
+        emit(current.copyWith(delegate: const PaymentDetailDismissDelegate()));
+      } else {
+        // 差分あり: 確認ダイアログを表示
+        emit(current.copyWith(showCancelConfirmDialog: true));
+      }
+    }
+  }
+
+  Future<void> _onCancelDiscardConfirmed(
+    PaymentDetailCancelDiscardConfirmed event,
+    Emitter<PaymentDetailState> emit,
+  ) async {
+    if (state is PaymentDetailLoaded) {
+      final current = state as PaymentDetailLoaded;
       emit(current.copyWith(
+        draft: current.initialDraft,
+        showCancelConfirmDialog: false,
         delegate: const PaymentDetailDismissDelegate(),
       ));
+    }
+  }
+
+  Future<void> _onCancelDialogDismissed(
+    PaymentDetailCancelDialogDismissed event,
+    Emitter<PaymentDetailState> emit,
+  ) async {
+    if (state is PaymentDetailLoaded) {
+      final current = state as PaymentDetailLoaded;
+      emit(current.copyWith(showCancelConfirmDialog: false));
     }
   }
 

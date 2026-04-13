@@ -54,18 +54,27 @@ class MarkDetailLoading extends MarkDetailState {
 
 class MarkDetailLoaded extends MarkDetailState {
   final MarkDetailDraft draft;
+
+  /// 画面オープン時の初期状態スナップショット。差分比較に使用する
+  final MarkDetailDraft initialDraft;
+
   final MarkDetailDelegate? delegate;
   final TopicConfig topicConfig;
   final bool isSaving;
+
+  /// true のとき Page が CupertinoAlertDialog を表示する
+  final bool showCancelConfirmDialog;
 
   /// メンバー選択 UI に表示する候補一覧（イベントメンバーに限定）
   final List<MemberDomain> availableMembers;
 
   const MarkDetailLoaded({
     required this.draft,
+    required this.initialDraft,
     this.delegate,
     TopicConfig? topicConfig,
     this.isSaving = false,
+    this.showCancelConfirmDialog = false,
     this.availableMembers = const [],
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
@@ -80,22 +89,26 @@ class MarkDetailLoaded extends MarkDetailState {
 
   MarkDetailLoaded copyWith({
     MarkDetailDraft? draft,
+    MarkDetailDraft? initialDraft,
     MarkDetailDelegate? delegate,
     TopicConfig? topicConfig,
     bool? isSaving,
+    bool? showCancelConfirmDialog,
     List<MemberDomain>? availableMembers,
   }) {
     return MarkDetailLoaded(
       draft: draft ?? this.draft,
+      initialDraft: initialDraft ?? this.initialDraft,
       delegate: delegate,
       topicConfig: topicConfig ?? this.topicConfig,
       isSaving: isSaving ?? this.isSaving,
+      showCancelConfirmDialog: showCancelConfirmDialog ?? this.showCancelConfirmDialog,
       availableMembers: availableMembers ?? this.availableMembers,
     );
   }
 
   @override
-  List<Object?> get props => [draft, delegate, topicConfig, isSaving, availableMembers];
+  List<Object?> get props => [draft, initialDraft, delegate, topicConfig, isSaving, showCancelConfirmDialog, availableMembers];
 }
 
 class MarkDetailError extends MarkDetailState {

@@ -147,6 +147,22 @@ class LinkDetailMembersAllCleared extends LinkDetailEvent {
   List<Object?> get props => [];
 }
 
+/// キャンセル確認ダイアログで「破棄する」が選択されたとき
+class LinkDetailCancelDiscardConfirmed extends LinkDetailEvent {
+  const LinkDetailCancelDiscardConfirmed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// キャンセル確認ダイアログが閉じられたとき（「編集を続ける」選択）
+class LinkDetailCancelDialogDismissed extends LinkDetailEvent {
+  const LinkDetailCancelDialogDismissed();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき
 class LinkDetailFuelFieldsChanged extends LinkDetailEvent {
   final String pricePerGas;

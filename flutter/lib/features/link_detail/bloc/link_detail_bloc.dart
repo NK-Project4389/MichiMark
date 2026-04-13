@@ -28,6 +28,8 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
     on<LinkDetailGasPayerChipToggled>(_onGasPayerChipToggled);
     on<LinkDetailMembersAllSelected>(_onMembersAllSelected);
     on<LinkDetailMembersAllCleared>(_onMembersAllCleared);
+    on<LinkDetailCancelDiscardConfirmed>(_onCancelDiscardConfirmed);
+    on<LinkDetailCancelDialogDismissed>(_onCancelDialogDismissed);
   }
 
   final EventRepository _eventRepository;
@@ -55,6 +57,7 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
         final draft = LinkDetailDraft(markLinkDate: DateTime.now());
         emit(LinkDetailLoaded(
           draft: draft,
+          initialDraft: draft,
           topicConfig: event.topicConfig,
           availableMembers: event.eventMembers,
         ));
@@ -78,6 +81,7 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
       );
       emit(LinkDetailLoaded(
         draft: draft,
+        initialDraft: draft,
         topicConfig: event.topicConfig,
         availableMembers: event.eventMembers,
       ));
@@ -92,7 +96,37 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
   ) async {
     if (state is LinkDetailLoaded) {
       final current = state as LinkDetailLoaded;
-      emit(current.copyWith(delegate: const LinkDetailDismissDelegate()));
+      if (current.draft == current.initialDraft) {
+        // 差分なし: そのまま Dismiss
+        emit(current.copyWith(delegate: const LinkDetailDismissDelegate()));
+      } else {
+        // 差分あり: 確認ダイアログを表示
+        emit(current.copyWith(showCancelConfirmDialog: true));
+      }
+    }
+  }
+
+  Future<void> _onCancelDiscardConfirmed(
+    LinkDetailCancelDiscardConfirmed event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is LinkDetailLoaded) {
+      final current = state as LinkDetailLoaded;
+      emit(current.copyWith(
+        draft: current.initialDraft,
+        showCancelConfirmDialog: false,
+        delegate: const LinkDetailDismissDelegate(),
+      ));
+    }
+  }
+
+  Future<void> _onCancelDialogDismissed(
+    LinkDetailCancelDialogDismissed event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is LinkDetailLoaded) {
+      final current = state as LinkDetailLoaded;
+      emit(current.copyWith(showCancelConfirmDialog: false));
     }
   }
 

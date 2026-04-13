@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -32,8 +33,19 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
           PaymentDetailError(:final message) => Scaffold(
               body: Center(child: Text(message)),
             ),
-          PaymentDetailLoaded(:final draft, :final isSaving, :final availableMembers) =>
-            _PaymentDetailScaffold(draft: draft, isSaving: isSaving, availableMembers: availableMembers),
+          PaymentDetailLoaded(
+            :final draft,
+            :final isSaving,
+            :final availableMembers,
+            :final showCancelConfirmDialog,
+          ) =>
+            Stack(
+              children: [
+                _PaymentDetailScaffold(draft: draft, isSaving: isSaving, availableMembers: availableMembers),
+                if (showCancelConfirmDialog)
+                  _PaymentDetailCancelConfirmDialog(),
+              ],
+            ),
         };
       },
     );
@@ -356,6 +368,36 @@ class _SplitMemberChipSection extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ── キャンセル確認ダイアログ ───────────────────────────────────────────────
+
+class _PaymentDetailCancelConfirmDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoAlertDialog(
+      key: const Key('paymentDetail_dialog_cancelConfirm'),
+      title: const Text('変更を破棄しますか？'),
+      content: const Text('保存されていない変更は失われます。'),
+      actions: [
+        CupertinoDialogAction(
+          key: const Key('paymentDetail_button_discardConfirm'),
+          isDestructiveAction: true,
+          onPressed: () => context
+              .read<PaymentDetailBloc>()
+              .add(const PaymentDetailCancelDiscardConfirmed()),
+          child: const Text('破棄する'),
+        ),
+        CupertinoDialogAction(
+          key: const Key('paymentDetail_button_continueEdit'),
+          onPressed: () => context
+              .read<PaymentDetailBloc>()
+              .add(const PaymentDetailCancelDialogDismissed()),
+          child: const Text('編集を続ける'),
+        ),
+      ],
     );
   }
 }

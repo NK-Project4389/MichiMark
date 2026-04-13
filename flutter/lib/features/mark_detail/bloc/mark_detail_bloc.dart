@@ -32,6 +32,8 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
     on<MarkDetailGasPayerChipToggled>(_onGasPayerChipToggled);
     on<MarkDetailMembersAllSelected>(_onMembersAllSelected);
     on<MarkDetailMembersAllCleared>(_onMembersAllCleared);
+    on<MarkDetailCancelDiscardConfirmed>(_onCancelDiscardConfirmed);
+    on<MarkDetailCancelDialogDismissed>(_onCancelDialogDismissed);
   }
 
   final EventRepository _eventRepository;
@@ -64,6 +66,7 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
         );
         emit(MarkDetailLoaded(
           draft: draft,
+          initialDraft: draft,
           topicConfig: event.topicConfig,
           availableMembers: event.eventMembers,
         ));
@@ -87,6 +90,7 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
       );
       emit(MarkDetailLoaded(
         draft: draft,
+        initialDraft: draft,
         topicConfig: event.topicConfig,
         availableMembers: event.eventMembers,
       ));
@@ -101,7 +105,37 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
   ) async {
     if (state is MarkDetailLoaded) {
       final current = state as MarkDetailLoaded;
-      emit(current.copyWith(delegate: const MarkDetailDismissDelegate()));
+      if (current.draft == current.initialDraft) {
+        // 差分なし: そのまま Dismiss
+        emit(current.copyWith(delegate: const MarkDetailDismissDelegate()));
+      } else {
+        // 差分あり: 確認ダイアログを表示
+        emit(current.copyWith(showCancelConfirmDialog: true));
+      }
+    }
+  }
+
+  Future<void> _onCancelDiscardConfirmed(
+    MarkDetailCancelDiscardConfirmed event,
+    Emitter<MarkDetailState> emit,
+  ) async {
+    if (state is MarkDetailLoaded) {
+      final current = state as MarkDetailLoaded;
+      emit(current.copyWith(
+        draft: current.initialDraft,
+        showCancelConfirmDialog: false,
+        delegate: const MarkDetailDismissDelegate(),
+      ));
+    }
+  }
+
+  Future<void> _onCancelDialogDismissed(
+    MarkDetailCancelDialogDismissed event,
+    Emitter<MarkDetailState> emit,
+  ) async {
+    if (state is MarkDetailLoaded) {
+      final current = state as MarkDetailLoaded;
+      emit(current.copyWith(showCancelConfirmDialog: false));
     }
   }
 

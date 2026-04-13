@@ -85,3 +85,19 @@ class PaymentDetailCancelTapped extends PaymentDetailEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// キャンセル確認ダイアログで「破棄する」が選択されたとき
+class PaymentDetailCancelDiscardConfirmed extends PaymentDetailEvent {
+  const PaymentDetailCancelDiscardConfirmed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// キャンセル確認ダイアログが閉じられたとき（「編集を続ける」選択）
+class PaymentDetailCancelDialogDismissed extends PaymentDetailEvent {
+  const PaymentDetailCancelDialogDismissed();
+
+  @override
+  List<Object?> get props => [];
+}

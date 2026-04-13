@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -44,8 +45,20 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
           LinkDetailError(:final message) => Scaffold(
               body: Center(child: Text(message)),
             ),
-          LinkDetailLoaded(:final draft, :final topicConfig, :final isSaving, :final availableMembers) =>
-            _LinkDetailScaffold(draft: draft, topicConfig: topicConfig, isSaving: isSaving, availableMembers: availableMembers),
+          LinkDetailLoaded(
+            :final draft,
+            :final topicConfig,
+            :final isSaving,
+            :final availableMembers,
+            :final showCancelConfirmDialog,
+          ) =>
+            Stack(
+              children: [
+                _LinkDetailScaffold(draft: draft, topicConfig: topicConfig, isSaving: isSaving, availableMembers: availableMembers),
+                if (showCancelConfirmDialog)
+                  _LinkDetailCancelConfirmDialog(),
+              ],
+            ),
         };
       },
     );
@@ -109,6 +122,7 @@ class _LinkDetailScaffold extends StatelessWidget {
         ? '区間詳細'
         : '区間詳細：${draft.markLinkName}';
     return Scaffold(
+      key: const Key('linkDetail_screen'),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
@@ -519,6 +533,36 @@ class _MemberChipSection extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ── キャンセル確認ダイアログ ───────────────────────────────────────────────
+
+class _LinkDetailCancelConfirmDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoAlertDialog(
+      key: const Key('linkDetail_dialog_cancelConfirm'),
+      title: const Text('変更を破棄しますか？'),
+      content: const Text('保存されていない変更は失われます。'),
+      actions: [
+        CupertinoDialogAction(
+          key: const Key('linkDetail_button_discardConfirm'),
+          isDestructiveAction: true,
+          onPressed: () => context
+              .read<LinkDetailBloc>()
+              .add(const LinkDetailCancelDiscardConfirmed()),
+          child: const Text('破棄する'),
+        ),
+        CupertinoDialogAction(
+          key: const Key('linkDetail_button_continueEdit'),
+          onPressed: () => context
+              .read<LinkDetailBloc>()
+              .add(const LinkDetailCancelDialogDismissed()),
+          child: const Text('編集を続ける'),
+        ),
+      ],
     );
   }
 }
