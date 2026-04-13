@@ -130,10 +130,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-285 | イベント追加スキップ遷移 要件書作成 | product-manager | `TODO` | | 地点登録のみ・区間登録のみ両対応 |
-| T-286 | イベント追加スキップ遷移 Spec作成 | architect | `TODO` | | |
-| T-287a | イベント追加スキップ遷移 実装 | flutter-dev | `TODO` | | |
-| T-287b | イベント追加スキップ遷移 テストコード実装 | tester | `TODO` | | |
+| T-285 | イベント追加スキップ遷移 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-event_add_skip_selection.md |
+| T-286 | イベント追加スキップ遷移 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-event_add_skip_selection.md |
+| T-287a | イベント追加スキップ遷移 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_UI8-F2-F4実装 | |
+| T-287b | イベント追加スキップ遷移 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_UI8-F2-F4実装 | |
 | T-288 | イベント追加スキップ遷移 レビュー | reviewer | `TODO` | | |
 | T-289 | イベント追加スキップ遷移 テスト実行 | tester | `TODO` | | |
 
@@ -156,10 +156,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-293 | 移動コスト集計収支バランス 要件書作成 | product-manager | `TODO` | | 燃費・給油両対応 |
-| T-294 | 移動コスト集計収支バランス Spec作成 | architect | `TODO` | | |
-| T-295a | 移動コスト集計収支バランス 実装 | flutter-dev | `TODO` | | |
-| T-295b | 移動コスト集計収支バランス テストコード実装 | tester | `TODO` | | |
+| T-293 | 移動コスト集計収支バランス 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-moving_cost_balance.md |
+| T-294 | 移動コスト集計収支バランス Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-moving_cost_balance.md |
+| T-295a | 移動コスト集計収支バランス 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_UI8-F2-F4実装 | |
+| T-295b | 移動コスト集計収支バランス テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_UI8-F2-F4実装 | |
 | T-296 | 移動コスト集計収支バランス レビュー | reviewer | `TODO` | | |
 | T-297 | 移動コスト集計収支バランス テスト実行 | tester | `TODO` | | |
 
@@ -200,10 +200,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-309 | MichiInfoカードトピック別表示 要件書作成 | product-manager | `TODO` | | |
-| T-310 | MichiInfoカードトピック別表示 Spec作成 | architect | `TODO` | | |
-| T-311a | MichiInfoカードトピック別表示 実装 | flutter-dev | `TODO` | | |
-| T-311b | MichiInfoカードトピック別表示 テストコード実装 | tester | `TODO` | | |
+| T-309 | MichiInfoカードトピック別表示 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_card_topic_view.md |
+| T-310 | MichiInfoカードトピック別表示 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_card_topic_view.md |
+| T-311a | MichiInfoカードトピック別表示 実装 | flutter-dev | `DONE` | | |
+| T-311b | MichiInfoカードトピック別表示 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_UI8-F2-F4実装 | |
 | T-312 | MichiInfoカードトピック別表示 レビュー | reviewer | `TODO` | | |
 | T-313 | MichiInfoカードトピック別表示 テスト実行 | tester | `TODO` | | |
 
