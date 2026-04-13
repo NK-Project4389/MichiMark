@@ -233,7 +233,7 @@
 | T-321a | メンバー全選択全解除 実装 | flutter-dev | `DONE` | | 6イベント追加・3Bloc・3View対応 |
 | T-321b | メンバー全選択全解除 テストコード実装 | tester | `DONE` | | TC-MSA-001〜006b 7件実装済み（Specキー名準拠） |
 | T-322 | メンバー全選択全解除 レビュー | reviewer | `DONE` | | 承認 |
-| T-323 | メンバー全選択全解除 テスト実行 | tester | `TODO` | | 全7件SKIP（shard1 DB初期化後に再実行中） |
+| T-323 | メンバー全選択全解除 テスト実行 | tester | `DONE` | | 7PASS/0FAIL/0SKIP（DB初期化後再実行） |
 
 ---
 
