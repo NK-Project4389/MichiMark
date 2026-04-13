@@ -118,6 +118,7 @@
 | [2026-04-12_test__T224-UI2-BasicInfo参照タップ編集テスト全件PASS.md](./2026-04-12_test__T224-UI2-BasicInfo参照タップ編集テスト全件PASS.md) | T-224 UI-2 BasicInfo参照タップ編集 Integration Test 14PASS/0FAIL/0SKIP |
 | [2026-04-12_testflight__1_0_0_12_UI1-6_B6_全テストPASS.md](./2026-04-12_testflight__1_0_0_12_UI1-6_B6_全テストPASS.md) | TestFlight 1.0.0(12) アップロード完了（UI-1〜6 + B-6 全テスト58PASS/0FAIL/6SKIP） |
 - [2026-04-13](./2026-04-13_chore__タスクボードに9件の要望_修正タスクを追加_U.md)
+| [2026-04-13_chore__招待機能INFRA-INV要件書作成.md](./2026-04-13_chore__招待機能INFRA-INV要件書作成.md) | INFRA-1・INV-1〜4 要件書叩き作成・Firebase/権限モデル確定 |
 | [2026-04-13_test__T292-B7-削除後集計即時反映テスト全件PASS.md](./2026-04-13_test__T292-B7-削除後集計即時反映テスト全件PASS.md) | T-292 B-7 削除後集計即時反映 Integration Test 6PASS/0FAIL/0SKIP |
 | [2026-04-13_test__T302-F3-給油集計満タン給油文言テスト全件PASS.md](./2026-04-13_test__T302-F3-給油集計満タン給油文言テスト全件PASS.md) | T-302 F-3 給油集計「満タン給油で算出」文言 Integration Test 4PASS/0FAIL/0SKIP |
 | [2026-04-13_test__T308-UI9-精算行誤認防止テスト実行.md](./2026-04-13_test__T308-UI9-精算行誤認防止テスト実行.md) | T-308 UI-9 旅費集計「支払いごとの精算」誤認防止 Integration Test 0PASS/0FAIL/3SKIP |
