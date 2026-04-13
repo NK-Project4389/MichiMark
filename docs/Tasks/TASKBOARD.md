@@ -320,6 +320,62 @@
 
 ---
 
+## B-8: 作成ボタン再押し不可バグ修正
+
+> イベント作成ボタンを押してトピック選択せずに戻ると、再度作成ボタンが押せなくなる
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-350a | B-8: 作成ボタン再押し不可 バグ修正実装 | flutter-dev | `TODO` | | |
+| T-350b | B-8: 作成ボタン再押し不可 テストコード実装 | tester | `TODO` | | |
+| T-351 | B-8: レビュー | reviewer | `TODO` | | |
+| T-352 | B-8: テスト実行 | tester | `TODO` | | |
+
+---
+
+## UI-12: 未保存新規イベント自動削除
+
+> 概要タブBasicInfo・MarkDetail・LinkDetail・PaymentDetailで何も保存せずにイベント一覧へ戻った場合、イベントを削除する
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-353 | UI-12: 未保存新規イベント自動削除 Spec作成 | architect | `TODO` | | docs/Requirements/REQ-unsaved_event_auto_delete.md |
+| T-354a | UI-12: 未保存新規イベント自動削除 実装 | flutter-dev | `TODO` | | |
+| T-354b | UI-12: 未保存新規イベント自動削除 テストコード実装 | tester | `TODO` | | |
+| T-355 | UI-12: レビュー | reviewer | `TODO` | | |
+| T-356 | UI-12: テスト実行 | tester | `TODO` | | |
+
+---
+
+## UI-13: Detail画面 キャンセル確認ダイアログ
+
+> MarkDetail・LinkDetail・PaymentDetailでキャンセル押下時、ProjectionとDraftが異なれば確認ダイアログを表示
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-357 | UI-13: Detail画面キャンセル確認 Spec作成 | architect | `TODO` | | docs/Requirements/REQ-detail_cancel_confirmation.md |
+| T-358a | UI-13: Detail画面キャンセル確認 実装 | flutter-dev | `TODO` | | |
+| T-358b | UI-13: Detail画面キャンセル確認 テストコード実装 | tester | `TODO` | | |
+| T-359 | UI-13: レビュー | reviewer | `TODO` | | |
+| T-360 | UI-13: テスト実行 | tester | `TODO` | | |
+
+---
+
+## POST-1: MichiInfoで支払い情報を登録できるようにする
+
+> ⚠️ AppStoreリリース（REL-1）完了後に着手する
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-361 | POST-1: MichiInfo支払い情報登録 要件書作成 | product-manager | `BLOCKED` | | REL-1完了後に着手 |
+| T-362 | POST-1: MichiInfo支払い情報登録 Spec作成 | architect | `BLOCKED` | | |
+| T-363a | POST-1: MichiInfo支払い情報登録 実装 | flutter-dev | `BLOCKED` | | |
+| T-363b | POST-1: MichiInfo支払い情報登録 テストコード実装 | tester | `BLOCKED` | | |
+| T-364 | POST-1: レビュー | reviewer | `BLOCKED` | | |
+| T-365 | POST-1: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
 ---
 
 ## アーカイブ（DONE完了）
