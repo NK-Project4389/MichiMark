@@ -119,8 +119,8 @@
 | T-281 | 削除確認ダイアログ Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-delete_confirmation_dialog.md |
 | T-282a | 削除確認ダイアログ 実装 | flutter-dev | `DONE` | | MichiInfo/PaymentInfo両対応・CupertinoDialog・StatefulWidget化 |
 | T-282b | 削除確認ダイアログ テストコード実装 | tester | `DONE` | | TC-DCD-001〜006b 17件実装済み |
-| T-283 | 削除確認ダイアログ レビュー | reviewer | `IN_PROGRESS` | 2026-04-13_UI-7 | |
-| T-284 | 削除確認ダイアログ テスト実行 | tester | `TODO` | | |
+| T-283 | 削除確認ダイアログ レビュー | reviewer | `DONE` | | 承認 |
+| T-284 | 削除確認ダイアログ テスト実行 | tester | `TODO` | | 14PASS/3FAIL → flutter-dev調査中 |
 
 ---
 
@@ -145,8 +145,8 @@
 |---|---|---|---|---|---|
 | T-290 | 削除後集計即時反映 バグ修正実装 | flutter-dev | `DONE` | | MichiInfoReloadedDelegate / PaymentInfoReloadedDelegate を削除ハンドラに追加 |
 | T-290b | 削除後集計即時反映 テストコード実装 | tester | `DONE` | | TC-DAU-001〜002c 6件実装済み |
-| T-291 | 削除後集計即時反映 レビュー | reviewer | `IN_PROGRESS` | 2026-04-13_B-7 | Spec更新完了・再レビュー |
-| T-292 | 削除後集計即時反映 テスト実行 | tester | `TODO` | | |
+| T-291 | 削除後集計即時反映 レビュー | reviewer | `DONE` | | 承認 |
+| T-292 | 削除後集計即時反映 テスト実行 | tester | `DONE` | | 6PASS/0FAIL/0SKIP（UI-7対応: 削除ヘルパー関数をダイアログキーに修正） |
 
 ---
 
@@ -173,8 +173,8 @@
 | T-299 | 給油集計文言追加 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-fuel_aggregation_fulltank_label.md |
 | T-300a | 給油集計文言追加 実装 | flutter-dev | `DONE` | | Projection hasFuelData追加・Adapter算出・View サブテキスト追加 |
 | T-300b | 給油集計文言追加 テストコード実装 | tester | `DONE` | | TC-FFL-001〜002 4件実装済み |
-| T-301 | 給油集計文言追加 レビュー | reviewer | `IN_PROGRESS` | 2026-04-13_F-3 | |
-| T-302 | 給油集計文言追加 テスト実行 | tester | `TODO` | | |
+| T-301 | 給油集計文言追加 レビュー | reviewer | `DONE` | | 承認 |
+| T-302 | 給油集計文言追加 テスト実行 | tester | `IN_PROGRESS` | 2026-04-13_F-3 | |
 
 ---
 
@@ -187,10 +187,10 @@
 | T-303 | 精算行誤認防止 デザイン提案 | designer | `DONE` | | docs/Design/draft/payment_settlement_display_design.html（B案採用） |
 | T-304 | 精算行誤認防止 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_settlement_display.md |
 | T-305 | 精算行誤認防止 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_settlement_display.md |
-| T-306a | 精算行誤認防止 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-13_UI-9 | |
-| T-306b | 精算行誤認防止 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-13_UI-9 | |
-| T-307 | 精算行誤認防止 レビュー | reviewer | `TODO` | | |
-| T-308 | 精算行誤認防止 テスト実行 | tester | `TODO` | | |
+| T-306a | 精算行誤認防止 実装 | flutter-dev | `DONE` | | Card→Container置き換え・Specキー名準拠 |
+| T-306b | 精算行誤認防止 テストコード実装 | tester | `DONE` | | TC-PSD-001〜002 実装済み |
+| T-307 | 精算行誤認防止 レビュー | reviewer | `DONE` | | 承認 |
+| T-308 | 精算行誤認防止 テスト実行 | tester | `IN_PROGRESS` | 2026-04-13_UI-9 | |
 
 ---
 
@@ -215,10 +215,10 @@
 |---|---|---|---|---|---|
 | T-314 | 移動コスト名称非表示 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-moving_cost_name_hidden.md |
 | T-315 | 移動コスト名称非表示 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-moving_cost_name_hidden.md（movingCostEstimatedも非表示確定） |
-| T-316a | 移動コスト名称非表示 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-13_UI-10 | |
-| T-316b | 移動コスト名称非表示 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-13_UI-10 | |
-| T-317 | 移動コスト名称非表示 レビュー | reviewer | `TODO` | | |
-| T-318 | 移動コスト名称非表示 テスト実行 | tester | `TODO` | | |
+| T-316a | 移動コスト名称非表示 実装 | flutter-dev | `DONE` | | topic_config.dart showNameField追加・MarkDetail/LinkDetail条件分岐 |
+| T-316b | 移動コスト名称非表示 テストコード実装 | tester | `DONE` | | TC-MCN-001〜003 実装済み |
+| T-317 | 移動コスト名称非表示 レビュー | reviewer | `DONE` | | 承認 |
+| T-318 | 移動コスト名称非表示 テスト実行 | tester | `IN_PROGRESS` | 2026-04-13_UI-10 | |
 
 ---
 
@@ -232,8 +232,8 @@
 | T-320 | メンバー全選択全解除 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-member_select_all_clear.md |
 | T-321a | メンバー全選択全解除 実装 | flutter-dev | `DONE` | | 6イベント追加・3Bloc・3View対応 |
 | T-321b | メンバー全選択全解除 テストコード実装 | tester | `DONE` | | TC-MSA-001〜006b 7件実装済み（Specキー名準拠） |
-| T-322 | メンバー全選択全解除 レビュー | reviewer | `IN_PROGRESS` | 2026-04-13_UI-11 | |
-| T-323 | メンバー全選択全解除 テスト実行 | tester | `TODO` | | |
+| T-322 | メンバー全選択全解除 レビュー | reviewer | `DONE` | | 承認 |
+| T-323 | メンバー全選択全解除 テスト実行 | tester | `IN_PROGRESS` | 2026-04-13_UI-11 | |
 
 ---
 
