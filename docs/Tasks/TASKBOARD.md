@@ -132,10 +132,10 @@
 |---|---|---|---|---|---|
 | T-285 | イベント追加スキップ遷移 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-event_add_skip_selection.md |
 | T-286 | イベント追加スキップ遷移 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-event_add_skip_selection.md |
-| T-287a | イベント追加スキップ遷移 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_UI8-F2-F4実装 | |
-| T-287b | イベント追加スキップ遷移 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_UI8-F2-F4実装 | |
-| T-288 | イベント追加スキップ遷移 レビュー | reviewer | `TODO` | | |
-| T-289 | イベント追加スキップ遷移 テスト実行 | tester | `TODO` | | |
+| T-287a | イベント追加スキップ遷移 実装 | flutter-dev | `DONE` | | |
+| T-287b | イベント追加スキップ遷移 テストコード実装 | tester | `DONE` | | TC-EAS-001〜006 実装済み |
+| T-288 | イベント追加スキップ遷移 レビュー | reviewer | `DONE` | | 承認 |
+| T-289 | イベント追加スキップ遷移 テスト実行 | tester | `DONE` | | 6PASS/0FAIL/0SKIP（TC-EAS-001〜006 全件PASS） |
 
 ---
 
