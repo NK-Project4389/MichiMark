@@ -303,7 +303,36 @@ class _SplitMemberChipSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('割り勘', style: labelStyle),
+          Row(
+            children: [
+              Text('割り勘', style: labelStyle),
+              const Spacer(),
+              TextButton(
+                key: const Key('paymentDetail_button_selectAllSplitMembers'),
+                onPressed: () => context
+                    .read<PaymentDetailBloc>()
+                    .add(const PaymentDetailSplitMembersAllSelected()),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: const Text('全選択'),
+              ),
+              TextButton(
+                key: const Key('paymentDetail_button_clearAllSplitMembers'),
+                onPressed: () => context
+                    .read<PaymentDetailBloc>()
+                    .add(const PaymentDetailSplitMembersAllCleared()),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: const Text('全解除'),
+              ),
+            ],
+          ),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,

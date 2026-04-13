@@ -53,6 +53,9 @@ class TopicConfig extends Equatable {
   /// トピックの日本語表示名。EventDetailヘッダーラベルに使用（REQ-008）
   final String displayName;
 
+  /// MarkDetail/LinkDetailの名称フィールドを表示するか（REQ-moving_cost_name_hidden）
+  final bool showNameField;
+
   const TopicConfig({
     required this.showMeterValue,
     required this.showFuelDetail,
@@ -67,6 +70,7 @@ class TopicConfig extends Equatable {
     this.showActionTimeButton = false,
     this.themeColor = TopicThemeColor.brandTeal,
     this.displayName = '',
+    this.showNameField = true,
   });
 
   /// TopicTypeからTopicConfigを生成するファクトリ（エイリアス）。
@@ -91,6 +95,7 @@ class TopicConfig extends Equatable {
           showActionTimeButton: false,
           themeColor: TopicThemeColor.emeraldGreen,
           displayName: '移動コスト（給油から計算）',
+          showNameField: false,
         ),
       TopicType.movingCostEstimated => const TopicConfig(
           showMeterValue: true,
@@ -106,6 +111,7 @@ class TopicConfig extends Equatable {
           showActionTimeButton: false,
           themeColor: TopicThemeColor.emeraldGreen,
           displayName: '移動コスト（燃費で推定）',
+          showNameField: false,
         ),
       TopicType.travelExpense => const TopicConfig(
           showMeterValue: false,
@@ -121,6 +127,7 @@ class TopicConfig extends Equatable {
           showActionTimeButton: false,
           themeColor: TopicThemeColor.amberOrange,
           displayName: '旅費可視化',
+          showNameField: true,
         ),
     };
   }
@@ -140,5 +147,6 @@ class TopicConfig extends Equatable {
         showActionTimeButton,
         themeColor,
         displayName,
+        showNameField,
       ];
 }

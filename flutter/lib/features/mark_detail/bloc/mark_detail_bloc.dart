@@ -30,6 +30,8 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
     on<MarkDetailFuelFieldsChanged>(_onFuelFieldsChanged);
     on<MarkDetailTopicConfigUpdated>(_onTopicConfigUpdated);
     on<MarkDetailGasPayerChipToggled>(_onGasPayerChipToggled);
+    on<MarkDetailMembersAllSelected>(_onMembersAllSelected);
+    on<MarkDetailMembersAllCleared>(_onMembersAllCleared);
   }
 
   final EventRepository _eventRepository;
@@ -353,6 +355,30 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
       final newGasPayer = isSameMember ? null : event.member;
       emit(current.copyWith(
         draft: current.draft.copyWith(selectedGasPayer: newGasPayer),
+      ));
+    }
+  }
+
+  Future<void> _onMembersAllSelected(
+    MarkDetailMembersAllSelected event,
+    Emitter<MarkDetailState> emit,
+  ) async {
+    if (state is MarkDetailLoaded) {
+      final current = state as MarkDetailLoaded;
+      emit(current.copyWith(
+        draft: current.draft.copyWith(selectedMembers: current.availableMembers),
+      ));
+    }
+  }
+
+  Future<void> _onMembersAllCleared(
+    MarkDetailMembersAllCleared event,
+    Emitter<MarkDetailState> emit,
+  ) async {
+    if (state is MarkDetailLoaded) {
+      final current = state as MarkDetailLoaded;
+      emit(current.copyWith(
+        draft: current.draft.copyWith(selectedMembers: const []),
       ));
     }
   }

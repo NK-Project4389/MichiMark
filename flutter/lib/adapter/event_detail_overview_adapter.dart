@@ -41,6 +41,7 @@ class EventDetailOverviewAdapter {
       totalPaymentLabel: result.totalPayment != null
           ? '${_currencyFormat.format(result.totalPayment!)}円'
           : '---',
+      hasFuelData: result.totalGasQuantity != null,
     );
   }
 

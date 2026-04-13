@@ -123,7 +123,7 @@ Future<void> _onCardDeleteRequested(
 }
 ```
 
-**注意**: `MichiInfoReloadedDelegate` は emit しない（削除は画面遷移を伴わない）。
+**注意**: 削除後は `MichiInfoReloadedDelegate` を emit する。これにより概要タブの集計（走行距離・スパン数など）が即時反映される。画面遷移を伴わないため、BlocListener 側では概要タブの再ロードのみを行い、画面遷移は行わない。
 
 ---
 

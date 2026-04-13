@@ -501,6 +501,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
           projection: projection,
           isInsertMode: false,
           pendingInsertAfterSeq: null,
+          delegate: const MichiInfoReloadedDelegate(),
         ));
       } on Exception {
         // サイレント失敗（既存の projection を維持）

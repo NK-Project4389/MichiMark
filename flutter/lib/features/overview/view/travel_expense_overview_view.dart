@@ -39,8 +39,11 @@ class TravelExpenseOverviewView extends StatelessWidget {
         if (projection.perPaymentSettlements.isNotEmpty) ...[
           const SizedBox(height: 16),
           const _SectionTitle(title: '支払いごとの精算'),
-          ...projection.perPaymentSettlements.map(
-            (settlement) => _PerPaymentSettlementCard(settlement: settlement),
+          ...projection.perPaymentSettlements.asMap().entries.map(
+            (entry) => _PerPaymentSettlementBlock(
+              settlement: entry.value,
+              blockKey: Key('travelExpenseOverview_block_perPaymentSettlement_${entry.key}'),
+            ),
           ),
         ],
       ],
@@ -100,10 +103,14 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-class _PerPaymentSettlementCard extends StatelessWidget {
+class _PerPaymentSettlementBlock extends StatelessWidget {
   final PerPaymentSettlementProjection settlement;
+  final Key? blockKey;
 
-  const _PerPaymentSettlementCard({required this.settlement});
+  const _PerPaymentSettlementBlock({
+    required this.settlement,
+    this.blockKey,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -111,38 +118,45 @@ class _PerPaymentSettlementCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Card(
-        margin: EdgeInsets.zero,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ヘッダー行: タイトル + 金額
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      settlement.displayTitle,
-                      style: textTheme.bodyMedium,
-                    ),
-                  ),
-                  Text(
-                    settlement.displayAmount,
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: const Color(0xFF2B7A9B),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              // 精算行一覧
-              ...settlement.lines.map(
-                (line) => _SettlementLineRow(line: line),
-              ),
-            ],
+      child: Container(
+        key: blockKey,
+        decoration: const BoxDecoration(
+          color: Color(0xFFEAF5FB),
+          border: Border(
+            left: BorderSide(
+              color: Color(0xFF2B7A9B),
+              width: 3,
+            ),
           ),
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ヘッダー行: タイトル + 金額
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    settlement.displayTitle,
+                    style: textTheme.bodyMedium,
+                  ),
+                ),
+                Text(
+                  settlement.displayAmount,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: const Color(0xFF2B7A9B),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            // 精算行一覧
+            ...settlement.lines.map(
+              (line) => _SettlementLineRow(line: line),
+            ),
+          ],
         ),
       ),
     );

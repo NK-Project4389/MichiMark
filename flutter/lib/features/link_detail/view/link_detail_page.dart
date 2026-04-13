@@ -145,7 +145,11 @@ class _LinkDetailForm extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        _NameField(value: draft.markLinkName),
+        if (topicConfig.showNameField)
+          _NameField(
+            key: const Key('linkDetail_field_name'),
+            value: draft.markLinkName,
+          ),
         if (topicConfig.showLinkDistance) ...[
           const Divider(height: 1),
           NumericInputRow(
@@ -216,7 +220,7 @@ class _LinkDetailForm extends StatelessWidget {
 
 class _NameField extends StatefulWidget {
   final String value;
-  const _NameField({required this.value});
+  const _NameField({super.key, required this.value});
 
   @override
   State<_NameField> createState() => _NameFieldState();
@@ -467,7 +471,36 @@ class _MemberChipSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('メンバー', style: labelStyle),
+          Row(
+            children: [
+              Text('メンバー', style: labelStyle),
+              const Spacer(),
+              TextButton(
+                key: const Key('linkDetail_button_selectAllMembers'),
+                onPressed: () => context
+                    .read<LinkDetailBloc>()
+                    .add(const LinkDetailMembersAllSelected()),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: const Text('全選択'),
+              ),
+              TextButton(
+                key: const Key('linkDetail_button_clearAllMembers'),
+                onPressed: () => context
+                    .read<LinkDetailBloc>()
+                    .add(const LinkDetailMembersAllCleared()),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: const Text('全解除'),
+              ),
+            ],
+          ),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,

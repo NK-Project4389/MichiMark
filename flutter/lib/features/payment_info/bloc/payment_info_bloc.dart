@@ -91,7 +91,10 @@ class PaymentInfoBloc extends Bloc<PaymentInfoEvent, PaymentInfoState> {
         await _eventRepository.deletePayment(event.paymentId);
         final domain = await _eventRepository.fetch(_eventId);
         final projection = EventDetailAdapter.toProjection(domain).paymentInfo;
-        emit(current.copyWith(projection: projection));
+        emit(current.copyWith(
+          projection: projection,
+          delegate: const PaymentInfoReloadedDelegate(),
+        ));
       } on Exception {
         // サイレント失敗（既存の projection を維持）
       }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -1297,7 +1298,7 @@ class _MichiTimelinePainter extends CustomPainter {
 const Color _violetColor = Color(0xFF7C3AED);
 const Color _violetBadgeBg = Color(0x197C3AED);
 
-class _TimelineItemOverlay extends StatelessWidget {
+class _TimelineItemOverlay extends StatefulWidget {
   final MarkLinkItemProjection item;
   final VoidCallback onTap;
   final bool isMark;
@@ -1322,14 +1323,54 @@ class _TimelineItemOverlay extends StatelessWidget {
   });
 
   @override
+  State<_TimelineItemOverlay> createState() => _TimelineItemOverlayState();
+}
+
+class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
+  Future<void> _onDeleteTapped() async {
+    final confirmed = await showCupertinoDialog<bool>(
+      context: context,
+      builder: (dialogContext) => CupertinoAlertDialog(
+        key: const Key('deleteConfirmDialog_dialog_confirm'),
+        title: const Text('削除しますか？'),
+        content: const Text('この操作は取り消せません。'),
+        actions: [
+          CupertinoDialogAction(
+            key: const Key('deleteConfirmDialog_button_cancel'),
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('キャンセル'),
+          ),
+          CupertinoDialogAction(
+            key: const Key('deleteConfirmDialog_button_delete'),
+            isDestructiveAction: true,
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    if (!mounted) return;
+    context
+        .read<MichiInfoBloc>()
+        .add(MichiInfoCardDeleteRequested(widget.item.id));
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final item = widget.item;
+    final isMark = widget.isMark;
+    final topicConfig = widget.topicConfig;
+    final eventId = widget.eventId;
+    final isInsertMode = widget.isInsertMode;
+    final currentStateLabel = widget.currentStateLabel;
     final name =
         item.markLinkName.isEmpty ? '（名称未設定）' : item.markLinkName;
-    const leftPadding = _cardLeft + 8.0;
+    final leftPadding = _TimelineItemOverlay._cardLeft + 8.0;
     final verticalPadding = isMark ? 8.0 : 4.0;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       behavior: HitTestBehavior.translucent,
       child: Padding(
         padding: EdgeInsets.only(
@@ -1396,9 +1437,7 @@ class _TimelineItemOverlay extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 4),
                 child: GestureDetector(
-                  onTap: () => context.read<MichiInfoBloc>().add(
-                        MichiInfoCardDeleteRequested(item.id),
-                      ),
+                  onTap: _onDeleteTapped,
                   child: Container(
                     key: Key('michiInfo_button_delete_${item.id}'),
                     width: 36,

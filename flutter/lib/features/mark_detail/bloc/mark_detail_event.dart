@@ -160,6 +160,22 @@ class MarkDetailGasPayerChipToggled extends MarkDetailEvent {
   List<Object?> get props => [member];
 }
 
+/// メンバーを全選択するとき
+class MarkDetailMembersAllSelected extends MarkDetailEvent {
+  const MarkDetailMembersAllSelected();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// メンバーを全解除するとき
+class MarkDetailMembersAllCleared extends MarkDetailEvent {
+  const MarkDetailMembersAllCleared();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき
 class MarkDetailFuelFieldsChanged extends MarkDetailEvent {
   final String pricePerGas;

@@ -7,6 +7,14 @@
 ---
 
 ## 完了した作業
+- test(T-244): UI-4 PaymentInfo削除UIアイコン Integration Test 全件PASS（3PASS/0FAIL/0SKIP） (ab61e91)
+- test(UI-2): TC-BTE-007c AppBarと重複するテキスト検索をコンテナ内に限定 (df63b9e)
+- rules: Integration Test をシャード2並行構成に更新 (4513b82)
+- docs: T-272/244/268 テスト再実行 IN_PROGRESS (925acac)
+- test: T-234 UI-3 MichiInfo削除UI Integration Test 5PASS/2SKIP/0FAIL (11d6380)
+- fix(test): TC-GPS-005/006 startApp クリーンアップ順序を修正 (6ebeb39)
+- docs: T-214 DONE・T-272 BLOCKED（TC-GPS-005/006 調査中） (9412c27)
+- test(UI-5): TC-DSI openLinkDetail ヘルパー修正 (d75880a)
 - test(UI-1): TC-EDR startApp クリーンアップ修正 (5fe51d5)
 - rules: Integration Test の全件実行に --concurrency=1 を必須化 (8a28eac)
 - docs: コンテキスト最適化 - 重複ルール削除・コード例参照化 (9a9bb72)

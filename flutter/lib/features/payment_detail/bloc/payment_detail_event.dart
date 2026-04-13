@@ -62,6 +62,22 @@ class PaymentDetailSaveTapped extends PaymentDetailEvent {
   List<Object?> get props => [];
 }
 
+/// 割り勘メンバーを全選択するとき
+class PaymentDetailSplitMembersAllSelected extends PaymentDetailEvent {
+  const PaymentDetailSplitMembersAllSelected();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 割り勘メンバーを全解除するとき（支払者は除外しない）
+class PaymentDetailSplitMembersAllCleared extends PaymentDetailEvent {
+  const PaymentDetailSplitMembersAllCleared();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// キャンセルボタンが押されたとき
 class PaymentDetailCancelTapped extends PaymentDetailEvent {
   const PaymentDetailCancelTapped();

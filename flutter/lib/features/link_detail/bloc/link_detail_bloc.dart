@@ -26,6 +26,8 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
     on<LinkDetailFuelFieldsChanged>(_onFuelFieldsChanged);
     on<LinkDetailTopicConfigUpdated>(_onTopicConfigUpdated);
     on<LinkDetailGasPayerChipToggled>(_onGasPayerChipToggled);
+    on<LinkDetailMembersAllSelected>(_onMembersAllSelected);
+    on<LinkDetailMembersAllCleared>(_onMembersAllCleared);
   }
 
   final EventRepository _eventRepository;
@@ -319,6 +321,30 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
       final newGasPayer = isSameMember ? null : event.member;
       emit(current.copyWith(
         draft: current.draft.copyWith(selectedGasPayer: newGasPayer),
+      ));
+    }
+  }
+
+  Future<void> _onMembersAllSelected(
+    LinkDetailMembersAllSelected event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is LinkDetailLoaded) {
+      final current = state as LinkDetailLoaded;
+      emit(current.copyWith(
+        draft: current.draft.copyWith(selectedMembers: current.availableMembers),
+      ));
+    }
+  }
+
+  Future<void> _onMembersAllCleared(
+    LinkDetailMembersAllCleared event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is LinkDetailLoaded) {
+      final current = state as LinkDetailLoaded;
+      emit(current.copyWith(
+        draft: current.draft.copyWith(selectedMembers: const []),
       ));
     }
   }

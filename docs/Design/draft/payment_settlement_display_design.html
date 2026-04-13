@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark — 支払いごとの精算 誤認防止デザイン提案 (T-303)</title>
+  <style>
+    :root {
+      --brand-teal:        #2B7A9B;
+      --brand-teal-dark:   #1A4A5E;
+      --brand-teal-light:  #3A9DC4;
+      --brand-teal-tint:   #D0EBF5;
+      --brand-teal-tint2:  #EAF5FB;
+
+      --emerald:           #2E9E6B;
+      --emerald-tint:      #D4F0E4;
+      --emerald-tint2:     #EDFAF4;
+
+      --text-primary:      #1A1A2E;
+      --text-secondary:    #6C757D;
+      --text-tertiary:     #ADB5BD;
+      --bg-page:           #F5F7FA;
+      --bg-card:           #FFFFFF;
+      --border-light:      #E9ECEF;
+      --divider:           #DEE2E6;
+
+      --positive:          #2E9E6B;
+      --negative:          #D94F3D;
+      --positive-tint:     #EDFAF4;
+      --negative-tint:     #FDECEA;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #1A4A5E 0%, #2B7A9B 55%, #3A9DC4 100%);
+      color: white;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .page-header .subtitle {
+      font-size: 15px;
+      opacity: 0.82;
+      max-width: 640px;
+    }
+    .page-header .meta {
+      margin-top: 24px;
+      font-size: 13px;
+      opacity: 0.65;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 40px;
+    }
+    .section {
+      margin-bottom: 56px;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--brand-teal);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      max-width: 700px;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    /* ===== PROBLEM BOX ===== */
+    .problem-box {
+      background: #FFF8F7;
+      border: 1.5px solid #F5C6C0;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 32px;
+    }
+    .problem-box .problem-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--negative);
+      margin-bottom: 8px;
+    }
+    .problem-box ul {
+      list-style: none;
+      padding: 0;
+    }
+    .problem-box ul li {
+      font-size: 14px;
+      color: #7A2A22;
+      padding: 3px 0 3px 18px;
+      position: relative;
+    }
+    .problem-box ul li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--negative);
+    }
+
+    /* ===== COMPARISON GRID ===== */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 700px) {
+      .comparison-grid { grid-template-columns: 1fr; }
+    }
+    .comparison-col {
+      background: var(--bg-card);
+      border-radius: 14px;
+      border: 1.5px solid var(--border-light);
+      overflow: hidden;
+    }
+    .comparison-col .col-header {
+      padding: 14px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .col-header.current {
+      background: #FFF0EE;
+      color: var(--negative);
+      border-bottom: 1.5px solid #F5C6C0;
+    }
+    .col-header.proposed {
+      background: var(--brand-teal-tint2);
+      color: var(--brand-teal-dark);
+      border-bottom: 1.5px solid var(--brand-teal-tint);
+    }
+    .col-body {
+      padding: 20px 18px;
+    }
+
+    /* ===== PHONE MOCKUP ===== */
+    .phone-frame {
+      width: 280px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      border-radius: 24px;
+      border: 2px solid #D0D5DD;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      overflow: hidden;
+      font-size: 12px;
+    }
+    .phone-status-bar {
+      background: #F9FAFB;
+      height: 28px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      font-size: 10px;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      justify-content: space-between;
+    }
+    .phone-nav {
+      background: white;
+      border-bottom: 1px solid var(--border-light);
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .phone-tabs {
+      background: white;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+    }
+    .phone-tab {
+      flex: 1;
+      text-align: center;
+      padding: 8px 0;
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .phone-tab.active {
+      color: var(--brand-teal);
+      border-bottom: 2px solid var(--brand-teal);
+      font-weight: 700;
+    }
+    .phone-scroll {
+      padding: 12px 14px;
+      max-height: 480px;
+      overflow-y: auto;
+    }
+
+    /* ===== MOCK UI PARTS ===== */
+    .mock-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--brand-teal);
+      margin-bottom: 8px;
+      margin-top: 4px;
+    }
+    .mock-info-row {
+      display: flex;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid transparent;
+    }
+    .mock-info-row .mock-label {
+      width: 80px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    .mock-info-row .mock-value {
+      font-size: 11px;
+      color: var(--text-primary);
+    }
+    .mock-balance-row {
+      display: flex;
+      align-items: center;
+      padding: 3px 0;
+    }
+    .mock-balance-row .mock-label {
+      width: 80px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    .mock-balance-row .mock-value-pos {
+      font-size: 11px;
+      color: var(--positive);
+      font-weight: 700;
+    }
+    .mock-balance-row .mock-value-neg {
+      font-size: 11px;
+      color: var(--negative);
+      font-weight: 700;
+    }
+    .mock-spacer { height: 14px; }
+
+    /* CURRENT: Card style (problem) */
+    .mock-card-settlement {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.06);
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      cursor: pointer; /* shows hand cursor to highlight the problem */
+      transition: box-shadow 0.15s;
+    }
+    .mock-card-settlement:hover {
+      box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+    }
+    .mock-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .mock-card-title {
+      font-size: 11px;
+      color: var(--text-primary);
+    }
+    .mock-card-amount {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--brand-teal);
+    }
+    .mock-settlement-line {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 0;
+      font-size: 10px;
+    }
+    .ml-payer { color: var(--negative); }
+    .ml-arrow { color: var(--text-tertiary); }
+    .ml-receiver { color: var(--positive); }
+    .ml-amount { color: var(--text-primary); }
+
+    /* PLAN A: Flat divider style */
+    .mock-flat-settlement {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--divider);
+    }
+    .mock-flat-settlement:last-child {
+      border-bottom: none;
+    }
+
+    /* PLAN B: Tinted block style */
+    .mock-tint-settlement {
+      background: var(--brand-teal-tint2);
+      border-radius: 8px;
+      border-left: 3px solid var(--brand-teal);
+      padding: 8px 10px;
+      margin-bottom: 6px;
+    }
+
+    /* PLAN C: Table style */
+    .mock-table-settlement {
+      background: var(--bg-page);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      border: 1px solid var(--divider);
+    }
+
+    /* ===== PROPOSAL CARDS ===== */
+    .proposal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 900px) {
+      .proposal-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .proposal-grid { grid-template-columns: 1fr; }
+    }
+    .proposal-card {
+      background: white;
+      border-radius: 14px;
+      border: 1.5px solid var(--border-light);
+      overflow: hidden;
+    }
+    .proposal-card.recommended {
+      border-color: var(--brand-teal);
+      box-shadow: 0 0 0 3px var(--brand-teal-tint);
+    }
+    .proposal-card-header {
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-page);
+    }
+    .proposal-card-header .plan-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+    }
+    .plan-a .plan-badge { background: var(--brand-teal-tint); color: var(--brand-teal-dark); }
+    .plan-b .plan-badge { background: var(--emerald-tint); color: #1A6040; }
+    .plan-c .plan-badge { background: #F0EDFF; color: #4B3B8C; }
+    .recommended .plan-badge { background: var(--brand-teal); color: white; }
+    .proposal-card-header .plan-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .proposal-card-header .plan-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .proposal-card-body {
+      padding: 18px;
+    }
+    .recommend-ribbon {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+      background: var(--brand-teal);
+      padding: 5px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ===== PROS/CONS ===== */
+    .pro-con-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 12px;
+    }
+    .pro-con-list li {
+      font-size: 12px;
+      padding: 3px 0 3px 18px;
+      position: relative;
+      color: var(--text-secondary);
+    }
+    .pro-con-list li.pro { color: #1A6040; }
+    .pro-con-list li.pro::before { content: "+"; position: absolute; left: 0; font-weight: 700; color: var(--positive); }
+    .pro-con-list li.con { color: #7A3030; }
+    .pro-con-list li.con::before { content: "−"; position: absolute; left: 0; font-weight: 700; color: var(--negative); }
+
+    /* ===== DECISION TABLE ===== */
+    table.decision-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    table.decision-table th {
+      background: var(--bg-page);
+      border: 1px solid var(--divider);
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+    table.decision-table td {
+      border: 1px solid var(--divider);
+      padding: 10px 14px;
+      vertical-align: middle;
+      color: var(--text-primary);
+    }
+    table.decision-table tr:hover td { background: var(--bg-page); }
+    .score-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--brand-teal);
+      margin-right: 3px;
+    }
+    .score-dot.empty { background: var(--border-light); }
+
+    /* ===== REQUIREMENTS DRAFT ===== */
+    .draft-box {
+      background: white;
+      border: 2px solid var(--brand-teal);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .draft-box-header {
+      background: var(--brand-teal);
+      padding: 16px 24px;
+      color: white;
+    }
+    .draft-box-header .draft-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.75;
+      margin-bottom: 4px;
+    }
+    .draft-box-header h3 {
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .draft-content {
+      padding: 24px;
+      font-size: 13.5px;
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+    .draft-content h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--brand-teal-dark);
+      margin-top: 20px;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--brand-teal-tint);
+    }
+    .draft-content h4:first-child { margin-top: 0; }
+    .draft-content ul {
+      padding-left: 20px;
+      margin-bottom: 8px;
+    }
+    .draft-content ul li {
+      margin-bottom: 4px;
+    }
+    .draft-content .checklist {
+      list-style: none;
+      padding: 0;
+    }
+    .draft-content .checklist li {
+      padding-left: 22px;
+      position: relative;
+      margin-bottom: 6px;
+    }
+    .draft-content .checklist li::before {
+      content: "☐";
+      position: absolute;
+      left: 0;
+      color: var(--brand-teal);
+      font-size: 14px;
+    }
+    .draft-content .path-ref {
+      display: inline-block;
+      background: var(--bg-page);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      color: var(--brand-teal-dark);
+    }
+
+    /* ===== RATIONALE ===== */
+    .rationale-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 700px) { .rationale-grid { grid-template-columns: 1fr; } }
+    .rationale-card {
+      background: white;
+      border-radius: 10px;
+      border: 1.5px solid var(--border-light);
+      padding: 18px 20px;
+    }
+    .rationale-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brand-teal-dark);
+      margin-bottom: 8px;
+    }
+    .rationale-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    hr.section-rule {
+      border: none;
+      border-top: 1.5px solid var(--divider);
+      margin: 48px 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== PAGE HEADER ===== -->
+<header class="page-header">
+  <div class="badge">T-303 / UI-9 Design Proposal</div>
+  <h1>「支払いごとの精算」誤認防止デザイン変更</h1>
+  <p class="subtitle">
+    EventDetail 概要タブの精算表示が「タップできる」ように見える問題を解消するための
+    静的表示デザイン提案。A案・B案・C案の3案を比較提示する。
+  </p>
+  <div class="meta">作成日: 2026-04-13 &nbsp;|&nbsp; 役割: designer &nbsp;|&nbsp; 対象画面: EventDetail &gt; 概要タブ</div>
+</header>
+
+<div class="container">
+
+  <!-- ===== SECTION: PROBLEM ===== -->
+  <section id="problem" class="section">
+    <div class="section-label">Problem</div>
+    <div class="section-title">現状の問題</div>
+    <div class="section-desc">
+      現在の「支払いごとの精算」は Flutter の <code>Card</code> ウィジェットで描画されており、
+      shadow・elevation・角丸が付与された「タップ誘引デザイン」になっている。
+      実際はタップ不可（ビジネスロジックなし・集計表示のみ）にもかかわらず、
+      ユーザーが誤ってタップ可能だと判断する。
+    </div>
+
+    <div class="problem-box">
+      <div class="problem-title">問題点の整理</div>
+      <ul>
+        <li>Card の elevation による浮き上がりがインタラクティブ要素のシグニファイアになっている</li>
+        <li>同じセクション内の他の行（経費合計・メンバー別コスト・収支バランス）はフラットな Row 表示なのに、精算カードだけ Card になっており視覚的不統一</li>
+        <li>タップしても反応がないため UX 上の違和感・期待外れが発生する</li>
+        <li>リップルエフェクトはないが Card の外観だけでタップを誘引している</li>
+      </ul>
+    </div>
+
+    <!-- Before/After comparison -->
+    <div class="comparison-grid">
+      <div class="comparison-col">
+        <div class="col-header current">現在（問題のある状態）</div>
+        <div class="col-body">
+          <div class="phone-frame">
+            <div class="phone-status-bar"><span>9:41</span><span>●●●</span></div>
+            <div class="phone-nav">ドライブ 5/3</div>
+            <div class="phone-tabs">
+              <div class="phone-tab">基本</div>
+              <div class="phone-tab">マーク</div>
+              <div class="phone-tab">支払</div>
+              <div class="phone-tab active">概要</div>
+            </div>
+            <div class="phone-scroll">
+              <div class="mock-section-title">経費合計</div>
+              <div class="mock-info-row">
+                <span class="mock-label">合計</span>
+                <span class="mock-value">7,500円</span>
+              </div>
+              <div class="mock-spacer"></div>
+              <div class="mock-section-title">収支バランス</div>
+              <div class="mock-balance-row">
+                <span class="mock-label">Aさん</span>
+                <span class="mock-value-pos">+5,000円</span>
+              </div>
+              <div class="mock-balance-row">
+                <span class="mock-label">Bさん</span>
+                <span class="mock-value-neg">-2,500円</span>
+              </div>
+              <div class="mock-balance-row">
+                <span class="mock-label">Cさん</span>
+                <span class="mock-value-neg">-2,500円</span>
+              </div>
+              <div class="mock-spacer"></div>
+              <div class="mock-section-title">支払いごとの精算</div>
+              <!-- CURRENT: Card style (misleading) -->
+              <div class="mock-card-settlement">
+                <div class="mock-card-header">
+                  <span class="mock-card-title">昼食代</span>
+                  <span class="mock-card-amount">¥4,500</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Bさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,500</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Cさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,500</span>
+                </div>
+              </div>
+              <div class="mock-card-settlement">
+                <div class="mock-card-header">
+                  <span class="mock-card-title">支払 #2</span>
+                  <span class="mock-card-amount">¥3,000</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Bさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,000</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Cさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,000</span>
+                </div>
+              </div>
+              <div style="text-align:center; font-size:10px; color:#D94F3D; margin-top:4px;">
+                ↑ カードが浮いて見えてタップ誘引
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comparison-col">
+        <div class="col-header proposed">目標とする状態</div>
+        <div class="col-body" style="display:flex; align-items:center; justify-content:center; min-height:200px;">
+          <div style="text-align:center; color:var(--text-secondary); font-size:14px; line-height:1.9;">
+            <div style="font-size:32px; margin-bottom:12px;">📋</div>
+            <strong style="color:var(--text-primary);">静的な情報表示</strong><br>
+            shadow・elevation ゼロ<br>
+            フラット or 背景色区別のみ<br>
+            他セクションと視覚的統一<br>
+            「見るだけ」が一目で分かる
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ===== SECTION: PROPOSALS ===== -->
+  <section id="proposals" class="section">
+    <div class="section-label">Design Proposals</div>
+    <div class="section-title">3案の比較</div>
+    <div class="section-desc">
+      いずれの案も Card（elevation あり）を廃止し、静的な集計表示として再設計する。
+      情報量・コンテンツ構造は変更しない。
+    </div>
+
+    <div class="proposal-grid">
+
+      <!-- PLAN A -->
+      <div class="proposal-card plan-a">
+        <div class="proposal-card-header">
+          <div class="plan-badge">A案</div>
+          <div class="plan-name">フラット区切り線スタイル</div>
+          <div class="plan-desc">最もシンプル。他セクションの行スタイルに完全統一</div>
+        </div>
+        <div class="proposal-card-body">
+          <div class="phone-frame">
+            <div class="phone-status-bar"><span>9:41</span><span>●●●</span></div>
+            <div class="phone-scroll" style="padding: 12px 14px;">
+              <div class="mock-section-title">支払いごとの精算</div>
+              <!-- PLAN A: flat divider -->
+              <div class="mock-flat-settlement">
+                <div class="mock-card-header" style="margin-bottom:4px;">
+                  <span style="font-size:11px; font-weight:700; color:var(--text-primary);">昼食代</span>
+                  <span style="font-size:11px; font-weight:700; color:var(--brand-teal);">¥4,500</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Bさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,500</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Cさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,500</span>
+                </div>
+              </div>
+              <div class="mock-flat-settlement">
+                <div class="mock-card-header" style="margin-bottom:4px;">
+                  <span style="font-size:11px; font-weight:700; color:var(--text-primary);">支払 #2</span>
+                  <span style="font-size:11px; font-weight:700; color:var(--brand-teal);">¥3,000</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Bさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,000</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Cさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ul class="pro-con-list">
+            <li class="pro">既存 _InfoRow・_BalanceRow と完全統一</li>
+            <li class="pro">実装変更が最小限</li>
+            <li class="pro">読み取り専用の印象が最も強い</li>
+            <li class="con">伝票間の区別がやや弱い（支払いが多いと区切りが分かりにくい）</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PLAN B -->
+      <div class="proposal-card plan-b recommended">
+        <div class="recommend-ribbon">推奨案</div>
+        <div class="proposal-card-header">
+          <div class="plan-badge">B案（推奨）</div>
+          <div class="plan-name">背景色ティント + 左ボーダースタイル</div>
+          <div class="plan-desc">静的だが視覚的グルーピングが明確。MichiMark ブランドカラー使用</div>
+        </div>
+        <div class="proposal-card-body">
+          <div class="phone-frame">
+            <div class="phone-status-bar"><span>9:41</span><span>●●●</span></div>
+            <div class="phone-scroll" style="padding: 12px 14px;">
+              <div class="mock-section-title">支払いごとの精算</div>
+              <!-- PLAN B: tint block -->
+              <div class="mock-tint-settlement">
+                <div class="mock-card-header" style="margin-bottom:4px;">
+                  <span style="font-size:11px; font-weight:700; color:var(--brand-teal-dark);">昼食代</span>
+                  <span style="font-size:11px; font-weight:700; color:var(--brand-teal);">¥4,500</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Bさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,500</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Cさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,500</span>
+                </div>
+              </div>
+              <div class="mock-tint-settlement">
+                <div class="mock-card-header" style="margin-bottom:4px;">
+                  <span style="font-size:11px; font-weight:700; color:var(--brand-teal-dark);">支払 #2</span>
+                  <span style="font-size:11px; font-weight:700; color:var(--brand-teal);">¥3,000</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Bさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,000</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Cさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ul class="pro-con-list">
+            <li class="pro">elevation ゼロでタップ不可が直感的に伝わる</li>
+            <li class="pro">左ボーダーで「情報ブロック」として読み取り専用のシグニファイアを提供</li>
+            <li class="pro">伝票間の視覚的区切りが明確</li>
+            <li class="pro">MichiMark ブランドカラー（#2B7A9B）と統一</li>
+            <li class="con">他セクション行との見た目が若干異なる（意図的な区別）</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PLAN C -->
+      <div class="proposal-card plan-c">
+        <div class="proposal-card-header">
+          <div class="plan-badge">C案</div>
+          <div class="plan-name">テーブル行スタイル（縞模様なし）</div>
+          <div class="plan-desc">背景色を薄いグレーにしてフォームではなくデータ表示の印象を強調</div>
+        </div>
+        <div class="proposal-card-body">
+          <div class="phone-frame">
+            <div class="phone-status-bar"><span>9:41</span><span>●●●</span></div>
+            <div class="phone-scroll" style="padding: 12px 14px;">
+              <div class="mock-section-title">支払いごとの精算</div>
+              <!-- PLAN C: table/data style -->
+              <div class="mock-table-settlement">
+                <div class="mock-card-header" style="margin-bottom:4px;">
+                  <span style="font-size:11px; font-weight:700; color:var(--text-primary);">昼食代</span>
+                  <span style="font-size:11px; font-weight:700; color:var(--brand-teal);">¥4,500</span>
+                </div>
+                <div style="width:100%; height:1px; background:var(--divider); margin-bottom:4px;"></div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Bさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,500</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Cさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,500</span>
+                </div>
+              </div>
+              <div class="mock-table-settlement">
+                <div class="mock-card-header" style="margin-bottom:4px;">
+                  <span style="font-size:11px; font-weight:700; color:var(--text-primary);">支払 #2</span>
+                  <span style="font-size:11px; font-weight:700; color:var(--brand-teal);">¥3,000</span>
+                </div>
+                <div style="width:100%; height:1px; background:var(--divider); margin-bottom:4px;"></div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Bさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,000</span>
+                </div>
+                <div class="mock-settlement-line">
+                  <span class="ml-payer">Cさん</span>
+                  <span class="ml-arrow"> → </span>
+                  <span class="ml-receiver">Aさん</span>
+                  <span class="ml-amount"> : ¥1,000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ul class="pro-con-list">
+            <li class="pro">データ表示のシグニファイアとして機能（フォームではない印象）</li>
+            <li class="pro">ヘッダー行に区切り線を入れることで伝票内の構造が明確</li>
+            <li class="con">背景色が bg-page と同じグレーのため、ページ背景に溶け込む場合がある</li>
+            <li class="con">ブランドカラーとの統一感がA・Bより弱い</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ===== SECTION: DECISION TABLE ===== -->
+  <section id="comparison" class="section">
+    <div class="section-label">Evaluation</div>
+    <div class="section-title">案の比較評価</div>
+    <div class="section-desc">
+      各案を5つの観点でスコアリングする。
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="decision-table">
+        <thead>
+          <tr>
+            <th>観点</th>
+            <th>A案：フラット区切り線</th>
+            <th>B案：ティント＋左ボーダー（推奨）</th>
+            <th>C案：テーブル行</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>タップ不可の明示度</strong><br><span style="font-size:11px;color:var(--text-secondary);">誤認がなくなるか</span></td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot empty"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">フラットで誤認なし</span>
+            </td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">左ボーダーで「参照」を明示</span>
+            </td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot empty"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">枠線がまだカード的に見える</span>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>セクション内統一感</strong><br><span style="font-size:11px;color:var(--text-secondary);">他セクションとの整合性</span></td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">完全統一</span>
+            </td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot empty"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">意図的な区別あり</span>
+            </td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot empty"></span><span class="score-dot empty"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">グレー背景がやや異質</span>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>伝票間の視覚的区切り</strong><br><span style="font-size:11px;color:var(--text-secondary);">複数支払いの読みやすさ</span></td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot empty"></span><span class="score-dot empty"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">区切り線のみで弱い</span>
+            </td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">ティント背景で明確</span>
+            </td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot empty"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">枠線で区切り明確</span>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>ブランド整合性</strong><br><span style="font-size:11px;color:var(--text-secondary);">MichiMark カラーとの親和性</span></td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot empty"></span><span class="score-dot empty"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">ニュートラルで標準的</span>
+            </td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">#2B7A9B ティントを活用</span>
+            </td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot empty"></span><span class="score-dot empty"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">グレー基調でブランド弱め</span>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>実装コスト</strong><br><span style="font-size:11px;color:var(--text-secondary);">変更の少なさ</span></td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">Card → Column + Divider のみ</span>
+            </td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot empty"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">背景色と左ボーダー追加のみ</span>
+            </td>
+            <td>
+              <span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot"></span><span class="score-dot empty"></span>
+              <br><span style="font-size:11px;color:var(--text-secondary);">ほぼ同等の変更量</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ===== SECTION: RATIONALE ===== -->
+  <section id="rationale" class="section">
+    <div class="section-label">Rationale</div>
+    <div class="section-title">B案を推奨する根拠</div>
+    <div class="rationale-grid">
+      <div class="rationale-card">
+        <h4>シグニファイアの正確な使用</h4>
+        <p>
+          elevation（影・浮き上がり）はインタラクティブな要素のシグニファイアとしてユーザーに広く認識されている。
+          「左ボーダー＋ティント背景」はスタイルシートやドキュメントビューアで広く使われる
+          「引用・参照ブロック」のパターンであり、タップ不可・読み取り専用の印象を自然に与える。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>WCAG AA 基準の充足</h4>
+        <p>
+          B案のティント背景（#EAF5FB）とテキスト（#1A1A2E）のコントラスト比は約 14:1 であり、
+          WCAG AA 基準（4.5:1）を大きく上回る。
+          左ボーダー色（#2B7A9B）は装飾のみで情報伝達には使わないため基準外。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>伝票が複数あるときの視認性</h4>
+        <p>
+          支払いが3件・4件と増えたとき、A案のフラット区切り線は読み流しやすく伝票境界が曖昧になる。
+          B案のティントブロックは背景色のまとまりで1伝票 = 1ブロックを直感的に区切る。
+        </p>
+      </div>
+      <div class="rationale-card">
+        <h4>MichiMark らしさとの統一</h4>
+        <p>
+          ティント色（#EAF5FB）と左ボーダー（#2B7A9B）はすでに他の画面で使用されている
+          MichiMark ブランドカラーからの派生であり、新しいカラーを追加しない。
+          デザイン全体の統一感を損なわない。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ===== SECTION: REQUIREMENTS DRAFT ===== -->
+  <section id="requirements-draft" class="section">
+    <div class="section-label">Requirements Draft</div>
+    <div class="section-title">要件の叩き（product-manager 向け）</div>
+    <div class="section-desc">
+      以下はアプリへの反映に必要な要件の叩きです。product-manager がレビュー・整形し、
+      ユーザー確認後に <code>docs/Requirements/</code> へ移動してください。
+    </div>
+
+    <div class="draft-box">
+      <div class="draft-box-header">
+        <div class="draft-label">Draft / T-303</div>
+        <h3>デザイン要件の叩き: 支払いごとの精算 誤認防止デザイン変更</h3>
+      </div>
+      <div class="draft-content">
+
+        <h4>概要</h4>
+        <p>
+          EventDetail 概要タブ「支払いごとの精算」セクションの表示UIを、
+          タップ誘引のある <code>Card</code>（elevation あり）から、
+          静的な「背景色ティント＋左ボーダー」スタイルに変更する。
+          表示する情報・ロジックへの変更は一切行わない。
+        </p>
+
+        <h4>対象画面・コンポーネント</h4>
+        <ul>
+          <li>画面: EventDetail &gt; 概要タブ（<span class="path-ref">travel_expense_overview_view.dart</span>）</li>
+          <li>対象クラス: <code>_PerPaymentSettlementCard</code></li>
+        </ul>
+
+        <h4>変更項目</h4>
+        <ul class="checklist">
+          <li><code>_PerPaymentSettlementCard</code> の <code>Card</code> ウィジェットを撤去する</li>
+          <li>代替として背景色 <code>#EAF5FB</code>（brand-teal-tint2）・左ボーダー <code>#2B7A9B</code> 幅3pxのコンテナで包む</li>
+          <li>角丸は <code>borderRadius: 8px</code> を維持する（視覚的な角張り感をなくすため）</li>
+          <li>elevation・shadow は完全に除去する（<code>0</code>）</li>
+          <li>内側 padding は現行の <code>12px</code> から <code>8px 10px</code> に微調整する（コンパクト化）</li>
+          <li>タップイベント（<code>InkWell</code>・<code>GestureDetector</code>）は追加しない</li>
+          <li>クラス名を <code>_PerPaymentSettlementCard</code> から <code>_PerPaymentSettlementBlock</code> にリネームする（Card でないことを明示）</li>
+        </ul>
+
+        <h4>変更しないもの</h4>
+        <ul>
+          <li>表示する情報（伝票タイトル・金額・精算行）の構造・内容</li>
+          <li>Projection・Adapter・BLoC レイヤーのロジック</li>
+          <li>他セクション（経費合計・メンバー別コスト・収支バランス）のスタイル</li>
+          <li><code>_SettlementLineRow</code> の文字色（payer: error色、receiver: green）</li>
+        </ul>
+
+        <h4>採用案</h4>
+        <p>B案（背景色ティント＋左ボーダースタイル）を採用する。詳細は参照デザインレポートを参照。</p>
+
+        <h4>参照デザインレポート</h4>
+        <p><span class="path-ref">docs/Design/draft/payment_settlement_display_design.html</span></p>
+
+        <h4>受け入れ基準</h4>
+        <ul class="checklist">
+          <li>「支払いごとの精算」エリアにホバー・タップ時のリップルが発生しない</li>
+          <li>elevation（影）が視認されない</li>
+          <li>各伝票ブロックが背景色で視覚的に区切られている</li>
+          <li>表示される金額・名前・精算行の情報が変更前と一致する</li>
+          <li>WCAG AA コントラスト比 4.5:1 以上を満たす（ティント背景＋テキスト）</li>
+        </ul>
+
+      </div>
+    </div>
+  </section>
+
+</div><!-- /container -->
+
+</body>
+</html>

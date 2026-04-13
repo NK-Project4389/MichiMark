@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -131,18 +132,53 @@ class _PaymentInfoList extends StatelessWidget {
 
 // ── List tile ─────────────────────────────────────────────────────────────
 
-class _PaymentListTile extends StatelessWidget {
+class _PaymentListTile extends StatefulWidget {
   final PaymentItemProjection item;
 
+  const _PaymentListTile({required this.item});
+
+  @override
+  State<_PaymentListTile> createState() => _PaymentListTileState();
+}
+
+class _PaymentListTileState extends State<_PaymentListTile> {
   static const _payerChipColor = Color(0xFF2B7A9B);
   static const _splitChipColor = Color(0xFF2E9E6B);
   static const _deleteIconColor = Color(0xFFDC2626);
   static const _deleteBackgroundColor = Color(0xFFFEE2E2);
 
-  const _PaymentListTile({required this.item});
+  Future<void> _onDeleteTapped() async {
+    final confirmed = await showCupertinoDialog<bool>(
+      context: context,
+      builder: (dialogContext) => CupertinoAlertDialog(
+        key: const Key('deleteConfirmDialog_dialog_confirm'),
+        title: const Text('削除しますか？'),
+        content: const Text('この操作は取り消せません。'),
+        actions: [
+          CupertinoDialogAction(
+            key: const Key('deleteConfirmDialog_button_cancel'),
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('キャンセル'),
+          ),
+          CupertinoDialogAction(
+            key: const Key('deleteConfirmDialog_button_delete'),
+            isDestructiveAction: true,
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    if (!mounted) return;
+    context
+        .read<PaymentInfoBloc>()
+        .add(PaymentInfoPaymentDeleteRequested(widget.item.id));
+  }
 
   @override
   Widget build(BuildContext context) {
+    final item = widget.item;
     final textTheme = Theme.of(context).textTheme;
     final memo = item.memo;
     final hasMemo = memo != null && memo.isNotEmpty;
@@ -241,9 +277,7 @@ class _PaymentListTile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: GestureDetector(
               key: Key('paymentInfo_button_delete_${item.id}'),
-              onTap: () => context
-                  .read<PaymentInfoBloc>()
-                  .add(PaymentInfoPaymentDeleteRequested(item.id)),
+              onTap: _onDeleteTapped,
               child: Container(
                 width: 44,
                 decoration: BoxDecoration(

@@ -131,6 +131,22 @@ class LinkDetailGasPayerChipToggled extends LinkDetailEvent {
   List<Object?> get props => [member];
 }
 
+/// メンバーを全選択するとき
+class LinkDetailMembersAllSelected extends LinkDetailEvent {
+  const LinkDetailMembersAllSelected();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// メンバーを全解除するとき
+class LinkDetailMembersAllCleared extends LinkDetailEvent {
+  const LinkDetailMembersAllCleared();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき
 class LinkDetailFuelFieldsChanged extends LinkDetailEvent {
   final String pricePerGas;

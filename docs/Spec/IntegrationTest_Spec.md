@@ -50,8 +50,11 @@ Version: 1.0
 | PaymentInfo 伝票削除 | TC-PID | 5 | 左スワイプ削除・合計再計算・ダイアログなし確認（旧スワイプ方式） |
 | PaymentInfo 削除アイコン | TC-PID2 | 3 | 削除アイコン常時表示・スワイプUI撤去・即削除（UI-4） |
 | Detail画面UI改善 | TC-DSI | 15 | 戻るボタン廃止・ヘッダタイトル形式・ボタン配置変更・キャンセル/保存操作（UI-5） |
+| 削除後集計即時反映 | TC-DAU | 5 | MichiInfo/PaymentInfo削除後に概要タブ集計が即時更新されること（B-7） |
+| 給油集計「満タン給油で算出」文言 | TC-FFL | 2 | hasFuelData フラグによる表示制御の分岐確認（F-3） |
+| メンバー選択 全選択/全解除 | TC-MSA | 7 | MarkDetail/LinkDetail/PaymentDetail の一括操作・支払者除外ロジック（UI-11） |
 
-**合計: 77件**
+**合計: 91件**
 
 ---
 
@@ -1425,5 +1428,258 @@ Spec: `docs/Spec/Features/FS-basic_info_tap_to_edit.md`
 - `Key('basicInfoRead_container_section')` が表示される
 - `Key('basicInfoRead_text_tapHint')` が表示される
 - 参照モードに「テスト保存イベント」が表示されている
+
+---
+
+## TC-DAU: 削除後集計即時反映
+
+バグ B-7 対応: MichiInfo（Mark/Link）またはPaymentInfo（伝票）削除後に、概要タブの集計（距離・コスト・旅費）が即時更新されることを確認する。
+
+### テストシナリオ一覧
+
+| ID | シナリオ名 | 優先度 |
+|---|---|---|
+| TC-DAU-001 | Linkカード削除後に概要タブの概要タブが表示されること | High |
+| TC-DAU-001b | Link削除後に概要タブの距離集計値が変化していること | High |
+| TC-DAU-001c | Link削除後も概要タブの距離セクションが表示されること | High |
+| TC-DAU-002 | PaymentInfo伝票削除後に概要タブが正常表示されること | High |
+| TC-DAU-002b | 伝票削除後に概要タブの経費合計が変化していること（movingCost） | High |
+| TC-DAU-002c | travelExpense伝票削除後に概要タブの旅費集計が更新されること | High |
+
+---
+
+### TC-DAU-001: Linkカード削除後に概要タブが正常表示されること
+
+**前提:** event-001「箱根日帰りドライブ」（movingCost Topic）を開いた状態。ml-002（東名高速, 85km）が存在すること。
+
+**操作手順:**
+1. EventDetailを開く（概要タブが表示される）
+2. 概要タブで集計セクション（「距離」「費用」）が表示されていることを確認する
+3. ミチタブに切り替える
+4. `Key('michi_info_card_slidable_ml-002')` を左スワイプする
+5. `Key('michi_info_card_delete_action_ml-002')` をタップして削除する
+6. 概要タブに切り替える
+
+**期待結果:**
+- 概要タブが正常に表示されること（クラッシュしていないこと）
+- 概要タブに集計情報が表示されること
+
+---
+
+### TC-DAU-001b: Link削除後に概要タブの距離集計値が変化していること
+
+**前提:** TC-DAU-001 と同様
+
+**操作手順:**
+1. EventDetailを開く（概要タブ）
+2. ミチタブに切り替えて ml-002（東名高速, 85km）を削除する
+3. 概要タブに切り替えて距離集計テキストを確認する
+
+**期待結果:**
+- 削除前の総走行距離「110 km」（85+25km）が表示されなくなること
+- 集計が即時更新されていること（バグ修正前は 110 km のまま残る）
+
+---
+
+### TC-DAU-001c: Link削除後も概要タブの距離セクションが表示されること
+
+**前提:** event-001「箱根日帰りドライブ」を開いた状態
+
+**操作手順:**
+1. ミチタブで ml-004（芦ノ湖スカイライン）を削除する
+2. 概要タブに切り替える
+
+**期待結果:**
+- 概要タブの「距離」セクションが表示されること
+- 集計セクションが完全に消えないこと
+
+---
+
+### TC-DAU-002: PaymentInfo伝票削除後に概要タブが正常表示されること
+
+**前提:** event-001「箱根日帰りドライブ」（movingCost Topic）を開いた状態。pay-001（高速道路代 ¥3,200）が存在すること。
+
+**操作手順:**
+1. EventDetailを開く（概要タブ）
+2. 支払タブに切り替える
+3. `Key('payment_info_tile_slidable_pay-001')` を左スワイプする
+4. `Key('payment_info_tile_delete_action_pay-001')` をタップして削除する
+5. 概要タブに切り替える
+
+**期待結果:**
+- 概要タブが正常に表示されること（クラッシュしていないこと）
+
+---
+
+### TC-DAU-002b: 伝票削除後に概要タブの経費合計が変化していること（movingCost）
+
+**前提:** TC-DAU-002 と同様
+
+**操作手順:**
+1. 支払タブで pay-001（¥3,200）を削除する
+2. 概要タブに切り替える
+3. 「費用」セクションの内容を確認する
+
+**期待結果:**
+- 概要タブの「費用」セクションが表示されること
+- 集計が即時更新されていること
+
+---
+
+### TC-DAU-002c: travelExpense伝票削除後に概要タブの旅費集計が更新されること
+
+**前提:** event-002「富士五湖キャンプ」（travelExpense Topic）を開いた状態。pay-003（高速道路代 ¥4,500）が存在すること。
+
+**操作手順:**
+1. EventDetailを開く（概要タブ）
+2. 概要タブで削除前の経費合計を確認する（「経費合計」セクションをスクロールして表示）
+3. 支払タブに切り替える
+4. `Key('payment_info_tile_slidable_pay-003')` を左スワイプして削除する
+5. 概要タブに切り替えて「経費合計」セクションを確認する
+
+**期待結果:**
+- 「経費合計」セクションが表示されること
+- 削除前の合計金額テキストが変化していること（集計が即時更新されていること）
+
+---
+
+## TC-FFL: 給油集計「満タン給油で算出」文言
+
+**概要:** `hasFuelData` フラグによる「満タン給油で算出」サブテキストの表示制御を確認する（F-3）。
+
+### テストシナリオ一覧
+
+| ID | シナリオ名 | 優先度 |
+|---|---|---|
+| TC-FFL-001 | 給油データありのイベント概要タブに「満タン給油で算出」が表示される | High |
+| TC-FFL-002 | 給油データなしのイベント概要タブに「満タン給油で算出」が表示されない | High |
+
+---
+
+### TC-FFL-001: 給油データありのイベント概要タブに「満タン給油で算出」が表示される
+
+**前提:** event-001「箱根日帰りドライブ」（isFuel=true の MarkLink ml-005 を持つ）が存在すること
+
+**操作手順:**
+1. イベント一覧から「箱根日帰りドライブ」をタップする
+2. EventDetail 画面が開く（概要タブが先頭）
+3. 概要タブの集計セクション（給油集計エリア）が表示されるまでスクロールする
+
+**期待結果:**
+- `Key('movingCostOverview_text_fulltankLabel')` を持つ Widget が存在すること
+- 表示テキストが「満タン給油で算出」であること
+
+---
+
+### TC-FFL-002: 給油データなしのイベント概要タブに「満タン給油で算出」が表示されない
+
+**前提:** event-002「富士五湖キャンプ」（isFuel=true の MarkLink を持たない）が存在すること
+
+**操作手順:**
+1. イベント一覧から「富士五湖キャンプ」をタップする
+2. EventDetail 画面が開く（概要タブが先頭）
+3. 概要タブの集計セクションが表示されるまでスクロールする
+
+**期待結果:**
+- `Key('movingCostOverview_text_fulltankLabel')` を持つ Widget が存在しないこと
+- 「満タン給油で算出」テキストが画面上に存在しないこと
+
+---
+
+## TC-MSA: メンバー選択 全選択/全解除
+
+### テストシナリオ一覧
+
+| ID | シナリオ名 | 優先度 |
+|---|---|---|
+| TC-MSA-001 | MarkDetail 全選択 | High |
+| TC-MSA-002 | MarkDetail 全解除 | High |
+| TC-MSA-003 | LinkDetail 全選択 | High |
+| TC-MSA-004 | LinkDetail 全解除 | High |
+| TC-MSA-005 | PaymentDetail 割り勘メンバー全選択 | High |
+| TC-MSA-006 | PaymentDetail 割り勘メンバー全解除（支払者チップ選択維持） | High |
+| TC-MSA-006b | PaymentDetail 全解除後に支払者以外が非選択になること | High |
+
+---
+
+### TC-MSA-001: MarkDetail 全選択
+
+**前提:** event-001「箱根日帰りドライブ」の MarkDetail（ml-001: 自宅出発）が表示されていること。メンバーが 2名以上存在し、少なくとも 1名が非選択状態であること
+
+**操作手順:**
+1. イベント一覧から「箱根日帰りドライブ」をタップ
+2. 「ミチ」タブに切り替え、ml-001 カードをタップして MarkDetail を開く
+3. メンバー選択セクションの「全選択」ボタン (`Key('markDetail_button_selectAllMembers')`) をタップ
+
+**期待結果:**
+- `markDetail_chip_member_*` プレフィックスを持つ全 FilterChip が `selected: true` になること
+
+---
+
+### TC-MSA-002: MarkDetail 全解除
+
+**前提:** TC-MSA-001 と同様。全員または複数名が選択状態であること
+
+**操作手順:**
+1. MarkDetail を開き、「全選択」で全員選択した状態にする
+2. メンバー選択セクションの「全解除」ボタン (`Key('markDetail_button_clearAllMembers')`) をタップ
+
+**期待結果:**
+- `markDetail_chip_member_*` プレフィックスを持つ全 FilterChip が `selected: false` になること
+
+---
+
+### TC-MSA-003: LinkDetail 全選択
+
+**前提:** event-001「箱根日帰りドライブ」の LinkDetail（ml-002: 東名高速）が表示されていること
+
+**操作手順:**
+1. イベント一覧から「箱根日帰りドライブ」をタップ
+2. 「ミチ」タブに切り替え、ml-002 カードをタップして LinkDetail を開く
+3. メンバー選択セクションの「全選択」ボタン (`Key('linkDetail_button_selectAllMembers')`) をタップ
+
+**期待結果:**
+- `linkDetail_chip_member_*` プレフィックスを持つ全 FilterChip が `selected: true` になること
+
+---
+
+### TC-MSA-004: LinkDetail 全解除
+
+**前提:** TC-MSA-003 と同様。全員または複数名が選択状態であること
+
+**操作手順:**
+1. LinkDetail を開き、「全選択」で全員選択した状態にする
+2. メンバー選択セクションの「全解除」ボタン (`Key('linkDetail_button_clearAllMembers')`) をタップ
+
+**期待結果:**
+- `linkDetail_chip_member_*` プレフィックスを持つ全 FilterChip が `selected: false` になること
+
+---
+
+### TC-MSA-005: PaymentDetail 割り勘メンバー全選択
+
+**前提:** event-001「箱根日帰りドライブ」の PaymentDetail（pay-001）が表示されていること。支払者（paymentMember）が選択済みであること
+
+**操作手順:**
+1. イベント一覧から「箱根日帰りドライブ」をタップ
+2. 「支払」タブに切り替え、pay-001 タイルをタップして PaymentDetail を開く
+3. 割り勘セクションの「全選択」ボタン (`Key('paymentDetail_button_selectAllSplitMembers')`) をタップ
+
+**期待結果:**
+- `paymentDetail_chip_splitMember_*` プレフィックスを持つ全 FilterChip が `selected: true` になること（支払者を含む全員）
+
+---
+
+### TC-MSA-006: PaymentDetail 割り勘メンバー全解除（支払者チップ選択維持）
+
+**前提:** TC-MSA-005 と同様。「全解除」実行後に支払者チップの選択状態を確認する
+
+**操作手順:**
+1. PaymentDetail を開き、「全選択」で全員選択した状態にする
+2. 割り勘セクションの「全解除」ボタン (`Key('paymentDetail_button_clearAllSplitMembers')`) をタップ
+
+**期待結果:**
+- 支払者のチップ (`paymentDetail_chip_splitMember_{payerMemberId}`) は `selected: true` を維持すること
+- 支払者以外のチップは `selected: false` になること
 
 ---

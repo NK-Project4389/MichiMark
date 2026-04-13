@@ -27,6 +27,9 @@ class MovingCostOverviewProjection extends Equatable {
   /// 経費合計の表示文字列（例: "3,000円"、なしは "---"）
   final String totalPaymentLabel;
 
+  /// 給油データが1件以上存在する場合 true。AggregationResult.totalGasQuantity が非nullの場合に true
+  final bool hasFuelData;
+
   const MovingCostOverviewProjection({
     required this.movingTimeLabel,
     required this.workingTimeLabel,
@@ -36,6 +39,7 @@ class MovingCostOverviewProjection extends Equatable {
     required this.totalGasQuantityLabel,
     required this.totalGasPriceLabel,
     required this.totalPaymentLabel,
+    required this.hasFuelData,
   });
 
   @override
@@ -48,5 +52,6 @@ class MovingCostOverviewProjection extends Equatable {
         totalGasQuantityLabel,
         totalGasPriceLabel,
         totalPaymentLabel,
+        hasFuelData,
       ];
 }

@@ -130,7 +130,11 @@ Future<void> _onPaymentDeleteRequested(
       // 2. DB から projection を再取得（_onReloadRequested と同じパターン）
       final domain = await _eventRepository.fetch(_eventId);
       final projection = EventDetailAdapter.toProjection(domain).paymentInfo;
-      emit(current.copyWith(projection: projection));
+      emit(current.copyWith(
+        projection: projection,
+        delegate: const PaymentInfoReloadedDelegate(),
+      ));
+      // ↑ PaymentInfoReloadedDelegate を emit することで概要タブの集計が即時反映される
     } on Exception {
       // サイレント失敗（既存の projection を維持）
     }
@@ -266,4 +270,4 @@ Integration Test グループ `TC-PID`（Payment Info Delete）
 - 削除取り消し（Undo）
 - 物理削除
 - payment_split_members 単体の削除
-- 概要タブ（TravelExpenseOverview）の精算セクションへの即時反映（リロード時に反映される）
+- 削除取り消し（Undo）後の再整合（概要タブへの即時反映は PaymentInfoReloadedDelegate 経由で対応済み）

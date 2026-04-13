@@ -21,6 +21,25 @@ class MovingCostOverviewView extends StatelessWidget {
         const _SectionTitle(title: '費用'),
         _InfoRow(label: '給油量', value: projection.totalGasQuantityLabel),
         _InfoRow(label: 'ガソリン代', value: projection.totalGasPriceLabel),
+        if (projection.hasFuelData)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(
+              children: [
+                const SizedBox(width: 120),
+                Expanded(
+                  child: Text(
+                    key: const Key('movingCostOverview_text_fulltankLabel'),
+                    '満タン給油で算出',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color:
+                              Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         _InfoRow(label: '経費合計', value: projection.totalPaymentLabel),
       ],
     );

@@ -19,6 +19,8 @@ class PaymentDetailBloc
     on<PaymentDetailMemoChanged>(_onMemoChanged);
     on<PaymentDetailSaveTapped>(_onSaveTapped);
     on<PaymentDetailCancelTapped>(_onCancelTapped);
+    on<PaymentDetailSplitMembersAllSelected>(_onSplitMembersAllSelected);
+    on<PaymentDetailSplitMembersAllCleared>(_onSplitMembersAllCleared);
   }
 
   final EventRepository _eventRepository;
@@ -212,6 +214,36 @@ class PaymentDetailBloc
       final current = state as PaymentDetailLoaded;
       emit(current.copyWith(
         delegate: const PaymentDetailDismissDelegate(),
+      ));
+    }
+  }
+
+  Future<void> _onSplitMembersAllSelected(
+    PaymentDetailSplitMembersAllSelected event,
+    Emitter<PaymentDetailState> emit,
+  ) async {
+    if (state is PaymentDetailLoaded) {
+      final current = state as PaymentDetailLoaded;
+      emit(current.copyWith(
+        draft: current.draft.copyWith(splitMembers: current.availableMembers),
+      ));
+    }
+  }
+
+  Future<void> _onSplitMembersAllCleared(
+    PaymentDetailSplitMembersAllCleared event,
+    Emitter<PaymentDetailState> emit,
+  ) async {
+    if (state is PaymentDetailLoaded) {
+      final current = state as PaymentDetailLoaded;
+      final payerId = current.draft.paymentMember?.id;
+      final remainingMembers = payerId == null
+          ? <MemberDomain>[]
+          : current.availableMembers
+              .where((m) => m.id == payerId)
+              .toList();
+      emit(current.copyWith(
+        draft: current.draft.copyWith(splitMembers: remainingMembers),
       ));
     }
   }
