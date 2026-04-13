@@ -30,6 +30,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     on<EventDetailDeleteConfirmed>(_onDeleteConfirmed);
     on<EventDetailDeleteDialogDismissed>(_onDeleteDialogDismissed);
     on<EventDetailDelegateConsumed>(_onDelegateConsumed);
+    on<EventDetailChildSaved>(_onChildSaved);
   }
 
   final EventRepository _eventRepository;
@@ -78,6 +79,8 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
           topicThemeColor: topicThemeColor,
           topicDisplayName: (topicDisplayName?.isNotEmpty ?? false) ? topicDisplayName : null,
           delegate: EventDetailTopicConfigPropagateDelegate(topicConfig),
+          isNewEvent: true,
+          isSavedAtLeastOnce: false,
         ));
         return;
       }
@@ -115,6 +118,14 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     Emitter<EventDetailState> emit,
   ) async {
     if (state case final EventDetailLoaded current) {
+      if (current.isNewEvent && !current.isSavedAtLeastOnce) {
+        final eventId = current.projection.eventId;
+        try {
+          await _eventRepository.delete(eventId);
+        } on Exception {
+          // 削除失敗は無視してDismissへ進む
+        }
+      }
       emit(current.copyWith(delegate: const EventDetailDismissDelegate()));
     }
   }
@@ -220,6 +231,15 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     }
   }
 
+  Future<void> _onChildSaved(
+    EventDetailChildSaved event,
+    Emitter<EventDetailState> emit,
+  ) async {
+    if (state case final EventDetailLoaded current) {
+      emit(current.copyWith(isSavedAtLeastOnce: true));
+    }
+  }
+
   Future<void> _onCachedEventUpdateRequested(
     EventDetailCachedEventUpdateRequested event,
     Emitter<EventDetailState> emit,
@@ -239,6 +259,8 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
         cachedEvent: updated,
         topicThemeColor: updatedThemeColor,
         topicDisplayName: updatedDisplayName,
+        isNewEvent: current.isNewEvent,
+        isSavedAtLeastOnce: current.isSavedAtLeastOnce,
       ));
     } on Exception {
       // キャッシュ更新失敗は無視（現在の表示を維持）

@@ -110,3 +110,12 @@ class EventDetailDelegateConsumed extends EventDetailEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// 子Bloc（BasicInfo・MichiInfo・PaymentInfo）が保存完了したとき
+/// isSavedAtLeastOnce を true にするために発火する
+class EventDetailChildSaved extends EventDetailEvent {
+  const EventDetailChildSaved();
+
+  @override
+  List<Object?> get props => [];
+}

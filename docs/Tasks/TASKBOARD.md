@@ -326,8 +326,8 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-350a | B-8: 作成ボタン再押し不可 バグ修正実装 | flutter-dev | `TODO` | | |
-| T-350b | B-8: 作成ボタン再押し不可 テストコード実装 | tester | `TODO` | | |
+| T-350a | B-8: 作成ボタン再押し不可 バグ修正実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_B8-作成ボタン再押し不可バグ修正 | |
+| T-350b | B-8: 作成ボタン再押し不可 テストコード実装 | tester | `DONE` | | |
 | T-351 | B-8: レビュー | reviewer | `TODO` | | |
 | T-352 | B-8: テスト実行 | tester | `TODO` | | |
 
@@ -339,9 +339,9 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-353 | UI-12: 未保存新規イベント自動削除 Spec作成 | architect | `TODO` | | docs/Requirements/REQ-unsaved_event_auto_delete.md |
-| T-354a | UI-12: 未保存新規イベント自動削除 実装 | flutter-dev | `TODO` | | |
-| T-354b | UI-12: 未保存新規イベント自動削除 テストコード実装 | tester | `TODO` | | |
+| T-353 | UI-12: 未保存新規イベント自動削除 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-unsaved_event_auto_delete.md |
+| T-354a | UI-12: 未保存新規イベント自動削除 実装 | flutter-dev | `DONE` | | |
+| T-354b | UI-12: 未保存新規イベント自動削除 テストコード実装 | tester | `DONE` | | flutter/integration_test/unsaved_event_auto_delete_test.dart |
 | T-355 | UI-12: レビュー | reviewer | `TODO` | | |
 | T-356 | UI-12: テスト実行 | tester | `TODO` | | |
 
@@ -353,9 +353,9 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-357 | UI-13: Detail画面キャンセル確認 Spec作成 | architect | `TODO` | | docs/Requirements/REQ-detail_cancel_confirmation.md |
+| T-357 | UI-13: Detail画面キャンセル確認 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-detail_cancel_confirmation.md |
 | T-358a | UI-13: Detail画面キャンセル確認 実装 | flutter-dev | `TODO` | | |
-| T-358b | UI-13: Detail画面キャンセル確認 テストコード実装 | tester | `TODO` | | |
+| T-358b | UI-13: Detail画面キャンセル確認 テストコード実装 | tester | `DONE` | | TC-DCC-001〜012 16件実装済み（integration_test/detail_cancel_confirmation_test.dart） |
 | T-359 | UI-13: レビュー | reviewer | `TODO` | | |
 | T-360 | UI-13: テスト実行 | tester | `TODO` | | |
 

@@ -229,6 +229,7 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
       // Topic未設定: デフォルトのAppBar表示
       return AppBar(
         leading: IconButton(
+          key: const Key('eventDetail_button_back'),
           icon: const Icon(Icons.chevron_left),
           onPressed: () => _onBackPressed(context),
         ),
@@ -241,6 +242,7 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
     // Topic設定済み: グラデーション AppBar
     return AppBar(
       leading: IconButton(
+        key: const Key('eventDetail_button_back'),
         icon: const Icon(Icons.chevron_left),
         onPressed: () => _onBackPressed(context),
       ),
@@ -441,22 +443,28 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
                 ));
           },
         ),
-        // BasicInfoSavedDelegate受信後にcachedEventを更新する
+        // BasicInfoSavedDelegate受信後にcachedEventを更新する + isSavedAtLeastOnce を true にする
         BlocListener<BasicInfoBloc, BasicInfoState>(
           listenWhen: (prev, curr) =>
               curr is BasicInfoLoaded && curr.delegate is BasicInfoSavedDelegate,
           listener: (context, state) {
             context
                 .read<EventDetailBloc>()
+                .add(const EventDetailChildSaved());
+            context
+                .read<EventDetailBloc>()
                 .add(const EventDetailCachedEventUpdateRequested());
           },
         ),
-        // BasicInfoSavedAndDismissDelegate受信後にcachedEvent更新 + 画面を閉じる
+        // BasicInfoSavedAndDismissDelegate受信後にcachedEvent更新 + 画面を閉じる + isSavedAtLeastOnce を true にする
         BlocListener<BasicInfoBloc, BasicInfoState>(
           listenWhen: (prev, curr) =>
               curr is BasicInfoLoaded &&
               curr.delegate is BasicInfoSavedAndDismissDelegate,
           listener: (context, state) {
+            context
+                .read<EventDetailBloc>()
+                .add(const EventDetailChildSaved());
             context
                 .read<EventDetailBloc>()
                 .add(const EventDetailCachedEventUpdateRequested());
@@ -481,7 +489,7 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
                 .add(const MichiInfoTabDeactivated());
           },
         ),
-        // MichiInfoReloadedDelegate受信後にcachedEventを更新する（給油情報など集計反映のため）
+        // MichiInfoReloadedDelegate受信後にcachedEventを更新する（給油情報など集計反映のため）+ isSavedAtLeastOnce を true にする
         BlocListener<MichiInfoBloc, MichiInfoState>(
           listenWhen: (prev, curr) =>
               curr is MichiInfoLoaded &&
@@ -489,15 +497,21 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
           listener: (context, state) {
             context
                 .read<EventDetailBloc>()
+                .add(const EventDetailChildSaved());
+            context
+                .read<EventDetailBloc>()
                 .add(const EventDetailCachedEventUpdateRequested());
           },
         ),
-        // PaymentInfoReloadedDelegate受信後にcachedEventを更新する（概要タブ集計反映のため）
+        // PaymentInfoReloadedDelegate受信後にcachedEventを更新する（概要タブ集計反映のため）+ isSavedAtLeastOnce を true にする
         BlocListener<PaymentInfoBloc, PaymentInfoState>(
           listenWhen: (prev, curr) =>
               curr is PaymentInfoLoaded &&
               curr.delegate is PaymentInfoReloadedDelegate,
           listener: (context, state) {
+            context
+                .read<EventDetailBloc>()
+                .add(const EventDetailChildSaved());
             context
                 .read<EventDetailBloc>()
                 .add(const EventDetailCachedEventUpdateRequested());

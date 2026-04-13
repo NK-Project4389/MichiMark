@@ -92,6 +92,12 @@ class EventDetailLoaded extends EventDetailState {
   /// 削除確認ダイアログの表示フラグ。trueのときPageが確認ダイアログを表示する
   final bool showDeleteConfirmDialog;
 
+  /// 新規作成モードで開かれた場合 true。既存編集は false
+  final bool isNewEvent;
+
+  /// BasicInfo・MichiInfo・PaymentInfo のいずれかを1件以上保存したら true
+  final bool isSavedAtLeastOnce;
+
   const EventDetailLoaded({
     required this.projection,
     required this.draft,
@@ -101,6 +107,8 @@ class EventDetailLoaded extends EventDetailState {
     this.topicThemeColor,
     this.topicDisplayName,
     this.showDeleteConfirmDialog = false,
+    this.isNewEvent = false,
+    this.isSavedAtLeastOnce = false,
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -123,6 +131,8 @@ class EventDetailLoaded extends EventDetailState {
     bool clearTopicThemeColor = false,
     bool clearTopicDisplayName = false,
     bool? showDeleteConfirmDialog,
+    bool? isNewEvent,
+    bool? isSavedAtLeastOnce,
   }) {
     return EventDetailLoaded(
       projection: projection ?? this.projection,
@@ -133,6 +143,8 @@ class EventDetailLoaded extends EventDetailState {
       topicThemeColor: clearTopicThemeColor ? null : (topicThemeColor ?? this.topicThemeColor),
       topicDisplayName: clearTopicDisplayName ? null : (topicDisplayName ?? this.topicDisplayName),
       showDeleteConfirmDialog: showDeleteConfirmDialog ?? this.showDeleteConfirmDialog,
+      isNewEvent: isNewEvent ?? this.isNewEvent,
+      isSavedAtLeastOnce: isSavedAtLeastOnce ?? this.isSavedAtLeastOnce,
     );
   }
 
@@ -146,6 +158,8 @@ class EventDetailLoaded extends EventDetailState {
         topicThemeColor,
         topicDisplayName,
         showDeleteConfirmDialog,
+        isNewEvent,
+        isSavedAtLeastOnce,
       ];
 }
 
