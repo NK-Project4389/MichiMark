@@ -389,10 +389,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-378a | B-13: BasicInfo マスタ非表示フィルタ 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_B13-B14-B15 | basic_info_bloc.dart に isVisible フィルタ追加 |
-| T-378b | B-13: BasicInfo マスタ非表示フィルタ テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_B13-B14-B15 | |
-| T-379 | B-13: レビュー | reviewer | `TODO` | | |
-| T-380 | B-13: テスト実行 | tester | `TODO` | | |
+| T-378a | B-13: BasicInfo マスタ非表示フィルタ 実装 | flutter-dev | `DONE` | | basic_info_bloc.dart に isVisible フィルタ追加 |
+| T-378b | B-13: BasicInfo マスタ非表示フィルタ テストコード実装 | tester | `DONE` | | TC-BHF-001〜004 実装済み（integration_test/basic_info_master_hidden_filter_test.dart） |
+| T-379 | B-13: レビュー | reviewer | `DONE` | | 承認 |
+| T-380 | B-13: テスト実行 | tester | `DONE` | | 4PASS/0FAIL/0SKIP（TC-BHF-001〜004 全件PASS） |
 
 ---
 
@@ -405,10 +405,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-381a | B-14: プラスボタン再押し不可 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_B13-B14-B15 | event_list_page.dart の _handleShowTopicSelection でキャンセル時にBlocへリセットイベント送信 |
-| T-381b | B-14: プラスボタン再押し不可 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_B13-B14-B15 | |
-| T-382 | B-14: レビュー | reviewer | `TODO` | | |
-| T-383 | B-14: テスト実行 | tester | `TODO` | | |
+| T-381a | B-14: プラスボタン再押し不可 実装 | flutter-dev | `DONE` | | event_list_page.dart の _handleShowTopicSelection でキャンセル時にBlocへリセットイベント送信 |
+| T-381b | B-14: プラスボタン再押し不可 テストコード実装 | tester | `DONE` | | TC-EFR-001〜002 実装済み（integration_test/event_list_fab_repress_test.dart） |
+| T-382 | B-14: レビュー | reviewer | `DONE` | | 承認 |
+| T-383 | B-14: テスト実行 | tester | `DONE` | | 2PASS/0FAIL/0SKIP（TC-EFR-001〜002 全件PASS） |
 
 ---
 
