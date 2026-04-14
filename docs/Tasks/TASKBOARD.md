@@ -241,7 +241,14 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-260 | AppStore無料版リリース準備 | orchestrator | `TODO` | | 下書き: docs/Requirements/REQ-DRAFT-appstore_free_release.md |
+| T-260a | michimark-web リポジトリ・Vercelデプロイ設定 | orchestrator | `DONE` | | https://michimark-web.vercel.app |
+| T-260b | プライバシーポリシーページ作成 | orchestrator | `DONE` | | https://michimark-web.vercel.app/privacy.html |
+| T-260c | サポートページ作成 | orchestrator | `DONE` | | https://michimark-web.vercel.app/support.html |
+| T-260d | App Store Connect 基本情報入力（名前・カテゴリ・価格・URL） | orchestrator | `TODO` | | |
+| T-260e | アプリ説明文・キーワード作成 | orchestrator | `TODO` | | |
+| T-260f | スクリーンショット撮影・登録（iPhone 6.5インチ以上） | orchestrator | `TODO` | | |
+| T-260g | 全件 Integration Test フルスイート PASS | tester | `TODO` | | UI-8完了後に実施 |
+| T-260h | 本番ビルド → TestFlight最終確認 → 審査提出 | orchestrator | `TODO` | | T-260g完了後 |
 
 ---
 
@@ -326,10 +333,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-366a | B-9: MichiInfo Mark間隔 バグ修正実装 | flutter-dev | `TODO` | | |
-| T-366b | B-9: MichiInfo Mark間隔 テストコード実装 | tester | `TODO` | | |
-| T-367 | B-9: レビュー | reviewer | `TODO` | | |
-| T-368 | B-9: テスト実行 | tester | `TODO` | | |
+| T-366a | B-9: MichiInfo Mark間隔 バグ修正実装 | flutter-dev | `DONE` | | |
+| T-366b | B-9: MichiInfo Mark間隔 テストコード実装 | tester | `DONE` | | integration_test/michi_info_insert_spacing_test.dart（TC-MII-001〜003、8件）|
+| T-367 | B-9: レビュー | reviewer | `DONE` | | 承認 |
+| T-368 | B-9: テスト実行 | tester | `IN_PROGRESS` | 2026-04-14_T368-B9-MichiInfo-Mark間隔テスト実行 | |
 
 ---
 
@@ -340,8 +347,8 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-369a | B-10: マスタ非表示フィルタ バグ修正実装 | flutter-dev | `TODO` | | |
-| T-369b | B-10: マスタ非表示フィルタ テストコード実装 | tester | `TODO` | | |
+| T-369a | B-10: マスタ非表示フィルタ バグ修正実装 | flutter-dev | `DONE` | | |
+| T-369b | B-10: マスタ非表示フィルタ テストコード実装 | tester | `DONE` | | |
 | T-370 | B-10: レビュー | reviewer | `TODO` | | |
 | T-371 | B-10: テスト実行 | tester | `TODO` | | |
 
@@ -354,9 +361,9 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-372a | B-11: メンバー・タグ追加後フォーカス継続 バグ修正実装 | flutter-dev | `TODO` | | |
-| T-372b | B-11: メンバー・タグ追加後フォーカス継続 テストコード実装 | tester | `TODO` | | |
-| T-373 | B-11: レビュー | reviewer | `TODO` | | |
+| T-372a | B-11: メンバー・タグ追加後フォーカス継続 バグ修正実装 | flutter-dev | `DONE` | | |
+| T-372b | B-11: メンバー・タグ追加後フォーカス継続 テストコード実装 | tester | `DONE` | | TC-MFR-001〜004 実装済み（integration_test/member_tag_focus_refocus_test.dart） |
+| T-373 | B-11: レビュー | reviewer | `DONE` | | 承認 |
 | T-374 | B-11: テスト実行 | tester | `TODO` | | |
 
 ---
@@ -368,10 +375,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-375a | B-12: 画面遷移時レコメンドを閉じる バグ修正実装 | flutter-dev | `TODO` | | |
-| T-375b | B-12: 画面遷移時レコメンドを閉じる テストコード実装 | tester | `TODO` | | |
-| T-376 | B-12: レビュー | reviewer | `TODO` | | |
-| T-377 | B-12: テスト実行 | tester | `TODO` | | |
+| T-375a | B-12: 画面遷移時レコメンドを閉じる バグ修正実装 | flutter-dev | `DONE` | | |
+| T-375b | B-12: 画面遷移時レコメンドを閉じる テストコード実装 | tester | `DONE` | | TC-RCL-001〜002 4件実装済み（integration_test/recommend_close_on_navigate_test.dart） |
+| T-376 | B-12: レビュー | reviewer | `DONE` | | 承認 |
+| T-377 | B-12: テスト実行 | tester | `IN_PROGRESS` | 2026-04-14_B12-レコメンドクローズテスト | |
 
 ---
 

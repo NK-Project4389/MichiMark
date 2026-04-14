@@ -157,27 +157,6 @@ void main() {
     }
   }
 
-  /// ガソリン支払者チップ (FilterChip) が表示されているか確認する。
-  /// チップキーのプレフィックスを受け取り、いずれか1つ以上存在すれば true。
-  bool hasGasPayerChips(WidgetTester tester, String keyPrefix) {
-    final chips = tester.widgetList<FilterChip>(find.byType(FilterChip)).where(
-      (chip) {
-        if (chip.key is ValueKey) {
-          final keyStr = (chip.key as ValueKey).value.toString();
-          return keyStr.startsWith(keyPrefix);
-        }
-        return false;
-      },
-    );
-    return chips.isNotEmpty;
-  }
-
-  /// ガソリン支払者ラベルのインラインチップセクションが表示されることを確認する。
-  /// 修正後は「ガソリン支払者」ラベル + FilterChip が同一セクションに存在する。
-  bool hasGasPayerChipSection(WidgetTester tester) {
-    return find.text('ガソリン支払者').evaluate().isNotEmpty;
-  }
-
   /// ガソリン支払者チップが選択可能か（InkWell/chevron_right ではなくチップが存在するか）確認する。
   bool isGasPayerChipMode(WidgetTester tester) {
     // 修正前: InkWell + chevron_right アイコン（_SelectionRow パターン）
@@ -253,12 +232,6 @@ void main() {
     expect(find.byType(FilterChip), findsWidgets,
         reason: 'ガソリン支払者選択エリアに FilterChip が表示されること（チップ選択UIであること）');
 
-    // chevron_right アイコンが「ガソリン支払者」行に存在しないこと（旧：別画面遷移）
-    // ガソリン支払者エリアはチップUIなので、chevron_right は表示されないこと
-    final gasPayerSection = find.ancestor(
-      of: find.text('ガソリン支払者'),
-      matching: find.byType(Column),
-    );
     // ガソリン支払者ラベルの直下に FilterChip が存在することでインラインUIを検証
     expect(isGasPayerChipMode(tester), isTrue,
         reason: 'ガソリン支払者選択がインラインチップ選択UI（FilterChip）であること');

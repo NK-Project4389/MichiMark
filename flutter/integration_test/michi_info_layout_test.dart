@@ -562,7 +562,6 @@ void main() {
     // 芦ノ湖スカイラインはスクロールが必要な場合があるため存在確認のみ
     // ListView.builderのlazy renderingに対応してスクロール確認
     final ashikoText = find.text('芦ノ湖スカイライン');
-    final okutamaText = find.text('大涌谷');
 
     // スクロールして確認
     if (ashikoText.evaluate().isEmpty) {

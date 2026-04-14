@@ -157,12 +157,6 @@ void main() {
       reason: '支払タブにFAB（FloatingActionButton.extended）が表示されること',
     );
 
-    // FABに「支払を追加」または「追加」などのラベルテキストが表示されていること
-    // FloatingActionButton.extended はラベルテキストを持つ
-    final fabLabel = find.ancestor(
-      of: find.byType(FloatingActionButton),
-      matching: find.byType(FloatingActionButton),
-    );
     print('TC-PIF-002: FABが存在することを確認。topicThemeColorのprimaryColorが'
         'backgroundColor として適用されていることは、'
         'FABが存在しcrash しないことをもって確認。');
