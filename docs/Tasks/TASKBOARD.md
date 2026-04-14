@@ -336,7 +336,7 @@
 | T-366a | B-9: MichiInfo Mark間隔 バグ修正実装 | flutter-dev | `DONE` | | |
 | T-366b | B-9: MichiInfo Mark間隔 テストコード実装 | tester | `DONE` | | integration_test/michi_info_insert_spacing_test.dart（TC-MII-001〜003、8件）|
 | T-367 | B-9: レビュー | reviewer | `DONE` | | 承認 |
-| T-368 | B-9: テスト実行 | tester | `IN_PROGRESS` | 2026-04-14_T368-B9-MichiInfo-Mark間隔テスト実行 | |
+| T-368 | B-9: テスト実行 | tester | `DONE` | | 8PASS/0FAIL/0SKIP（TC-MII-001〜003 全件PASS） |
 
 ---
 
