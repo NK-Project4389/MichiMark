@@ -364,7 +364,7 @@
 | T-372a | B-11: メンバー・タグ追加後フォーカス継続 バグ修正実装 | flutter-dev | `DONE` | | |
 | T-372b | B-11: メンバー・タグ追加後フォーカス継続 テストコード実装 | tester | `DONE` | | TC-MFR-001〜004 実装済み（integration_test/member_tag_focus_refocus_test.dart） |
 | T-373 | B-11: レビュー | reviewer | `DONE` | | 承認 |
-| T-374 | B-11: テスト実行 | tester | `TODO` | | |
+| T-374 | B-11: テスト実行 | tester | `DONE` | | 4PASS/0FAIL/0SKIP（TC-MFR-001〜004 全件PASS） |
 
 ---
 
@@ -378,7 +378,7 @@
 | T-375a | B-12: 画面遷移時レコメンドを閉じる バグ修正実装 | flutter-dev | `DONE` | | |
 | T-375b | B-12: 画面遷移時レコメンドを閉じる テストコード実装 | tester | `DONE` | | TC-RCL-001〜002 4件実装済み（integration_test/recommend_close_on_navigate_test.dart） |
 | T-376 | B-12: レビュー | reviewer | `DONE` | | 承認 |
-| T-377 | B-12: テスト実行 | tester | `IN_PROGRESS` | 2026-04-14_B12-レコメンドクローズテスト | |
+| T-377 | B-12: テスト実行 | tester | `DONE` | | 4PASS/0FAIL/0SKIP（TC-RCL-001・001b・002・002b） |
 
 ---
 

@@ -133,3 +133,4 @@
 | [2026-04-14_test__T352-B8-作成ボタン再押し不可バグ修正テスト全件PASS.md](./2026-04-14_test__T352-B8-作成ボタン再押し不可バグ修正テスト全件PASS.md) | T-352 B-8 作成ボタン再押し不可バグ修正 Integration Test 4PASS/0FAIL/0SKIP |
 | [2026-04-14_test__T360-UI13-Detail画面キャンセル確認ダイアログテスト全件PASS.md](./2026-04-14_test__T360-UI13-Detail画面キャンセル確認ダイアログテスト全件PASS.md) | T-360 UI-13 Detail画面キャンセル確認ダイアログ Integration Test 16PASS/0FAIL/0SKIP |
 | [2026-04-14_test__T356-UI12-未保存新規イベント自動削除テスト全件PASS.md](./2026-04-14_test__T356-UI12-未保存新規イベント自動削除テスト全件PASS.md) | T-356 UI-12 未保存新規イベント自動削除 Integration Test 5PASS/0FAIL/0SKIP（TC-UAE-004はメンバーなし制約でスキップ） |
+| [2026-04-14_test__T377-B12-画面遷移時レコメンドクローズテスト全件PASS.md](./2026-04-14_test__T377-B12-画面遷移時レコメンドクローズテスト全件PASS.md) | T-377 B-12 画面遷移時レコメンドクローズ Integration Test 4PASS/0FAIL/0SKIP |
