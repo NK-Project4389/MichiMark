@@ -326,10 +326,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-350a | B-8: 作成ボタン再押し不可 バグ修正実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_B8-作成ボタン再押し不可バグ修正 | |
-| T-350b | B-8: 作成ボタン再押し不可 テストコード実装 | tester | `DONE` | | |
-| T-351 | B-8: レビュー | reviewer | `TODO` | | |
-| T-352 | B-8: テスト実行 | tester | `TODO` | | |
+| T-350a | B-8: 作成ボタン再押し不可 バグ修正実装 | flutter-dev | `DONE` | | isInsertMode: false リセット漏れ修正 |
+| T-350b | B-8: 作成ボタン再押し不可 テストコード実装 | tester | `DONE` | | TC-CAB-001〜002b 実装済み |
+| T-351 | B-8: レビュー | reviewer | `DONE` | | 承認 |
+| T-352 | B-8: テスト実行 | tester | `DONE` | | 4PASS/0FAIL/0SKIP（TC-CAB-001〜002b 全件PASS・テストフロー修正込み） |
 
 ---
 
