@@ -9,6 +9,7 @@ class MichiMarkApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'MichiMark',
       routerConfig: router,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
