@@ -342,7 +342,7 @@
 | T-353 | UI-12: 未保存新規イベント自動削除 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-unsaved_event_auto_delete.md |
 | T-354a | UI-12: 未保存新規イベント自動削除 実装 | flutter-dev | `DONE` | | |
 | T-354b | UI-12: 未保存新規イベント自動削除 テストコード実装 | tester | `DONE` | | flutter/integration_test/unsaved_event_auto_delete_test.dart |
-| T-355 | UI-12: レビュー | reviewer | `TODO` | | |
+| T-355 | UI-12: レビュー | reviewer | `DONE` | | 承認 |
 | T-356 | UI-12: テスト実行 | tester | `TODO` | | |
 
 ---
@@ -356,8 +356,8 @@
 | T-357 | UI-13: Detail画面キャンセル確認 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-detail_cancel_confirmation.md |
 | T-358a | UI-13: Detail画面キャンセル確認 実装 | flutter-dev | `DONE` | | MarkDetail・LinkDetail・PaymentDetail: initialDraft/showCancelConfirmDialog追加、DismissPressed差分判定、CancelDiscardConfirmed/CancelDialogDismissed Event追加、CupertinoAlertDialog Widget追加 |
 | T-358b | UI-13: Detail画面キャンセル確認 テストコード実装 | tester | `DONE` | | TC-DCC-001〜012 16件実装済み（integration_test/detail_cancel_confirmation_test.dart） |
-| T-359 | UI-13: レビュー | reviewer | `TODO` | | |
-| T-360 | UI-13: テスト実行 | tester | `TODO` | | |
+| T-359 | UI-13: レビュー | reviewer | `DONE` | | 承認 |
+| T-360 | UI-13: テスト実行 | tester | `DONE` | | 16PASS/0FAIL/0SKIP（TC-DCC-001〜012 全件PASS・カード遷移ヘルパー・NumericInputRow入力方式修正込み） |
 
 ---
 

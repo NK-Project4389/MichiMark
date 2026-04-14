@@ -130,3 +130,4 @@
 | [2026-04-14_test__T313-F4-MichiInfoカードトピック別表示テスト全件PASS.md](./2026-04-14_test__T313-F4-MichiInfoカードトピック別表示テスト全件PASS.md) | T-313 F-4 MichiInfoカードトピック別表示切り替え Integration Test 11PASS/0FAIL/0SKIP |
 | [2026-04-14_test__T289-UI8-イベント追加スキップ遷移テスト全件PASS.md](./2026-04-14_test__T289-UI8-イベント追加スキップ遷移テスト全件PASS.md) | T-289 UI-8 イベント追加スキップ遷移 Integration Test 6PASS/0FAIL/0SKIP |
 | [2026-04-14_test__T352-B8-作成ボタン再押し不可バグ修正テスト全件PASS.md](./2026-04-14_test__T352-B8-作成ボタン再押し不可バグ修正テスト全件PASS.md) | T-352 B-8 作成ボタン再押し不可バグ修正 Integration Test 4PASS/0FAIL/0SKIP |
+| [2026-04-14_test__T360-UI13-Detail画面キャンセル確認ダイアログテスト全件PASS.md](./2026-04-14_test__T360-UI13-Detail画面キャンセル確認ダイアログテスト全件PASS.md) | T-360 UI-13 Detail画面キャンセル確認ダイアログ Integration Test 16PASS/0FAIL/0SKIP |
