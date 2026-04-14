@@ -130,6 +130,7 @@
 | [2026-04-14_test__T313-F4-MichiInfoカードトピック別表示テスト全件PASS.md](./2026-04-14_test__T313-F4-MichiInfoカードトピック別表示テスト全件PASS.md) | T-313 F-4 MichiInfoカードトピック別表示切り替え Integration Test 11PASS/0FAIL/0SKIP |
 | [2026-04-14_test__T289-UI8-イベント追加スキップ遷移テスト全件PASS.md](./2026-04-14_test__T289-UI8-イベント追加スキップ遷移テスト全件PASS.md) | T-289 UI-8 イベント追加スキップ遷移 Integration Test 6PASS/0FAIL/0SKIP |
 | [2026-04-14_chore__AppStore公開準備_michimark-web構築.md](./2026-04-14_chore__AppStore公開準備_michimark-web構築.md) | REL-1 michimark-web構築・Vercelデプロイ・プライバシーポリシー・サポートページ作成 |
+| [2026-04-14_session__B8-B12-UI12-UI13-TF13完了.md](./2026-04-14_session__B8-B12-UI12-UI13-TF13完了.md) | B-8〜B-12バグ修正・UI-12/13新機能・TestFlight 1.0.0(13)アップロード完了 |
 | [2026-04-14_test__T352-B8-作成ボタン再押し不可バグ修正テスト全件PASS.md](./2026-04-14_test__T352-B8-作成ボタン再押し不可バグ修正テスト全件PASS.md) | T-352 B-8 作成ボタン再押し不可バグ修正 Integration Test 4PASS/0FAIL/0SKIP |
 | [2026-04-14_test__T360-UI13-Detail画面キャンセル確認ダイアログテスト全件PASS.md](./2026-04-14_test__T360-UI13-Detail画面キャンセル確認ダイアログテスト全件PASS.md) | T-360 UI-13 Detail画面キャンセル確認ダイアログ Integration Test 16PASS/0FAIL/0SKIP |
 | [2026-04-14_test__T356-UI12-未保存新規イベント自動削除テスト全件PASS.md](./2026-04-14_test__T356-UI12-未保存新規イベント自動削除テスト全件PASS.md) | T-356 UI-12 未保存新規イベント自動削除 Integration Test 5PASS/0FAIL/0SKIP（TC-UAE-004はメンバーなし制約でスキップ） |
