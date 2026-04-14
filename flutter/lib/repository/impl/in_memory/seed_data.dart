@@ -163,6 +163,7 @@ final seedTrans = [
     id: 'trans-002',
     transName: 'レンタカー',
     kmPerGas: 200, // 20.0 km/L
+    meterValue: 0,
     createdAt: _d(2026, 1, 1),
     updatedAt: _d(2026, 1, 1),
   ),

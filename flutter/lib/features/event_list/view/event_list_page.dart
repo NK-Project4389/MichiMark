@@ -75,7 +75,11 @@ class _EventListPageState extends State<EventListPage> {
       builder: (sheetContext) => _TopicSelectionSheet(),
     ).then((selectedTopicType) {
       if (!mounted) return;
-      if (selectedTopicType == null) return;
+      if (selectedTopicType == null) {
+        // キャンセル時: showTopicSelection を false にリセットして次回押下を有効化（B-14修正）
+        context.read<EventListBloc>().add(const EventListTopicSelectionDismissed());
+        return;
+      }
       final eventId = const Uuid().v4();
       context.read<EventListBloc>().add(
             EventListTopicSelectedForNewEvent(

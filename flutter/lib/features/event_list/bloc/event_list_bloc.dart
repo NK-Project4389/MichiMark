@@ -14,6 +14,7 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
     on<EventListSettingsButtonPressed>(_onSettingsButtonPressed);
     on<EventListTopicSelectedForNewEvent>(_onTopicSelectedForNewEvent);
     on<EventListDelegateConsumed>(_onDelegateConsumed);
+    on<EventListTopicSelectionDismissed>(_onTopicSelectionDismissed);
   }
 
   final EventRepository _eventRepository;
@@ -86,6 +87,17 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
     if (state is EventListLoaded) {
       final current = state as EventListLoaded;
       emit(current.copyWith());
+    }
+  }
+
+  Future<void> _onTopicSelectionDismissed(
+    EventListTopicSelectionDismissed event,
+    Emitter<EventListState> emit,
+  ) async {
+    if (state is EventListLoaded) {
+      final current = state as EventListLoaded;
+      // showTopicSelection を false にリセットする（B-14修正）
+      emit(current.copyWith(showTopicSelection: false));
     }
   }
 }

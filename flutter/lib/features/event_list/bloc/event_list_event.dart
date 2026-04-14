@@ -58,3 +58,11 @@ class EventListDelegateConsumed extends EventListEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// トピック選択シートがキャンセルされたとき（showTopicSelectionをリセット）
+class EventListTopicSelectionDismissed extends EventListEvent {
+  const EventListTopicSelectionDismissed();
+
+  @override
+  List<Object?> get props => [];
+}

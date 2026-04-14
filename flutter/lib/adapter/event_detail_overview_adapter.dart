@@ -48,9 +48,13 @@ class EventDetailOverviewAdapter {
       totalGasPriceLabel: effectiveGasPrice != null
           ? '${_currencyFormat.format(effectiveGasPrice)}円'
           : '---',
-      totalPaymentLabel: result.totalPayment != null
-          ? '${_currencyFormat.format(result.totalPayment!)}円'
-          : '---',
+      totalPaymentLabel: () {
+        // 燃費推定モードでは実績給油代がない場合に effectiveGasPrice をフォールバックとして使用（B-15修正）
+        final effectiveTotalPayment = result.totalPayment ?? effectiveGasPrice;
+        return effectiveTotalPayment != null
+            ? '${_currencyFormat.format(effectiveTotalPayment)}円'
+            : '---';
+      }(),
       hasFuelData: result.totalGasQuantity != null,
       memberBalances: memberBalances,
     );

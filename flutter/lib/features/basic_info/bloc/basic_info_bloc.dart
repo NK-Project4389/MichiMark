@@ -56,17 +56,22 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
   final TransRepository _transRepository;
   String _eventId = '';
 
-  /// 直近10件のイベントから頻出メンバーサジェストを生成する（選択済み除外）
+  /// 直近10件のイベントから頻出メンバーサジェストを生成する（選択済み除外・非表示除外）
   List<MemberDomain> _buildInitialMemberSuggestions(
     List<EventDomain> recentEvents,
     List<MemberDomain> selectedMembers,
+    List<MemberDomain> allMembers,
   ) {
     final selectedIds = selectedMembers.map((m) => m.id).toSet();
+    // isVisible フィルタ済みの allMembers を ID セットで保持する
+    final visibleIds = allMembers.map((m) => m.id).toSet();
     // 直近10件のイベントから全メンバーを収集し、出現頻度順に並べる
     final countMap = <String, int>{};
     final memberMap = <String, MemberDomain>{};
     for (final event in recentEvents) {
       for (final member in event.members) {
+        // 非表示メンバー（isVisible=false）はサジェストに含めない
+        if (!visibleIds.contains(member.id)) continue;
         countMap[member.id] = (countMap[member.id] ?? 0) + 1;
         memberMap[member.id] = member;
       }
@@ -124,12 +129,16 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
         selectedTopic: topicDomain,
       );
       final topicConfig = TopicConfig.fromTopicType(topicDomain?.topicType ?? event.initialTopicType);
-      final allTags = await _tagRepository.fetchAll();
-      final allTrans = await _transRepository.fetchAll();
-      final allMembers = await _memberRepository.fetchAll();
+      final allTagsMaster = await _tagRepository.fetchAll();
+      final allTransMaster = await _transRepository.fetchAll();
+      final allMembersMaster = await _memberRepository.fetchAll();
+      // マスタのisVisibleで候補を絞り込む（B-13修正）
+      final allTags = allTagsMaster.where((t) => t.isVisible).toList();
+      final allTrans = allTransMaster.where((t) => t.isVisible).toList();
+      final allMembers = allMembersMaster.where((m) => m.isVisible).toList();
       // 直近10件のイベントを取得してメンバーサジェストを生成
       final recentEvents = (await _eventRepository.fetchAll()).take(10).toList();
-      final memberSuggestions = _buildInitialMemberSuggestions(recentEvents, draft.selectedMembers);
+      final memberSuggestions = _buildInitialMemberSuggestions(recentEvents, draft.selectedMembers, allMembers);
       emit(BasicInfoLoaded(
         draft: draft,
         topicConfig: topicConfig,
@@ -149,9 +158,13 @@ class BasicInfoBloc extends Bloc<BasicInfoEvent, BasicInfoState> {
         selectedTopic: topicDomain,
       );
       final topicConfig = TopicConfig.fromTopicType(initialTopicType);
-      final allTags = await _tagRepository.fetchAll();
-      final allTrans = await _transRepository.fetchAll();
-      final allMembers = await _memberRepository.fetchAll();
+      final allTagsMaster = await _tagRepository.fetchAll();
+      final allTransMaster = await _transRepository.fetchAll();
+      final allMembersMaster = await _memberRepository.fetchAll();
+      // マスタのisVisibleで候補を絞り込む（B-13修正）
+      final allTags = allTagsMaster.where((t) => t.isVisible).toList();
+      final allTrans = allTransMaster.where((t) => t.isVisible).toList();
+      final allMembers = allMembersMaster.where((m) => m.isVisible).toList();
       emit(BasicInfoLoaded(
         draft: draft,
         topicConfig: topicConfig,
