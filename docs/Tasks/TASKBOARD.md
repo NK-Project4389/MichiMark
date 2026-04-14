@@ -349,8 +349,8 @@
 |---|---|---|---|---|---|
 | T-369a | B-10: マスタ非表示フィルタ バグ修正実装 | flutter-dev | `DONE` | | |
 | T-369b | B-10: マスタ非表示フィルタ テストコード実装 | tester | `DONE` | | |
-| T-370 | B-10: レビュー | reviewer | `TODO` | | |
-| T-371 | B-10: テスト実行 | tester | `TODO` | | |
+| T-370 | B-10: レビュー | reviewer | `DONE` | | 承認 |
+| T-371 | B-10: テスト実行 | tester | `DONE` | | 3PASS/1SKIP/0FAIL |
 
 ---
 

@@ -136,3 +136,4 @@
 | [2026-04-14_test__T377-B12-画面遷移時レコメンドクローズテスト全件PASS.md](./2026-04-14_test__T377-B12-画面遷移時レコメンドクローズテスト全件PASS.md) | T-377 B-12 画面遷移時レコメンドクローズ Integration Test 4PASS/0FAIL/0SKIP |
 | [2026-04-14_test__T374-B11-メンバータグフォーカス継続テスト全件PASS.md](./2026-04-14_test__T374-B11-メンバータグフォーカス継続テスト全件PASS.md) | T-374 B-11 メンバー・タグ追加後フォーカス継続 Integration Test 4PASS/0FAIL/0SKIP |
 | [2026-04-14_test__T368-B9-MichiInfo-Mark間隔修正テスト全件PASS.md](./2026-04-14_test__T368-B9-MichiInfo-Mark間隔修正テスト全件PASS.md) | T-368 B-9 MichiInfo InsertMode時のMark間隔修正 Integration Test 8PASS/0FAIL/0SKIP |
+| [2026-04-14_test__T371-B10-マスタ非表示フィルタテスト全件PASS.md](./2026-04-14_test__T371-B10-マスタ非表示フィルタテスト全件PASS.md) | T-371 B-10 マスタ非表示フィルタ Integration Test 4PASS/1SKIP/0FAIL |
