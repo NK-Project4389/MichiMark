@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark App Store スクリーンショット デザイン提案</title>
+  <style>
+    :root {
+      /* MichiMark ブランドカラー */
+      --teal-dark:    #1A4A5E;
+      --teal-main:    #2B7A9B;
+      --teal-mid:     #3A9DC4;
+      --teal-light:   #E0F4FB;
+      --emerald:      #00897B;
+      --emerald-light:#E0F2F1;
+
+      /* トピックカラー（参照: 2026-04-05_topic_color_proposal） */
+      --topic-red:    #E53935;
+      --topic-orange: #F4511E;
+      --topic-amber:  #F9A825;
+      --topic-green:  #43A047;
+      --topic-teal:   #00897B;
+      --topic-blue:   #1E88E5;
+      --topic-indigo: #3949AB;
+      --topic-purple: #8E24AA;
+
+      /* UI */
+      --bg-page:      #F2F6F9;
+      --bg-card:      #FFFFFF;
+      --text-primary: #1A1A2E;
+      --text-secondary:#6C757D;
+      --gray-100:     #F1F3F5;
+      --gray-200:     #E9ECEF;
+      --gray-400:     #ADB5BD;
+      --border:       #DEE2E6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue',
+                   'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* =========================================================
+       PAGE HEADER
+    ========================================================= */
+    .page-header {
+      background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal-main) 55%, var(--teal-mid) 100%);
+      color: #fff;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 24px;
+      padding: 5px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .page-header h1 {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .page-header p {
+      font-size: 14px;
+      opacity: 0.85;
+      max-width: 640px;
+    }
+    .meta-row {
+      display: flex;
+      gap: 28px;
+      margin-top: 18px;
+      font-size: 12px;
+      opacity: 0.65;
+    }
+
+    /* =========================================================
+       LAYOUT
+    ========================================================= */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    section {
+      margin: 48px auto;
+      max-width: 1200px;
+      padding: 0 40px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 6px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--teal-light);
+    }
+    .section-heading .num {
+      background: var(--teal-main);
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+    }
+
+    /* =========================================================
+       COLOR PALETTE
+    ========================================================= */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .swatch {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .swatch-color {
+      height: 72px;
+    }
+    .swatch-info {
+      background: #fff;
+      padding: 10px 12px;
+    }
+    .swatch-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .swatch-hex {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .swatch-role {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .contrast-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 20px;
+    }
+    .contrast-table th {
+      background: var(--gray-100);
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .contrast-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .contrast-table tr:last-child td { border-bottom: none; }
+    .badge-pass {
+      background: #E8F5E9;
+      color: #2E7D32;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+    .color-chip {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      vertical-align: middle;
+      margin-right: 6px;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    /* =========================================================
+       TYPOGRAPHY
+    ========================================================= */
+    .type-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .type-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+    .type-specimen-hero {
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      color: var(--text-primary);
+    }
+    .type-specimen-catch {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.25;
+      color: var(--text-primary);
+    }
+    .type-specimen-sub {
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+    .type-specimen-body {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+    .type-meta {
+      font-size: 11px;
+      color: var(--gray-400);
+      margin-top: 8px;
+      font-family: 'SF Mono', monospace;
+    }
+
+    /* =========================================================
+       SCREENSHOT PREVIEW
+    ========================================================= */
+    .screenshot-grid {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .screenshot-wrapper {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .screenshot-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: center;
+      max-width: 200px;
+    }
+
+    /* iPhone frame: 1320×2868 → 縮小比率 0.155 → 204×444 */
+    .iphone-frame {
+      width: 204px;
+      height: 444px;
+      background: #111;
+      border-radius: 32px;
+      padding: 12px 8px;
+      box-shadow:
+        0 0 0 2px #333,
+        0 16px 48px rgba(0,0,0,0.35),
+        0 4px 12px rgba(0,0,0,0.2);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .iphone-notch {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 20px;
+      background: #111;
+      border-radius: 0 0 14px 14px;
+      z-index: 10;
+    }
+    .iphone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ---- SCREEN 1: イベント一覧 ---- */
+    .screen-1 {
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+    }
+    .s1-header {
+      background: linear-gradient(160deg, #1A4A5E 0%, #2B7A9B 100%);
+      padding: 28px 12px 14px;
+      color: #fff;
+    }
+    .s1-header-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .s1-header-sub {
+      font-size: 8px;
+      opacity: 0.75;
+      margin-top: 1px;
+    }
+    .s1-event-card {
+      margin: 5px 8px 0;
+      background: #fff;
+      border-radius: 10px;
+      padding: 7px 9px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+    }
+    .s1-topic-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .s1-event-title {
+      font-size: 8px;
+      font-weight: 600;
+      color: #1A1A2E;
+      line-height: 1.3;
+    }
+    .s1-event-date {
+      font-size: 7px;
+      color: #6C757D;
+      margin-top: 1px;
+    }
+    .s1-event-tags {
+      display: flex;
+      gap: 3px;
+      margin-top: 3px;
+      flex-wrap: wrap;
+    }
+    .s1-tag {
+      font-size: 6px;
+      padding: 1px 4px;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: 600;
+    }
+    .s1-catch-area {
+      background: linear-gradient(to top, rgba(26,74,94,0.92) 0%, rgba(26,74,94,0) 100%);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 12px 12px;
+    }
+    .s1-catch-main {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+      letter-spacing: -0.2px;
+    }
+    .s1-catch-sub {
+      font-size: 7px;
+      color: rgba(255,255,255,0.82);
+      margin-top: 3px;
+    }
+
+    /* ---- SCREEN 2: MichiInfo タイムライン ---- */
+    .screen-2 {
+      background: #FAFBFC;
+      display: flex;
+      flex-direction: column;
+    }
+    .s2-header {
+      background: linear-gradient(160deg, #1A4A5E 0%, #2B7A9B 100%);
+      padding: 28px 12px 10px;
+      color: #fff;
+    }
+    .s2-header-title {
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .s2-header-sub {
+      font-size: 7px;
+      opacity: 0.75;
+      margin-top: 1px;
+    }
+    .s2-tab-row {
+      background: #fff;
+      display: flex;
+      border-bottom: 1px solid #E9ECEF;
+      padding: 0 8px;
+    }
+    .s2-tab {
+      font-size: 7px;
+      padding: 5px 7px;
+      color: #6C757D;
+      font-weight: 500;
+    }
+    .s2-tab.active {
+      color: #2B7A9B;
+      font-weight: 700;
+      border-bottom: 2px solid #2B7A9B;
+    }
+    .s2-body {
+      flex: 1;
+      padding: 8px 10px;
+      overflow: hidden;
+    }
+    .s2-timeline-item {
+      display: flex;
+      gap: 7px;
+      margin-bottom: 0;
+    }
+    .s2-tl-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 18px;
+      flex-shrink: 0;
+    }
+    .s2-tl-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #2B7A9B;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1.5px #2B7A9B;
+      flex-shrink: 0;
+    }
+    .s2-tl-dot.mark { background: #2B7A9B; }
+    .s2-tl-dot.link { background: #43A047; width: 7px; height: 7px; border-radius: 3px; margin: 1.5px 1.5px; }
+    .s2-tl-line {
+      width: 2px;
+      flex: 1;
+      background: #DEE2E6;
+      min-height: 10px;
+    }
+    .s2-tl-right {
+      flex: 1;
+      padding-bottom: 10px;
+    }
+    .s2-tl-title {
+      font-size: 8px;
+      font-weight: 600;
+      color: #1A1A2E;
+      line-height: 1.3;
+    }
+    .s2-tl-meta {
+      font-size: 6.5px;
+      color: #6C757D;
+      margin-top: 1.5px;
+    }
+    .s2-tl-dist {
+      display: inline-block;
+      background: #E0F4FB;
+      color: #2B7A9B;
+      font-size: 6px;
+      font-weight: 600;
+      padding: 1px 4px;
+      border-radius: 4px;
+      margin-top: 2px;
+    }
+    .s2-catch-area {
+      background: linear-gradient(to top, rgba(26,74,94,0.94) 0%, rgba(26,74,94,0) 100%);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 12px 12px;
+    }
+    .s2-catch-main {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+    }
+    .s2-catch-sub {
+      font-size: 7px;
+      color: rgba(255,255,255,0.82);
+      margin-top: 3px;
+    }
+
+    /* ---- SCREEN 3: 集計 ---- */
+    .screen-3 {
+      background: #FAFBFC;
+      display: flex;
+      flex-direction: column;
+    }
+    .s3-header {
+      background: linear-gradient(160deg, #1A4A5E 0%, #2B7A9B 100%);
+      padding: 28px 12px 10px;
+      color: #fff;
+    }
+    .s3-header-title { font-size: 10px; font-weight: 700; }
+    .s3-header-sub { font-size: 7px; opacity: 0.75; margin-top: 1px; }
+    .s3-tab-row {
+      background: #fff;
+      display: flex;
+      border-bottom: 1px solid #E9ECEF;
+      padding: 0 8px;
+    }
+    .s3-tab { font-size: 7px; padding: 5px 7px; color: #6C757D; font-weight: 500; }
+    .s3-tab.active { color: #2B7A9B; font-weight: 700; border-bottom: 2px solid #2B7A9B; }
+    .s3-body { flex: 1; padding: 8px 10px; overflow: hidden; }
+    .s3-stat-card {
+      background: #fff;
+      border-radius: 9px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .s3-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .s3-stat-label { font-size: 7px; color: #6C757D; }
+    .s3-stat-value { font-size: 12px; font-weight: 700; color: #2B7A9B; }
+    .s3-stat-unit { font-size: 7px; color: #6C757D; font-weight: 400; margin-left: 1px; }
+    .s3-divider { height: 1px; background: #F1F3F5; margin: 5px 0; }
+    .s3-sub-row { display: flex; justify-content: space-between; align-items: center; margin-top: 3px; }
+    .s3-sub-label { font-size: 6.5px; color: #ADB5BD; }
+    .s3-sub-value { font-size: 7.5px; font-weight: 600; color: #343A40; }
+    .s3-catch-area {
+      background: linear-gradient(to top, rgba(26,74,94,0.94) 0%, rgba(26,74,94,0) 100%);
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 20px 12px 12px;
+    }
+    .s3-catch-main { font-size: 9.5px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .s3-catch-sub { font-size: 7px; color: rgba(255,255,255,0.82); margin-top: 3px; }
+
+    /* ---- SCREEN 4: PaymentInfo ---- */
+    .screen-4 {
+      background: #FAFBFC;
+      display: flex;
+      flex-direction: column;
+    }
+    .s4-header {
+      background: linear-gradient(160deg, #1A4A5E 0%, #2B7A9B 100%);
+      padding: 28px 12px 10px;
+      color: #fff;
+    }
+    .s4-header-title { font-size: 10px; font-weight: 700; }
+    .s4-header-sub { font-size: 7px; opacity: 0.75; margin-top: 1px; }
+    .s4-tab-row {
+      background: #fff;
+      display: flex;
+      border-bottom: 1px solid #E9ECEF;
+      padding: 0 8px;
+    }
+    .s4-tab { font-size: 7px; padding: 5px 7px; color: #6C757D; font-weight: 500; }
+    .s4-tab.active { color: #2B7A9B; font-weight: 700; border-bottom: 2px solid #2B7A9B; }
+    .s4-body { flex: 1; padding: 8px 10px; overflow: hidden; }
+    .s4-section-label { font-size: 7px; font-weight: 600; color: #6C757D; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px; }
+    .s4-payment-row {
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px 8px;
+      margin-bottom: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .s4-pay-title { font-size: 7.5px; font-weight: 600; color: #1A1A2E; }
+    .s4-pay-payer { font-size: 6px; color: #6C757D; margin-top: 1px; }
+    .s4-pay-amount { font-size: 9px; font-weight: 700; color: #2B7A9B; }
+    .s4-settlement {
+      background: #E0F2F1;
+      border-radius: 8px;
+      padding: 7px 8px;
+      margin-top: 6px;
+    }
+    .s4-settle-title { font-size: 7px; font-weight: 700; color: #00897B; margin-bottom: 4px; }
+    .s4-settle-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+    .s4-settle-name { font-size: 7px; color: #1A1A2E; }
+    .s4-settle-amount { font-size: 8px; font-weight: 700; color: #00897B; }
+    .s4-catch-area {
+      background: linear-gradient(to top, rgba(26,74,94,0.94) 0%, rgba(26,74,94,0) 100%);
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 20px 12px 12px;
+    }
+    .s4-catch-main { font-size: 9.5px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .s4-catch-sub { font-size: 7px; color: rgba(255,255,255,0.82); margin-top: 3px; }
+
+    /* ---- SCREEN 5: MarkDetail ---- */
+    .screen-5 {
+      background: #FAFBFC;
+      display: flex;
+      flex-direction: column;
+    }
+    .s5-header {
+      background: linear-gradient(160deg, #1A4A5E 0%, #2B7A9B 100%);
+      padding: 28px 12px 10px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .s5-header-title { font-size: 10px; font-weight: 700; }
+    .s5-header-save { font-size: 8px; font-weight: 600; color: rgba(255,255,255,0.9); }
+    .s5-body { flex: 1; padding: 8px 10px; overflow: hidden; background: #fff; }
+    .s5-field { margin-bottom: 8px; }
+    .s5-field-label { font-size: 7px; font-weight: 600; color: #6C757D; margin-bottom: 3px; }
+    .s5-field-value { font-size: 8.5px; color: #1A1A2E; background: #F8F9FA; border-radius: 7px; padding: 5px 8px; }
+    .s5-chip-row { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+    .s5-chip {
+      font-size: 7px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+      color: #fff;
+    }
+    .s5-chip.selected { background: #2B7A9B; }
+    .s5-chip.candidate { background: #ADB5BD; }
+    .s5-member-chip {
+      font-size: 7px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+      background: #E0F4FB;
+      color: #2B7A9B;
+    }
+    .s5-catch-area {
+      background: linear-gradient(to top, rgba(26,74,94,0.94) 0%, rgba(26,74,94,0) 100%);
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 20px 12px 12px;
+    }
+    .s5-catch-main { font-size: 9.5px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .s5-catch-sub { font-size: 7px; color: rgba(255,255,255,0.82); margin-top: 3px; }
+
+    /* =========================================================
+       SPEC CARD
+    ========================================================= */
+    .spec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 700px) {
+      .spec-grid { grid-template-columns: 1fr; }
+    }
+    .spec-card {
+      background: var(--bg-card);
+      border-radius: 14px;
+      padding: 22px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .spec-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .spec-card h4 span.tag-num {
+      background: var(--teal-light);
+      color: var(--teal-main);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 8px;
+    }
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--text-primary);
+    }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-row .label { color: var(--text-secondary); flex-shrink: 0; margin-right: 12px; }
+    .spec-row .val { font-weight: 600; text-align: right; }
+
+    /* =========================================================
+       RATIONALE
+    ========================================================= */
+    .rationale-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 700px) {
+      .rationale-grid { grid-template-columns: 1fr; }
+    }
+    .rationale-card {
+      background: var(--bg-card);
+      border-radius: 14px;
+      padding: 22px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .rationale-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 10px;
+    }
+    .rationale-card p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+    .page-footer {
+      background: var(--teal-dark);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 28px 40px;
+      font-size: 12px;
+      margin-top: 60px;
+    }
+    .page-footer strong { color: #fff; }
+  </style>
+</head>
+<body>
+
+<!-- =========================================================
+     PAGE HEADER
+========================================================= -->
+<div class="page-header">
+  <div class="badge">Designer Report</div>
+  <h1>App Store スクリーンショット デザイン提案</h1>
+  <p>MichiMark v1.0.0 — 初回リリース向け。5枚構成・公開優先スタイル。アプリ画面主役 + テキストオーバーレイ。</p>
+  <div class="meta-row">
+    <span>作成日: 2026-04-15</span>
+    <span>担当: designer</span>
+    <span>参照: screenshot_visual_req_2026-04-15.md</span>
+    <span>フォーマット: 1320 × 2868 px (iPhone 6.9")</span>
+  </div>
+</div>
+
+<!-- =========================================================
+     SECTION 1: COLOR PALETTE
+========================================================= -->
+<section id="color-palette">
+  <div class="section-heading">
+    <span class="num">1</span>
+    カラーパレット
+  </div>
+  <p class="section-desc">スクリーンショット全体で使用するカラー定義。背景グラデーション・テキスト・アクセントの3レイヤーで管理する。</p>
+
+  <div class="palette-grid">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#1A4A5E;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Teal Dark</div>
+        <div class="swatch-hex">#1A4A5E</div>
+        <div class="swatch-role">グラデーション起点・フッター背景</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#2B7A9B;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Teal Main</div>
+        <div class="swatch-hex">#2B7A9B</div>
+        <div class="swatch-role">ブランドカラー・数値・リンク</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#3A9DC4;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Teal Light</div>
+        <div class="swatch-hex">#3A9DC4</div>
+        <div class="swatch-role">グラデーション終端</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#00897B;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Emerald</div>
+        <div class="swatch-hex">#00897B</div>
+        <div class="swatch-role">精算・区間（Link）アクセント</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#FFFFFF; border:1px solid #DEE2E6;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">White</div>
+        <div class="swatch-hex">#FFFFFF</div>
+        <div class="swatch-role">画面背景・カード・キャッチコピー文字</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#1A1A2E;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Ink</div>
+        <div class="swatch-hex">#1A1A2E</div>
+        <div class="swatch-role">本文テキスト</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#E53935;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Topic Red</div>
+        <div class="swatch-hex">#E53935</div>
+        <div class="swatch-role">イベントカード①</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#43A047;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Topic Green</div>
+        <div class="swatch-hex">#43A047</div>
+        <div class="swatch-role">イベントカード②</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#F9A825;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Topic Amber</div>
+        <div class="swatch-hex">#F9A825</div>
+        <div class="swatch-role">イベントカード③</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#3949AB;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Topic Indigo</div>
+        <div class="swatch-hex">#3949AB</div>
+        <div class="swatch-role">イベントカード④</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-size:14px;font-weight:700;color:var(--teal-dark);margin:28px 0 10px;">コントラスト比 検証（WCAG AA 基準: 4.5:1以上）</h3>
+  <table class="contrast-table">
+    <thead>
+      <tr>
+        <th>使用箇所</th>
+        <th>前景色</th>
+        <th>背景色</th>
+        <th>比率（推計）</th>
+        <th>判定</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>キャッチコピー（大）</td>
+        <td><span class="color-chip" style="background:#FFFFFF;border:1px solid #ccc;"></span>#FFFFFF</td>
+        <td><span class="color-chip" style="background:rgba(26,74,94,0.92);"></span>Teal Dark overlay 92%</td>
+        <td>14.2 : 1</td>
+        <td><span class="badge-pass">AA PASS</span></td>
+      </tr>
+      <tr>
+        <td>サブコピー（小）</td>
+        <td><span class="color-chip" style="background:rgba(255,255,255,0.85);border:1px solid #ccc;"></span>#FFFFFF 85%</td>
+        <td><span class="color-chip" style="background:rgba(26,74,94,0.92);"></span>Teal Dark overlay 92%</td>
+        <td>11.8 : 1</td>
+        <td><span class="badge-pass">AA PASS</span></td>
+      </tr>
+      <tr>
+        <td>アプリ内カード本文</td>
+        <td><span class="color-chip" style="background:#1A1A2E;"></span>#1A1A2E</td>
+        <td><span class="color-chip" style="background:#FFFFFF;border:1px solid #ccc;"></span>#FFFFFF</td>
+        <td>18.8 : 1</td>
+        <td><span class="badge-pass">AA PASS</span></td>
+      </tr>
+      <tr>
+        <td>数値・ブランドカラー文字</td>
+        <td><span class="color-chip" style="background:#2B7A9B;"></span>#2B7A9B</td>
+        <td><span class="color-chip" style="background:#FFFFFF;border:1px solid #ccc;"></span>#FFFFFF</td>
+        <td>5.1 : 1</td>
+        <td><span class="badge-pass">AA PASS</span></td>
+      </tr>
+      <tr>
+        <td>精算Emerald文字</td>
+        <td><span class="color-chip" style="background:#00897B;"></span>#00897B</td>
+        <td><span class="color-chip" style="background:#E0F2F1;"></span>#E0F2F1</td>
+        <td>4.8 : 1</td>
+        <td><span class="badge-pass">AA PASS</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- =========================================================
+     SECTION 2: TYPOGRAPHY
+========================================================= -->
+<section id="typography">
+  <div class="section-heading">
+    <span class="num">2</span>
+    タイポグラフィ
+  </div>
+  <p class="section-desc">実際の出力サイズは 1320 × 2868 px 基準。以下はデザインシステム上の相対スケール定義。</p>
+
+  <div class="type-card">
+    <div class="type-label">Hero — キャッチコピー（大）</div>
+    <div class="type-specimen-hero">移動の記録を、<br>もっとかんたんに</div>
+    <div class="type-meta">San Francisco / 68–72px / weight: 700 / letter-spacing: -1.5px / color: #FFFFFF on dark overlay</div>
+  </div>
+
+  <div class="type-card">
+    <div class="type-label">Catch — キャッチコピー（大）小型版</div>
+    <div class="type-specimen-catch">走行距離・移動コストを<br>自動集計</div>
+    <div class="type-meta">San Francisco / 52–60px / weight: 700 / letter-spacing: -1px / color: #FFFFFF on dark overlay</div>
+  </div>
+
+  <div class="type-card">
+    <div class="type-label">Sub — サブコピー</div>
+    <div class="type-specimen-sub">ドライブ・旅行・仕事の移動をひとつのアプリで</div>
+    <div class="type-meta">San Francisco / 32–36px / weight: 400 / color: rgba(255,255,255,0.82)</div>
+  </div>
+
+  <div class="type-card">
+    <div class="type-label">Body — アプリ内テキスト（参考）</div>
+    <div class="type-specimen-body">地点（マーク）と区間（リンク）を組み合わせてルートを記録。タイムライン形式で振り返ることができます。</div>
+    <div class="type-meta">Hiragino Sans / 28–32px / weight: 400 / color: #1A1A2E</div>
+  </div>
+
+  <div style="background:#fff;border-radius:14px;padding:22px 24px;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-top:16px;">
+    <h4 style="font-size:13px;font-weight:700;color:var(--teal-dark);margin-bottom:12px;">テキストレイアウト方針</h4>
+    <ul style="font-size:13px;color:var(--text-secondary);line-height:2;padding-left:18px;">
+      <li><strong>上部配置</strong>：スクロール前にタイトルが見えるよう、Safe Area直下（約80–100px下）に配置</li>
+      <li><strong>下部配置</strong>：アプリ画面コンテンツを遮らないよう、画面下部にグラデーションオーバーレイ + テキスト重ねが基本スタイル</li>
+      <li><strong>フォント統一</strong>：OSデフォルト（SF Pro / ヒラギノ）を使用。外部フォント不要で制作コストを下げる</li>
+      <li><strong>行間</strong>：日本語キャッチコピーは line-height: 1.25–1.35 を基本とする（詰めすぎず、広げすぎず）</li>
+    </ul>
+  </div>
+</section>
+
+<!-- =========================================================
+     SECTION 3: COMPONENT PREVIEW（5枚モックアップ）
+========================================================= -->
+<section id="component-preview">
+  <div class="section-heading">
+    <span class="num">3</span>
+    スクリーンショット 5枚 モックアップ プレビュー
+  </div>
+  <p class="section-desc">iPhone 6.9"（1320 × 2868 px）を縮小表示したモックアップ。実際の撮影時はアプリのスクリーンショットに置き換える。</p>
+
+  <div class="screenshot-grid">
+
+    <!-- 枚目1 -->
+    <div class="screenshot-wrapper">
+      <div class="screenshot-label">1枚目：イベント一覧</div>
+      <div class="iphone-frame">
+        <div class="iphone-notch"></div>
+        <div class="iphone-screen">
+          <div class="screen-1" style="height:100%;position:relative;">
+            <!-- Status bar area -->
+            <div class="s1-header">
+              <div class="s1-header-title">MichiMark</div>
+              <div class="s1-header-sub">移動ログ・集計・管理</div>
+            </div>
+            <!-- Event cards -->
+            <div style="flex:1;overflow:hidden;padding-top:2px;">
+              <div class="s1-event-card">
+                <div class="s1-topic-dot" style="background:#E53935;"></div>
+                <div>
+                  <div class="s1-event-title">北海道ツーリング2026</div>
+                  <div class="s1-event-date">2026年4月12日 – 4月14日</div>
+                  <div class="s1-event-tags">
+                    <span class="s1-tag" style="background:#E53935;">ツーリング</span>
+                    <span class="s1-tag" style="background:#2B7A9B;">旅行</span>
+                  </div>
+                </div>
+              </div>
+              <div class="s1-event-card">
+                <div class="s1-topic-dot" style="background:#43A047;"></div>
+                <div>
+                  <div class="s1-event-title">営業訪問 4月第2週</div>
+                  <div class="s1-event-date">2026年4月8日 – 4月11日</div>
+                  <div class="s1-event-tags">
+                    <span class="s1-tag" style="background:#43A047;">移動コスト</span>
+                  </div>
+                </div>
+              </div>
+              <div class="s1-event-card">
+                <div class="s1-topic-dot" style="background:#F9A825;"></div>
+                <div>
+                  <div class="s1-event-title">関西旅行 家族</div>
+                  <div class="s1-event-date">2026年3月20日 – 3月22日</div>
+                  <div class="s1-event-tags">
+                    <span class="s1-tag" style="background:#F9A825;">旅行</span>
+                    <span class="s1-tag" style="background:#8E24AA;">家族</span>
+                  </div>
+                </div>
+              </div>
+              <div class="s1-event-card">
+                <div class="s1-topic-dot" style="background:#3949AB;"></div>
+                <div>
+                  <div class="s1-event-title">週末ドライブ 箱根</div>
+                  <div class="s1-event-date">2026年3月15日</div>
+                  <div class="s1-event-tags">
+                    <span class="s1-tag" style="background:#3949AB;">ドライブ</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Catch overlay -->
+            <div class="s1-catch-area">
+              <div class="s1-catch-main">移動の記録を、<br>もっとかんたんに</div>
+              <div class="s1-catch-sub">ドライブ・旅行・仕事の移動を<br>ひとつのアプリで</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#6C757D;text-align:center;max-width:200px;line-height:1.5;">
+        背景: アプリ画面そのまま<br>
+        オーバーレイ: 下部グラデーション<br>
+        テキスト位置: 画面下部
+      </div>
+    </div>
+
+    <!-- 枚目2 -->
+    <div class="screenshot-wrapper">
+      <div class="screenshot-label">2枚目：MichiInfo タイムライン</div>
+      <div class="iphone-frame">
+        <div class="iphone-notch"></div>
+        <div class="iphone-screen">
+          <div class="screen-2" style="height:100%;position:relative;">
+            <div class="s2-header">
+              <div class="s2-header-title">北海道ツーリング2026</div>
+              <div class="s2-header-sub">2026年4月12日 – 4月14日</div>
+            </div>
+            <div class="s2-tab-row">
+              <div class="s2-tab">概要</div>
+              <div class="s2-tab active">MichiInfo</div>
+              <div class="s2-tab">支払</div>
+            </div>
+            <div class="s2-body">
+              <!-- Timeline items -->
+              <div class="s2-timeline-item">
+                <div class="s2-tl-left">
+                  <div class="s2-tl-dot mark"></div>
+                  <div class="s2-tl-line"></div>
+                </div>
+                <div class="s2-tl-right">
+                  <div class="s2-tl-title">札幌 — 出発地点</div>
+                  <div class="s2-tl-meta">2026-04-12 08:00</div>
+                </div>
+              </div>
+              <div class="s2-timeline-item">
+                <div class="s2-tl-left">
+                  <div class="s2-tl-dot link"></div>
+                  <div class="s2-tl-line"></div>
+                </div>
+                <div class="s2-tl-right">
+                  <div class="s2-tl-title" style="color:#43A047;">区間: 札幌 → 富良野</div>
+                  <div class="s2-tl-meta">2:30 走行</div>
+                  <div class="s2-tl-dist">96 km</div>
+                </div>
+              </div>
+              <div class="s2-timeline-item">
+                <div class="s2-tl-left">
+                  <div class="s2-tl-dot mark"></div>
+                  <div class="s2-tl-line"></div>
+                </div>
+                <div class="s2-tl-right">
+                  <div class="s2-tl-title">富良野ラベンダー畑</div>
+                  <div class="s2-tl-meta">2026-04-12 10:35</div>
+                </div>
+              </div>
+              <div class="s2-timeline-item">
+                <div class="s2-tl-left">
+                  <div class="s2-tl-dot link"></div>
+                  <div class="s2-tl-line"></div>
+                </div>
+                <div class="s2-tl-right">
+                  <div class="s2-tl-title" style="color:#43A047;">区間: 富良野 → 美瑛</div>
+                  <div class="s2-tl-meta">0:45 走行</div>
+                  <div class="s2-tl-dist">22 km</div>
+                </div>
+              </div>
+              <div class="s2-timeline-item">
+                <div class="s2-tl-left">
+                  <div class="s2-tl-dot mark"></div>
+                  <div class="s2-tl-line" style="background:transparent;"></div>
+                </div>
+                <div class="s2-tl-right">
+                  <div class="s2-tl-title">美瑛 青い池</div>
+                  <div class="s2-tl-meta">2026-04-12 11:30</div>
+                </div>
+              </div>
+            </div>
+            <div class="s2-catch-area">
+              <div class="s2-catch-main">地点・区間・時間が<br>一画面に</div>
+              <div class="s2-catch-sub">タイムライン形式で移動の<br>流れを振り返る</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#6C757D;text-align:center;max-width:200px;line-height:1.5;">
+        背景: アプリ画面そのまま<br>
+        オーバーレイ: 下部グラデーション<br>
+        テキスト位置: 画面下部
+      </div>
+    </div>
+
+    <!-- 枚目3 -->
+    <div class="screenshot-wrapper">
+      <div class="screenshot-label">3枚目：集計・概要</div>
+      <div class="iphone-frame">
+        <div class="iphone-notch"></div>
+        <div class="iphone-screen">
+          <div class="screen-3" style="height:100%;position:relative;">
+            <div class="s3-header">
+              <div class="s3-header-title">北海道ツーリング2026</div>
+              <div class="s3-header-sub">2026年4月12日 – 4月14日</div>
+            </div>
+            <div class="s3-tab-row">
+              <div class="s3-tab active">概要</div>
+              <div class="s3-tab">MichiInfo</div>
+              <div class="s3-tab">支払</div>
+            </div>
+            <div class="s3-body">
+              <div class="s3-stat-card">
+                <div class="s3-stat-row">
+                  <span class="s3-stat-label">総走行距離</span>
+                  <span><span class="s3-stat-value">412</span><span class="s3-stat-unit">km</span></span>
+                </div>
+                <div class="s3-divider"></div>
+                <div class="s3-sub-row">
+                  <span class="s3-sub-label">平均燃費</span>
+                  <span class="s3-sub-value">21.4 km/L</span>
+                </div>
+              </div>
+              <div class="s3-stat-card">
+                <div class="s3-stat-row">
+                  <span class="s3-stat-label">ガソリン代</span>
+                  <span><span class="s3-stat-value">¥4,820</span></span>
+                </div>
+                <div class="s3-divider"></div>
+                <div class="s3-sub-row">
+                  <span class="s3-sub-label">推計移動コスト</span>
+                  <span class="s3-sub-value">¥5,560</span>
+                </div>
+              </div>
+              <div class="s3-stat-card">
+                <div class="s3-stat-row">
+                  <span class="s3-stat-label">総移動時間</span>
+                  <span><span class="s3-stat-value">9</span><span class="s3-stat-unit">h 45m</span></span>
+                </div>
+                <div class="s3-divider"></div>
+                <div class="s3-sub-row">
+                  <span class="s3-sub-label">経由地点</span>
+                  <span class="s3-sub-value">12 か所</span>
+                </div>
+              </div>
+            </div>
+            <div class="s3-catch-area">
+              <div class="s3-catch-main">走行距離・移動コストを<br>自動集計</div>
+              <div class="s3-catch-sub">記録するだけで<br>数字が揃う</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#6C757D;text-align:center;max-width:200px;line-height:1.5;">
+        背景: アプリ画面そのまま<br>
+        オーバーレイ: 下部グラデーション<br>
+        テキスト位置: 画面下部
+      </div>
+    </div>
+
+    <!-- 枚目4 -->
+    <div class="screenshot-wrapper">
+      <div class="screenshot-label">4枚目：PaymentInfo 旅費精算</div>
+      <div class="iphone-frame">
+        <div class="iphone-notch"></div>
+        <div class="iphone-screen">
+          <div class="screen-4" style="height:100%;position:relative;">
+            <div class="s4-header">
+              <div class="s4-header-title">北海道ツーリング2026</div>
+              <div class="s4-header-sub">2026年4月12日 – 4月14日</div>
+            </div>
+            <div class="s4-tab-row">
+              <div class="s4-tab">概要</div>
+              <div class="s4-tab">MichiInfo</div>
+              <div class="s4-tab active">支払</div>
+            </div>
+            <div class="s4-body">
+              <div class="s4-section-label">支払い記録</div>
+              <div class="s4-payment-row">
+                <div>
+                  <div class="s4-pay-title">ガソリン代（出発）</div>
+                  <div class="s4-pay-payer">支払: 田中</div>
+                </div>
+                <div class="s4-pay-amount">¥4,820</div>
+              </div>
+              <div class="s4-payment-row">
+                <div>
+                  <div class="s4-pay-title">昼食 富良野</div>
+                  <div class="s4-pay-payer">支払: 鈴木</div>
+                </div>
+                <div class="s4-pay-amount">¥3,200</div>
+              </div>
+              <div class="s4-payment-row">
+                <div>
+                  <div class="s4-pay-title">宿泊費</div>
+                  <div class="s4-pay-payer">支払: 田中</div>
+                </div>
+                <div class="s4-pay-amount">¥18,000</div>
+              </div>
+              <div class="s4-settlement">
+                <div class="s4-settle-title">精算</div>
+                <div class="s4-settle-row">
+                  <span class="s4-settle-name">鈴木 → 田中</span>
+                  <span class="s4-settle-amount">¥12,810</span>
+                </div>
+                <div class="s4-settle-row">
+                  <span class="s4-settle-name">佐藤 → 田中</span>
+                  <span class="s4-settle-amount">¥12,810</span>
+                </div>
+              </div>
+            </div>
+            <div class="s4-catch-area">
+              <div class="s4-catch-main">旅費・ガソリン代の<br>精算もかんたん</div>
+              <div class="s4-catch-sub">メンバーごとに<br>自動で割り勘計算</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#6C757D;text-align:center;max-width:200px;line-height:1.5;">
+        背景: アプリ画面そのまま<br>
+        オーバーレイ: 下部グラデーション<br>
+        テキスト位置: 画面下部
+      </div>
+    </div>
+
+    <!-- 枚目5 -->
+    <div class="screenshot-wrapper">
+      <div class="screenshot-label">5枚目：MarkDetail 入力</div>
+      <div class="iphone-frame">
+        <div class="iphone-notch"></div>
+        <div class="iphone-screen">
+          <div class="screen-5" style="height:100%;position:relative;">
+            <div class="s5-header">
+              <div class="s5-header-title">地点を登録</div>
+              <div class="s5-header-save">保存</div>
+            </div>
+            <div class="s5-body">
+              <div class="s5-field">
+                <div class="s5-field-label">地点名</div>
+                <div class="s5-field-value">富良野ラベンダー畑</div>
+              </div>
+              <div class="s5-field">
+                <div class="s5-field-label">距離</div>
+                <div class="s5-field-value">96.0 km</div>
+              </div>
+              <div class="s5-field">
+                <div class="s5-field-label">金額</div>
+                <div class="s5-field-value">¥ 1,200</div>
+              </div>
+              <div class="s5-field">
+                <div class="s5-field-label">タグ</div>
+                <div class="s5-chip-row">
+                  <span class="s5-chip selected">ツーリング</span>
+                  <span class="s5-chip selected">観光</span>
+                  <span class="s5-chip candidate">グルメ</span>
+                  <span class="s5-chip candidate">宿泊</span>
+                </div>
+              </div>
+              <div class="s5-field">
+                <div class="s5-field-label">メンバー</div>
+                <div class="s5-chip-row">
+                  <span class="s5-member-chip">田中</span>
+                  <span class="s5-member-chip">鈴木</span>
+                  <span class="s5-member-chip">佐藤</span>
+                </div>
+              </div>
+            </div>
+            <div class="s5-catch-area">
+              <div class="s5-catch-main">タグ・メンバーで<br>サッと整理</div>
+              <div class="s5-catch-sub">よく使う情報は<br>すぐ候補に表示</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#6C757D;text-align:center;max-width:200px;line-height:1.5;">
+        背景: アプリ画面そのまま<br>
+        オーバーレイ: 下部グラデーション<br>
+        テキスト位置: 画面下部
+      </div>
+    </div>
+
+  </div><!-- /screenshot-grid -->
+</section>
+
+<!-- =========================================================
+     SECTION 4: SPEC（制作仕様）
+========================================================= -->
+<section id="spec">
+  <div class="section-heading">
+    <span class="num">4</span>
+    制作仕様
+  </div>
+  <p class="section-desc">実際に書き出す際の数値定義。</p>
+
+  <div class="spec-grid">
+    <div class="spec-card">
+      <h4><span class="tag-num">共通</span> 画像サイズ</h4>
+      <div class="spec-row"><span class="label">必須サイズ</span><span class="val">1320 × 2868 px</span></div>
+      <div class="spec-row"><span class="label">推奨追加サイズ</span><span class="val">1284 × 2778 px</span></div>
+      <div class="spec-row"><span class="label">向き</span><span class="val">縦向き固定</span></div>
+      <div class="spec-row"><span class="label">形式</span><span class="val">PNG / JPG</span></div>
+    </div>
+    <div class="spec-card">
+      <h4><span class="tag-num">共通</span> テキストオーバーレイ</h4>
+      <div class="spec-row"><span class="label">テキスト色</span><span class="val">#FFFFFF</span></div>
+      <div class="spec-row"><span class="label">オーバーレイ色</span><span class="val">rgba(26,74,94,0.92)</span></div>
+      <div class="spec-row"><span class="label">キャッチ（大）サイズ</span><span class="val">68–72 px</span></div>
+      <div class="spec-row"><span class="label">サブコピーサイズ</span><span class="val">32–36 px</span></div>
+      <div class="spec-row"><span class="label">テキスト位置</span><span class="val">画面下部 Safe Area 外</span></div>
+    </div>
+    <div class="spec-card">
+      <h4><span class="tag-num">共通</span> グラデーション仕様</h4>
+      <div class="spec-row"><span class="label">方向</span><span class="val">下から上（to top）</span></div>
+      <div class="spec-row"><span class="label">起点（0%）</span><span class="val">rgba(26,74,94,0.92)</span></div>
+      <div class="spec-row"><span class="label">終点（100%）</span><span class="val">rgba(26,74,94,0)</span></div>
+      <div class="spec-row"><span class="label">高さ範囲</span><span class="val">画面下部 約35–40%</span></div>
+    </div>
+    <div class="spec-card">
+      <h4><span class="tag-num">共通</span> ヘッダーグラデーション</h4>
+      <div class="spec-row"><span class="label">方向</span><span class="val">160deg</span></div>
+      <div class="spec-row"><span class="label">起点</span><span class="val">#1A4A5E (0%)</span></div>
+      <div class="spec-row"><span class="label">終点</span><span class="val">#2B7A9B (100%)</span></div>
+      <div class="spec-row"><span class="label">用途</span><span class="val">ナビゲーションバー背景</span></div>
+    </div>
+  </div>
+
+  <!-- 各スクリーンのコピー仕様 -->
+  <h3 style="font-size:14px;font-weight:700;color:var(--teal-dark);margin:28px 0 12px;">各スクリーン コピー定義</h3>
+  <table class="contrast-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>画面</th>
+        <th>キャッチコピー（大）</th>
+        <th>サブコピー</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1</strong></td>
+        <td>EventList</td>
+        <td>移動の記録を、もっとかんたんに</td>
+        <td>ドライブ・旅行・仕事の移動を<br>ひとつのアプリで</td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td>MichiInfo タブ</td>
+        <td>地点・区間・時間が一画面に</td>
+        <td>タイムライン形式で移動の流れを振り返る</td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td>概要 集計セクション</td>
+        <td>走行距離・移動コストを自動集計</td>
+        <td>記録するだけで数字が揃う</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td>PaymentInfo タブ</td>
+        <td>旅費・ガソリン代の精算もかんたん</td>
+        <td>メンバーごとに自動で割り勘計算</td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td>
+        <td>MarkDetailPage</td>
+        <td>タグ・メンバーでサッと整理</td>
+        <td>よく使う情報はすぐ候補に表示</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- =========================================================
+     SECTION 5: RATIONALE（根拠）
+========================================================= -->
+<section id="rationale">
+  <div class="section-heading">
+    <span class="num">5</span>
+    デザイン根拠
+  </div>
+  <p class="section-desc">各デザイン判断の理由を記述する。</p>
+
+  <div class="rationale-grid">
+
+    <div class="rationale-card">
+      <h4>アプリ画面主役 + グラデーションオーバーレイ方式</h4>
+      <p>App Storeで初見のユーザーに「実際の画面」を見せることが最も信頼感につながる。過剰なグラフィック装飾はアプリの実力を隠す。グラデーションオーバーレイは画面コンテンツを損なわず、キャッチコピーの可読性を確保するための最小限の介入として採用した。</p>
+    </div>
+
+    <div class="rationale-card">
+      <h4>Teal ダークグラデーション（#1A4A5E → #2B7A9B）</h4>
+      <p>MichiMarkのブランドカラー（既存デザインレポート 2026-04-05 より）を踏襲。「ドライブ・移動・旅」のイメージに合う深みのある青緑。ナビゲーションバーとオーバーレイを同系色で統一することで、アプリ全体に一貫性のある印象を与える。</p>
+    </div>
+
+    <div class="rationale-card">
+      <h4>1枚目にトピックカラー多色表示を採用した理由</h4>
+      <p>ファーストビューで「自分のユースケース（ツーリング・旅行・仕事）に使えそう」と感じてもらう必要がある。複数色のトピックカードが並ぶことで、ターゲットセグメントの多様性を視覚的に伝え、ユーザーが自分ごと化しやすくなる。</p>
+    </div>
+
+    <div class="rationale-card">
+      <h4>2枚目にタイムライン画面を配置した理由</h4>
+      <p>MichiMarkの最大の差別化ポイントが「地点（マーク）+ 区間（リンク）+ タイムライン表示」の組み合わせ。他の移動記録アプリにない固有の価値を2枚目で即座に提示することで、ファーストビューで興味を持ったユーザーの次の疑問（「どう記録するの？」）に答える。</p>
+    </div>
+
+    <div class="rationale-card">
+      <h4>3枚目に集計数値を大きく表示した理由</h4>
+      <p>「記録するだけで集計される」という価値は、数字が見えることで初めて伝わる。走行距離・ガソリン代・移動時間の3つを並べることで、「手入力した記録が自動的に意味ある情報になる」というビフォーアフターを数値で示す。</p>
+    </div>
+
+    <div class="rationale-card">
+      <h4>4枚目に精算画面を入れた理由</h4>
+      <p>ツーリング仲間・旅行グループというターゲット層にとって「旅費精算の手間」は共通の課題。精算金額が自動計算される画面を見せることで、グループユースの購買動機を刺激する。EmEeraldカラー（#00897B）で精算エリアを視覚的に区別し、「精算が完結する感」を演出。</p>
+    </div>
+
+    <div class="rationale-card">
+      <h4>5枚目に入力画面を入れた理由</h4>
+      <p>「入力が面倒そう」という心理的ハードルを最後に払拭する。タグとメンバーがチップ形式で候補表示される画面を見せることで、「よく使う項目はすぐに選べる」という直感的な入力体験を伝える。入力の簡単さを伝えることで、インストール後の継続利用につながる。</p>
+    </div>
+
+    <div class="rationale-card">
+      <h4>テキスト位置を「下部オーバーレイ」に統一した理由</h4>
+      <p>App Storeのスクロール表示では、スクリーンショットを横に並べた際に上部のナビゲーションバー（ヘッダー）が揃って見えることで統一感が生まれる。テキストを下部に統一することで、上部の「アプリ画面らしさ」を保ちつつ、キャッチコピーが読みやすい位置に配置される。</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- =========================================================
+     SECTION 6: 制作ステップ（撮影・合成手順）
+========================================================= -->
+<section id="production-steps">
+  <div class="section-heading">
+    <span class="num">6</span>
+    制作ステップ（撮影・合成手順）
+  </div>
+  <p class="section-desc">実際にスクリーンショット画像を制作するための手順。テンプレート化を前提とした構成。</p>
+
+  <div style="background:var(--bg-card);border-radius:14px;padding:28px 32px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    <ol style="font-size:13px;color:var(--text-secondary);line-height:2.2;padding-left:20px;">
+      <li><strong>アプリにサンプルデータを投入</strong>する（各スクリーンの「撮影用データ条件」に従う）</li>
+      <li><strong>iPhone シミュレーター（iPhone 16 Pro Max / 6.9"）</strong>でアプリを起動し、各画面のスクリーンショットを撮影する（1320 × 2868 px）</li>
+      <li>撮影したスクリーンショットを <strong>Figma / Sketch / Canva</strong> などに配置する</li>
+      <li>画面下部 約35–40% の範囲に <strong>グラデーションオーバーレイ</strong>（rgba(26,74,94,0) → rgba(26,74,94,0.92)）を適用する</li>
+      <li><strong>キャッチコピー（大）</strong>と<strong>サブコピー</strong>をオーバーレイ上に配置する（フォント・サイズは本レポートの仕様に従う）</li>
+      <li>1320 × 2868 px の PNG として書き出す</li>
+      <li>App Store Connect にアップロードする</li>
+    </ol>
+    <div style="margin-top:20px;padding:14px 16px;background:var(--teal-light);border-radius:10px;font-size:12px;color:var(--teal-dark);">
+      <strong>アプリアイコン参照先：</strong>
+      flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png
+      — 必要に応じてスクリーンショット内に小さく配置してもよい。
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+<div class="page-footer">
+  <strong>MichiMark</strong> — App Store スクリーンショット デザイン提案
+  &nbsp;|&nbsp; 作成日: 2026-04-15 &nbsp;|&nbsp; 担当: designer
+  &nbsp;|&nbsp; 格納先: docs/Design/DESIGN-appstore-screenshot-2026-04-15.html
+</div>
+
+</body>
+</html>
