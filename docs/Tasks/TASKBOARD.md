@@ -244,8 +244,8 @@
 | T-260a | michimark-web リポジトリ・Vercelデプロイ設定 | orchestrator | `DONE` | | https://michimark-web.vercel.app |
 | T-260b | プライバシーポリシーページ作成 | orchestrator | `DONE` | | https://michimark-web.vercel.app/privacy.html |
 | T-260c | サポートページ作成 | orchestrator | `DONE` | | https://michimark-web.vercel.app/support.html |
-| T-260d | App Store Connect 基本情報入力（名前・カテゴリ・価格・URL） | orchestrator | `TODO` | | |
-| T-260e | アプリ説明文・キーワード作成 | orchestrator | `TODO` | | |
+| T-260d | App Store Connect 基本情報入力（名前・カテゴリ・価格・URL） | orchestrator | `DONE` | | docs/AppStore/metadata_ja.md 参照 |
+| T-260e | アプリ説明文・キーワード作成 | orchestrator | `DONE` | | docs/AppStore/metadata_ja.md 参照 |
 | T-260f | スクリーンショット撮影・登録（iPhone 6.5インチ以上） | orchestrator | `TODO` | | |
 | T-260g | 全件 Integration Test フルスイート PASS | tester | `TODO` | | UI-8完了後に実施 |
 | T-260h | 本番ビルド → TestFlight最終確認 → 審査提出 | orchestrator | `TODO` | | T-260g完了後 |
@@ -389,8 +389,8 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-378a | B-13: BasicInfo マスタ非表示フィルタ 実装 | flutter-dev | `TODO` | | basic_info_bloc.dart に isVisible フィルタ追加 |
-| T-378b | B-13: BasicInfo マスタ非表示フィルタ テストコード実装 | tester | `TODO` | | |
+| T-378a | B-13: BasicInfo マスタ非表示フィルタ 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_B13-B14-B15 | basic_info_bloc.dart に isVisible フィルタ追加 |
+| T-378b | B-13: BasicInfo マスタ非表示フィルタ テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_B13-B14-B15 | |
 | T-379 | B-13: レビュー | reviewer | `TODO` | | |
 | T-380 | B-13: テスト実行 | tester | `TODO` | | |
 
@@ -405,8 +405,8 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-381a | B-14: プラスボタン再押し不可 実装 | flutter-dev | `TODO` | | event_list_page.dart の _handleShowTopicSelection でキャンセル時にBlocへリセットイベント送信 |
-| T-381b | B-14: プラスボタン再押し不可 テストコード実装 | tester | `TODO` | | |
+| T-381a | B-14: プラスボタン再押し不可 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_B13-B14-B15 | event_list_page.dart の _handleShowTopicSelection でキャンセル時にBlocへリセットイベント送信 |
+| T-381b | B-14: プラスボタン再押し不可 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_B13-B14-B15 | |
 | T-382 | B-14: レビュー | reviewer | `TODO` | | |
 | T-383 | B-14: テスト実行 | tester | `TODO` | | |
 
@@ -422,8 +422,8 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-384a | B-15: 燃費推定 経費合計フォールバック 実装 | flutter-dev | `TODO` | | event_detail_overview_adapter.dart の totalPaymentLabel に effectiveGasPrice fallback 追加 |
-| T-384b | B-15: 燃費推定 経費合計フォールバック テストコード実装 | tester | `TODO` | | |
+| T-384a | B-15: 燃費推定 経費合計フォールバック 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_B13-B14-B15 | event_detail_overview_adapter.dart の totalPaymentLabel に effectiveGasPrice fallback 追加 |
+| T-384b | B-15: 燃費推定 経費合計フォールバック テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_B13-B14-B15 | |
 | T-385 | B-15: レビュー | reviewer | `TODO` | | |
 | T-386 | B-15: テスト実行 | tester | `TODO` | | |
 
