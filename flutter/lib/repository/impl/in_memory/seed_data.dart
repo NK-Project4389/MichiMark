@@ -48,6 +48,26 @@ final seedTopics = [
     updatedAt: _d(2026, 1, 1),
     color: 'emeraldGreen',
   ),
+  TopicDomain(
+    id: 'topic-004',
+    topicName: 'ツーリング',
+    topicType: TopicType.movingCost,
+    isVisible: true,
+    isDeleted: false,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+    color: 'tealGreen',
+  ),
+  TopicDomain(
+    id: 'topic-005',
+    topicName: '仕事移動',
+    topicType: TopicType.movingCostEstimated,
+    isVisible: true,
+    isDeleted: false,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+    color: 'indigoBlue',
+  ),
 ];
 
 // --- Actions ---
@@ -127,6 +147,13 @@ final seedMembers = [
   ),
 ];
 
+final _member4 = MemberDomain(
+  id: 'member-004',
+  memberName: '鈴木さん',
+  createdAt: _d(2026, 1, 1),
+  updatedAt: _d(2026, 1, 1),
+);
+
 // --- Tags ---
 final seedTags = [
   TagDomain(
@@ -144,6 +171,36 @@ final seedTags = [
   TagDomain(
     id: 'tag-003',
     tagName: '温泉',
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  TagDomain(
+    id: 'tag-004',
+    tagName: 'ツーリング',
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  TagDomain(
+    id: 'tag-005',
+    tagName: 'キャンプ',
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  TagDomain(
+    id: 'tag-006',
+    tagName: 'グルメ',
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  TagDomain(
+    id: 'tag-007',
+    tagName: '出張',
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  TagDomain(
+    id: 'tag-008',
+    tagName: '絶景スポット',
     createdAt: _d(2026, 1, 1),
     updatedAt: _d(2026, 1, 1),
   ),
@@ -439,4 +496,347 @@ final _event5 = EventDomain(
   updatedAt: _d(2026, 4, 10, 9, 0),
 );
 
-final seedEvents = [_event1, _event2, _event3, _event4, _event5];
+/// イベント6: 伊豆半島ツーリング（ソロ・マーク4つ・リンク2つ・支払いなし）
+final _event6 = EventDomain(
+  id: 'event-006',
+  eventName: '伊豆半島ツーリング',
+  topic: seedTopics[3], // ツーリング
+  trans: seedTrans[0], // マイカー
+  members: [seedMembers[0]], // 太郎のみ
+  tags: [seedTags[3], seedTags[7]], // ツーリング, 絶景スポット
+  kmPerGas: 180,
+  pricePerGas: 172,
+  payMember: seedMembers[0], // 太郎
+  markLinks: [
+    MarkLinkDomain(
+      id: 'ml-012',
+      markLinkSeq: 1,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 5, 8, 0),
+      markLinkName: '自宅出発',
+      members: [seedMembers[0]],
+      meterValue: 12000,
+      createdAt: _d(2026, 4, 5, 8, 0),
+      updatedAt: _d(2026, 4, 5, 8, 0),
+    ),
+    MarkLinkDomain(
+      id: 'ml-013',
+      markLinkSeq: 2,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _d(2026, 4, 5, 8, 30),
+      markLinkName: '国道135号',
+      members: [seedMembers[0]],
+      distanceValue: 45,
+      createdAt: _d(2026, 4, 5, 8, 30),
+      updatedAt: _d(2026, 4, 5, 8, 30),
+    ),
+    MarkLinkDomain(
+      id: 'ml-014',
+      markLinkSeq: 3,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 5, 9, 30),
+      markLinkName: '城ヶ崎海岸',
+      members: [seedMembers[0]],
+      meterValue: 12045,
+      actions: [seedActions[0], seedActions[4]], // 観光, 写真撮影
+      memo: '吊り橋から絶景',
+      createdAt: _d(2026, 4, 5, 9, 30),
+      updatedAt: _d(2026, 4, 5, 9, 30),
+    ),
+    MarkLinkDomain(
+      id: 'ml-015',
+      markLinkSeq: 4,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _d(2026, 4, 5, 11, 0),
+      markLinkName: '伊豆スカイライン',
+      members: [seedMembers[0]],
+      distanceValue: 38,
+      createdAt: _d(2026, 4, 5, 11, 0),
+      updatedAt: _d(2026, 4, 5, 11, 0),
+    ),
+    MarkLinkDomain(
+      id: 'ml-016',
+      markLinkSeq: 5,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 5, 12, 0),
+      markLinkName: '大室山',
+      members: [seedMembers[0]],
+      meterValue: 12083,
+      actions: [seedActions[0]], // 観光
+      isFuel: true,
+      pricePerGas: 172,
+      gasQuantity: 220,
+      gasPrice: 3784,
+      gasPayer: seedMembers[0],
+      createdAt: _d(2026, 4, 5, 12, 0),
+      updatedAt: _d(2026, 4, 5, 12, 0),
+    ),
+    MarkLinkDomain(
+      id: 'ml-017',
+      markLinkSeq: 6,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 5, 14, 0),
+      markLinkName: '河津七滝',
+      members: [seedMembers[0]],
+      meterValue: 12097,
+      actions: [seedActions[0], seedActions[4]], // 観光, 写真撮影
+      memo: '滝の迫力がすごかった',
+      createdAt: _d(2026, 4, 5, 14, 0),
+      updatedAt: _d(2026, 4, 5, 14, 0),
+    ),
+  ],
+  payments: [],
+  createdAt: _d(2026, 4, 5, 8, 0),
+  updatedAt: _d(2026, 4, 5, 16, 0),
+);
+
+/// イベント7: 大阪出張移動（マーク2つ・リンク1つ・支払い2つ）
+final _event7 = EventDomain(
+  id: 'event-007',
+  eventName: '大阪出張移動',
+  topic: seedTopics[4], // 仕事移動
+  trans: seedTrans[0], // マイカー
+  members: [seedMembers[0], _member4], // 太郎, 鈴木さん
+  tags: [seedTags[6]], // 出張
+  kmPerGas: 155,
+  pricePerGas: 170,
+  payMember: seedMembers[0], // 太郎
+  markLinks: [
+    MarkLinkDomain(
+      id: 'ml-018',
+      markLinkSeq: 1,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 8, 7, 0),
+      markLinkName: '東京オフィス出発',
+      members: [seedMembers[0], _member4],
+      meterValue: 46500,
+      createdAt: _d(2026, 4, 8, 7, 0),
+      updatedAt: _d(2026, 4, 8, 7, 0),
+    ),
+    MarkLinkDomain(
+      id: 'ml-019',
+      markLinkSeq: 2,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _d(2026, 4, 8, 7, 30),
+      markLinkName: '新名神高速',
+      members: [seedMembers[0], _member4],
+      distanceValue: 520,
+      createdAt: _d(2026, 4, 8, 7, 30),
+      updatedAt: _d(2026, 4, 8, 7, 30),
+    ),
+    MarkLinkDomain(
+      id: 'ml-020',
+      markLinkSeq: 3,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 8, 10, 30),
+      markLinkName: '名古屋SA（休憩）',
+      members: [seedMembers[0], _member4],
+      meterValue: 46820,
+      actions: [seedActions[2]], // 休憩
+      isFuel: true,
+      pricePerGas: 168,
+      gasQuantity: 350,
+      gasPrice: 5880,
+      gasPayer: seedMembers[0],
+      createdAt: _d(2026, 4, 8, 10, 30),
+      updatedAt: _d(2026, 4, 8, 10, 30),
+    ),
+    MarkLinkDomain(
+      id: 'ml-021',
+      markLinkSeq: 4,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 8, 12, 30),
+      markLinkName: '大阪クライアント先',
+      members: [seedMembers[0], _member4],
+      meterValue: 47020,
+      actions: [seedActions[1]], // 到着 → seedActions[1]は「到着」
+      memo: 'プレゼン完了',
+      createdAt: _d(2026, 4, 8, 12, 30),
+      updatedAt: _d(2026, 4, 8, 12, 30),
+    ),
+  ],
+  payments: [
+    PaymentDomain(
+      id: 'pay-006',
+      paymentSeq: 1,
+      paymentAmount: 8400,
+      paymentMember: seedMembers[0], // 太郎
+      splitMembers: [seedMembers[0], _member4],
+      paymentMemo: '高速道路代（往復）',
+      createdAt: _d(2026, 4, 8, 7, 30),
+      updatedAt: _d(2026, 4, 8, 7, 30),
+    ),
+    PaymentDomain(
+      id: 'pay-007',
+      paymentSeq: 2,
+      paymentAmount: 2200,
+      paymentMember: _member4, // 鈴木さん
+      splitMembers: [seedMembers[0], _member4],
+      paymentMemo: '昼食代',
+      createdAt: _d(2026, 4, 8, 13, 0),
+      updatedAt: _d(2026, 4, 8, 13, 0),
+    ),
+  ],
+  createdAt: _d(2026, 4, 8, 7, 0),
+  updatedAt: _d(2026, 4, 8, 13, 0),
+);
+
+/// イベント8: 京都一泊旅行（マーク5つ・リンク3つ・支払い4つ）
+final _event8 = EventDomain(
+  id: 'event-008',
+  eventName: '京都一泊旅行',
+  topic: seedTopics[1], // 旅費可視化
+  trans: seedTrans[0], // マイカー
+  members: seedMembers, // 太郎, 花子, 健太
+  tags: [seedTags[0], seedTags[5]], // 家族旅行, グルメ
+  kmPerGas: 155,
+  pricePerGas: 171,
+  payMember: seedMembers[0], // 太郎
+  markLinks: [
+    MarkLinkDomain(
+      id: 'ml-022',
+      markLinkSeq: 1,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 12, 7, 0),
+      markLinkName: '自宅出発',
+      members: seedMembers,
+      meterValue: 47100,
+      createdAt: _d(2026, 4, 12, 7, 0),
+      updatedAt: _d(2026, 4, 12, 7, 0),
+    ),
+    MarkLinkDomain(
+      id: 'ml-023',
+      markLinkSeq: 2,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _d(2026, 4, 12, 7, 30),
+      markLinkName: '名神高速',
+      members: seedMembers,
+      distanceValue: 130,
+      createdAt: _d(2026, 4, 12, 7, 30),
+      updatedAt: _d(2026, 4, 12, 7, 30),
+    ),
+    MarkLinkDomain(
+      id: 'ml-024',
+      markLinkSeq: 3,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 12, 9, 30),
+      markLinkName: '桂川PA（休憩）',
+      members: seedMembers,
+      meterValue: 47230,
+      actions: [seedActions[2]], // 休憩
+      createdAt: _d(2026, 4, 12, 9, 30),
+      updatedAt: _d(2026, 4, 12, 9, 30),
+    ),
+    MarkLinkDomain(
+      id: 'ml-025',
+      markLinkSeq: 4,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _d(2026, 4, 12, 10, 0),
+      markLinkName: '京都市内',
+      members: seedMembers,
+      distanceValue: 15,
+      createdAt: _d(2026, 4, 12, 10, 0),
+      updatedAt: _d(2026, 4, 12, 10, 0),
+    ),
+    MarkLinkDomain(
+      id: 'ml-026',
+      markLinkSeq: 5,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 12, 10, 30),
+      markLinkName: '金閣寺',
+      members: seedMembers,
+      meterValue: 47245,
+      actions: [seedActions[0], seedActions[4]], // 観光, 写真撮影
+      memo: '朝から混んでいた',
+      createdAt: _d(2026, 4, 12, 10, 30),
+      updatedAt: _d(2026, 4, 12, 10, 30),
+    ),
+    MarkLinkDomain(
+      id: 'ml-027',
+      markLinkSeq: 6,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 12, 13, 0),
+      markLinkName: '嵐山竹林',
+      members: seedMembers,
+      meterValue: 47257,
+      actions: [seedActions[0], seedActions[4]], // 観光, 写真撮影
+      memo: 'ランチは嵐山で',
+      createdAt: _d(2026, 4, 12, 13, 0),
+      updatedAt: _d(2026, 4, 12, 13, 0),
+    ),
+    MarkLinkDomain(
+      id: 'ml-028',
+      markLinkSeq: 7,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _d(2026, 4, 12, 16, 0),
+      markLinkName: '京都駅方面',
+      members: seedMembers,
+      distanceValue: 8,
+      createdAt: _d(2026, 4, 12, 16, 0),
+      updatedAt: _d(2026, 4, 12, 16, 0),
+    ),
+    MarkLinkDomain(
+      id: 'ml-029',
+      markLinkSeq: 8,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _d(2026, 4, 12, 17, 0),
+      markLinkName: 'ホテル着（京都駅前）',
+      members: seedMembers,
+      meterValue: 47265,
+      isFuel: true,
+      pricePerGas: 171,
+      gasQuantity: 280,
+      gasPrice: 4788,
+      gasPayer: seedMembers[0],
+      memo: 'チェックイン完了',
+      createdAt: _d(2026, 4, 12, 17, 0),
+      updatedAt: _d(2026, 4, 12, 17, 0),
+    ),
+  ],
+  payments: [
+    PaymentDomain(
+      id: 'pay-008',
+      paymentSeq: 1,
+      paymentAmount: 9600,
+      paymentMember: seedMembers[0], // 太郎
+      splitMembers: seedMembers,
+      paymentMemo: '高速道路代（往復）',
+      createdAt: _d(2026, 4, 12, 7, 30),
+      updatedAt: _d(2026, 4, 12, 7, 30),
+    ),
+    PaymentDomain(
+      id: 'pay-009',
+      paymentSeq: 2,
+      paymentAmount: 18000,
+      paymentMember: seedMembers[1], // 花子
+      splitMembers: seedMembers,
+      paymentMemo: 'ホテル代',
+      createdAt: _d(2026, 4, 12, 17, 0),
+      updatedAt: _d(2026, 4, 12, 17, 0),
+    ),
+    PaymentDomain(
+      id: 'pay-010',
+      paymentSeq: 3,
+      paymentAmount: 7200,
+      paymentMember: seedMembers[2], // 健太
+      splitMembers: seedMembers,
+      paymentMemo: '夕食代（懐石）',
+      createdAt: _d(2026, 4, 12, 19, 0),
+      updatedAt: _d(2026, 4, 12, 19, 0),
+    ),
+    PaymentDomain(
+      id: 'pay-011',
+      paymentSeq: 4,
+      paymentAmount: 3600,
+      paymentMember: seedMembers[0], // 太郎
+      splitMembers: seedMembers,
+      paymentMemo: '観光施設入場料合計',
+      createdAt: _d(2026, 4, 12, 15, 0),
+      updatedAt: _d(2026, 4, 12, 15, 0),
+    ),
+  ],
+  createdAt: _d(2026, 4, 12, 7, 0),
+  updatedAt: _d(2026, 4, 13, 18, 0),
+);
+
+final seedEvents = [_event1, _event2, _event3, _event4, _event5, _event6, _event7, _event8];
