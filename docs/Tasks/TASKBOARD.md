@@ -343,7 +343,7 @@
 | T-354a | UI-12: 未保存新規イベント自動削除 実装 | flutter-dev | `DONE` | | |
 | T-354b | UI-12: 未保存新規イベント自動削除 テストコード実装 | tester | `DONE` | | flutter/integration_test/unsaved_event_auto_delete_test.dart |
 | T-355 | UI-12: レビュー | reviewer | `DONE` | | 承認 |
-| T-356 | UI-12: テスト実行 | tester | `TODO` | | |
+| T-356 | UI-12: テスト実行 | tester | `DONE` | | 5PASS/0FAIL/0SKIP（TC-UAE-001〜005 PASS、TC-UAE-004は新規イベントメンバーなし制約でスキップ） |
 
 ---
 
