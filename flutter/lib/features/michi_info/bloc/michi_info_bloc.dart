@@ -523,13 +523,16 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     }
   }
 
-  /// 挿入ポイントキャンセル: pendingInsertAfterSeq を null に（isInsertMode は true のまま）
+  /// 挿入ポイントキャンセル: 挿入モードを完全リセット（isInsertMode / pendingInsertAfterSeq を null に）
   Future<void> _onInsertPointCancelled(
     MichiInfoInsertPointCancelled event,
     Emitter<MichiInfoState> emit,
   ) async {
     if (state case MichiInfoLoaded current) {
-      emit(current.copyWith(pendingInsertAfterSeq: null));
+      emit(current.copyWith(
+        isInsertMode: false,
+        pendingInsertAfterSeq: null,
+      ));
     }
   }
 

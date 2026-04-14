@@ -123,6 +123,7 @@ class _PaymentDetailForm extends StatelessWidget {
       padding: EdgeInsets.zero,
       children: [
         NumericInputRow(
+          key: const Key('paymentDetail_field_amount'),
           label: '支払金額',
           unit: '円',
           value: draft.paymentAmount,
