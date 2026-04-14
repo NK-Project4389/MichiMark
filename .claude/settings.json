@@ -1,6 +1,9 @@
 {
   "model": "sonnet",
   "permissions": {
+    "additionalDirectories": [
+      "/Users/kurosakinobuyuki/ClaudeCode/App/michimark-web"
+    ],
     "allow": [
       "Bash(git *)",
       "Bash(dart analyze*)",

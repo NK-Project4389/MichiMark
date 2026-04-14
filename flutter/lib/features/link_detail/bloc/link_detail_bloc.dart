@@ -64,12 +64,20 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
         return;
       }
       // 既存編集モード
+      // 後から非表示になったマスタ項目を除外する（B-10修正）
+      final visibleEventMembers =
+          event.eventMembers.where((m) => m.isVisible).toSet();
+      final filteredMembers = markLink.members
+          .where((m) => visibleEventMembers.any((vm) => vm.id == m.id))
+          .toList();
+      final filteredActions =
+          markLink.actions.where((a) => a.isVisible).toList();
       final draft = LinkDetailDraft(
         markLinkName: markLink.markLinkName ?? '',
         markLinkDate: markLink.markLinkDate,
         distanceValueInput: markLink.distanceValue?.toString() ?? '',
-        selectedMembers: markLink.members,
-        selectedActions: markLink.actions,
+        selectedMembers: filteredMembers,
+        selectedActions: filteredActions,
         memo: markLink.memo ?? '',
         isFuel: markLink.isFuel,
         pricePerGasInput: markLink.pricePerGas?.toString() ?? '',

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../../../adapter/travel_expense_overview_adapter.dart';
 import '../projection/moving_cost_overview_projection.dart';
 
 /// movingCost用サブWidget
@@ -41,6 +43,24 @@ class MovingCostOverviewView extends StatelessWidget {
             ),
           ),
         _InfoRow(label: '経費合計', value: projection.totalPaymentLabel),
+        if (projection.memberBalances.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          Container(
+            key: const Key('movingCostOverview_section_balance'),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const _SectionTitle(title: '収支バランス'),
+                ...projection.memberBalances.asMap().entries.map(
+                      (entry) => _BalanceRow(
+                        key: Key('movingCostOverview_row_balance_${entry.key}'),
+                        balance: entry.value,
+                      ),
+                    ),
+              ],
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -90,6 +110,48 @@ class _InfoRow extends StatelessWidget {
             child: Text(
               value,
               style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BalanceRow extends StatelessWidget {
+  final MemberBalanceProjection balance;
+
+  static final _currencyFormat = NumberFormat('#,###');
+
+  const _BalanceRow({super.key, required this.balance});
+
+  @override
+  Widget build(BuildContext context) {
+    final isPositive = balance.balance >= 0;
+    final color = isPositive
+        ? Colors.green.shade700
+        : Theme.of(context).colorScheme.error;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              balance.memberName,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              '${isPositive ? '+' : ''}${_currencyFormat.format(balance.balance)}円',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ),
         ],

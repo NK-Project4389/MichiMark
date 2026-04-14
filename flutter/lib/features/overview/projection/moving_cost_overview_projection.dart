@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../adapter/travel_expense_overview_adapter.dart';
 
 /// movingCost用 Projection。
 /// AggregationResultのnullフィールドは "---" に変換済み。
@@ -30,6 +31,9 @@ class MovingCostOverviewProjection extends Equatable {
   /// 給油データが1件以上存在する場合 true。AggregationResult.totalGasQuantity が非nullの場合に true
   final bool hasFuelData;
 
+  /// メンバー別収支バランス一覧。収支データがない場合は空リスト
+  final List<MemberBalanceProjection> memberBalances;
+
   const MovingCostOverviewProjection({
     required this.movingTimeLabel,
     required this.workingTimeLabel,
@@ -40,6 +44,7 @@ class MovingCostOverviewProjection extends Equatable {
     required this.totalGasPriceLabel,
     required this.totalPaymentLabel,
     required this.hasFuelData,
+    this.memberBalances = const [],
   });
 
   @override
@@ -53,5 +58,6 @@ class MovingCostOverviewProjection extends Equatable {
         totalGasPriceLabel,
         totalPaymentLabel,
         hasFuelData,
+        memberBalances,
       ];
 }

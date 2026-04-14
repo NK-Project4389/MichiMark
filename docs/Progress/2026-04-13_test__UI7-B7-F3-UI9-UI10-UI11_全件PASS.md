@@ -1,6 +1,9 @@
 # 2026-04-13 UI-7・B-7・F-3・UI-9・UI-10・UI-11 Integration Test 全件PASS
 
 ## 完了した作業
+- feat: impl-scheduleをユーザー指定時刻方式に変更 (c0fe5ee)
+- feat: impl-scheduleスキル追加・orchestratorに自動スケジュールルール追加 (deab4c9)
+- docs: UI-7/B-7/F-3/UI-9/UI-10/UI-11 全件PASS 進捗ファイル作成 (7a6608d)
 
 ### バグ修正
 

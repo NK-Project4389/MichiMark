@@ -222,6 +222,7 @@ class _MichiInfoViewState extends State<MichiInfoView> {
           children: [
             if (topicConfig.addMenuItems.contains(AddMenuItemType.mark))
               ListTile(
+                key: const Key('michiInfo_button_addMark'),
                 leading: const Icon(Icons.place),
                 title: const Text('地点を追加'),
                 onTap: () {
@@ -235,6 +236,7 @@ class _MichiInfoViewState extends State<MichiInfoView> {
               ),
             if (topicConfig.addMenuItems.contains(AddMenuItemType.link))
               ListTile(
+                key: const Key('michiInfo_button_addLink'),
                 leading: const Icon(Icons.route),
                 title: const Text('区間を追加'),
                 onTap: () {
@@ -637,6 +639,7 @@ class _MichiInfoListState extends State<_MichiInfoList> {
         floatingActionButton: widget.topicConfig.addMenuItems.isEmpty
             ? null
             : FloatingActionButton(
+                key: const Key('michiInfo_fab_add'),
                 onPressed: () => context
                     .read<MichiInfoBloc>()
                     .add(const MichiInfoInsertModeFabPressed()),
@@ -704,9 +707,14 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                             } else {
                               final itemIndex = index ~/ 2;
                               final item = items[itemIndex];
+                              // InsertMode では Mark-Mark 間にインジケーターが挿入されるため
+                              // スパン矢印表示用の大きめギャップ(_markMarkGap)は不要。
+                              // Linkがない区間でも常に _itemGap を使用する。
+                              final rawGap = timelineData.gapAfterItem[itemIndex];
+                              final insertModeGap = rawGap > _itemGap ? _itemGap : rawGap;
                               return _TimelineItem(
                                 item: item,
-                                gapAfter: timelineData.gapAfterItem[itemIndex],
+                                gapAfter: insertModeGap,
                                 onTap: () => context.read<MichiInfoBloc>().add(
                                       MichiInfoItemTapped(
                                         markLinkId: item.id,
@@ -764,6 +772,7 @@ class _MichiInfoListState extends State<_MichiInfoList> {
       floatingActionButton: widget.topicConfig.addMenuItems.isEmpty
           ? null
           : FloatingActionButton(
+              key: const Key('michiInfo_fab_add'),
               onPressed: () => context
                   .read<MichiInfoBloc>()
                   .add(const MichiInfoInsertModeFabPressed()),
@@ -1491,41 +1500,48 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         // showNameField=false の場合: 日付を最上段に表示
         if (!topicConfig.showNameField && topicConfig.showMarkDate)
-          Text(
-            key: Key('michiInfo_text_markDate_${item.id}'),
-            item.displayDate,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: 11,
-                  color: const Color(0xFF6B7280),
-                  fontWeight: FontWeight.w500,
-                ),
-            overflow: TextOverflow.ellipsis,
+          Flexible(
+            child: Text(
+              key: Key('michiInfo_text_markDate_${item.id}'),
+              item.displayDate,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 11,
+                    color: const Color(0xFF6B7280),
+                    fontWeight: FontWeight.w500,
+                  ),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         // showNameField=true の場合: 名称を最上段に表示
         if (topicConfig.showNameField)
-          Text(
-            name,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: const Color(0xFF1A1A2E),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 13,
-                ),
-            overflow: TextOverflow.ellipsis,
+          Flexible(
+            child: Text(
+              name,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: const Color(0xFF1A1A2E),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                  ),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         // showNameField=true かつ showMarkDate=true の場合: 日付を名称の下に表示
         if (topicConfig.showNameField && topicConfig.showMarkDate)
-          Text(
-            key: Key('michiInfo_text_markDate_${item.id}'),
-            item.displayDate,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: 11,
-                  color: const Color(0xFF6B7280),
-                  fontWeight: FontWeight.w500,
-                ),
-            overflow: TextOverflow.ellipsis,
+          Flexible(
+            child: Text(
+              key: Key('michiInfo_text_markDate_${item.id}'),
+              item.displayDate,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 11,
+                    color: const Color(0xFF6B7280),
+                    fontWeight: FontWeight.w500,
+                  ),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         // 累積メーター・メンバー行
         if (item.displayMeterValue != null || membersText != null)
@@ -1584,42 +1600,49 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         // 日付テキスト（showLinkDate=true の場合）
         if (topicConfig.showLinkDate)
-          Text(
-            key: Key('michiInfo_text_linkDate_${item.id}'),
-            item.displayDate,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: 11,
-                  color: const Color(0xFF6B7280),
-                  fontWeight: FontWeight.w500,
-                ),
-            overflow: TextOverflow.ellipsis,
+          Flexible(
+            child: Text(
+              key: Key('michiInfo_text_linkDate_${item.id}'),
+              item.displayDate,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 11,
+                    color: const Color(0xFF6B7280),
+                    fontWeight: FontWeight.w500,
+                  ),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         // 名称テキスト（showNameField=true の場合）
         if (topicConfig.showNameField)
-          Text(
-            name,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: const Color(0xFF1A1A2E),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 11,
-                ),
-            overflow: TextOverflow.ellipsis,
+          Flexible(
+            child: Text(
+              name,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: const Color(0xFF1A1A2E),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 11,
+                  ),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         // 区間距離テキスト（showLinkDistance=true かつ displayDistanceValue!=null の場合）
         if (topicConfig.showLinkDistance &&
             item.displayDistanceValue != null)
-          Text(
-            key: Key('michiInfo_text_linkDistance_${item.id}'),
-            item.displayDistanceValue!,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: 11,
-                  color: _linkPrimaryColor,
-                  fontWeight: FontWeight.w600,
-                ),
-            overflow: TextOverflow.ellipsis,
+          Flexible(
+            child: Text(
+              key: Key('michiInfo_text_linkDistance_${item.id}'),
+              item.displayDistanceValue!,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 11,
+                    color: _linkPrimaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
       ],
     );
@@ -1793,7 +1816,7 @@ class _InsertIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final key = insertAfterSeq == -1
-        ? const Key('insert_indicator_top')
+        ? const Key('michiInfo_button_insertIndicator_head')
         : Key('insert_indicator_$insertAfterSeq');
     return GestureDetector(
       key: key,

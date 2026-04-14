@@ -133,6 +133,7 @@ class _EventDetailScaffold extends StatelessWidget {
           create: (_) => MichiInfoBloc(
             eventRepository: getIt<EventRepository>(),
             actionRepository: getIt<ActionRepository>(),
+            memberRepository: getIt<MemberRepository>(),
           )..add(MichiInfoStarted(eventId)),
         ),
         BlocProvider(

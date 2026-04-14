@@ -3,14 +3,18 @@ import 'package:uuid/uuid.dart';
 import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/transaction/payment/payment_domain.dart';
 import '../../../repository/event_repository.dart';
+import '../../../repository/member_repository.dart';
 import '../draft/payment_detail_draft.dart';
 import 'payment_detail_event.dart';
 import 'payment_detail_state.dart';
 
 class PaymentDetailBloc
     extends Bloc<PaymentDetailEvent, PaymentDetailState> {
-  PaymentDetailBloc({required EventRepository eventRepository})
-      : _eventRepository = eventRepository,
+  PaymentDetailBloc({
+    required EventRepository eventRepository,
+    required MemberRepository memberRepository,
+  })  : _eventRepository = eventRepository,
+        _memberRepository = memberRepository,
         super(const PaymentDetailLoading()) {
     on<PaymentDetailStarted>(_onStarted);
     on<PaymentDetailAmountChanged>(_onAmountChanged);
@@ -26,6 +30,7 @@ class PaymentDetailBloc
   }
 
   final EventRepository _eventRepository;
+  final MemberRepository _memberRepository;
   String _eventId = '';
 
   Future<void> _onStarted(
@@ -36,7 +41,12 @@ class PaymentDetailBloc
     emit(const PaymentDetailLoading());
     try {
       final domain = await _eventRepository.fetch(event.eventId);
-      final availableMembers = domain.members;
+      // マスタMemberRepositoryから最新のisVisible状態を取得してフィルタ（B-10修正）
+      final masterMembers = await _memberRepository.fetchAll();
+      final visibleMasterIds = masterMembers.where((m) => m.isVisible).map((m) => m.id).toSet();
+      final availableMembers = domain.members
+          .where((m) => visibleMasterIds.contains(m.id))
+          .toList();
 
       if (event.paymentId == null) {
         // 新規作成: 初期Draftを生成
@@ -55,12 +65,21 @@ class PaymentDetailBloc
         emit(const PaymentDetailError(message: '支払情報が見つかりません'));
         return;
       }
+      // 後から非表示になったメンバーを除外する（B-10修正）
+      final visibleMemberIds = availableMembers.map((m) => m.id).toSet();
+      final filteredPayMember =
+          visibleMemberIds.contains(payment.paymentMember.id)
+              ? payment.paymentMember
+              : null;
+      final filteredSplitMembers = payment.splitMembers
+          .where((m) => visibleMemberIds.contains(m.id))
+          .toList();
       final draft = PaymentDetailDraft(
         id: payment.id,
         paymentSeq: payment.paymentSeq,
         paymentAmount: payment.paymentAmount.toString(),
-        paymentMember: payment.paymentMember,
-        splitMembers: payment.splitMembers,
+        paymentMember: filteredPayMember,
+        splitMembers: filteredSplitMembers,
         paymentMemo: payment.paymentMemo ?? '',
       );
       emit(PaymentDetailLoaded(draft: draft, initialDraft: draft, availableMembers: availableMembers));

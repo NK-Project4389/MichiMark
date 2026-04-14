@@ -405,12 +405,21 @@ class _MemberInputSection extends StatefulWidget {
 
 class _MemberInputSectionState extends State<_MemberInputSection> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
 
   @override
+  void deactivate() {
+    _focusNode.unfocus();
+    _removeOverlay();
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     _removeOverlay();
+    _focusNode.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -453,6 +462,7 @@ class _MemberInputSectionState extends State<_MemberInputSection> {
                             .add(BasicInfoMemberSuggestionSelected(member));
                         _controller.clear();
                         _removeOverlay();
+                        _focusNode.requestFocus();
                       },
                     ),
                   ),
@@ -469,6 +479,7 @@ class _MemberInputSectionState extends State<_MemberInputSection> {
                             .add(BasicInfoMemberInputConfirmed(input));
                         _controller.clear();
                         _removeOverlay();
+                        _focusNode.requestFocus();
                       },
                     ),
                 ],
@@ -523,6 +534,7 @@ class _MemberInputSectionState extends State<_MemberInputSection> {
                   child: TextField(
                     key: const Key('basicInfo_field_memberInput'),
                     controller: _controller,
+                    focusNode: _focusNode,
                     decoration: const InputDecoration(
                       hintText: 'メンバーを追加',
                       border: InputBorder.none,
@@ -552,11 +564,17 @@ class _MemberInputSectionState extends State<_MemberInputSection> {
                       );
                     },
                     onSubmitted: (input) {
+                      if (input.trim().isEmpty) {
+                        _focusNode.unfocus();
+                        _removeOverlay();
+                        return;
+                      }
                       context
                           .read<BasicInfoBloc>()
                           .add(BasicInfoMemberInputConfirmed(input));
                       _clearInput();
                       _removeOverlay();
+                      _focusNode.requestFocus();
                     },
                   ),
                 ),
@@ -588,12 +606,21 @@ class _TagInputSection extends StatefulWidget {
 
 class _TagInputSectionState extends State<_TagInputSection> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
 
   @override
+  void deactivate() {
+    _focusNode.unfocus();
+    _removeOverlay();
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     _removeOverlay();
+    _focusNode.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -636,6 +663,7 @@ class _TagInputSectionState extends State<_TagInputSection> {
                             .add(BasicInfoTagSuggestionSelected(tag));
                         _clearInput();
                         _removeOverlay();
+                        _focusNode.requestFocus();
                       },
                     ),
                   ),
@@ -652,6 +680,7 @@ class _TagInputSectionState extends State<_TagInputSection> {
                             .add(BasicInfoTagInputConfirmed(input));
                         _clearInput();
                         _removeOverlay();
+                        _focusNode.requestFocus();
                       },
                     ),
                 ],
@@ -706,6 +735,7 @@ class _TagInputSectionState extends State<_TagInputSection> {
                   child: TextField(
                     key: const Key('basicInfo_field_tagInput'),
                     controller: _controller,
+                    focusNode: _focusNode,
                     decoration: const InputDecoration(
                       hintText: '新しいタグを追加',
                       border: InputBorder.none,
@@ -735,11 +765,17 @@ class _TagInputSectionState extends State<_TagInputSection> {
                       );
                     },
                     onSubmitted: (input) {
+                      if (input.trim().isEmpty) {
+                        _focusNode.unfocus();
+                        _removeOverlay();
+                        return;
+                      }
                       context
                           .read<BasicInfoBloc>()
                           .add(BasicInfoTagInputConfirmed(input));
                       _clearInput();
                       _removeOverlay();
+                      _focusNode.requestFocus();
                     },
                   ),
                 ),

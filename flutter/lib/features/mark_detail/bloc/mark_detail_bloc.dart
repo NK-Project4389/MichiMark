@@ -73,12 +73,20 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
         return;
       }
       // 既存編集モード
+      // 後から非表示になったマスタ項目を除外する（B-10修正）
+      final visibleEventMembers =
+          event.eventMembers.where((m) => m.isVisible).toSet();
+      final filteredMembers = markLink.members
+          .where((m) => visibleEventMembers.any((vm) => vm.id == m.id))
+          .toList();
+      final filteredActions =
+          markLink.actions.where((a) => a.isVisible).toList();
       final draft = MarkDetailDraft(
         markLinkName: markLink.markLinkName ?? '',
         markLinkDate: markLink.markLinkDate,
-        selectedMembers: markLink.members,
+        selectedMembers: filteredMembers,
         meterValueInput: markLink.meterValue?.toString() ?? '',
-        selectedActions: markLink.actions,
+        selectedActions: filteredActions,
         memo: markLink.memo ?? '',
         isFuel: markLink.isFuel,
         pricePerGasInput: markLink.pricePerGas?.toString() ?? '',

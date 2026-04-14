@@ -76,8 +76,11 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
         case SelectionType.markMembers:
         case SelectionType.linkMembers:
           // REQ-MAD-004: 候補リストが指定されている場合はそちらを優先する
-          final items =
-              _candidateMembers ?? await _memberRepository.fetchAll();
+          // candidateMembers は呼び出し元で isVisible フィルタ済みのため、
+          // fetchAll() 使用時のみここでフィルタする
+          final rawMembers =
+              _candidateMembers ?? (await _memberRepository.fetchAll()).where((m) => m.isVisible).toList();
+          final items = rawMembers;
           final projection = SelectionAdapter.fromMembers(
             type: _type,
             items: items,
@@ -94,8 +97,9 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
         case SelectionType.gasPayMember:
         case SelectionType.payMember:
         case SelectionType.splitMembers:
-          final items =
-              _candidateMembers ?? await _memberRepository.fetchAll();
+          final rawMembers =
+              _candidateMembers ?? (await _memberRepository.fetchAll()).where((m) => m.isVisible).toList();
+          final items = rawMembers;
           final projection = SelectionAdapter.fromMembers(
             type: _type,
             items: items,
@@ -109,7 +113,8 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
           ));
 
         case SelectionType.eventTags:
-          final items = await _tagRepository.fetchAll();
+          final allTags = await _tagRepository.fetchAll();
+          final items = allTags.where((t) => t.isVisible).toList();
           final projection = SelectionAdapter.fromTags(
             type: _type,
             items: items,
@@ -123,7 +128,8 @@ class SelectionBloc extends Bloc<SelectionEvent, SelectionState> {
 
         case SelectionType.markActions:
         case SelectionType.linkActions:
-          final items = await _actionRepository.fetchAll();
+          final allActions = await _actionRepository.fetchAll();
+          final items = allActions.where((a) => a.isVisible).toList();
           final projection = SelectionAdapter.fromActions(
             type: _type,
             items: items,

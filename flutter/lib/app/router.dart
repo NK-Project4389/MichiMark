@@ -141,6 +141,7 @@ final router = GoRouter(
         return BlocProvider(
           create: (_) => PaymentDetailBloc(
             eventRepository: getIt<EventRepository>(),
+            memberRepository: getIt<MemberRepository>(),
           )..add(PaymentDetailStarted(
               eventId: args.eventId,
               paymentId: args.paymentId,

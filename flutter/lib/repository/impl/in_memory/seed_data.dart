@@ -245,6 +245,7 @@ final _event1 = EventDomain(
       pricePerGas: 170,
       gasQuantity: 305, // 30.5L
       gasPrice: 5185,
+      gasPayer: seedMembers[0],
       createdAt: _d(2026, 3, 15, 13, 0),
       updatedAt: _d(2026, 3, 15, 13, 0),
     ),
@@ -423,4 +424,18 @@ final _event4 = EventDomain(
   updatedAt: _d(2026, 4, 5, 11, 0),
 );
 
-final seedEvents = [_event1, _event2, _event3, _event4];
+/// イベント5: 旅行計画（travelExpense・markLinksなし・TC-EAS-001用）
+final _event5 = EventDomain(
+  id: 'event-005',
+  eventName: '旅行計画',
+  topic: seedTopics[1], // 旅費可視化（travelExpense）
+  trans: seedTrans[0], // マイカー
+  members: seedMembers, // 太郎, 花子, 健太
+  tags: [],
+  markLinks: [],
+  payments: [],
+  createdAt: _d(2026, 4, 10, 9, 0),
+  updatedAt: _d(2026, 4, 10, 9, 0),
+);
+
+final seedEvents = [_event1, _event2, _event3, _event4, _event5];

@@ -15,6 +15,7 @@ import '../../../features/shared/projection/action_item_projection.dart';
 import '../../../features/shared/projection/mark_link_item_projection.dart';
 import '../../../repository/action_repository.dart';
 import '../../../repository/event_repository.dart';
+import '../../../repository/member_repository.dart';
 import '../draft/michi_info_draft.dart';
 import 'michi_info_event.dart';
 import 'michi_info_state.dart';
@@ -23,8 +24,10 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
   MichiInfoBloc({
     required EventRepository eventRepository,
     required ActionRepository actionRepository,
+    required MemberRepository memberRepository,
   })  : _eventRepository = eventRepository,
         _actionRepository = actionRepository,
+        _memberRepository = memberRepository,
         super(const MichiInfoLoading()) {
     on<MichiInfoStarted>(_onStarted);
     on<MichiInfoItemTapped>(_onItemTapped);
@@ -49,6 +52,7 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
 
   final EventRepository _eventRepository;
   final ActionRepository _actionRepository;
+  final MemberRepository _memberRepository;
   String _eventId = '';
 
   /// アクションマスタのキャッシュ（startedで一度取得して保持）
@@ -65,10 +69,16 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       _cachedActions = await _actionRepository.fetchAll();
       final projection = EventDetailAdapter.toProjection(domain).michiInfo;
       final topicConfig = TopicConfig.fromTopicType(domain.topic?.topicType);
+      // マスタMemberRepositoryから最新のisVisible状態を取得してフィルタ（B-10修正）
+      final masterMembers = await _memberRepository.fetchAll();
+      final visibleMasterIds = masterMembers.where((m) => m.isVisible).map((m) => m.id).toSet();
+      final visibleMembers = domain.members
+          .where((m) => visibleMasterIds.contains(m.id))
+          .toList();
       emit(MichiInfoLoaded(
         projection: projection,
         draft: const MichiInfoDraft(),
-        eventMembers: domain.members,
+        eventMembers: visibleMembers,
         eventId: event.eventId,
         topicConfig: topicConfig,
       ));
@@ -141,8 +151,12 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       // REQ-MAD-003: 日付初期値
       final DateTime? initialMarkLinkDate = previousMark?.markLinkDate;
 
-      // REQ-MAD-004: イベントメンバー一覧
-      final List<MemberDomain> eventMembers = domain.members;
+      // REQ-MAD-004: イベントメンバー一覧（マスタのisVisibleで最新フィルタ、B-10修正）
+      final masterMembersForAdd = await _memberRepository.fetchAll();
+      final visibleMasterIdsForAdd = masterMembersForAdd.where((m) => m.isVisible).map((m) => m.id).toSet();
+      final List<MemberDomain> eventMembers = domain.members
+          .where((m) => visibleMasterIdsForAdd.contains(m.id))
+          .toList();
 
       emit(current.copyWith(
         delegate: MichiInfoAddMarkDelegate(
@@ -339,9 +353,15 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       try {
         final domain = await _eventRepository.fetch(_eventId);
         final projection = EventDetailAdapter.toProjection(domain).michiInfo;
+        // マスタMemberRepositoryから最新のisVisible状態を取得してフィルタ（B-10修正）
+        final masterMembers = await _memberRepository.fetchAll();
+        final visibleMasterIds = masterMembers.where((m) => m.isVisible).map((m) => m.id).toSet();
+        final visibleMembers = domain.members
+            .where((m) => visibleMasterIds.contains(m.id))
+            .toList();
         emit(current.copyWith(
           projection: projection,
-          eventMembers: domain.members,
+          eventMembers: visibleMembers,
           delegate: const MichiInfoReloadedDelegate(),
           isInsertMode: false,
           pendingInsertAfterSeq: null,
@@ -443,8 +463,12 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       // REQ-MAD-003: 日付初期値
       final DateTime? initialMarkLinkDate = previousMark?.markLinkDate;
 
-      // REQ-MAD-004: イベントメンバー一覧
-      final List<MemberDomain> eventMembers = domain.members;
+      // REQ-MAD-004: イベントメンバー一覧（マスタのisVisibleで最新フィルタ、B-10修正）
+      final masterMembersForInsert = await _memberRepository.fetchAll();
+      final visibleMasterIdsForInsert = masterMembersForInsert.where((m) => m.isVisible).map((m) => m.id).toSet();
+      final List<MemberDomain> eventMembers = domain.members
+          .where((m) => visibleMasterIdsForInsert.contains(m.id))
+          .toList();
 
       // -1 は0件時のシグナル値 → insertAfterSeq: null（末尾追加）に変換
       final effectiveInsertAfterSeq = current.pendingInsertAfterSeq == -1

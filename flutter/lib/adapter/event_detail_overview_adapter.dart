@@ -2,6 +2,8 @@ import 'package:intl/intl.dart';
 import '../domain/aggregation/aggregation_result.dart';
 import '../domain/transaction/event/event_domain.dart';
 import '../features/overview/projection/moving_cost_overview_projection.dart';
+import 'moving_cost_balance_adapter.dart';
+import 'travel_expense_overview_adapter.dart';
 
 /// AggregationResult → MovingCostOverviewProjection の変換を担当。
 /// 表示文字列フォーマットロジックをここに集約する。
@@ -26,6 +28,14 @@ class EventDetailOverviewAdapter {
       }
     }
 
+    // 収支バランス計算
+    final memberBalances = event != null
+        ? MovingCostBalanceAdapter.toBalances(
+            event,
+            event.topic?.topicType,
+          )
+        : <MemberBalanceProjection>[];
+
     return MovingCostOverviewProjection(
       movingTimeLabel: _formatDuration(result.movingTime),
       workingTimeLabel: _formatDuration(result.workingTime),
@@ -42,6 +52,7 @@ class EventDetailOverviewAdapter {
           ? '${_currencyFormat.format(result.totalPayment!)}円'
           : '---',
       hasFuelData: result.totalGasQuantity != null,
+      memberBalances: memberBalances,
     );
   }
 

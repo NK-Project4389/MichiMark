@@ -24,6 +24,7 @@ Version: 1.0
 | event-001 | 箱根日帰りドライブ | movingCost | Mark4件・Link2件・支払2件・参加者：太郎・花子 |
 | event-002 | 富士五湖キャンプ | travelExpense | Mark2件・支払3件（割り勘あり）・参加者：太郎・花子・健太 |
 | event-003 | 近所のドライブ | movingCost | Mark0件・支払0件 |
+| event-004 | 週末ドライブ（燃費推定） | movingCostEstimated | Mark2件・Link1件・参加者：太郎・花子・payMember=太郎・kmPerGas=155・pricePerGas=175 |
 | trans-001 | マイカー | - | meterValue=45230、kmPerGas=15.5 |
 | member-001〜003 | 太郎・花子・健太 | - | |
 | action-001 | 出発 | - | seededId: action-seed-depart |
@@ -53,8 +54,10 @@ Version: 1.0
 | 削除後集計即時反映 | TC-DAU | 5 | MichiInfo/PaymentInfo削除後に概要タブ集計が即時更新されること（B-7） |
 | 給油集計「満タン給油で算出」文言 | TC-FFL | 2 | hasFuelData フラグによる表示制御の分岐確認（F-3） |
 | メンバー選択 全選択/全解除 | TC-MSA | 7 | MarkDetail/LinkDetail/PaymentDetail の一括操作・支払者除外ロジック（UI-11） |
+| 移動コスト収支バランス | TC-MCB | 6 | movingCost/movingCostEstimated の収支計算ロジック・TopicType分岐・データなし非表示（F-2） |
+| MichiInfoカード トピック別表示切り替え | TC-MCV | 7 | TopicTypeフラグ（showMarkDate/showMarkMembers/showLinkDate）による表示制御の分岐確認（F-4） |
 
-**合計: 91件**
+**合計: 104件**
 
 ---
 
@@ -1681,5 +1684,233 @@ Spec: `docs/Spec/Features/FS-basic_info_tap_to_edit.md`
 **期待結果:**
 - 支払者のチップ (`paymentDetail_chip_splitMember_{payerMemberId}`) は `selected: true` を維持すること
 - 支払者以外のチップは `selected: false` になること
+
+---
+
+## TC-MCB: 移動コスト収支バランス（F-2）
+
+### テストシナリオ一覧
+
+| ID | シナリオ名 | 優先度 |
+|---|---|---|
+| TC-MCB-001 | 給油実績モード: 収支バランスセクションが表示される | High |
+| TC-MCB-002 | 給油実績モード: ガソリン支払者の収支がプラスで表示される | High |
+| TC-MCB-003 | 給油実績モード: 参加メンバーの収支がマイナスで表示される | High |
+| TC-MCB-004 | 燃費推定モード: 収支バランスセクションが表示される | High |
+| TC-MCB-005 | 燃費推定モード: ガソリン支払者の収支がプラスで表示される | High |
+| TC-MCB-006 | 収支データなし: 収支バランスセクションが非表示になる | High |
+
+---
+
+### TC-MCB-001: 給油実績モード: 収支バランスセクションが表示される
+
+**前提:** event-001「箱根日帰りドライブ」（movingCost）が存在すること。ml-005（大涌谷）に isFuel:true・gasPayer・gasPrice 設定済み・members が1人以上存在すること
+
+**操作手順:**
+1. EventList から「箱根日帰りドライブ」をタップして EventDetail を開く
+2. 「概要」タブをタップする
+3. 画面をスクロールして集計セクションを表示する
+
+**期待結果:**
+- `Key('movingCostOverview_section_balance')` のウィジェットが画面上に存在する
+
+---
+
+### TC-MCB-002: 給油実績モード: ガソリン支払者の収支がプラスで表示される
+
+**前提:** TC-MCB-001 の状態が達成されていること
+
+**操作手順:**
+1. TC-MCB-001 の手順を実行する
+2. 収支バランスセクションを確認する
+
+**期待結果:**
+- `Key('movingCostOverview_row_balance_0')` のウィジェットが存在する
+- ガソリン支払者に対応する行の金額テキストが `+` を含む
+
+---
+
+### TC-MCB-003: 給油実績モード: 参加メンバーの収支がマイナスで表示される
+
+**前提:** TC-MCB-001 の状態が達成されていること。ガソリン支払者とは別の参加メンバーが1人以上存在すること
+
+**操作手順:**
+1. TC-MCB-001 の手順を実行する
+2. 収支バランスセクションを確認する
+
+**期待結果:**
+- `Key('movingCostOverview_row_balance_1')` のウィジェットが存在する
+- ガソリン支払者ではない参加メンバーに対応する行の金額テキストが `-` を含む
+
+---
+
+### TC-MCB-004: 燃費推定モード: 収支バランスセクションが表示される
+
+**前提:** event-004「週末ドライブ（燃費推定）」（movingCostEstimated）が存在すること。payMember・members（1人以上）・kmPerGas・pricePerGas がすべて設定済みであること
+
+**操作手順:**
+1. EventList から「週末ドライブ（燃費推定）」をタップして EventDetail を開く
+2. 「概要」タブをタップする
+3. 画面をスクロールして集計セクションを表示する
+
+**期待結果:**
+- `Key('movingCostOverview_section_balance')` のウィジェットが画面上に存在する
+
+---
+
+### TC-MCB-005: 燃費推定モード: ガソリン支払者の収支がプラスで表示される
+
+**前提:** TC-MCB-004 の状態が達成されていること
+
+**操作手順:**
+1. TC-MCB-004 の手順を実行する
+2. 収支バランスセクションを確認する
+
+**期待結果:**
+- `Key('movingCostOverview_row_balance_0')` のウィジェットが存在する
+- payMember（ガソリン支払者）に対応する行の金額テキストが `+` を含む
+
+---
+
+### TC-MCB-006: 収支データなし: 収支バランスセクションが非表示になる
+
+**前提:** event-003「近所のドライブ」（movingCost）が存在すること。markLinks が空（給油実績なし）であること
+
+**操作手順:**
+1. EventList から「近所のドライブ」をタップして EventDetail を開く
+2. 「概要」タブをタップする
+3. 画面をスクロールして集計セクションを確認する
+
+**期待結果:**
+- `Key('movingCostOverview_section_balance')` のウィジェットが画面上に存在しない
+
+---
+
+## TC-MCV: MichiInfoカード トピック別表示切り替え（F-4）
+
+TopicConfig フラグ（`showMarkDate` / `showMarkMembers` / `showLinkDate`）の TopicType別設定値に従って、Mark・Link カードの表示内容が正しく切り替わることを確認する。
+
+### テストシナリオ一覧
+
+| ID | シナリオ名 | 対象トピック | 優先度 |
+|---|---|---|---|
+| TC-MCV-001 | movingCostのMarkカードに日付が表示される | movingCost | High |
+| TC-MCV-002 | movingCostのMarkカードにメンバーが表示されない | movingCost | High |
+| TC-MCV-003 | movingCostのMarkカードに累積メーターが表示される | movingCost | High |
+| TC-MCV-004 | movingCostのLinkカードに日付が表示される | movingCost | High |
+| TC-MCV-005 | travelExpenseのMarkカードに名称が表示される | travelExpense | High |
+| TC-MCV-006 | travelExpenseのMarkカードにメンバーが表示される | travelExpense | High |
+| TC-MCV-007 | travelExpenseのLinkカードに日付が表示されない | travelExpense | High |
+
+**使用シードデータ:**
+- event-001「箱根日帰りドライブ」（movingCost）: ml-001（Mark: 自宅出発, meter=45230）、ml-002（Link: 東名高速）
+- event-002「富士五湖キャンプ」（travelExpense）: ml-006（Mark: 自宅出発, members=太郎・花子・健太）、ml-007（Link: 中央道）
+
+---
+
+### TC-MCV-001: movingCostのMarkカードに日付が表示される
+
+**前提:** event-001「箱根日帰りドライブ」（movingCost）のミチタブが表示されている
+
+**操作手順:**
+1. EventList から「箱根日帰りドライブ」をタップして EventDetail を開く
+2. 「ミチ」タブをタップする
+3. Markカード（ml-001）を確認する
+
+**期待結果:**
+- `Key('michiInfo_text_markDate_ml-001')` が表示されている（`findsOneWidget`）
+- 表示される日付文字列が空でない
+
+---
+
+### TC-MCV-002: movingCostのMarkカードにメンバーが表示されない
+
+**前提:** event-001「箱根日帰りドライブ」（movingCost）のミチタブが表示されている。ml-001 にメンバー（太郎・花子）が設定されている
+
+**操作手順:**
+1. EventList から「箱根日帰りドライブ」をタップして EventDetail を開く
+2. 「ミチ」タブをタップする
+3. Markカード（ml-001）を確認する
+
+**期待結果:**
+- `Key('michiInfo_text_markMembers_ml-001')` が表示されていない（`findsNothing`）
+- movingCost の `showMarkMembers = false` に従い非表示であること
+
+---
+
+### TC-MCV-003: movingCostのMarkカードに累積メーターが表示される
+
+**前提:** event-001「箱根日帰りドライブ」（movingCost）のミチタブが表示されている。ml-001 の meterValue=45230 が設定されている
+
+**操作手順:**
+1. EventList から「箱根日帰りドライブ」をタップして EventDetail を開く
+2. 「ミチ」タブをタップする
+3. Markカード（ml-001）を確認する
+
+**期待結果:**
+- 「km」を含むテキストが表示されている（`findsWidgets`）
+- 既存の累積メーター表示が退行していないこと
+
+---
+
+### TC-MCV-004: movingCostのLinkカードに日付が表示される
+
+**前提:** event-001「箱根日帰りドライブ」（movingCost）のミチタブが表示されている
+
+**操作手順:**
+1. EventList から「箱根日帰りドライブ」をタップして EventDetail を開く
+2. 「ミチ」タブをタップする
+3. Linkカード（ml-002）を確認する
+
+**期待結果:**
+- `Key('michiInfo_text_linkDate_ml-002')` が表示されている（`findsOneWidget`）
+- 表示される日付文字列が空でない
+- movingCost の `showLinkDate = true` に従い表示されること
+
+---
+
+### TC-MCV-005: travelExpenseのMarkカードに名称が表示される
+
+**前提:** event-002「富士五湖キャンプ」（travelExpense）のミチタブが表示されている。ml-006 の名称「自宅出発」が設定されている
+
+**操作手順:**
+1. EventList から「富士五湖キャンプ」をタップして EventDetail を開く
+2. 「ミチ」タブをタップする
+3. Markカード（ml-006）を確認する
+
+**期待結果:**
+- 「自宅出発」テキストが表示されている（`findsWidgets`）
+- `Key('michiInfo_text_markDate_ml-006')` の日付も同時に表示されている
+
+---
+
+### TC-MCV-006: travelExpenseのMarkカードにメンバーが表示される
+
+**前提:** event-002「富士五湖キャンプ」（travelExpense）のミチタブが表示されている。ml-006 にメンバー（太郎・花子・健太）が設定されている
+
+**操作手順:**
+1. EventList から「富士五湖キャンプ」をタップして EventDetail を開く
+2. 「ミチ」タブをタップする
+3. Markカード（ml-006）を確認する
+
+**期待結果:**
+- `Key('michiInfo_text_markMembers_ml-006')` が表示されている（`findsOneWidget`）
+- 表示テキストに「太郎」「花子」「健太」のいずれかのメンバー名が含まれている
+- travelExpense の `showMarkMembers = true` に従い表示されること
+
+---
+
+### TC-MCV-007: travelExpenseのLinkカードに日付が表示されない
+
+**前提:** event-002「富士五湖キャンプ」（travelExpense）のミチタブが表示されている
+
+**操作手順:**
+1. EventList から「富士五湖キャンプ」をタップして EventDetail を開く
+2. 「ミチ」タブをタップする
+3. Linkカード（ml-007）を確認する
+
+**期待結果:**
+- `Key('michiInfo_text_linkDate_ml-007')` が表示されていない（`findsNothing`）
+- travelExpense の `showLinkDate = false` に従い非表示であること
 
 ---
