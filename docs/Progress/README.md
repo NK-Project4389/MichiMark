@@ -139,3 +139,4 @@
 | [2026-04-14_test__T368-B9-MichiInfo-Mark間隔修正テスト全件PASS.md](./2026-04-14_test__T368-B9-MichiInfo-Mark間隔修正テスト全件PASS.md) | T-368 B-9 MichiInfo InsertMode時のMark間隔修正 Integration Test 8PASS/0FAIL/0SKIP |
 | [2026-04-14_test__T371-B10-マスタ非表示フィルタテスト全件PASS.md](./2026-04-14_test__T371-B10-マスタ非表示フィルタテスト全件PASS.md) | T-371 B-10 マスタ非表示フィルタ Integration Test 4PASS/1SKIP/0FAIL |
 | [2026-04-14_test_B13-B14-マスタ非表示フィルタ-FAB再押しテスト全件PASS.md](./2026-04-14_test_B13-B14-マスタ非表示フィルタ-FAB再押しテスト全件PASS.md) | T-380 B-13 BasicInfoマスタ非表示フィルタ 4PASS/0FAIL・T-383 B-14 FAB再押し 2PASS/0FAIL |
+| [2026-04-14_fix__B13-B14-B15-バグ修正3件完了.md](./2026-04-14_fix__B13-B14-B15-バグ修正3件完了.md) | B-13〜B-15 バグ修正3件完了（BasicInfo非表示フィルタ・FAB再押し・燃費推定経費合計）8PASS/0FAIL |

@@ -422,10 +422,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-384a | B-15: 燃費推定 経費合計フォールバック 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_B13-B14-B15 | event_detail_overview_adapter.dart の totalPaymentLabel に effectiveGasPrice fallback 追加 |
-| T-384b | B-15: 燃費推定 経費合計フォールバック テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_B13-B14-B15 | |
-| T-385 | B-15: レビュー | reviewer | `TODO` | | |
-| T-386 | B-15: テスト実行 | tester | `TODO` | | |
+| T-384a | B-15: 燃費推定 経費合計フォールバック 実装 | flutter-dev | `DONE` | | event_detail_overview_adapter.dart の totalPaymentLabel に effectiveGasPrice fallback 追加 |
+| T-384b | B-15: 燃費推定 経費合計フォールバック テストコード実装 | tester | `DONE` | | TC-MCE-001〜002 実装済み（integration_test/moving_cost_estimated_expense_test.dart） |
+| T-385 | B-15: レビュー | reviewer | `DONE` | | 承認 |
+| T-386 | B-15: テスト実行 | tester | `DONE` | | 2PASS/0FAIL/0SKIP（TC-MCE-001〜002 全件PASS） |
 
 ---
 
