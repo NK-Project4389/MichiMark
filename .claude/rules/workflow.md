@@ -90,3 +90,19 @@ designer（HTMLレポート・docs/Design/draft/ に叩き作成）
 ```
 
 - ユーザーの承認なしに叩きをそのまま要件書として格納しない
+
+## マーケティングフロー
+
+```
+marketer（戦略立案・草案提示・考え方の説明）
+  ├── App Store テキスト草案 → ユーザー確認 → docs/AppStore/ に保存
+  ├── SNS投稿文草案 → ユーザー確認 → docs/Marketing/sns/ に保存
+  ├── ビジュアル要件書（叩き）→ designer（HTML デザインレポート）→ ユーザー確認
+  └── サクセスストーリー → ユーザー確認 → docs/Marketing/stories/ に保存
+
+公開後の分析サイクル（月次）:
+marketer（分析レポート作成・改善提案）
+  → ユーザーへ提示
+  ├── UX/機能改善 → product-manager（要件書）→ 通常の新機能サイクルへ
+  └── App Store最適化 → marketer（メタデータ更新草案）→ ユーザー確認
+```
