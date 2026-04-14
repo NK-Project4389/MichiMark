@@ -382,6 +382,53 @@
 
 ---
 
+## B-13: BasicInfo マスタ非表示フィルタ漏れ（Trans・Member・Tag）
+
+> マスタで非表示設定したTrans・Member・Tagが、概要タブのBasicInfoセクション（インライン入力）で候補として表示されてしまう。
+> B-10 はMarkDetail/LinkDetail/PaymentDetailのみ修正。BasicInfoBlocに `isVisible` フィルタが未実装。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-378a | B-13: BasicInfo マスタ非表示フィルタ 実装 | flutter-dev | `TODO` | | basic_info_bloc.dart に isVisible フィルタ追加 |
+| T-378b | B-13: BasicInfo マスタ非表示フィルタ テストコード実装 | tester | `TODO` | | |
+| T-379 | B-13: レビュー | reviewer | `TODO` | | |
+| T-380 | B-13: テスト実行 | tester | `TODO` | | |
+
+---
+
+## B-14: イベント一覧プラスボタン トピック未選択後に再押し不可
+
+> イベント一覧の＋（FAB）を押してトピック選択シートを表示し、何も選択せずに閉じると、
+> 次回以降プラスボタンを押してもシートが開かなくなる。
+> 原因: シート未選択キャンセル時に `showTopicSelection: true` がリセットされず、
+> 次回プラス押下でも同じ State（Equatable）なのでBlocがEmitしない → Listenerが発火しない。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-381a | B-14: プラスボタン再押し不可 実装 | flutter-dev | `TODO` | | event_list_page.dart の _handleShowTopicSelection でキャンセル時にBlocへリセットイベント送信 |
+| T-381b | B-14: プラスボタン再押し不可 テストコード実装 | tester | `TODO` | | |
+| T-382 | B-14: レビュー | reviewer | `TODO` | | |
+| T-383 | B-14: テスト実行 | tester | `TODO` | | |
+
+---
+
+## B-15: 移動コスト燃費推定 経費合計に反映されない
+
+> 移動コスト燃費推定トピックで燃費・ガソリン単価・地点を登録しても、
+> 集計タブの「経費合計」が「---」になる。
+> 原因: EventDetailOverviewAdapter の totalPaymentLabel が result.totalPayment（給油実績）のみ参照。
+> 燃費推定モードでは給油実績がないため null → 「---」表示。
+> effectiveGasPrice（推定値）をフォールバックとして使うべき。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-384a | B-15: 燃費推定 経費合計フォールバック 実装 | flutter-dev | `TODO` | | event_detail_overview_adapter.dart の totalPaymentLabel に effectiveGasPrice fallback 追加 |
+| T-384b | B-15: 燃費推定 経費合計フォールバック テストコード実装 | tester | `TODO` | | |
+| T-385 | B-15: レビュー | reviewer | `TODO` | | |
+| T-386 | B-15: テスト実行 | tester | `TODO` | | |
+
+---
+
 ## B-8: 作成ボタン再押し不可バグ修正
 
 > イベント作成ボタンを押してトピック選択せずに戻ると、再度作成ボタンが押せなくなる
