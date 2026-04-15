@@ -475,8 +475,8 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-361 | POST-1/F-5: 要件書作成 | product-manager | `TODO` | | POST-1（T-361）とF-5（T-406）を統合 |
-| T-362 | POST-1/F-5: Spec作成 | architect | `BLOCKED` | | T-361完了後 |
+| T-361 | POST-1/F-5: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_from_mark_link.md |
+| T-362 | POST-1/F-5: Spec作成 | architect | `TODO` | | T-361完了 → 着手可能 |
 | T-363a | POST-1/F-5: 実装 | flutter-dev | `BLOCKED` | | |
 | T-363b | POST-1/F-5: テストコード実装 | tester | `BLOCKED` | | |
 | T-364 | POST-1/F-5: レビュー | reviewer | `BLOCKED` | | |
