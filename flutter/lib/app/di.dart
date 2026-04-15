@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:get_it/get_it.dart';
 
 import '../adapter/aggregation_service.dart';
 import '../repository/action_repository.dart';
+import '../repository/auth_repository.dart';
 import '../repository/event_repository.dart';
+import '../repository/impl/fake/fake_auth_repository.dart';
+import '../repository/impl/firebase/firebase_auth_repository.dart';
 import '../repository/impl/in_memory/in_memory_action_repository.dart';
 import '../repository/impl/in_memory/in_memory_event_repository.dart';
 import '../repository/impl/in_memory/in_memory_member_repository.dart';
@@ -18,6 +23,16 @@ import '../repository/trans_repository.dart';
 final getIt = GetIt.instance;
 
 void setupDi() {
+  // --- AuthRepository ---
+  final isTest = Platform.environment.containsKey('FLUTTER_TEST');
+  if (isTest) {
+    getIt.registerLazySingleton<AuthRepository>(() => FakeAuthRepository());
+  } else {
+    getIt.registerLazySingleton<AuthRepository>(
+      () => FirebaseAuthRepository(),
+    );
+  }
+
   // --- InMemory 実装（開発用） ---
   getIt.registerSingleton<EventRepository>(
     InMemoryEventRepository(initialItems: seedEvents),

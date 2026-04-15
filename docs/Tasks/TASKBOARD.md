@@ -260,9 +260,9 @@
 |---|---|---|---|---|---|
 | T-344 | Firebase基盤整備 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-firebase_infra.md（叩き作成済み） |
 | T-345 | Firebase基盤整備 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-firebase_infra.md |
-| T-346a | Firebase基盤整備 実装 | flutter-dev | `TODO` | | FS-firebase_infra.md 参照 |
-| T-346b | Firebase基盤整備 テストコード実装 | tester | `BLOCKED` | | |
-| T-347 | Firebase基盤整備 レビュー | reviewer | `BLOCKED` | | |
+| T-346a | Firebase基盤整備 実装 | flutter-dev | `DONE` | | AuthRepository・Firebase初期化・DI登録実装完了 |
+| T-346b | Firebase基盤整備 テストコード実装 | tester | `BLOCKED` | | Firebase実機接続が必要なためUnit Test（fake_cloud_firestore）で対応 |
+| T-347 | Firebase基盤整備 レビュー | reviewer | `DONE` | | 承認（firebase_options gitignore追加） |
 | T-348 | Firebase基盤整備 テスト実行 | tester | `BLOCKED` | | |
 
 ---

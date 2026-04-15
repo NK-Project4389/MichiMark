@@ -1,6 +1,12 @@
 # App Store Connect API key config (contains auth credentials)
 .claude/testflight.json
 
+# Firebase config files (contain API keys - manage outside git)
+flutter/lib/firebase/firebase_options_dev.dart
+flutter/lib/firebase/firebase_options_prod.dart
+flutter/ios/Runner/dev/GoogleService-Info.plist
+flutter/ios/Runner/prod/GoogleService-Info.plist
+
 # Claude Code worktrees (temporary isolated branches)
 .claude/worktrees/
 
