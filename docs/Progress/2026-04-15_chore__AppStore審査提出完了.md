@@ -35,15 +35,20 @@
 
 ### テスト修正（flutter-devエージェント）
 - 全件: 241PASS / 112SKIP / 11FAIL（修正前39FAIL+38FAILから大幅改善）
-- 残11FAIL調査中（basic_info_trans_fuel / custom_numeric_keypadで2件特定済み）
+- basic_info_trans_fuel_test.dart の TC-BTF-001/002 を修正・2PASS確認
+
+### basic_info_trans_fuel テスト修正（tester）
+- 原因: 交通手段UIがFilterChip（インライン）に変わっているのにテストが別画面（InkWell + 確定ボタン）を想定していた
+- 修正: `openTransSelection()` と `selectTransAndConfirm()` をFilterChip対応に書き換え
+- 結果: TC-BTF-001・TC-BTF-002 → **2PASS / 0FAIL**
 
 ---
 
 ## 未完了・次回やること
 
-1. **残11件のFAIL修正**（T-260g完了のため必要）
-   - basic_info_trans_fuel_test.dart で2件特定済み → 内容確認・修正
-   - 全件PASS後にgit push
+1. **残9件のFAIL修正**（basic_info_trans_fuelの2件は解消済み）
+   - 残9件は未特定（全件テスト実行で洗い出しが必要）
+   - 全件PASS後にgit push → T-260g完了
 
 2. **審査結果待ち**（通常1〜3日）
    - 審査通過 → App Store公開設定

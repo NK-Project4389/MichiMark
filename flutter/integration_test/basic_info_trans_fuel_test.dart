@@ -58,73 +58,51 @@ void main() {
       if (find.text('概要').evaluate().isNotEmpty ||
           find.text('ミチ').evaluate().isNotEmpty) break;
     }
+    // BasicInfoSection のロード完了を待つ（「タップして編集」ヒントが表示されるまで）
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byIcon(Icons.edit).evaluate().isNotEmpty) break;
+      if (find.text('タップして編集').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
     return true;
   }
 
-  /// BasicInfo タブの「編集」アイコンをタップして編集モードに入る。
+  /// BasicInfo タブの参照モードエリアをタップして編集モードに入る。
   Future<bool> enterEditMode(WidgetTester tester) async {
-    final editButton = find.byIcon(Icons.edit);
-    if (editButton.evaluate().isEmpty) return false;
-    await tester.tap(editButton);
+    final readArea = find.byKey(const Key('basicInfoRead_container_section'));
+    if (readArea.evaluate().isEmpty) return false;
+    await tester.tap(readArea);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       // 編集モードでは「キャンセル」ボタンが表示される
       if (find.text('キャンセル').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
-    return true;
+    return find.text('キャンセル').evaluate().isNotEmpty;
   }
 
-  /// 交通手段選択行（「交通手段」ラベル行）をタップして選択画面を開く。
+  /// 編集モードで交通手段チップセクションが表示されているか確認する。
+  /// BasicInfo編集モードでは交通手段はFilterChipでインライン表示される（別画面なし）。
   Future<bool> openTransSelection(WidgetTester tester) async {
-    // _SelectionRow は InkWell + Row(label + value + chevron_right) 構造
-    // 「交通手段」ラベルのテキストを含む行をタップする
-    final transRow = find.ancestor(
-      of: find.text('交通手段'),
-      matching: find.byType(InkWell),
-    );
-    if (transRow.evaluate().isEmpty) return false;
-    await tester.tap(transRow.first);
-    for (var i = 0; i < 15; i++) {
-      await tester.pump(const Duration(milliseconds: 300));
-      // Selection画面: AppBar に「確定」ボタンが表示される
-      if (find.text('確定').evaluate().isNotEmpty) break;
-    }
-    await tester.pump(const Duration(milliseconds: 300));
-    return true;
+    // 編集モードでは交通手段チップが直接表示される。「交通手段」ラベルが見えているかを確認する。
+    return find.text('交通手段').evaluate().isNotEmpty;
   }
 
-  /// Selection画面で指定ラベルのアイテムをタップして選択し、「確定」をタップして戻る。
+  /// 指定交通手段のFilterChipをタップして選択する（確定ボタンは不要）。
   Future<bool> selectTransAndConfirm(
     WidgetTester tester,
     String transName,
   ) async {
-    // アイテム（ListTile）をタップ
-    final item = find.text(transName);
-    if (item.evaluate().isEmpty) {
-      print('[selectTransAndConfirm] "$transName" が見つかりませんでした');
+    // FilterChip の中の Text をターゲットにする
+    final chip = find.ancestor(
+      of: find.text(transName),
+      matching: find.byType(FilterChip),
+    );
+    if (chip.evaluate().isEmpty) {
+      print('[selectTransAndConfirm] "$transName" のFilterChipが見つかりませんでした');
       return false;
     }
-    await tester.tap(item.first);
-    await tester.pump(const Duration(milliseconds: 300));
-
-    // 「確定」ボタンをタップ
-    final confirmButton = find.text('確定');
-    if (confirmButton.evaluate().isEmpty) {
-      print('[selectTransAndConfirm] 「確定」ボタンが見つかりませんでした');
-      return false;
-    }
-    await tester.tap(confirmButton.first);
-    for (var i = 0; i < 15; i++) {
-      await tester.pump(const Duration(milliseconds: 300));
-      // BasicInfo 編集モードに戻ったら「キャンセル」が見える
-      if (find.text('キャンセル').evaluate().isNotEmpty) break;
-    }
+    await tester.tap(chip.first);
     await tester.pump(const Duration(milliseconds: 500));
     return true;
   }
@@ -138,8 +116,8 @@ void main() {
     await tester.tap(saveButton);
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      // 参照モードに戻ると Icons.edit ボタンが表示される
-      if (find.byIcon(Icons.edit).evaluate().isNotEmpty) break;
+      // 参照モードに戻ると「タップして編集」ヒントが表示される
+      if (find.text('タップして編集').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
   }
