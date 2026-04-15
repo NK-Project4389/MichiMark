@@ -145,3 +145,4 @@
 | [2026-04-15_test__IntegrationTest全件PASS達成.md](./2026-04-15_test__IntegrationTest全件PASS達成.md) | Integration Test 全件 PASS 達成・3シャード並行実行追加 |
 | [2026-04-15_chore__環境バックアップ・タスクボード整理.md](./2026-04-15_chore__環境バックアップ・タスクボード整理.md) | 開発環境バックアップ（docs/Environment/）・タスクボードDONE更新 |
 | [2026-04-15_INFRA-1_B-16.md](./2026-04-15_INFRA-1_B-16.md) | INFRA-1 Firebase基盤整備Spec作成・ER図HTML・B-16設定画面UI修正（18PASS） |
+| [2026-04-15_test__INV-1-Unit-Test-43PASS.md](./2026-04-15_test__INV-1-Unit-Test-43PASS.md) | INV-1 招待機能バックエンド Unit Test 43件PASS（T-326b DONE） |
