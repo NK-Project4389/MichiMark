@@ -528,6 +528,24 @@
 
 ---
 
+## INFRA-2: Google Workspace 移行（ドメイン設計 xlsx → Google Sheets）
+
+> Office から Google Workspace へ移行。Claude Code の Google Workspace MCP 連携を活用して
+> `docs/Domain/Domain設計一覧.xlsx` を Google Sheets に移行し、Claude Code から直接読み書きできる環境を整える。
+
+### 前提確認チェックリスト
+- Google Workspace アカウント（Google Cloud Console 含む）の用意
+- OAuth 2.0 認証情報の作成（Google Cloud Console: Desktop app タイプ）
+- Claude Code への Google Workspace MCP 登録
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-406 | Google Workspace MCP 動作確認 | orchestrator | `TODO` | | Google Cloud Console でOAuth設定 → MCP登録 → Claude Code から Sheets 読み書き確認 |
+| T-407 | Domain設計一覧.xlsx → Google Sheets 移行 | orchestrator | `BLOCKED` | | T-406完了後。Drive にアップロード → Sheets に変換 → URL を docs/Domain/ に記録 |
+| T-408 | 移行後の運用ルール整備 | orchestrator | `BLOCKED` | | T-407完了後。CLAUDE.md or docs/Domain/README.md に Google Sheets URL・MCP操作方法を記載 |
+
+---
+
 ~~## F-5: MarkDetail/LinkDetailからPaymentDetail情報を登録する機能~~
 
 > POST-1（T-361〜365）と統合済み。F-5タスクは廃止。
