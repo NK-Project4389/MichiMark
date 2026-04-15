@@ -55,32 +55,37 @@ MichiMarkのイベント招待機能を支えるバックエンドAPIとFirestor
 
 # 3. Firestoreデータ設計
 
-## 3.1 既存コレクション構造（INFRA-1で定義済み）
+## 3.1 既存コレクション構造（INFRA-1で定義済み・更新後）
 
 ```
-users/{uid}/
-  ├── profile
-  ├── members/{memberId}
-  ├── trans/{transId}
-  ├── tags/{tagId}
-  ├── actions/{actionId}
-  ├── topics/{topicId}
+organizations/{orgId}/               # orgId = ownerのuid
+  ├── members/{memberId}             # メンバーマスター（人名簿）
+  │     linkedUid: null | string     # 招待参加後に紐づくFirebase UID
+  ├── trans/ tags/ actions/ topics/  # マスターデータ
   └── events/{eventId}/
-        ├── （eventドキュメント本体）
-        ├── markLinks/{markLinkId}
-        └── payments/{paymentId}
+        ├── ownerUid: string
+        ├── markLinks/ payments/ actionTimeLogs/
+        └── participants/{memberId}  # イベント単位アクセス制御
+              linkedUid: null | string
+              role: 'editor' | 'viewer'
+
+users/{uid}/
+  └── profile
 ```
 
 ## 3.2 新規コレクション: invitations
+
+招待の発行記録。招待受け入れ後は `participants` に反映される。
 
 **パス:** `invitations/{invitationId}`
 
 | フィールド | 型 | 制約 | 説明 |
 |---|---|---|---|
 | id | string | ドキュメントIDと同一 | UUID |
-| eventId | string | 必須 | users/{uid}/events/{eventId} への参照（eventId部分のみ保持） |
-| ownerUid | string | 必須 | イベントオーナーの Firebase UID |
-| invitedBy | string | 必須 | 招待者の Firebase UID（ownerUidと同一のケースが多いが分離して定義） |
+| orgId | string | 必須 | organizations/{orgId} のorgId（= オーナーuid） |
+| eventId | string | 必須 | organizations/{orgId}/events/{eventId} のeventId |
+| memberId | string | 必須 | organizations/{orgId}/members/{memberId} のmemberId（招待対象） |
+| ownerUid | string | 必須 | イベントオーナーの Firebase UID（= orgId） |
 | token | string | 必須・ユニーク | URL用ランダム8文字英数字（小文字）。例: `abc123xy` |
 | code | string | 必須・ユニーク | 手入力用。形式: `XXX-9999`（英大文字3文字 + ハイフン + 数字4桁）。例: `ABC-1234` |
 | role | string | 必須 | `'viewer'` または `'editor'` |
@@ -90,33 +95,34 @@ users/{uid}/
 | createdAt | Timestamp | 必須 | 作成日時 |
 
 **インデックス:**
-- `token` フィールドの単独インデックス（GET /api/invitations/[token] でのルックアップ）
-- `code` フィールドの単独インデックス（POST /api/invitations/code でのルックアップ）
+- `token` フィールドの単独インデックス
+- `code` フィールドの単独インデックス
 
-## 3.3 新規コレクション: eventMembers
+## 3.3 participants（招待受け入れ後の書き込み先）
 
-招待承諾後のイベント参加記録。invitations コレクションとは独立して保持する。
+`invitations` は発行記録。受け入れ時は以下2ドキュメントをFirestoreトランザクションで同時更新する：
 
-**パス:** `eventMembers/{membershipId}`
+1. `organizations/{orgId}/members/{memberId}.linkedUid = uid`
+2. `organizations/{orgId}/events/{eventId}/participants/{memberId}.linkedUid = uid`
 
-| フィールド | 型 | 制約 | 説明 |
-|---|---|---|---|
-| id | string | ドキュメントIDと同一 | UUID（バックエンドが生成） |
-| eventId | string | 必須 | イベントID |
-| ownerUid | string | 必須 | イベントオーナーの Firebase UID（アクセス制御用） |
-| memberUid | string | 必須 | 参加ユーザーの Firebase UID |
-| role | string | 必須 | `'viewer'` または `'editor'` |
-| invitationId | string | 必須 | 使用した invitations ドキュメントのID |
-| joinedAt | Timestamp | 必須 | 参加日時 |
+**「自分が参加しているイベント一覧」の取得:**
+```
+// 逆引きインデックスは持たない。コレクショングループクエリで取得する
+db.collectionGroup('participants').where('linkedUid', '==', currentUid)
+```
 
-**インデックス:**
-- `eventId + memberUid` の複合インデックス（重複参加チェック用）
+## 3.4 データ関係図
 
-## 3.4 eventsコレクションとの関係
+```
+invitations/{id}
+  orgId ──→ organizations/{orgId}/
+  eventId ──→ events/{eventId}/
+  memberId ──→ members/{memberId}
 
-- `eventMembers` は `invitations` 経由で参加したユーザーの記録
-- イベントオーナー自身は `eventMembers` に記録しない（ownerUid で識別）
-- Flutter クライアントがイベントを表示する際は `eventMembers` を参照してメンバーの `role` を取得する
+招待受け入れ時（トランザクション）:
+  members/{memberId}.linkedUid = uid        ← 人名簿にUID紐づけ
+  participants/{memberId}.linkedUid = uid   ← イベントアクセス権付与
+```
 
 ---
 
@@ -129,8 +135,10 @@ users/{uid}/
 ```typescript
 // POST /api/invitations
 type CreateInvitationRequest = {
+  orgId: string;          // organizations/{orgId} のorgId（= オーナーuid）
   eventId: string;
-  invitedBy: string;      // Firebase UID
+  memberId: string;       // 招待対象の memberId（organizations/{orgId}/members/{memberId}）
+  invitedBy: string;      // Firebase UID（ownerUid と同一）
   role: 'viewer' | 'editor';
   maxUses: number | null; // 1 | 5 | null
   expiresHours: number;   // 24 | 72 | 168
@@ -252,14 +260,15 @@ type ApiErrorResponse = {
 
 **Firestoreトランザクション（アトミック操作）:**
 1. `invitations` コレクションで `token == [token]` のドキュメントを取得する
-2. ドキュメントが存在しない場合 → `not_found` エラー（400）
+2. ドキュメントが存在しない場合 → `not_found` エラー（404）
 3. `expiresAt` が現在時刻より過去の場合 → `expired` エラー（400）
 4. `maxUses != null && usedCount >= maxUses` の場合 → `used_up` エラー（400）
-5. `eventMembers` コレクションで `eventId + memberUid == uid` の重複チェックを行う
+5. `organizations/{orgId}/events/{eventId}/participants/{memberId}.linkedUid` の重複チェック
 6. 重複が存在する場合 → `already_joined` エラー（400）
-7. トランザクション内で以下を実行する:
-   - `invitations/{invitationId}` の `usedCount` を +1 インクリメントする
-   - `eventMembers/{newId}` に新規ドキュメントを作成する
+7. トランザクション内で以下の2ドキュメントを同時更新する:
+   - `invitations/{invitationId}.usedCount` を +1 インクリメントする
+   - `organizations/{orgId}/members/{memberId}.linkedUid = uid` を更新する
+   - `organizations/{orgId}/events/{eventId}/participants/{memberId}.linkedUid = uid` を更新する（`joinedAt` も設定）
 
 **レスポンス:**
 - 成功: 200 + `JoinEventResponse`
@@ -313,17 +322,11 @@ match /invitations/{invitationId} {
 
 **設計根拠:** `invitations` コレクションへのアクセスはすべて Firebase Admin SDK（サービスアカウント）経由のバックエンドAPIが行う。クライアントからの直接Firestoreアクセスを禁止することでtokenの総当たり攻撃を防ぐ。
 
-## 5.2 eventMembers コレクション
+## 5.2 organizations配下の participants
 
-```
-match /eventMembers/{membershipId} {
-  // すべてのクライアント操作を禁止
-  // バックエンドAPIの Admin SDK 経由のみ書き込み可
-  allow read, write: if false;
-}
-```
+`organizations/{orgId}/events/{eventId}/participants/{memberId}` はINFRA-1のセキュリティルールにより、オーナー（`request.auth.uid == orgId`）のみ直接アクセス可能。
 
-**設計根拠:** `eventMembers` はバックエンドAPIのトランザクション内でのみ操作される。クライアントからの直接操作はすべて禁止する。
+招待ユーザーの `participants` 更新はバックエンドAPI（Admin SDK）経由のみとし、クライアントからの直接書き込みは禁止する。
 
 ---
 

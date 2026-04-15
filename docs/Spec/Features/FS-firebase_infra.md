@@ -157,28 +157,45 @@ iOS側はRunScript（Build Phase）でFLAVOR値に応じたGoogleService-Info.pl
 
 ## 5.1 設計方針
 
-- `users/{uid}` を起点にユーザーデータを格納する
-- マスターデータ（members/trans/tags/actions/topics）はユーザー単位で管理する
+- `organizations/{orgId}` を起点にトランザクション系・マスター系データを格納する
+- **`orgId = ownerのuid`**（現時点）。将来的に組織エンティティを独立させる際もIDを変えずに移行できる
+- マスターデータ（members/trans/tags/actions/topics）は `organizations/{orgId}` 配下で管理する（組織単位で共有）
 - イベント（events）とサブデータ（markLinks/payments）はサブコレクションで管理する
-- Webからも参照しやすいよう、ネスト深度を最大3階層（users/{uid}/events/{eventId}/markLinks/{markLinkId}）に抑える
+- イベントへのアクセス制御は **イベント単位**（`participants` サブコレクション）で行う。org所属だけではイベントを閲覧できない
+- `users/{uid}` はプロフィールのみを持つ（個人アカウント情報）
+- 「自分が参加しているイベント一覧」はFirestoreコレクショングループクエリ（`participants`）で取得する。逆引きインデックスは持たない
 - IDはすべてUUID文字列を使用する（drift既存IDをそのまま移行できる）
+
+### orgId = uid の根拠
+
+```
+User A（uid = "uid-aaa"）がアプリを初回起動
+→ organizations/uid-aaa/ が自動的に存在する扱い
+→ 追加コストゼロで自分がadminの組織を持つ
+
+将来 organizations を本格エンティティ化するときも
+orgId の値は変わらないためデータ移行不要
+```
 
 ## 5.2 コレクション構造
 
 ```
-users/{uid}/
-  ├── profile                          # ドキュメント（1件固定）
+organizations/{orgId}/               # orgId = ownerのuid
+  ├── members/{memberId}             # メンバーマスター（人名簿）
+  ├── trans/{transId}                # 交通手段マスター
+  ├── tags/{tagId}                   # タグマスター
+  ├── actions/{actionId}             # アクションマスター
+  ├── topics/{topicId}               # トピックマスター
   │
-  ├── members/{memberId}               # メンバーマスター
-  ├── trans/{transId}                  # 交通手段マスター
-  ├── tags/{tagId}                     # タグマスター
-  ├── actions/{actionId}               # アクションマスター
-  ├── topics/{topicId}                 # トピックマスター
-  │
-  └── events/{eventId}/
+  └── events/{eventId}/              # イベント（トランザクション系）
         ├── （eventドキュメント本体）
-        ├── markLinks/{markLinkId}     # マーク/リンク
-        └── payments/{paymentId}       # 支払情報
+        ├── markLinks/{markLinkId}   # マーク/リンク
+        ├── payments/{paymentId}     # 支払情報
+        ├── actionTimeLogs/{logId}   # アクションタイムログ
+        └── participants/{memberId}  # イベント単位アクセス制御
+
+users/{uid}/
+  └── profile                        # 個人プロフィールのみ
 ```
 
 ## 5.3 各ドキュメントのフィールド定義
@@ -193,19 +210,22 @@ users/{uid}/
 | updatedAt | Timestamp | 更新日時 |
 | schemaVersion | Number | データ移行バージョン（移行完了後に更新） |
 
-### users/{uid}/members/{memberId}
+### organizations/{orgId}/members/{memberId}
+
+人名簿。org所属の証明であり、イベントアクセス権とは独立する。
 
 | フィールド | 型 | 説明 |
 |---|---|---|
 | id | String | UUID（driftのIDをそのまま使用） |
 | memberName | String | メンバー名（必須） |
+| linkedUid | String? | 招待・参加後に紐づくFirebase UID（null = 未参加） |
 | mailAddress | String? | メールアドレス（将来拡張用） |
 | isVisible | Boolean | 表示フラグ |
 | isDeleted | Boolean | 論理削除フラグ |
 | createdAt | Timestamp | 登録日時 |
 | updatedAt | Timestamp | 更新日時 |
 
-### users/{uid}/trans/{transId}
+### organizations/{orgId}/trans/{transId}
 
 | フィールド | 型 | 説明 |
 |---|---|---|
@@ -218,7 +238,7 @@ users/{uid}/
 | createdAt | Timestamp | 登録日時 |
 | updatedAt | Timestamp | 更新日時 |
 
-### users/{uid}/tags/{tagId}
+### organizations/{orgId}/tags/{tagId}
 
 | フィールド | 型 | 説明 |
 |---|---|---|
@@ -229,7 +249,7 @@ users/{uid}/
 | createdAt | Timestamp | 登録日時 |
 | updatedAt | Timestamp | 更新日時 |
 
-### users/{uid}/actions/{actionId}
+### organizations/{orgId}/actions/{actionId}
 
 | フィールド | 型 | 説明 |
 |---|---|---|
@@ -244,7 +264,7 @@ users/{uid}/
 | createdAt | Timestamp | 登録日時 |
 | updatedAt | Timestamp | 更新日時 |
 
-### users/{uid}/topics/{topicId}
+### organizations/{orgId}/topics/{topicId}
 
 | フィールド | 型 | 説明 |
 |---|---|---|
@@ -257,7 +277,7 @@ users/{uid}/
 | createdAt | Timestamp | 登録日時 |
 | updatedAt | Timestamp | 更新日時 |
 
-### users/{uid}/events/{eventId}
+### organizations/{orgId}/events/{eventId}
 
 | フィールド | 型 | 説明 |
 |---|---|---|
@@ -267,6 +287,7 @@ users/{uid}/
 | kmPerGas | Number? | 燃費（イベント上書き値） |
 | pricePerGas | Number? | ガソリン単価 |
 | payMemberId | String? | ガソリン支払者メンバーID |
+| ownerUid | String | イベントオーナーのFirebase UID（= orgId） |
 | memberIds | Array\<String\> | 参加メンバーIDリスト |
 | tagIds | Array\<String\> | タグIDリスト |
 | topicId | String? | トピックID |
@@ -276,7 +297,28 @@ users/{uid}/
 
 備考: members/tags/topicはIDのみをeventドキュメントに保持し、実体はマスターコレクションを参照して解決する。
 
-### users/{uid}/events/{eventId}/markLinks/{markLinkId}
+### organizations/{orgId}/events/{eventId}/participants/{memberId}
+
+イベント単位のアクセス制御。org所属だけではイベントを閲覧できない。
+
+| フィールド | 型 | 説明 |
+|---|---|---|
+| memberId | String | organizations/{orgId}/members のmemberId（ドキュメントIDと同一） |
+| linkedUid | String? | 招待・参加後のFirebase UID（null = 未参加） |
+| role | String | `'editor'` または `'viewer'` |
+| invitedAt | Timestamp | 招待日時 |
+| joinedAt | Timestamp? | 参加確定日時（null = 未参加） |
+
+**整合性保証:** 参加確定時（招待受け入れ時）は以下2ドキュメントをFirestoreトランザクションで同時更新する：
+1. `organizations/{orgId}/members/{memberId}.linkedUid = uid`
+2. `organizations/{orgId}/events/{eventId}/participants/{memberId}.linkedUid = uid`
+
+**逆引き（自分が参加しているイベント一覧）:** `participants` コレクショングループクエリを使用する：
+```
+db.collectionGroup('participants').where('linkedUid', '==', currentUid)
+```
+
+### organizations/{orgId}/events/{eventId}/markLinks/{markLinkId}
 
 | フィールド | 型 | 説明 |
 |---|---|---|
@@ -285,6 +327,7 @@ users/{uid}/
 | markLinkType | String | 'mark' / 'link' |
 | markLinkDate | Timestamp | 記録日時 |
 | markLinkName | String? | 名称 |
+| ownerUid | String | イベントオーナーのFirebase UID（= orgId） |
 | memberIds | Array\<String\> | 参加メンバーIDリスト |
 | meterValue | Number? | 累積メーター（km） |
 | distanceValue | Number? | 区間距離（km） |
@@ -328,22 +371,24 @@ users/{uid}/
 アクションの現在状態は「イベント内の全actionTimeLogsの順序付き履歴」から決定されるため、
 特定のMarkLinkに紐づけると状態解決ロジックが複雑になる。イベント全体のログとして管理する。
 
-## 5.4 サブコレクション vs フラット採用の判断根拠
+## 5.4 設計判断の根拠
 
-markLinksおよびpaymentsをサブコレクションとした理由:
-- イベント単位での取得が主ユースケースであり、サブコレクションが自然な構造
-- 1イベントあたりのmarkLinks/payments件数は有限（数十件程度）でサブコレクション上限に達しない
-- Security Rulesでイベントオーナーを継承しやすい
-- Webからもイベント単位でデータ参照しやすい構造
+**organizations配下にマスター・イベントをまとめた理由:**
+- 招待機能でイベントを複数ユーザーが共有するとき、`users/{uid}/events/` 配下だと他ユーザーがアクセスできない
+- `orgId = uid` により既存UIDをそのまま流用でき、将来の組織エンティティ化もデータ移行不要
 
-マスターデータ（members/trans/tags/actions/topics）をフラットコレクションとした理由:
-- 複数イベントをまたいで共有するデータであり、events配下に置くと重複が発生する
-- ID参照方式にすることでデータ整合性を保ちやすい
+**イベント単位のアクセス制御（participants）にした理由:**
+- org所属 ≠ 全イベント閲覧。会社旅行に招待しても家族旅行は見せたくない
+- イベントごとに招待・閲覧権限を個別設定できる
 
-## 5.5 将来の招待機能対応
+**逆引きインデックスを持たない理由:**
+- `users/{uid}/eventAccess/` のような逆引きを持つと更新箇所が増え整合性リスクが上がる
+- Firestoreのコレクショングループクエリ（`participants`）で代替できる
+- 整合性保証が必要な更新箇所を2ドキュメント（members + participants）に絞れる
 
-- 招待を受けたユーザーが他ユーザーのイベントを参照する場合の設計はINV-1 Specで定義する
-- 本Specではオーナー単独アクセスのみをスコープとする
+**Firestoreトランザクションで整合性を保つ範囲:**
+- 招待受け入れ時: `members/{memberId}.linkedUid` と `participants/{memberId}.linkedUid` を同時更新
+- 件数が少ない（2ドキュメント）のでトランザクションで完結する
 
 ---
 
@@ -352,7 +397,9 @@ markLinksおよびpaymentsをサブコレクションとした理由:
 ## 6.1 基本方針
 
 - 認証済みユーザー（isAnonymousを含む）のみアクセスを許可する
-- 自分のUIDに一致する `users/{uid}` 配下のみ読み書きを許可する
+- `organizations/{orgId}` 配下はオーナー（`request.auth.uid == orgId`）のみ読み書きを許可する
+- `participants` への招待ユーザーのアクセス制御はバックエンドAPI（Admin SDK）経由で行う
+- `users/{uid}` 配下は自分のUIDのみアクセスを許可する
 - 未認証アクセスは全て拒否する
 
 ## 6.2 ルール構造
@@ -367,18 +414,41 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // ユーザー自身のデータのみアクセス可
+    // 個人プロフィール
     match /users/{uid}/{document=**} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // organizations配下: オーナー（orgId == uid）のみ
+    // 招待ユーザーのイベントアクセスはバックエンドAPI（Admin SDK）経由
+    match /organizations/{orgId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == orgId;
+    }
+
+    // invitationsコレクション: クライアント直接アクセス禁止（Admin SDKのみ）
+    match /invitations/{document=**} {
+      allow read, write: if false;
     }
   }
 }
 ```
 
-## 6.3 将来拡張（INV系対応時）
+## 6.3 招待ユーザーのイベントアクセス方針
 
-- 招待機能実装時に `invitations` コレクションと共有イベントへのアクセスルールを追加する
-- 本Spec時点では上記ルールのみで完結する
+招待されたユーザー（`participants` に登録済み）がイベントデータを読み書きする場合は、
+Flutter → Next.js API（INV系）→ Firebase Admin SDK の経路を経由する。
+クライアントが直接 `organizations/{orgId}/events/` を読み書きすることは現時点では禁止する。
+
+将来的にFlutterクライアントから直接参照する場合は、セキュリティルールに以下を追加する：
+```
+// 将来対応例（参考）
+match /organizations/{orgId}/events/{eventId}/{document=**} {
+  allow read: if request.auth != null && (
+    request.auth.uid == orgId ||
+    exists(/databases/$(database)/documents/organizations/$(orgId)/events/$(eventId)/participants/$(getMemberId(request.auth.uid)))
+  );
+}
+```
 
 ---
 
