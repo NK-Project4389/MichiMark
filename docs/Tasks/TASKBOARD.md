@@ -532,16 +532,16 @@
 
 > POST-1（T-361〜365）と統合済み。F-5タスクは廃止。
 
-## F-3: トピック追加（作業登録トピック）
+## F-3: トピック追加（訪問作業トピック）
 
-> 現在のトピック（movingCost / movingCostEstimated / travelExpense）に加え、「作業登録」用のトピックタイプを追加する。要件定義をユーザーと伴奏して進める。
+> 現在のトピック（movingCost / movingCostEstimated / travelExpense）に加え、「訪問作業」用のトピックタイプを追加する。
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-401 | F-3: 作業登録トピック 要件書作成 | product-manager | `TODO` | | ユーザーと伴奏して進める |
-| T-402 | F-3: 作業登録トピック Spec作成 | architect | `BLOCKED` | | T-401完了後 |
-| T-403a | F-3: 作業登録トピック 実装 | flutter-dev | `BLOCKED` | | |
-| T-403b | F-3: 作業登録トピック テストコード実装 | tester | `BLOCKED` | | |
+| T-401 | F-3: 訪問作業トピック 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_topic.md |
+| T-402 | F-3: 訪問作業トピック Spec作成 | architect | `TODO` | | T-401完了 |
+| T-403a | F-3: 訪問作業トピック 実装 | flutter-dev | `BLOCKED` | | T-402完了後 |
+| T-403b | F-3: 訪問作業トピック テストコード実装 | tester | `BLOCKED` | | |
 | T-404 | F-3: レビュー | reviewer | `BLOCKED` | | |
 | T-405 | F-3: テスト実行 | tester | `BLOCKED` | | |
 
