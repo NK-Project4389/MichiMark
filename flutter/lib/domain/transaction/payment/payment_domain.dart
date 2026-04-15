@@ -28,6 +28,9 @@ class PaymentDomain extends Equatable {
   /// 更新日（保存時更新）
   final DateTime updatedAt;
 
+  /// 紐づく MarkLink の ID。null = PaymentInfo タブから直接登録
+  final String? markLinkID;
+
   const PaymentDomain({
     required this.id,
     required this.paymentSeq,
@@ -38,6 +41,7 @@ class PaymentDomain extends Equatable {
     this.isDeleted = false,
     required this.createdAt,
     required this.updatedAt,
+    this.markLinkID,
   });
 
   PaymentDomain copyWith({
@@ -50,6 +54,8 @@ class PaymentDomain extends Equatable {
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? markLinkID,
+    bool clearMarkLinkID = false,
   }) {
     return PaymentDomain(
       id: id ?? this.id,
@@ -61,6 +67,7 @@ class PaymentDomain extends Equatable {
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      markLinkID: clearMarkLinkID ? null : (markLinkID ?? this.markLinkID),
     );
   }
 
@@ -75,5 +82,6 @@ class PaymentDomain extends Equatable {
         isDeleted,
         createdAt,
         updatedAt,
+        markLinkID,
       ];
 }

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../domain/topic/topic_config.dart';
+import '../../../features/payment_detail/payment_detail_args.dart';
+import '../../../features/shared/projection/payment_item_projection.dart';
+import '../../../features/shared/projection/payment_section_projection.dart';
 import '../../../widgets/numeric_input_row.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_bloc.dart';
 import '../../../features/fuel_detail/bloc/fuel_detail_event.dart';
@@ -34,6 +37,7 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
             state.delegate!,
             state.draft,
             state.availableMembers,
+            state.eventId,
           );
         }
       },
@@ -51,10 +55,17 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
             :final isSaving,
             :final availableMembers,
             :final showCancelConfirmDialog,
+            :final paymentSection,
           ) =>
             Stack(
               children: [
-                _LinkDetailScaffold(draft: draft, topicConfig: topicConfig, isSaving: isSaving, availableMembers: availableMembers),
+                _LinkDetailScaffold(
+                  draft: draft,
+                  topicConfig: topicConfig,
+                  isSaving: isSaving,
+                  availableMembers: availableMembers,
+                  paymentSection: paymentSection,
+                ),
                 if (showCancelConfirmDialog)
                   _LinkDetailCancelConfirmDialog(),
               ],
@@ -69,6 +80,7 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
     LinkDetailDelegate delegate,
     LinkDetailDraft draft,
     List<MemberDomain> availableMembers,
+    String eventId,
   ) async {
     switch (delegate) {
       case LinkDetailDismissDelegate():
@@ -99,6 +111,30 @@ class _LinkDetailPageState extends State<LinkDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message)),
         );
+
+      case LinkDetailOpenPaymentNewDelegate(:final markLinkId):
+        if (!context.mounted) return;
+        await context.push(
+          '/event/payment',
+          extra: PaymentDetailArgs(
+            eventId: eventId,
+            markLinkID: markLinkId,
+          ),
+        );
+        if (!context.mounted) return;
+        context.read<LinkDetailBloc>().add(const LinkDetailPaymentsReloadRequested());
+
+      case LinkDetailOpenPaymentByIdDelegate(:final paymentId):
+        if (!context.mounted) return;
+        await context.push(
+          '/event/payment',
+          extra: PaymentDetailArgs(
+            eventId: eventId,
+            paymentId: paymentId,
+          ),
+        );
+        if (!context.mounted) return;
+        context.read<LinkDetailBloc>().add(const LinkDetailPaymentsReloadRequested());
     }
   }
 }
@@ -108,12 +144,14 @@ class _LinkDetailScaffold extends StatelessWidget {
   final TopicConfig topicConfig;
   final bool isSaving;
   final List<MemberDomain> availableMembers;
+  final PaymentSectionProjection paymentSection;
 
   const _LinkDetailScaffold({
     required this.draft,
     required this.topicConfig,
     required this.isSaving,
     required this.availableMembers,
+    required this.paymentSection,
   });
 
   @override
@@ -136,6 +174,7 @@ class _LinkDetailScaffold extends StatelessWidget {
         topicConfig: topicConfig,
         availableMembers: availableMembers,
         isSaving: isSaving,
+        paymentSection: paymentSection,
       ),
     );
   }
@@ -146,12 +185,14 @@ class _LinkDetailForm extends StatelessWidget {
   final TopicConfig topicConfig;
   final List<MemberDomain> availableMembers;
   final bool isSaving;
+  final PaymentSectionProjection paymentSection;
 
   const _LinkDetailForm({
     required this.draft,
     required this.topicConfig,
     required this.availableMembers,
     required this.isSaving,
+    required this.paymentSection,
   });
 
   @override
@@ -191,6 +232,10 @@ class _LinkDetailForm extends StatelessWidget {
             availableMembers: availableMembers,
             selectedGasPayer: draft.selectedGasPayer,
           ),
+        ],
+        if (topicConfig.showPaymentInfoTab) ...[
+          const Divider(height: 1),
+          _PaymentSection(paymentSection: paymentSection),
         ],
         const SizedBox(height: 24),
         Padding(
@@ -532,6 +577,94 @@ class _MemberChipSection extends StatelessWidget {
             }).toList(),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── 支払セクション ────────────────────────────────────────────────────────
+
+class _PaymentSection extends StatelessWidget {
+  final PaymentSectionProjection paymentSection;
+
+  const _PaymentSection({required this.paymentSection});
+
+  @override
+  Widget build(BuildContext context) {
+    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text('支払', style: labelStyle),
+              const Spacer(),
+              IconButton(
+                key: const Key('linkDetail_button_paymentPlus'),
+                icon: const Icon(Icons.add),
+                onPressed: () => context
+                    .read<LinkDetailBloc>()
+                    .add(const LinkDetailPaymentPlusTapped()),
+              ),
+            ],
+          ),
+          ...paymentSection.items.map(
+            (item) => _PaymentItemRow(key: Key('linkDetail_payment_${item.id}'), item: item),
+          ),
+          if (paymentSection.items.isNotEmpty) ...[
+            const Divider(height: 1),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    '合計: ${paymentSection.displayTotalAmount}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PaymentItemRow extends StatelessWidget {
+  final PaymentItemProjection item;
+
+  const _PaymentItemRow({super.key, required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => context
+          .read<LinkDetailBloc>()
+          .add(LinkDetailPaymentTapped(item.id)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            const Icon(Icons.payment, size: 20),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                item.displayAmount,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+            Text(
+              item.payer.memberName,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
       ),
     );
   }

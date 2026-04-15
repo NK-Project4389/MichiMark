@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import '../../../domain/master/action/action_domain.dart';
 import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/topic/topic_config.dart';
+import '../../../domain/transaction/payment/payment_domain.dart';
 
 sealed class MarkDetailEvent extends Equatable {
   const MarkDetailEvent();
@@ -190,6 +191,40 @@ class MarkDetailCancelDialogDismissed extends MarkDetailEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+/// PaymentDetailから戻った後に支払セクションをリロードするとき
+class MarkDetailPaymentsReloadRequested extends MarkDetailEvent {
+  const MarkDetailPaymentsReloadRequested();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 支払セクション「＋」ボタンが押されたとき
+class MarkDetailPaymentPlusTapped extends MarkDetailEvent {
+  const MarkDetailPaymentPlusTapped();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 支払セクションの既存カードがタップされたとき
+class MarkDetailPaymentTapped extends MarkDetailEvent {
+  final String paymentId;
+  const MarkDetailPaymentTapped(this.paymentId);
+
+  @override
+  List<Object?> get props => [paymentId];
+}
+
+/// EventDomainの payments が更新されたとき（再表示用）
+class MarkDetailPaymentsUpdated extends MarkDetailEvent {
+  final List<PaymentDomain> allPayments;
+  const MarkDetailPaymentsUpdated(this.allPayments);
+
+  @override
+  List<Object?> get props => [allPayments];
 }
 
 /// FuelDetailBlocのDelegateを受けてFuel入力値を同期するとき

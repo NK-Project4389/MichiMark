@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/topic/topic_config.dart';
+import '../../../features/shared/projection/payment_section_projection.dart';
 import '../draft/link_detail_draft.dart';
 
 /// LinkDetailのDelegate（画面遷移・操作意図の通知）
@@ -39,6 +40,24 @@ class LinkDetailSaveErrorDelegate extends LinkDetailDelegate {
   List<Object?> get props => [message];
 }
 
+/// 支払セクション「＋」ボタン → 新規PaymentDetail遷移要求
+class LinkDetailOpenPaymentNewDelegate extends LinkDetailDelegate {
+  final String markLinkId;
+  const LinkDetailOpenPaymentNewDelegate(this.markLinkId);
+
+  @override
+  List<Object?> get props => [markLinkId];
+}
+
+/// 支払セクション既存カードタップ → PaymentDetail編集遷移要求
+class LinkDetailOpenPaymentByIdDelegate extends LinkDetailDelegate {
+  final String paymentId;
+  const LinkDetailOpenPaymentByIdDelegate(this.paymentId);
+
+  @override
+  List<Object?> get props => [paymentId];
+}
+
 // ---------------------------------------------------------------------------
 
 sealed class LinkDetailState extends Equatable {
@@ -68,6 +87,12 @@ class LinkDetailLoaded extends LinkDetailState {
   /// メンバー選択 UI に表示する候補一覧（イベントメンバーに限定）
   final List<MemberDomain> availableMembers;
 
+  /// このLinkに紐づく支払い一覧
+  final PaymentSectionProjection paymentSection;
+
+  /// 親イベントID（PaymentDetail遷移時に使用）
+  final String eventId;
+
   const LinkDetailLoaded({
     required this.draft,
     required this.initialDraft,
@@ -76,6 +101,8 @@ class LinkDetailLoaded extends LinkDetailState {
     this.isSaving = false,
     this.showCancelConfirmDialog = false,
     this.availableMembers = const [],
+    this.paymentSection = PaymentSectionProjection.empty,
+    this.eventId = '',
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -95,6 +122,8 @@ class LinkDetailLoaded extends LinkDetailState {
     bool? isSaving,
     bool? showCancelConfirmDialog,
     List<MemberDomain>? availableMembers,
+    PaymentSectionProjection? paymentSection,
+    String? eventId,
   }) {
     return LinkDetailLoaded(
       draft: draft ?? this.draft,
@@ -104,11 +133,13 @@ class LinkDetailLoaded extends LinkDetailState {
       isSaving: isSaving ?? this.isSaving,
       showCancelConfirmDialog: showCancelConfirmDialog ?? this.showCancelConfirmDialog,
       availableMembers: availableMembers ?? this.availableMembers,
+      paymentSection: paymentSection ?? this.paymentSection,
+      eventId: eventId ?? this.eventId,
     );
   }
 
   @override
-  List<Object?> get props => [draft, initialDraft, delegate, topicConfig, isSaving, showCancelConfirmDialog, availableMembers];
+  List<Object?> get props => [draft, initialDraft, delegate, topicConfig, isSaving, showCancelConfirmDialog, availableMembers, paymentSection, eventId];
 }
 
 class LinkDetailError extends LinkDetailState {

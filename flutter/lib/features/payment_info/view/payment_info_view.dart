@@ -10,6 +10,7 @@ import '../bloc/payment_info_bloc.dart';
 import '../bloc/payment_info_event.dart';
 import '../bloc/payment_info_state.dart';
 
+
 class PaymentInfoView extends StatefulWidget {
   final TopicThemeColor? topicThemeColor;
 
@@ -84,23 +85,51 @@ class _PaymentInfoList extends StatelessWidget {
 
   const _PaymentInfoList({required this.projection, this.topicThemeColor});
 
+  bool get _isEmpty =>
+      projection.dateGroups.isEmpty && projection.directItems.isEmpty;
+
   @override
   Widget build(BuildContext context) {
+    // 表示用フラットリストを構築（セクションヘッダー + アイテム）
+    final List<Widget> rows = [];
+
+    for (final dateGroup in projection.dateGroups) {
+      rows.add(_SectionHeader(title: dateGroup.displayDate));
+      for (final nameGroup in dateGroup.nameGroups) {
+        rows.add(_SubSectionHeader(
+          title: nameGroup.displayName,
+          totalAmount: nameGroup.displayGroupTotal,
+        ));
+        for (final item in nameGroup.items) {
+          rows.add(_PaymentListTile(item: item));
+          rows.add(const Divider(height: 1, indent: 56));
+        }
+        if (rows.isNotEmpty && rows.last is Divider) {
+          rows.removeLast();
+        }
+      }
+    }
+
+    if (projection.directItems.isNotEmpty) {
+      rows.add(const _SectionHeader(title: '直接登録'));
+      for (final item in projection.directItems) {
+        rows.add(_PaymentListTile(item: item));
+        rows.add(const Divider(height: 1, indent: 56));
+      }
+      if (rows.isNotEmpty && rows.last is Divider) {
+        rows.removeLast();
+      }
+    }
+
     return Scaffold(
       body: Column(
         children: [
           Expanded(
-            child: projection.items.isEmpty
+            child: _isEmpty
                 ? const Center(child: Text('支払情報がありません'))
-                : ListView.separated(
+                : ListView(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemCount: projection.items.length,
-                    separatorBuilder: (context, _) =>
-                        const Divider(height: 1, indent: 56),
-                    itemBuilder: (context, index) {
-                      final item = projection.items[index];
-                      return _PaymentListTile(item: item);
-                    },
+                    children: rows,
                   ),
           ),
           const Divider(height: 1),
@@ -125,6 +154,54 @@ class _PaymentInfoList extends StatelessWidget {
         backgroundColor: const Color(0xFFF59E0B),
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  const _SectionHeader({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Text(
+        title,
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+      ),
+    );
+  }
+}
+
+class _SubSectionHeader extends StatelessWidget {
+  final String title;
+  final String totalAmount;
+  const _SubSectionHeader({required this.title, required this.totalAmount});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ),
+          Text(
+            totalAmount,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
       ),
     );
   }

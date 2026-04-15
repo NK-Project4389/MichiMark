@@ -145,6 +145,7 @@ final router = GoRouter(
           )..add(PaymentDetailStarted(
               eventId: args.eventId,
               paymentId: args.paymentId,
+              markLinkID: args.markLinkID,
             )),
           child: const PaymentDetailPage(),
         );

@@ -203,9 +203,18 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
 
   Future<void> deleteMarkLink(String markLinkId) async {
     final now = DateTime.now();
-    await (update(markLinks)..where((t) => t.id.equals(markLinkId))).write(
-      MarkLinksCompanion(isDeleted: const Value(true), updatedAt: Value(now)),
-    );
+    await transaction(() async {
+      // 1. markLinkID に紐づく payments を論理削除（カスケード削除）
+      await (update(payments)..where((t) => t.markLinkId.equals(markLinkId)))
+          .write(PaymentsCompanion(
+        isDeleted: const Value(true),
+        updatedAt: Value(now),
+      ));
+      // 2. mark_links 本体を論理削除
+      await (update(markLinks)..where((t) => t.id.equals(markLinkId))).write(
+        MarkLinksCompanion(isDeleted: const Value(true), updatedAt: Value(now)),
+      );
+    });
   }
 
   Future<void> deletePayment(String paymentId) async {
@@ -407,6 +416,7 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
       isDeleted: row.isDeleted,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
+      markLinkID: row.markLinkId,
     );
   }
 
@@ -458,6 +468,7 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
         isDeleted: Value(d.isDeleted),
         createdAt: Value(d.createdAt),
         updatedAt: Value(d.updatedAt),
+        markLinkId: Value(d.markLinkID),
       );
 
   // ---------------------------------------------------------------------------

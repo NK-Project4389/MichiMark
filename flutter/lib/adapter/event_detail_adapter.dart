@@ -133,8 +133,55 @@ class EventDetailAdapter {
 
     final total = valid.fold(0, (sum, p) => sum + p.paymentAmount);
 
+    // markLinkID != null: 日付→名称でグループ化
+    final linked = valid.where((p) => p.markLinkID != null).toList();
+    final direct = valid.where((p) => p.markLinkID == null).toList();
+
+    // 日付グループ（markLinkDate の日付で groupBy）
+    final dateMap = <String, List<PaymentDomain>>{};
+    for (final p in linked) {
+      final ml = event.markLinks
+          .where((ml) => ml.id == p.markLinkID && !ml.isDeleted)
+          .firstOrNull;
+      final dateKey = ml != null
+          ? _dateFormat.format(ml.markLinkDate)
+          : _dateFormat.format(DateTime(1970));
+      dateMap.putIfAbsent(dateKey, () => []).add(p);
+    }
+
+    final dateGroups = dateMap.entries.map((dateEntry) {
+      final nameMap = <String, List<PaymentDomain>>{};
+      for (final p in dateEntry.value) {
+        final mlId = p.markLinkID!;
+        nameMap.putIfAbsent(mlId, () => []).add(p);
+      }
+      final nameGroups = nameMap.entries.map((nameEntry) {
+        final mlId = nameEntry.key;
+        final ml = event.markLinks
+            .where((ml) => ml.id == mlId && !ml.isDeleted)
+            .firstOrNull;
+        final displayName = (ml?.markLinkName?.isNotEmpty == true)
+            ? ml!.markLinkName!
+            : '名称なし';
+        final groupTotal =
+            nameEntry.value.fold(0, (sum, p) => sum + p.paymentAmount);
+        return PaymentNameGroupProjection(
+          markLinkId: mlId,
+          displayName: displayName,
+          items: nameEntry.value.map(_toPaymentItem).toList(),
+          displayGroupTotal: '${_numberFormat.format(groupTotal)} 円',
+        );
+      }).toList();
+      return PaymentDateGroupProjection(
+        displayDate: dateEntry.key,
+        nameGroups: nameGroups,
+      );
+    }).toList()
+      ..sort((a, b) => a.displayDate.compareTo(b.displayDate));
+
     return PaymentInfoProjection(
-      items: valid.map(_toPaymentItem).toList(),
+      dateGroups: dateGroups,
+      directItems: direct.map(_toPaymentItem).toList(),
       displayTotalAmount: '${_numberFormat.format(total)} 円',
     );
   }

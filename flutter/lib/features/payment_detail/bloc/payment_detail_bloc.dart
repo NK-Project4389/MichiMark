@@ -53,6 +53,7 @@ class PaymentDetailBloc
         final draft = PaymentDetailDraft(
           id: const Uuid().v4(),
           paymentSeq: 0,
+          markLinkID: event.markLinkID,
         );
         emit(PaymentDetailLoaded(draft: draft, initialDraft: draft, availableMembers: availableMembers));
         return;
@@ -81,6 +82,7 @@ class PaymentDetailBloc
         paymentMember: filteredPayMember,
         splitMembers: filteredSplitMembers,
         paymentMemo: payment.paymentMemo ?? '',
+        markLinkID: payment.markLinkID,
       );
       emit(PaymentDetailLoaded(draft: draft, initialDraft: draft, availableMembers: availableMembers));
     } on Exception catch (e) {
@@ -200,6 +202,7 @@ class PaymentDetailBloc
           paymentMemo: draft.paymentMemo.isEmpty ? null : draft.paymentMemo,
           createdAt: existingPayment?.createdAt ?? now,
           updatedAt: now,
+          markLinkID: draft.markLinkID,
         );
 
         final updatedPayments = List<PaymentDomain>.from(

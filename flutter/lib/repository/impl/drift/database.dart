@@ -40,7 +40,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -91,6 +91,12 @@ class AppDatabase extends _$AppDatabase {
             // MovingCostFuelMode: mark_links に gas_payer_id カラムを追加
             await customStatement(
               'ALTER TABLE mark_links ADD COLUMN gas_payer_id TEXT REFERENCES members(id)',
+            );
+          }
+          if (from < 5) {
+            // F-5: payments に mark_link_id カラムを追加（nullable）
+            await customStatement(
+              'ALTER TABLE payments ADD COLUMN mark_link_id TEXT',
             );
           }
         },

@@ -3779,6 +3779,17 @@ class $PaymentsTable extends Payments with TableInfo<$PaymentsTable, Payment> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _markLinkIdMeta = const VerificationMeta(
+    'markLinkId',
+  );
+  @override
+  late final GeneratedColumn<String> markLinkId = GeneratedColumn<String>(
+    'mark_link_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -3790,6 +3801,7 @@ class $PaymentsTable extends Payments with TableInfo<$PaymentsTable, Payment> {
     isDeleted,
     createdAt,
     updatedAt,
+    markLinkId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3877,6 +3889,15 @@ class $PaymentsTable extends Payments with TableInfo<$PaymentsTable, Payment> {
     } else if (isInserting) {
       context.missing(_updatedAtMeta);
     }
+    if (data.containsKey('mark_link_id')) {
+      context.handle(
+        _markLinkIdMeta,
+        markLinkId.isAcceptableOrUnknown(
+          data['mark_link_id']!,
+          _markLinkIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -3922,6 +3943,10 @@ class $PaymentsTable extends Payments with TableInfo<$PaymentsTable, Payment> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
+      markLinkId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mark_link_id'],
+      ),
     );
   }
 
@@ -3941,6 +3966,9 @@ class Payment extends DataClass implements Insertable<Payment> {
   final bool isDeleted;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  /// 紐づく MarkLink の ID（nullable: NULL = PaymentInfo タブから直接登録）
+  final String? markLinkId;
   const Payment({
     required this.id,
     required this.eventId,
@@ -3951,6 +3979,7 @@ class Payment extends DataClass implements Insertable<Payment> {
     required this.isDeleted,
     required this.createdAt,
     required this.updatedAt,
+    this.markLinkId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3966,6 +3995,9 @@ class Payment extends DataClass implements Insertable<Payment> {
     map['is_deleted'] = Variable<bool>(isDeleted);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || markLinkId != null) {
+      map['mark_link_id'] = Variable<String>(markLinkId);
+    }
     return map;
   }
 
@@ -3982,6 +4014,9 @@ class Payment extends DataClass implements Insertable<Payment> {
       isDeleted: Value(isDeleted),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
+      markLinkId: markLinkId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(markLinkId),
     );
   }
 
@@ -4000,6 +4035,7 @@ class Payment extends DataClass implements Insertable<Payment> {
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      markLinkId: serializer.fromJson<String?>(json['markLinkId']),
     );
   }
   @override
@@ -4015,6 +4051,7 @@ class Payment extends DataClass implements Insertable<Payment> {
       'isDeleted': serializer.toJson<bool>(isDeleted),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'markLinkId': serializer.toJson<String?>(markLinkId),
     };
   }
 
@@ -4028,6 +4065,7 @@ class Payment extends DataClass implements Insertable<Payment> {
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
+    Value<String?> markLinkId = const Value.absent(),
   }) => Payment(
     id: id ?? this.id,
     eventId: eventId ?? this.eventId,
@@ -4038,6 +4076,7 @@ class Payment extends DataClass implements Insertable<Payment> {
     isDeleted: isDeleted ?? this.isDeleted,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    markLinkId: markLinkId.present ? markLinkId.value : this.markLinkId,
   );
   Payment copyWithCompanion(PaymentsCompanion data) {
     return Payment(
@@ -4058,6 +4097,9 @@ class Payment extends DataClass implements Insertable<Payment> {
       isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      markLinkId: data.markLinkId.present
+          ? data.markLinkId.value
+          : this.markLinkId,
     );
   }
 
@@ -4072,7 +4114,8 @@ class Payment extends DataClass implements Insertable<Payment> {
           ..write('paymentMemo: $paymentMemo, ')
           ..write('isDeleted: $isDeleted, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('markLinkId: $markLinkId')
           ..write(')'))
         .toString();
   }
@@ -4088,6 +4131,7 @@ class Payment extends DataClass implements Insertable<Payment> {
     isDeleted,
     createdAt,
     updatedAt,
+    markLinkId,
   );
   @override
   bool operator ==(Object other) =>
@@ -4101,7 +4145,8 @@ class Payment extends DataClass implements Insertable<Payment> {
           other.paymentMemo == this.paymentMemo &&
           other.isDeleted == this.isDeleted &&
           other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
+          other.updatedAt == this.updatedAt &&
+          other.markLinkId == this.markLinkId);
 }
 
 class PaymentsCompanion extends UpdateCompanion<Payment> {
@@ -4114,6 +4159,7 @@ class PaymentsCompanion extends UpdateCompanion<Payment> {
   final Value<bool> isDeleted;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
+  final Value<String?> markLinkId;
   final Value<int> rowid;
   const PaymentsCompanion({
     this.id = const Value.absent(),
@@ -4125,6 +4171,7 @@ class PaymentsCompanion extends UpdateCompanion<Payment> {
     this.isDeleted = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.markLinkId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   PaymentsCompanion.insert({
@@ -4137,6 +4184,7 @@ class PaymentsCompanion extends UpdateCompanion<Payment> {
     this.isDeleted = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
+    this.markLinkId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        eventId = Value(eventId),
@@ -4155,6 +4203,7 @@ class PaymentsCompanion extends UpdateCompanion<Payment> {
     Expression<bool>? isDeleted,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
+    Expression<String>? markLinkId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4167,6 +4216,7 @@ class PaymentsCompanion extends UpdateCompanion<Payment> {
       if (isDeleted != null) 'is_deleted': isDeleted,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
+      if (markLinkId != null) 'mark_link_id': markLinkId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4181,6 +4231,7 @@ class PaymentsCompanion extends UpdateCompanion<Payment> {
     Value<bool>? isDeleted,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
+    Value<String?>? markLinkId,
     Value<int>? rowid,
   }) {
     return PaymentsCompanion(
@@ -4193,6 +4244,7 @@ class PaymentsCompanion extends UpdateCompanion<Payment> {
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      markLinkId: markLinkId ?? this.markLinkId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4227,6 +4279,9 @@ class PaymentsCompanion extends UpdateCompanion<Payment> {
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
+    if (markLinkId.present) {
+      map['mark_link_id'] = Variable<String>(markLinkId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4245,6 +4300,7 @@ class PaymentsCompanion extends UpdateCompanion<Payment> {
           ..write('isDeleted: $isDeleted, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write('markLinkId: $markLinkId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -9772,6 +9828,7 @@ typedef $$PaymentsTableCreateCompanionBuilder =
       Value<bool> isDeleted,
       required DateTime createdAt,
       required DateTime updatedAt,
+      Value<String?> markLinkId,
       Value<int> rowid,
     });
 typedef $$PaymentsTableUpdateCompanionBuilder =
@@ -9785,6 +9842,7 @@ typedef $$PaymentsTableUpdateCompanionBuilder =
       Value<bool> isDeleted,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<String?> markLinkId,
       Value<int> rowid,
     });
 
@@ -9898,6 +9956,11 @@ class $$PaymentsTableFilterComposer
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get markLinkId => $composableBuilder(
+    column: $table.markLinkId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10017,6 +10080,11 @@ class $$PaymentsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get markLinkId => $composableBuilder(
+    column: $table.markLinkId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$EventsTableOrderingComposer get eventId {
     final $$EventsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -10099,6 +10167,11 @@ class $$PaymentsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get markLinkId => $composableBuilder(
+    column: $table.markLinkId,
+    builder: (column) => column,
+  );
 
   $$EventsTableAnnotationComposer get eventId {
     final $$EventsTableAnnotationComposer composer = $composerBuilder(
@@ -10214,6 +10287,7 @@ class $$PaymentsTableTableManager
                 Value<bool> isDeleted = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<String?> markLinkId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PaymentsCompanion(
                 id: id,
@@ -10225,6 +10299,7 @@ class $$PaymentsTableTableManager
                 isDeleted: isDeleted,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                markLinkId: markLinkId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -10238,6 +10313,7 @@ class $$PaymentsTableTableManager
                 Value<bool> isDeleted = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
+                Value<String?> markLinkId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PaymentsCompanion.insert(
                 id: id,
@@ -10249,6 +10325,7 @@ class $$PaymentsTableTableManager
                 isDeleted: isDeleted,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                markLinkId: markLinkId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

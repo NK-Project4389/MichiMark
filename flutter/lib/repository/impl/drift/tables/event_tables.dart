@@ -58,6 +58,9 @@ class Payments extends Table {
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
+  /// 紐づく MarkLink の ID（nullable: NULL = PaymentInfo タブから直接登録）
+  TextColumn get markLinkId => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../adapter/payment_section_projection_adapter.dart';
 import '../../../domain/master/member/member_domain.dart';
 import '../../../domain/transaction/mark_link/mark_link_domain.dart';
 import '../../../domain/transaction/mark_link/mark_or_link.dart';
@@ -30,6 +31,10 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
     on<LinkDetailMembersAllCleared>(_onMembersAllCleared);
     on<LinkDetailCancelDiscardConfirmed>(_onCancelDiscardConfirmed);
     on<LinkDetailCancelDialogDismissed>(_onCancelDialogDismissed);
+    on<LinkDetailPaymentPlusTapped>(_onPaymentPlusTapped);
+    on<LinkDetailPaymentTapped>(_onPaymentTapped);
+    on<LinkDetailPaymentsUpdated>(_onPaymentsUpdated);
+    on<LinkDetailPaymentsReloadRequested>(_onPaymentsReloadRequested);
   }
 
   final EventRepository _eventRepository;
@@ -60,6 +65,7 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
           initialDraft: draft,
           topicConfig: event.topicConfig,
           availableMembers: event.eventMembers,
+          eventId: _eventId,
         ));
         return;
       }
@@ -87,11 +93,17 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
         gasPriceInput: markLink.gasPrice?.toString() ?? '',
         selectedGasPayer: markLink.gasPayer,
       );
+      final paymentSection = PaymentSectionProjectionAdapter.toProjection(
+        allPayments: domain.payments,
+        markLinkId: _markLinkId,
+      );
       emit(LinkDetailLoaded(
         draft: draft,
         initialDraft: draft,
         topicConfig: event.topicConfig,
         availableMembers: event.eventMembers,
+        paymentSection: paymentSection,
+        eventId: _eventId,
       ));
     } on Exception catch (e) {
       emit(LinkDetailError(message: e.toString()));
@@ -388,6 +400,62 @@ class LinkDetailBloc extends Bloc<LinkDetailEvent, LinkDetailState> {
       emit(current.copyWith(
         draft: current.draft.copyWith(selectedMembers: const []),
       ));
+    }
+  }
+
+  Future<void> _onPaymentPlusTapped(
+    LinkDetailPaymentPlusTapped event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is LinkDetailLoaded) {
+      final current = state as LinkDetailLoaded;
+      emit(current.copyWith(
+        delegate: LinkDetailOpenPaymentNewDelegate(_markLinkId),
+      ));
+    }
+  }
+
+  Future<void> _onPaymentTapped(
+    LinkDetailPaymentTapped event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is LinkDetailLoaded) {
+      final current = state as LinkDetailLoaded;
+      emit(current.copyWith(
+        delegate: LinkDetailOpenPaymentByIdDelegate(event.paymentId),
+      ));
+    }
+  }
+
+  Future<void> _onPaymentsUpdated(
+    LinkDetailPaymentsUpdated event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is LinkDetailLoaded) {
+      final current = state as LinkDetailLoaded;
+      final paymentSection = PaymentSectionProjectionAdapter.toProjection(
+        allPayments: event.allPayments,
+        markLinkId: _markLinkId,
+      );
+      emit(current.copyWith(paymentSection: paymentSection));
+    }
+  }
+
+  Future<void> _onPaymentsReloadRequested(
+    LinkDetailPaymentsReloadRequested event,
+    Emitter<LinkDetailState> emit,
+  ) async {
+    if (state is! LinkDetailLoaded) return;
+    final current = state as LinkDetailLoaded;
+    try {
+      final domain = await _eventRepository.fetch(_eventId);
+      final paymentSection = PaymentSectionProjectionAdapter.toProjection(
+        allPayments: domain.payments,
+        markLinkId: _markLinkId,
+      );
+      emit(current.copyWith(paymentSection: paymentSection));
+    } on Exception {
+      // リロード失敗は無視（現在の状態を維持）
     }
   }
 }

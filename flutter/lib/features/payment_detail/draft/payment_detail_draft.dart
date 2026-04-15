@@ -20,6 +20,9 @@ class PaymentDetailDraft extends Equatable {
   /// メモ（任意）
   final String paymentMemo;
 
+  /// 紐づく MarkLink の ID（null = 直接登録）
+  final String? markLinkID;
+
   const PaymentDetailDraft({
     required this.id,
     required this.paymentSeq,
@@ -27,6 +30,7 @@ class PaymentDetailDraft extends Equatable {
     this.paymentMember,
     this.splitMembers = const [],
     this.paymentMemo = '',
+    this.markLinkID,
   });
 
   PaymentDetailDraft copyWith({
@@ -36,6 +40,7 @@ class PaymentDetailDraft extends Equatable {
     MemberDomain? paymentMember,
     List<MemberDomain>? splitMembers,
     String? paymentMemo,
+    String? markLinkID,
   }) {
     return PaymentDetailDraft(
       id: id ?? this.id,
@@ -44,6 +49,7 @@ class PaymentDetailDraft extends Equatable {
       paymentMember: paymentMember ?? this.paymentMember,
       splitMembers: splitMembers ?? this.splitMembers,
       paymentMemo: paymentMemo ?? this.paymentMemo,
+      markLinkID: markLinkID ?? this.markLinkID,
     );
   }
 
@@ -55,5 +61,6 @@ class PaymentDetailDraft extends Equatable {
         paymentMember,
         splitMembers,
         paymentMemo,
+        markLinkID,
       ];
 }
