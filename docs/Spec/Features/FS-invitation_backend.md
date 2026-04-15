@@ -1,8 +1,8 @@
 # Feature Spec: 招待機能 バックエンド実装（INV-1）
 
 Platform: **Next.js / TypeScript**（Vercel）
-Version: 1.0
-Status: Draft
+Version: 1.1
+Status: Draft（B案反映・実装更新待ち）
 Created: 2026-04-15
 Requirement: `docs/Requirements/REQ-invitation_backend.md`
 
@@ -22,7 +22,7 @@ MichiMarkのイベント招待機能を支えるバックエンドAPIとFirestor
 ## Scope
 
 含むもの
-- Next.js App Router による API Routes 4本
+- Next.js App Router による API Routes 5本
 - `invitations` Firestoreコレクション設計（スキーマ・インデックス）
 - `eventMembers` Firestoreコレクション設計（参加記録）
 - Firestoreセキュリティルール追加（invitations / eventMembers）
@@ -84,7 +84,6 @@ users/{uid}/
 | id | string | ドキュメントIDと同一 | UUID |
 | orgId | string | 必須 | organizations/{orgId} のorgId（= オーナーuid） |
 | eventId | string | 必須 | organizations/{orgId}/events/{eventId} のeventId |
-| memberId | string | 必須 | organizations/{orgId}/members/{memberId} のmemberId（招待対象） |
 | ownerUid | string | 必須 | イベントオーナーの Firebase UID（= orgId） |
 | token | string | 必須・ユニーク | URL用ランダム8文字英数字（小文字）。例: `abc123xy` |
 | code | string | 必須・ユニーク | 手入力用。形式: `XXX-9999`（英大文字3文字 + ハイフン + 数字4桁）。例: `ABC-1234` |
@@ -111,15 +110,39 @@ users/{uid}/
 db.collectionGroup('participants').where('linkedUid', '==', currentUid)
 ```
 
-## 3.4 データ関係図
+## 3.4 member紐づけ方式（B案：Guest自己選択）
+
+招待はイベント単位で発行する。どのmemberかはGuestが参加時に自分で選択する。
+
+```
+【招待フロー（B案）】
+
+1. Ownerが招待リンクを生成（memberId指定なし・イベント単位）
+2. GuestがURLまたはコードでアクセス
+3. アプリ側でorgの「未紐づけmember一覧」を表示
+4. GuestがリストからI am [member名]を選択
+5. トランザクション:
+   members/{memberId}.linkedUid = uid
+   participants/{memberId}.linkedUid = uid
+```
+
+**間違えた場合のリカバリー:**
+- Ownerが設定画面でmemberの紐づけを解除する
+- 再度招待リンクを共有して再参加
+
+**memberマスターの紐づけ状態表示:**
+- 設定画面のmember一覧に「リンク済みバッジ」を表示する
+- linkedUid が null でなければバッジあり・uidそのものは表示しない（UX不要）
+
+## 3.5 データ関係図
 
 ```
 invitations/{id}
   orgId ──→ organizations/{orgId}/
   eventId ──→ events/{eventId}/
-  memberId ──→ members/{memberId}
+  ※ memberId なし（B案）
 
-招待受け入れ時（トランザクション）:
+招待受け入れ時（Guest選択後・トランザクション）:
   members/{memberId}.linkedUid = uid        ← 人名簿にUID紐づけ
   participants/{memberId}.linkedUid = uid   ← イベントアクセス権付与
 ```
@@ -137,22 +160,30 @@ invitations/{id}
 type CreateInvitationRequest = {
   orgId: string;          // organizations/{orgId} のorgId（= オーナーuid）
   eventId: string;
-  memberId: string;       // 招待対象の memberId（organizations/{orgId}/members/{memberId}）
   invitedBy: string;      // Firebase UID（ownerUid と同一）
   role: 'viewer' | 'editor';
   maxUses: number | null; // 1 | 5 | null
   expiresHours: number;   // 24 | 72 | 168
+  // ※ memberId なし（B案: Guestが参加時に自己選択）
+};
+
+// GET /api/invitations/[token]/members（新規追加）
+// 未紐づけmember一覧取得（Guestの選択肢表示用）
+type InvitationMembersResponse = {
+  members: Array<{ memberId: string; memberName: string }>;
 };
 
 // POST /api/invitations/[token]/use
 type UseInvitationRequest = {
-  uid: string; // 参加ユーザーの Firebase UID
+  uid: string;      // 参加ユーザーの Firebase UID
+  memberId: string; // Guestが選択したmemberId
 };
 
 // POST /api/invitations/code
 type UseInvitationByCodeRequest = {
-  code: string; // "ABC-1234" 形式
-  uid: string;  // 参加ユーザーの Firebase UID
+  code: string;     // "ABC-1234" 形式
+  uid: string;      // 参加ユーザーの Firebase UID
+  memberId: string; // Guestが選択したmemberId
 };
 ```
 
@@ -172,6 +203,12 @@ type InvitationInfoResponse = {
   eventName: string;
   inviterName: string;
   role: 'viewer' | 'editor';
+};
+
+// GET /api/invitations/[token]/members - 成功
+type InvitationMembersResponse = {
+  members: Array<{ memberId: string; memberName: string }>;
+  // linkedUid == null のmemberのみ返す（既に紐づき済みは除外）
 };
 
 // GET /api/invitations/[token] - 無効
@@ -258,17 +295,21 @@ type ApiErrorResponse = {
 **バリデーション:**
 - `uid` : 必須・Firebase Admin SDK で有効なUIDであること
 
+**バリデーション:**
+- `uid` : 必須・Firebase Admin SDK で有効なUIDであること
+- `memberId` : 必須・`organizations/{orgId}/members/{memberId}` が存在すること
+
 **Firestoreトランザクション（アトミック操作）:**
 1. `invitations` コレクションで `token == [token]` のドキュメントを取得する
 2. ドキュメントが存在しない場合 → `not_found` エラー（404）
 3. `expiresAt` が現在時刻より過去の場合 → `expired` エラー（400）
 4. `maxUses != null && usedCount >= maxUses` の場合 → `used_up` エラー（400）
-5. `organizations/{orgId}/events/{eventId}/participants/{memberId}.linkedUid` の重複チェック
-6. 重複が存在する場合 → `already_joined` エラー（400）
-7. トランザクション内で以下の2ドキュメントを同時更新する:
-   - `invitations/{invitationId}.usedCount` を +1 インクリメントする
-   - `organizations/{orgId}/members/{memberId}.linkedUid = uid` を更新する
-   - `organizations/{orgId}/events/{eventId}/participants/{memberId}.linkedUid = uid` を更新する（`joinedAt` も設定）
+5. `organizations/{orgId}/members/{memberId}.linkedUid != null` の場合 → `member_already_linked` エラー（400）
+6. `organizations/{orgId}/events/{eventId}/participants/{memberId}.linkedUid != null` の場合 → `already_joined` エラー（400）
+7. トランザクション内で以下の3ドキュメントを同時更新する:
+   - `invitations/{invitationId}.usedCount` を `FieldValue.increment(1)` でインクリメント
+   - `organizations/{orgId}/members/{memberId}.linkedUid = uid`
+   - `organizations/{orgId}/events/{eventId}/participants/{memberId}` を作成（linkedUid・role・joinedAt設定）
 
 **レスポンス:**
 - 成功: 200 + `JoinEventResponse`
@@ -280,6 +321,7 @@ type ApiErrorResponse = {
 | `not_found` | 404 | tokenに対応する招待が存在しない |
 | `expired` | 400 | 有効期限切れ |
 | `used_up` | 400 | 使用回数超過 |
+| `member_already_linked` | 400 | 選択したmemberが既に別uidに紐づき済み |
 | `already_joined` | 400 | 既に参加済み |
 | `invalid_request` | 400 | バリデーションエラー |
 
@@ -295,7 +337,31 @@ type ApiErrorResponse = {
 1. `invitations` コレクションで `code == [code]` のドキュメントを1件取得する
 2. 取得後は POST /api/invitations/[token]/use と同一のロジック（4.4）で処理する
 
-**レスポンス・エラーレスポンス:** 4.4 と同一。
+**レスポンス・エラーレスポンス:** 4.4 と同一（`memberId` バリデーション含む）。
+
+## 4.6 GET /api/invitations/[token]/members（未紐づけmember一覧取得）
+
+Guestが「自分はどのmemberか」を選択するためのリスト提供。
+
+**認証:** 不要（tokenが有効であれば誰でも取得可能）
+
+**バリデーション:**
+- `token` : URLパスパラメータ・空文字禁止
+- invitationの有効性チェック（expired / used_up / not_found）
+
+**Firestore操作:**
+1. `invitations` で token を検索し orgId を取得する
+2. `organizations/{orgId}/members` で `linkedUid == null` かつ `isDeleted == false` の一覧を取得する
+3. `memberId` と `memberName` のみ返す（linkedUidは返さない）
+
+**レスポンス:**
+- 成功: 200 + `InvitationMembersResponse`
+
+| errorType | HTTPステータス | 条件 |
+|---|---|---|
+| `not_found` | 404 | tokenに対応する招待が存在しない |
+| `expired` | 400 | 有効期限切れ |
+| `used_up` | 400 | 使用回数超過 |
 
 ---
 
@@ -366,6 +432,8 @@ michimark-web/
         route.ts                    # POST /api/invitations
         [token]/
           route.ts                  # GET /api/invitations/[token]
+          members/
+            route.ts                # GET /api/invitations/[token]/members（未紐づけmember一覧）
           use/
             route.ts                # POST /api/invitations/[token]/use
         code/
