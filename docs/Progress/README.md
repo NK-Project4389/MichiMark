@@ -151,3 +151,5 @@
 | [2026-04-15_architect__POST1-F5-Spec作成完了.md](./2026-04-15_architect__POST1-F5-Spec作成完了.md) | POST-1/F-5 FS-payment_from_mark_link Spec作成（T-362 DONE）・リモートトリガー更新 |
 | [2026-04-15_req__F-2-ダッシュボード要件書作成.md](./2026-04-15_req__F-2-ダッシュボード要件書作成.md) | F-2 ダッシュボード機能 要件書作成（T-390 DONE）・UTIL-1/UI-15/UI-16/INFRA-2 タスク追加 |
 | [2026-04-15_architect__F-2-ダッシュボードSpec作成.md](./2026-04-15_architect__F-2-ダッシュボードSpec作成.md) | F-2 ダッシュボード Spec作成（T-391 DONE）・旅費TopRoutes仮実装・DateRange設計 |
+- [2026-04-16](./2026-04-16_chore__TAKBOARDアーカイブ分離_F_3をTOD.md)
+| [2026-04-16_test__F-3-visitWork-IntegrationTest.md](./2026-04-16_test__F-3-visitWork-IntegrationTest.md) | F-3 visitWork Integration Test 16件中15件PASS・TC-VW-I004 FAIL（cachedEvent未更新の問題）|
