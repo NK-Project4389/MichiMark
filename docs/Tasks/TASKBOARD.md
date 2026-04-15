@@ -274,11 +274,11 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-324 | 招待機能バックエンド 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_backend.md |
-| T-325 | 招待機能バックエンド Spec作成 | architect | `BLOCKED` | | INFRA-1完了後に着手 |
-| T-326a | 招待機能バックエンド 実装（Next.js） | flutter-dev | `BLOCKED` | | |
-| T-326b | 招待機能バックエンド テストコード実装 | tester | `BLOCKED` | | |
-| T-327 | 招待機能バックエンド レビュー | reviewer | `BLOCKED` | | |
-| T-328 | 招待機能バックエンド テスト実行 | tester | `BLOCKED` | | |
+| T-325 | 招待機能バックエンド Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_backend.md |
+| T-326a | 招待機能バックエンド 実装（Next.js） | flutter-dev | `TODO` | | FS-invitation_backend.md 参照 |
+| T-326b | 招待機能バックエンド テストコード実装 | tester | `TODO` | | TC-INV1-001〜016 実装 |
+| T-327 | 招待機能バックエンド レビュー | reviewer | `BLOCKED` | | T-326a/b完了後 |
+| T-328 | 招待機能バックエンド テスト実行 | tester | `BLOCKED` | | T-327完了後 |
 
 ---
 
