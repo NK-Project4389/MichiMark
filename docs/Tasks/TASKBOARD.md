@@ -158,9 +158,9 @@
 |---|---|---|---|---|---|
 | T-293 | 移動コスト集計収支バランス 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-moving_cost_balance.md |
 | T-294 | 移動コスト集計収支バランス Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-moving_cost_balance.md |
-| T-295a | 移動コスト集計収支バランス 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-14_UI8-F2-F4実装 | |
-| T-295b | 移動コスト集計収支バランス テストコード実装 | tester | `IN_PROGRESS` | 2026-04-14_UI8-F2-F4実装 | |
-| T-296 | 移動コスト集計収支バランス レビュー | reviewer | `TODO` | | |
+| T-295a | 移動コスト集計収支バランス 実装 | flutter-dev | `DONE` | | |
+| T-295b | 移動コスト集計収支バランス テストコード実装 | tester | `DONE` | | |
+| T-296 | 移動コスト集計収支バランス レビュー | reviewer | `DONE` | | 承認 |
 | T-297 | 移動コスト集計収支バランス テスト実行 | tester | `DONE` | | 8PASS/0FAIL/0SKIP（TC-MCB-001〜006 全件PASS） |
 
 ---
@@ -247,7 +247,7 @@
 | T-260d | App Store Connect 基本情報入力（名前・カテゴリ・価格・URL） | orchestrator | `DONE` | | docs/AppStore/metadata_ja.md 参照 |
 | T-260e | アプリ説明文・キーワード作成 | orchestrator | `DONE` | | docs/AppStore/metadata_ja.md 参照 |
 | T-260f | スクリーンショット撮影・登録（iPhone 6.5インチ以上） | orchestrator | `DONE` | | iPhone 6.9インチ5枚登録済み |
-| T-260g | 全件 Integration Test フルスイート PASS | tester | `IN_PROGRESS` | 2026-04-15_chore__AppStore審査提出完了 | 241PASS/112SKIP/11FAIL 残11件修正中 |
+| T-260g | 全件 Integration Test フルスイート PASS | tester | `DONE` | | 全件PASS達成（2026-04-15） |
 | T-260h | 本番ビルド → TestFlight最終確認 → 審査提出 | orchestrator | `DONE` | | 1.0.0(18) 審査提出済み 2026-04-15 |
 
 ---

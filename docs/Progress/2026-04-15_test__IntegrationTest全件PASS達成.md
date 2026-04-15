@@ -10,6 +10,7 @@ App Store審査待ち期間中に残っていたIntegration Test の FAIL を全
 ---
 
 ## 完了した作業
+- test: Integration Test 全件PASS達成（TC-BTE-006/B5/PID2/BUG-002/DCD/FEU修正） (5bf8456)
 
 ### 3シャード並行実行の追加
 - `CLAUDE.md` にshard2コマンドを追記
