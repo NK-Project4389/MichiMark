@@ -284,31 +284,29 @@
 
 ## INV-2: 招待機能 中間Webページ（Next.js）
 
-> ⚠️ INV-1完了後に着手する
-
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-329 | 招待Webページ 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_web_page.md |
-| T-330 | 招待Webページ Spec作成 | architect | `BLOCKED` | | INV-1完了後に着手 |
-| T-331a | 招待Webページ 実装（Next.js） | flutter-dev | `BLOCKED` | | |
-| T-331b | 招待Webページ テストコード実装 | tester | `BLOCKED` | | |
-| T-332 | 招待Webページ レビュー | reviewer | `BLOCKED` | | |
-| T-333 | 招待Webページ テスト実行 | tester | `BLOCKED` | | |
+| T-330 | 招待Webページ Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_web_page.md |
+| T-331a | 招待Webページ 実装（Next.js） | flutter-dev | `TODO` | | FS-invitation_web_page.md 参照 |
+| T-331b | 招待Webページ テストコード実装 | tester | `TODO` | | TC-INV2-001〜008 |
+| T-332 | 招待Webページ レビュー | reviewer | `BLOCKED` | | T-331a/b完了後 |
+| T-333 | 招待Webページ テスト実行 | tester | `BLOCKED` | | T-332完了後 |
 
 ---
 
 ## INV-3: 招待機能 招待コード入力画面（Flutter）
 
-> ⚠️ INV-1完了後に着手する（INV-2と並行可能）
+> INV-2と並行実施可能
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-334 | 招待コード入力 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_code_input.md |
-| T-335 | 招待コード入力 Spec作成 | architect | `BLOCKED` | | INV-1完了後に着手 |
-| T-336a | 招待コード入力 実装 | flutter-dev | `BLOCKED` | | |
-| T-336b | 招待コード入力 テストコード実装 | tester | `BLOCKED` | | |
-| T-337 | 招待コード入力 レビュー | reviewer | `BLOCKED` | | |
-| T-338 | 招待コード入力 テスト実行 | tester | `BLOCKED` | | |
+| T-335 | 招待コード入力 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_code_input.md |
+| T-336a | 招待コード入力 実装 | flutter-dev | `TODO` | | FS-invitation_code_input.md 参照 |
+| T-336b | 招待コード入力 テストコード実装 | tester | `TODO` | | TC-INV3-001〜010 |
+| T-337 | 招待コード入力 レビュー | reviewer | `BLOCKED` | | T-336a/b完了後 |
+| T-338 | 招待コード入力 テスト実行 | tester | `BLOCKED` | | T-337完了後 |
 
 ---
 
@@ -470,20 +468,19 @@
 
 ---
 
-## POST-1: MichiInfoで支払い情報を登録できるようにする
+## POST-1 / F-5: MichiInfo支払い情報登録 / MarkDetail・LinkDetailからPaymentDetail登録（統合）
 
-> ⚠️ AppStoreリリース（REL-1）完了後に着手する
+> POST-1とF-5は同一機能のため統合。MarkDetail・LinkDetail・MichiInfoから支払い情報を直接登録できるようにする。
+> REL-1完了済みにつきブロック解除。要件定義をユーザーと伴奏して進める。
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-361 | POST-1: MichiInfo支払い情報登録 要件書作成 | product-manager | `BLOCKED` | | REL-1完了後に着手 |
-| T-362 | POST-1: MichiInfo支払い情報登録 Spec作成 | architect | `BLOCKED` | | |
-| T-363a | POST-1: MichiInfo支払い情報登録 実装 | flutter-dev | `BLOCKED` | | |
-| T-363b | POST-1: MichiInfo支払い情報登録 テストコード実装 | tester | `BLOCKED` | | |
-| T-364 | POST-1: レビュー | reviewer | `BLOCKED` | | |
-| T-365 | POST-1: テスト実行 | tester | `BLOCKED` | | |
-
----
+| T-361 | POST-1/F-5: 要件書作成 | product-manager | `TODO` | | POST-1（T-361）とF-5（T-406）を統合 |
+| T-362 | POST-1/F-5: Spec作成 | architect | `BLOCKED` | | T-361完了後 |
+| T-363a | POST-1/F-5: 実装 | flutter-dev | `BLOCKED` | | |
+| T-363b | POST-1/F-5: テストコード実装 | tester | `BLOCKED` | | |
+| T-364 | POST-1/F-5: レビュー | reviewer | `BLOCKED` | | |
+| T-365 | POST-1/F-5: テスト実行 | tester | `BLOCKED` | | |
 
 ---
 
@@ -531,20 +528,9 @@
 
 ---
 
-## F-5: MarkDetail/LinkDetailからPaymentDetail情報を登録する機能
+~~## F-5: MarkDetail/LinkDetailからPaymentDetail情報を登録する機能~~
 
-> MarkDetail・LinkDetail画面から直接PaymentDetailの情報（支払い情報）を登録できるようにする。要件定義から着手する。
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-406 | F-5: MarkDetail/LinkDetail→PaymentDetail登録 要件書作成 | product-manager | `TODO` | | ユーザーと伴奏して進める |
-| T-407 | F-5: Spec作成 | architect | `BLOCKED` | | T-406完了後 |
-| T-408a | F-5: 実装 | flutter-dev | `BLOCKED` | | |
-| T-408b | F-5: テストコード実装 | tester | `BLOCKED` | | |
-| T-409 | F-5: レビュー | reviewer | `BLOCKED` | | |
-| T-410 | F-5: テスト実行 | tester | `BLOCKED` | | |
-
----
+> POST-1（T-361〜365）と統合済み。F-5タスクは廃止。
 
 ## F-3: トピック追加（作業登録トピック）
 
