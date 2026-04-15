@@ -531,6 +531,21 @@
 
 ---
 
+## F-5: MarkDetail/LinkDetailからPaymentDetail情報を登録する機能
+
+> MarkDetail・LinkDetail画面から直接PaymentDetailの情報（支払い情報）を登録できるようにする。要件定義から着手する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-406 | F-5: MarkDetail/LinkDetail→PaymentDetail登録 要件書作成 | product-manager | `TODO` | | ユーザーと伴奏して進める |
+| T-407 | F-5: Spec作成 | architect | `BLOCKED` | | T-406完了後 |
+| T-408a | F-5: 実装 | flutter-dev | `BLOCKED` | | |
+| T-408b | F-5: テストコード実装 | tester | `BLOCKED` | | |
+| T-409 | F-5: レビュー | reviewer | `BLOCKED` | | |
+| T-410 | F-5: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
 ## F-3: トピック追加（作業登録トピック）
 
 > 現在のトピック（movingCost / movingCostEstimated / travelExpense）に加え、「作業登録」用のトピックタイプを追加する。要件定義をユーザーと伴奏して進める。
