@@ -503,8 +503,8 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-390 | F-2: 期間集計機能 要件書作成 | product-manager | `TODO` | | ユーザーと伴奏して進める |
-| T-391 | F-2: 期間集計機能 Spec作成 | architect | `BLOCKED` | | T-390完了後 |
+| T-390 | F-2: 期間集計機能 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-dashboard.md |
+| T-391 | F-2: 期間集計機能 Spec作成 | architect | `TODO` | | docs/Requirements/REQ-dashboard.md 参照 |
 | T-392a | F-2: 期間集計機能 実装 | flutter-dev | `BLOCKED` | | |
 | T-392b | F-2: 期間集計機能 テストコード実装 | tester | `BLOCKED` | | |
 | T-393 | F-2: レビュー | reviewer | `BLOCKED` | | |
@@ -543,6 +543,51 @@
 | T-406 | Google Workspace MCP 動作確認 | orchestrator | `TODO` | | Google Cloud Console でOAuth設定 → MCP登録 → Claude Code から Sheets 読み書き確認 |
 | T-407 | Domain設計一覧.xlsx → Google Sheets 移行 | orchestrator | `BLOCKED` | | T-406完了後。Drive にアップロード → Sheets に変換 → URL を docs/Domain/ に記録 |
 | T-408 | 移行後の運用ルール整備 | orchestrator | `BLOCKED` | | T-407完了後。CLAUDE.md or docs/Domain/README.md に Google Sheets URL・MCP操作方法を記載 |
+
+---
+
+## UTIL-1: CSV出力機能
+
+> イベントデータをCSV形式でエクスポートする機能。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-409 | UTIL-1: CSV出力機能 要件書作成 | product-manager | `TODO` | | ユーザーと伴奏して進める |
+| T-410 | UTIL-1: CSV出力機能 Spec作成 | architect | `BLOCKED` | | T-409完了後 |
+| T-411a | UTIL-1: CSV出力機能 実装 | flutter-dev | `BLOCKED` | | |
+| T-411b | UTIL-1: CSV出力機能 テストコード実装 | tester | `BLOCKED` | | |
+| T-412 | UTIL-1: レビュー | reviewer | `BLOCKED` | | |
+| T-413 | UTIL-1: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## UI-15: イベントフィルター機能（日付・トピック）
+
+> イベント一覧を日付範囲・トピックで絞り込めるフィルター機能。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-414 | UI-15: イベントフィルター 要件書作成 | product-manager | `TODO` | | ユーザーと伴奏して進める |
+| T-415 | UI-15: イベントフィルター Spec作成 | architect | `BLOCKED` | | T-414完了後 |
+| T-416a | UI-15: イベントフィルター 実装 | flutter-dev | `BLOCKED` | | |
+| T-416b | UI-15: イベントフィルター テストコード実装 | tester | `BLOCKED` | | |
+| T-417 | UI-15: レビュー | reviewer | `BLOCKED` | | |
+| T-418 | UI-15: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## UI-16: スプラッシュ画面改善（アプリアイコン＋テーマカラー背景）
+
+> 起動時スプラッシュをアプリアイコン表示・背景テーマカラーに変更する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-419 | UI-16: スプラッシュ改善 要件書作成 | product-manager | `TODO` | | |
+| T-420 | UI-16: スプラッシュ改善 Spec作成 | architect | `BLOCKED` | | T-419完了後 |
+| T-421a | UI-16: スプラッシュ改善 実装 | flutter-dev | `BLOCKED` | | |
+| T-421b | UI-16: スプラッシュ改善 テストコード実装 | tester | `BLOCKED` | | |
+| T-422 | UI-16: レビュー | reviewer | `BLOCKED` | | |
+| T-423 | UI-16: テスト実行 | tester | `BLOCKED` | | |
 
 ---
 
