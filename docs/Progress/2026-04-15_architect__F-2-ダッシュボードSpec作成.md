@@ -25,7 +25,18 @@
 
 ---
 
+## リモートトリガー最終状態
+
+| トリガー名 | 実行日時（JST） | 内容 |
+|---|---|---|
+| `F-3-POST1F5-F2-impl` | **4/17（木）02:10** | F-3 → POST-1/F-5 → F-2 の順で直列実行 |
+| `F-2-dashboard-impl` | ~~4/17 02:10~~ | 無効化済み（F-3トリガーにマージ済み） |
+
+---
+
 ## 次回セッションで最初にやること
 
-1. T-403c: リモート実行結果確認（4/17 2:10 JSTにリモート自動実行予定）
-2. T-392a/b: F-2 ダッシュボード 実装・テストコード実装（並行）
+1. **T-403c: リモート実行結果確認** — `git pull` → `git log` で F-3・POST-1/F-5・F-2 のコミット確認
+2. F-3: T-405 Integration Test 実行（`visit_work_topic_test.dart`）
+3. POST-1/F-5: T-365 Integration Test 実行（`payment_from_mark_link_test.dart`）
+4. F-2: T-394 Integration Test 実行（`dashboard_test.dart`）
