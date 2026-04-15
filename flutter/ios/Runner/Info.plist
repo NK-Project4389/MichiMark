@@ -20,6 +20,10 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>michi_mark</string>
+	<key>UIDeviceFamily</key>
+	<array>
+		<integer>1</integer>
+	</array>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
