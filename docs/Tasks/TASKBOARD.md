@@ -275,10 +275,10 @@
 |---|---|---|---|---|---|
 | T-324 | 招待機能バックエンド 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_backend.md |
 | T-325 | 招待機能バックエンド Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_backend.md |
-| T-326a | 招待機能バックエンド 実装（Next.js） | flutter-dev | `IN_PROGRESS` | 2026-04-15_INV-1-impl | FS-invitation_backend.md 参照 |
+| T-326a | 招待機能バックエンド 実装（Next.js） | flutter-dev | `DONE` | | Next.jsセットアップ・4エンドポイント実装完了 |
 | T-326b | 招待機能バックエンド テストコード実装 | tester | `DONE` | | TC-INV1-002,003,005〜007,009〜011,013〜016 Unit 43PASS |
-| T-327 | 招待機能バックエンド レビュー | reviewer | `BLOCKED` | | T-326a/b完了後 |
-| T-328 | 招待機能バックエンド テスト実行 | tester | `BLOCKED` | | T-327完了後 |
+| T-327 | 招待機能バックエンド レビュー | reviewer | `DONE` | | 承認（シグネチャ修正・FieldValue.increment・null安全化） |
+| T-328 | 招待機能バックエンド テスト実行 | tester | `DONE` | | Unit Test 43PASS/0FAIL（T-326b時点で実行済み） |
 
 ---
 
