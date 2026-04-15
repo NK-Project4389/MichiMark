@@ -518,9 +518,9 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-395 | UI-14: デザイン提案 | designer | `TODO` | | 道路イメージのデザイン案を作成 |
-| T-396 | UI-14: 要件書作成 | product-manager | `BLOCKED` | | T-395・ユーザー確認後 |
-| T-397 | UI-14: Spec作成 | architect | `BLOCKED` | | T-396完了後 |
+| T-395 | UI-14: デザイン提案 | designer | `DONE` | | docs/Design/draft/michi_info_road_timeline_design.html |
+| T-396 | UI-14: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_road_timeline.md |
+| T-397 | UI-14: Spec作成 | architect | `TODO` | | T-396完了 → 着手可能 |
 | T-398a | UI-14: 実装 | flutter-dev | `BLOCKED` | | |
 | T-398b | UI-14: テストコード実装 | tester | `BLOCKED` | | |
 | T-399 | UI-14: レビュー | reviewer | `BLOCKED` | | |

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiInfo タイムライン道路帯デザイン — 確定案</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', sans-serif;
+      background: #F5F7FA;
+      color: #1A1A2E;
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #1A4A5E 0%, #2B7A9B 55%, #3A9DC4 100%);
+      color: white;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .page-header p {
+      font-size: 15px;
+      opacity: 0.85;
+      max-width: 640px;
+    }
+    .page-header .meta {
+      display: flex;
+      gap: 24px;
+      margin-top: 24px;
+      font-size: 13px;
+      opacity: 0.7;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 40px 80px;
+    }
+    section {
+      margin-top: 60px;
+    }
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #D0EBF5;
+      color: #1A4A5E;
+      border-radius: 12px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    section h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    section > p.lead {
+      font-size: 15px;
+      color: #6C757D;
+      margin-bottom: 32px;
+      max-width: 680px;
+    }
+
+    /* ===== INFO CARD ===== */
+    .info-card {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #E9ECEF;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: 28px 32px;
+    }
+    .info-card p {
+      font-size: 15px;
+      color: #444;
+      margin-bottom: 12px;
+    }
+    .info-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ===== LAYER DIAGRAM ===== */
+    .layer-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .layer-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .layer-index {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .layer-bar {
+      flex: 1;
+      border-radius: 10px;
+      padding: 14px 20px;
+    }
+    .layer-bar h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .layer-bar p {
+      font-size: 13px;
+      opacity: 0.8;
+      margin: 0;
+    }
+    .layer-arrow {
+      text-align: center;
+      font-size: 18px;
+      color: #9CA3AF;
+      margin: -4px 0;
+      padding-left: 18px;
+    }
+
+    /* ===== MOCKUP AREA ===== */
+    .mockup-wrapper {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #E9ECEF;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: 32px;
+    }
+    .mockup-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #6C757D;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 24px;
+    }
+    .mockup-frame {
+      background: #FAFBFC;
+      border-radius: 12px;
+      border: 1px solid #E9ECEF;
+      padding: 24px 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ===== SPEC TABLE ===== */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .spec-table th {
+      background: #F0F4F8;
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: #6C757D;
+      border-bottom: 2px solid #E9ECEF;
+    }
+    .spec-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #F0F4F8;
+      color: #333;
+      vertical-align: middle;
+    }
+    .spec-table tr:last-child td {
+      border-bottom: none;
+    }
+    .spec-table tr:hover td {
+      background: #FAFBFC;
+    }
+    .spec-value {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      color: #1A4A5E;
+      background: #EFF7FC;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .color-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .color-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.12);
+      flex-shrink: 0;
+    }
+
+    /* ===== IMPL NOTE ===== */
+    .impl-note {
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .impl-note h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #92400E;
+      margin-bottom: 8px;
+    }
+    .impl-note p {
+      font-size: 14px;
+      color: #78350F;
+      margin-bottom: 8px;
+    }
+    .impl-note p:last-child {
+      margin-bottom: 0;
+    }
+    .impl-note code {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      background: rgba(146,64,14,0.1);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="page-header">
+  <div class="badge">Designer Report</div>
+  <h1>MichiInfo タイムライン — 道路帯デザイン 確定案</h1>
+  <p>複数案を1本に絞り込んだ確定案。タイムライン軸に沿ってグレーの道路帯を背面に描くレイヤー構成。</p>
+  <div class="meta">
+    <span>2026-04-15</span>
+    <span>対象: MichiInfo タイムライン画面</span>
+    <span>案A改 確定</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== 1. 概要説明 ===== -->
+  <section id="overview">
+    <div class="section-label">01 Overview</div>
+    <h2>シンプル化の意図</h2>
+    <p class="lead">旧案A〜Cで検討していた複数のアプローチを廃止し、「道路帯を背面に敷くだけ」という最小介入の案A改に一本化する。</p>
+
+    <div class="info-card">
+      <p><strong>旧案の問題点:</strong> 案B（カード内グラデーション）・案C（アイコン変形）はコンポーネント構造の変更が大きく、既存の描画ロジックとの整合コストが高かった。</p>
+      <p><strong>確定案の方針:</strong> タイムライン軸（x=20）に沿った縦帯を最背面に1本追加するだけ。スパン矢印・ドット・接続線・カードはすべて既存のまま流用する。変更箇所を最小化することで、デグレードリスクをほぼゼロにする。</p>
+      <p><strong>期待効果:</strong> 「道路の上を走っている」という MichiMark らしさを、構造変更なしに視覚的に表現できる。</p>
+    </div>
+  </section>
+
+  <!-- ===== 2. レイヤー構造 ===== -->
+  <section id="layer-structure">
+    <div class="section-label">02 Layer Structure</div>
+    <h2>レイヤー構成図</h2>
+    <p class="lead">背面から前面に向かって3層で構成される。追加するのは第1層のみ。</p>
+
+    <div class="layer-stack">
+
+      <div class="layer-row">
+        <div class="layer-index" style="background:#E2E8F0; color:#475569;">3</div>
+        <div class="layer-bar" style="background:#EFF7FC; border: 1.5px solid #B0D9EE;">
+          <h4 style="color:#1A4A5E;">カード（最前面）</h4>
+          <p style="color:#2B7A9B;">Mark カード / Link カード — 変更なし</p>
+        </div>
+      </div>
+
+      <div class="layer-arrow">|</div>
+
+      <div class="layer-row">
+        <div class="layer-index" style="background:#D1FAE5; color:#065F46;">2</div>
+        <div class="layer-bar" style="background:#F0FDF4; border: 1.5px solid #6EE7B7;">
+          <h4 style="color:#065F46;">既存描画（中間層）</h4>
+          <p style="color:#047857;">スパン矢印・区間接続線・距離テキスト・Mark●ドット（Teal）・Link■ドット（Emerald）・水平接続線 — すべて変更なし</p>
+        </div>
+      </div>
+
+      <div class="layer-arrow">|</div>
+
+      <div class="layer-row">
+        <div class="layer-index" style="background:#FEF3C7; color:#92400E;">1</div>
+        <div class="layer-bar" style="background:#FFFBEB; border: 2px solid #FCD34D;">
+          <h4 style="color:#92400E;">道路帯（最背面）★ 追加</h4>
+          <p style="color:#78350F;">グレー帯 + 白破線センターライン。タイムライン軸（x=20）上に縦に描画。他レイヤーより先に描く</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== 3. モックアップ ===== -->
+  <section id="mockup">
+    <div class="section-label">03 Mockup</div>
+    <h2>ビジュアルモックアップ</h2>
+    <p class="lead">Markカード2枚・Linkカード1枚・スパン矢印あり の構成例。道路帯が背面、ドット・接続線が前面に重なる様子を確認する。</p>
+
+    <div class="mockup-wrapper">
+      <div class="mockup-title">タイムライン 道路帯レイヤー — 案A改</div>
+      <div class="mockup-frame">
+        <svg width="340" height="520" viewBox="0 0 340 520" xmlns="http://www.w3.org/2000/svg">
+          <!-- =========================================== -->
+          <!-- LAYER 1: 道路帯（最背面）                   -->
+          <!-- =========================================== -->
+          <!-- 道路帯本体: x=20中心、幅18px、角丸4px -->
+          <rect x="11" y="40" width="18" height="440" rx="4" fill="#888888"/>
+          <!-- 白破線センターライン -->
+          <line x1="20" y1="40" x2="20" y2="480"
+                stroke="white" stroke-width="1.5"
+                stroke-dasharray="6 4"
+                stroke-linecap="round"/>
+
+          <!-- =========================================== -->
+          <!-- LAYER 2: 既存描画（中間層）                 -->
+          <!-- =========================================== -->
+
+          <!-- スパン矢印（上端→下端 縦方向） -->
+          <!-- 矢印上端マーカー -->
+          <polygon points="20,52 16,62 24,62" fill="#64748B"/>
+          <!-- 矢印下端マーカー -->
+          <polygon points="20,468 16,458 24,458" fill="#64748B"/>
+          <!-- スパン縦線（軸の右側 x=26） -->
+          <line x1="26" y1="58" x2="26" y2="462" stroke="#64748B" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <!-- 距離テキスト（スパン右隣） -->
+          <text x="32" y="262" font-size="11" fill="#64748B" font-family="-apple-system,sans-serif">124 km</text>
+
+          <!-- Mark1 ドット（Teal, y=100） -->
+          <circle cx="20" cy="100" r="7" fill="#0D9488" stroke="white" stroke-width="2"/>
+          <!-- Mark1 水平接続線 -->
+          <line x1="27" y1="100" x2="60" y2="100" stroke="#0D9488" stroke-width="1.5"/>
+
+          <!-- Link区間 Emeraldグラデーション矩形（y=150〜300） -->
+          <defs>
+            <linearGradient id="linkGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#059669" stop-opacity="0.18"/>
+              <stop offset="50%" stop-color="#059669" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#059669" stop-opacity="0.18"/>
+            </linearGradient>
+          </defs>
+          <!-- Link区間の道路帯をEmeraldに変化させる（グレー帯と重ねる） -->
+          <rect x="11" y="155" width="18" height="145" rx="4" fill="url(#linkGrad)"/>
+          <!-- Link区間 破線（Emerald） -->
+          <line x1="20" y1="155" x2="20" y2="300"
+                stroke="#10B981" stroke-width="1.5"
+                stroke-dasharray="6 4"
+                stroke-linecap="round" opacity="0.7"/>
+
+          <!-- Link区間接続線（上端・下端の横線） -->
+          <line x1="11" y1="155" x2="29" y2="155" stroke="#059669" stroke-width="1" opacity="0.5"/>
+          <line x1="11" y1="300" x2="29" y2="300" stroke="#059669" stroke-width="1" opacity="0.5"/>
+
+          <!-- Link ドット上端（Emerald, y=155） -->
+          <rect x="14" y="149" width="12" height="12" rx="2" fill="#059669" stroke="white" stroke-width="2"/>
+          <!-- Link 水平接続線 上端 -->
+          <line x1="27" y1="155" x2="60" y2="155" stroke="#059669" stroke-width="1.5"/>
+
+          <!-- Link ドット下端（Emerald, y=300） -->
+          <rect x="14" y="294" width="12" height="12" rx="2" fill="#059669" stroke="white" stroke-width="2"/>
+          <!-- Link 水平接続線 下端 -->
+          <line x1="27" y1="300" x2="60" y2="300" stroke="#059669" stroke-width="1.5"/>
+
+          <!-- Mark2 ドット（Teal, y=380） -->
+          <circle cx="20" cy="380" r="7" fill="#0D9488" stroke="white" stroke-width="2"/>
+          <!-- Mark2 水平接続線 -->
+          <line x1="27" y1="380" x2="60" y2="380" stroke="#0D9488" stroke-width="1.5"/>
+
+          <!-- =========================================== -->
+          <!-- LAYER 3: カード                             -->
+          <!-- =========================================== -->
+
+          <!-- Mark1 カード（y=82〜118） -->
+          <rect x="60" y="82" width="200" height="38" rx="8"
+                fill="white" stroke="#E2E8F0" stroke-width="1"
+                filter="url(#cardShadow)"/>
+          <text x="76" y="97" font-size="11" font-weight="700" fill="#0D9488" font-family="-apple-system,sans-serif">Mark</text>
+          <text x="76" y="112" font-size="12" fill="#1A1A2E" font-family="-apple-system,sans-serif">道の駅 富士川楽座</text>
+
+          <!-- Link カード（y=148〜300, 区間カード） -->
+          <rect x="60" y="137" width="200" height="176" rx="8"
+                fill="white" stroke="#D1FAE5" stroke-width="1.5"
+                filter="url(#cardShadow)"/>
+          <rect x="60" y="137" width="200" height="28" rx="8" fill="#F0FDF4"/>
+          <rect x="60" y="153" width="200" height="12" rx="0" fill="#F0FDF4"/>
+          <text x="76" y="153" font-size="11" font-weight="700" fill="#059669" font-family="-apple-system,sans-serif">Link</text>
+          <text x="76" y="173" font-size="12" fill="#1A1A2E" font-family="-apple-system,sans-serif">東名高速 御殿場 → 富士</text>
+          <text x="76" y="192" font-size="11" fill="#6C757D" font-family="-apple-system,sans-serif">38.4 km</text>
+          <text x="76" y="212" font-size="11" fill="#6C757D" font-family="-apple-system,sans-serif">約28分</text>
+          <rect x="76" y="224" width="168" height="1" fill="#E9ECEF"/>
+          <text x="76" y="242" font-size="11" fill="#6C757D" font-family="-apple-system,sans-serif">メモ: PAで休憩</text>
+          <text x="76" y="290" font-size="10" fill="#9CA3AF" font-family="-apple-system,sans-serif">2024-08-11  09:42</text>
+
+          <!-- Mark2 カード（y=362〜400） -->
+          <rect x="60" y="362" width="200" height="38" rx="8"
+                fill="white" stroke="#E2E8F0" stroke-width="1"
+                filter="url(#cardShadow)"/>
+          <text x="76" y="377" font-size="11" font-weight="700" fill="#0D9488" font-family="-apple-system,sans-serif">Mark</text>
+          <text x="76" y="392" font-size="12" fill="#1A1A2E" font-family="-apple-system,sans-serif">富士山パーキング</text>
+
+          <!-- カード影フィルタ -->
+          <defs>
+            <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="120%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#00000014"/>
+            </filter>
+          </defs>
+        </svg>
+      </div>
+
+      <!-- 凡例 -->
+      <div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: #6C757D;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div style="width:24px;height:12px;background:#888;border-radius:3px;"></div>
+          <span>道路帯（グレー #888）</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div style="width:24px;height:2px;background:white;border:1px dashed #888;"></div>
+          <span>白破線センターライン</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div style="width:12px;height:12px;background:#0D9488;border-radius:50%;"></div>
+          <span>Markドット（Teal）</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div style="width:12px;height:12px;background:#059669;border-radius:2px;"></div>
+          <span>Linkドット（Emerald）</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div style="width:24px;height:12px;background:rgba(5,150,105,0.22);border-radius:3px;border:1px solid #6EE7B7;"></div>
+          <span>Link区間 Emeraldオーバーレイ</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. デザイン仕様まとめ表 ===== -->
+  <section id="spec">
+    <div class="section-label">04 Design Spec</div>
+    <h2>デザイン仕様まとめ</h2>
+    <p class="lead">実装時に参照する数値・色をまとめる。</p>
+
+    <div class="info-card" style="padding: 0; overflow: hidden;">
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th style="width:180px;">項目</th>
+            <th style="width:200px;">値</th>
+            <th>根拠・備考</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>帯の中心X座標</strong></td>
+            <td><span class="spec-value">x = 20</span></td>
+            <td>既存タイムライン軸と同じ。変更不要</td>
+          </tr>
+          <tr>
+            <td><strong>帯幅</strong></td>
+            <td><span class="spec-value">18 px</span></td>
+            <td>Markドット直径12px（r=6）+ 余白3px 両側。中心±9px。ドットがはみ出さずに収まる最小幅</td>
+          </tr>
+          <tr>
+            <td><strong>帯色（グレー）</strong></td>
+            <td>
+              <span class="color-chip">
+                <span class="color-dot" style="background:#888888;"></span>
+                <span class="spec-value">#888888</span>
+              </span>
+            </td>
+            <td>道路のアスファルトらしさを出しつつ、白破線・Tealドットのコントラストを確保。#777（濃）〜#999（淡）の中間値を採用</td>
+          </tr>
+          <tr>
+            <td><strong>帯の端処理</strong></td>
+            <td><span class="spec-value">radius = 4px</span></td>
+            <td>直線カットは無機質すぎる。大きな丸みはカード風になりタイムラインとの差異が薄れる。4pxの小さな丸みで「道路の切れ目」感を維持</td>
+          </tr>
+          <tr>
+            <td><strong>白破線（色）</strong></td>
+            <td>
+              <span class="color-chip">
+                <span class="color-dot" style="background:white; border: 1px solid #CCC;"></span>
+                <span class="spec-value">#FFFFFF</span>
+              </span>
+            </td>
+            <td>道路センターラインの慣習（白または黄）。#888帯に対してコントラスト比約5:1でWCAG AA基準を満たす</td>
+          </tr>
+          <tr>
+            <td><strong>白破線（線幅）</strong></td>
+            <td><span class="spec-value">1.5 px</span></td>
+            <td>細すぎず太すぎない。帯幅18pxに対してバランスが良い</td>
+          </tr>
+          <tr>
+            <td><strong>白破線（ダッシュ）</strong></td>
+            <td><span class="spec-value">on=6px / off=4px</span></td>
+            <td>モバイル画面での視認性を考慮。間隔が広すぎると点に見える。6/4は道路標識に準拠した比率</td>
+          </tr>
+          <tr>
+            <td><strong>帯の描画Y範囲</strong></td>
+            <td><span class="spec-value">verticalLineStartRelY 〜 verticalLineEndRelY</span></td>
+            <td>既存のスパン矢印縦線と同じ範囲。別途計算不要</td>
+          </tr>
+          <tr>
+            <td><strong>Link区間の道路帯</strong></td>
+            <td>
+              <span class="color-chip">
+                <span class="color-dot" style="background: rgba(5,150,105,0.25); border: 1px solid #6EE7B7;"></span>
+                <span class="spec-value">Emeraldオーバーレイ</span>
+              </span>
+            </td>
+            <td>グレー帯の上にEmerald（#059669）半透明矩形を重ねる方式を採用。既存のEmeraldグラデーション矩形と自然に馴染み、Link区間であることが一目でわかる。帯をEmraldに置き換えるよりコード変更が少ない</td>
+          </tr>
+          <tr>
+            <td><strong>Emeraldオーバーレイ 透明度</strong></td>
+            <td><span class="spec-value">opacity = 0.22〜0.28</span></td>
+            <td>下層のグレー帯が透けて「道路が緑色に変わる」印象を出す。不透明だとグレーが完全に消える</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== 5. 実装メモ ===== -->
+  <section id="impl">
+    <div class="section-label">05 Implementation Note</div>
+    <h2>実装メモ</h2>
+    <p class="lead">designer からの申し送り事項。flutter-dev 向け。</p>
+
+    <div class="impl-note">
+      <h4>変更箇所は _MichiTimelineCanvas の描画順のみ</h4>
+      <p>既存の <code>_MichiTimelineCanvas</code> は <code>CustomPainter</code> の <code>paint()</code> メソッド内で各要素を順番に描画している。</p>
+      <p>道路帯は <strong>他の全描画より前（最初）に <code>drawRect</code> + <code>drawLine</code></strong> するだけでレイヤー構成が完成する。カード・ドット・スパン矢印の描画コードは一切触らない。</p>
+      <p>Link区間オーバーレイは、既存のEmeraldグラデーション矩形と同じ Y 範囲に <code>drawRect</code> を追加する。この矩形も道路帯直後・他要素より前に描く。</p>
+      <p>破線は Flutter の <code>Paint</code> に <code>PathEffect</code> を使うか、または <code>Path</code> + <code>dashPattern</code> ライブラリ（<code>path_drawing</code> など）で実現する。仕様決定は Spec 作成時に architect が判断する。</p>
+    </div>
+  </section>
+
+</div><!-- /container -->
+</body>
+</html>
