@@ -539,7 +539,7 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-401 | F-3: 訪問作業トピック 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_topic.md |
-| T-402 | F-3: 訪問作業トピック Spec作成 | architect | `TODO` | | T-401完了 |
+| T-402 | F-3: 訪問作業トピック Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_topic.md |
 | T-403a | F-3: 訪問作業トピック 実装 | flutter-dev | `BLOCKED` | | T-402完了後 |
 | T-403b | F-3: 訪問作業トピック テストコード実装 | tester | `BLOCKED` | | |
 | T-404 | F-3: レビュー | reviewer | `BLOCKED` | | |
