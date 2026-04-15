@@ -427,6 +427,13 @@ class _MichiInfoViewState extends State<MichiInfoView> {
             currentStateLabel: stateLabel,
           ),
         );
+
+    // アクション記録後に cachedEvent を更新するため DB からリロードする。
+    // MichiInfoReloadedDelegate → EventDetailPage の listener →
+    // EventDetailCachedEventUpdateRequested の既存パスを経由して
+    // OverviewBloc が最新の actionTimeLogs を使って集計できるようにする。
+    if (!mounted) return;
+    context.read<MichiInfoBloc>().add(const MichiInfoReloadRequested());
   }
 }
 

@@ -150,6 +150,31 @@ class TopicConfig extends Equatable {
           showMarkMembers: true,
           showLinkDate: false,
         ),
+      TopicType.visitWork => const TopicConfig(
+          showMeterValue: true,
+          showFuelDetail: false,
+          addMenuItems: [AddMenuItemType.mark],
+          showLinkDistance: false,
+          showKmPerGas: false,
+          showPricePerGas: false,
+          showPayMember: false,
+          showPaymentInfoTab: true,
+          markActions: [
+            'visit_work_arrive',
+            'visit_work_depart',
+            'visit_work_start',
+            'visit_work_end',
+            'visit_work_break',
+          ],
+          linkActions: [],
+          showActionTimeButton: true,
+          themeColor: TopicThemeColor.skyBlue,
+          displayName: '訪問作業',
+          showNameField: true,
+          showMarkDate: true,
+          showMarkMembers: false,
+          showLinkDate: false,
+        ),
     };
   }
 

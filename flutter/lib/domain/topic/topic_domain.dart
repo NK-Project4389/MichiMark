@@ -13,6 +13,9 @@ enum TopicType {
 
   /// 経費・精算の記録が主目的
   travelExpense,
+
+  /// 個人事業主の訪問作業記録に特化したトピック（F-3）
+  visitWork,
 }
 
 /// TopicDomain

@@ -68,6 +68,16 @@ final seedTopics = [
     updatedAt: _d(2026, 1, 1),
     color: 'indigoBlue',
   ),
+  TopicDomain(
+    id: 'topic_visit_work',
+    topicName: '訪問作業',
+    topicType: TopicType.visitWork,
+    isVisible: true,
+    isDeleted: false,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+    color: 'skyBlue',
+  ),
 ];
 
 // --- Actions ---
@@ -119,6 +129,51 @@ final seedActions = [
   ActionDomain(
     id: 'action-005',
     actionName: '写真撮影',
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  // visitWork 専用アクション（F-3）
+  ActionDomain(
+    id: 'visit_work_arrive',
+    actionName: '到着',
+    toState: ActionState.waiting,
+    isToggle: false,
+    needsTransition: true,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  ActionDomain(
+    id: 'visit_work_depart',
+    actionName: '出発',
+    toState: ActionState.moving,
+    isToggle: false,
+    needsTransition: true,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  ActionDomain(
+    id: 'visit_work_start',
+    actionName: '作業開始',
+    toState: ActionState.working,
+    isToggle: false,
+    needsTransition: true,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  ActionDomain(
+    id: 'visit_work_end',
+    actionName: '作業終了',
+    toState: ActionState.waiting,
+    isToggle: false,
+    needsTransition: true,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  ActionDomain(
+    id: 'visit_work_break',
+    actionName: '休憩',
+    isToggle: true,
+    needsTransition: true,
     createdAt: _d(2026, 1, 1),
     updatedAt: _d(2026, 1, 1),
   ),

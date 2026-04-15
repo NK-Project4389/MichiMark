@@ -10,6 +10,14 @@ App Store審査待ち期間中に残っていたIntegration Test の FAIL を全
 ---
 
 ## 完了した作業
+- architect: Firestoreコレクション設計刷新（orgId=uid・participants・逆引き廃止） (a53b6eb)
+- architect: INV-1 招待機能バックエンド Spec作成（FS-invitation_backend.md） (65e91c2)
+- docs: 進捗ファイル更新（INFRA-1実装完了・次回タスク整理） (26da775)
+- chore: F-3 作業登録トピック タスク追加（T-401〜T-405） (b62d7e7)
+- docs: Firebase環境セットアップ手順追加（firebase_setup.md） (b178f52)
+- feat: INFRA-1 Firebase基盤整備 実装（AuthRepository・Firebase初期化） (2cf0be5)
+- feat: INFRA-1 Firebase基盤整備Spec・ER図・B-16設定画面UI修正（18PASS） (12ecd33)
+- chore: 進捗ファイル追加（環境バックアップ・タスクボード整理） (55c7ef3)
 - chore: 開発環境バックアップ追加（tools/ClaudeCode設定） (bee8714)
 - chore: T-260g/T-295a/b/T-296 タスクボードをDONEに更新 (8b84996)
 - test: Integration Test 全件PASS達成（TC-BTE-006/B5/PID2/BUG-002/DCD/FEU修正） (5bf8456)

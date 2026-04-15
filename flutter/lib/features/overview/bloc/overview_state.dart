@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../adapter/travel_expense_overview_adapter.dart';
+import '../../../features/event_detail/projection/visit_work_projection.dart';
 import '../draft/overview_draft.dart';
 import '../projection/moving_cost_overview_projection.dart';
 
@@ -25,6 +26,9 @@ class EventDetailOverviewState extends Equatable {
   /// travelExpense用Projection。集計完了後にnon-null
   final TravelExpenseOverviewProjection? travelExpenseProjection;
 
+  /// visitWork用Projection。集計完了後にnon-null
+  final VisitWorkProjection? visitWorkProjection;
+
   /// 集計処理中フラグ
   final bool isLoading;
 
@@ -39,6 +43,7 @@ class EventDetailOverviewState extends Equatable {
     required this.topicConfig,
     this.movingCostProjection,
     this.travelExpenseProjection,
+    this.visitWorkProjection,
     this.isLoading = false,
     this.errorMessage,
     this.delegate,
@@ -49,11 +54,13 @@ class EventDetailOverviewState extends Equatable {
     TopicConfig? topicConfig,
     MovingCostOverviewProjection? movingCostProjection,
     TravelExpenseOverviewProjection? travelExpenseProjection,
+    VisitWorkProjection? visitWorkProjection,
     bool? isLoading,
     String? errorMessage,
     OverviewDelegate? delegate,
     bool clearMovingCostProjection = false,
     bool clearTravelExpenseProjection = false,
+    bool clearVisitWorkProjection = false,
     bool clearErrorMessage = false,
   }) {
     return EventDetailOverviewState(
@@ -65,6 +72,9 @@ class EventDetailOverviewState extends Equatable {
       travelExpenseProjection: clearTravelExpenseProjection
           ? null
           : (travelExpenseProjection ?? this.travelExpenseProjection),
+      visitWorkProjection: clearVisitWorkProjection
+          ? null
+          : (visitWorkProjection ?? this.visitWorkProjection),
       isLoading: isLoading ?? this.isLoading,
       errorMessage: clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
       delegate: delegate,
@@ -77,6 +87,7 @@ class EventDetailOverviewState extends Equatable {
         topicConfig,
         movingCostProjection,
         travelExpenseProjection,
+        visitWorkProjection,
         isLoading,
         errorMessage,
         delegate,

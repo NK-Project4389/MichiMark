@@ -4,6 +4,7 @@ import '../bloc/overview_bloc.dart';
 import '../bloc/overview_state.dart';
 import 'moving_cost_overview_view.dart';
 import 'travel_expense_overview_view.dart';
+import 'visit_work_overview_view.dart';
 
 class EventDetailOverviewPage extends StatelessWidget {
   const EventDetailOverviewPage({super.key});
@@ -22,6 +23,11 @@ class EventDetailOverviewPage extends StatelessWidget {
         final errorMessage = state.errorMessage;
         if (errorMessage != null) {
           return Center(child: Text('エラー: $errorMessage'));
+        }
+
+        final visitWork = state.visitWorkProjection;
+        if (visitWork != null) {
+          return VisitWorkOverviewView(projection: visitWork);
         }
 
         final movingCost = state.movingCostProjection;

@@ -12,7 +12,8 @@ enum TopicThemeColor {
   brandTeal,
   indigoBlue,
   violetPurple,
-  rosePink;
+  rosePink,
+  skyBlue;
 
   /// メインカラー
   Color get primaryColor => switch (this) {
@@ -26,6 +27,7 @@ enum TopicThemeColor {
         TopicThemeColor.indigoBlue => const Color(0xFF3D65C4),
         TopicThemeColor.violetPurple => const Color(0xFF7B5CC4),
         TopicThemeColor.rosePink => const Color(0xFFC4497A),
+        TopicThemeColor.skyBlue => const Color(0xFF29A8D4),
       };
 
   /// ダークバリアント（グラデーション開始色）。

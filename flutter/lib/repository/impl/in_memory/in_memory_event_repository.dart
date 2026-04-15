@@ -21,7 +21,8 @@ class InMemoryEventRepository implements EventRepository {
     final event =
         _items.where((e) => e.id == id && !e.isDeleted).firstOrNull;
     if (event == null) throw NotFoundError(id);
-    return event;
+    final logs = await fetchActionTimeLogs(id);
+    return event.copyWith(actionTimeLogs: logs);
   }
 
   @override

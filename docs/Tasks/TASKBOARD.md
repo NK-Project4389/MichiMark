@@ -86,11 +86,11 @@
 |---|---|---|---|---|---|
 | T-401 | F-3: 訪問作業トピック 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_topic.md |
 | T-402 | F-3: 訪問作業トピック Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_topic.md |
-| T-403a | F-3: 訪問作業トピック 実装 | flutter-dev | `TODO` | | FS-visit_work_topic.md 参照 |
-| T-403b | F-3: 訪問作業トピック テストコード実装 | tester | `TODO` | | TC-VWT-001〜 |
-| T-404 | F-3: レビュー | reviewer | `BLOCKED` | | T-403a/b完了後 |
-| T-403c | リモート実行結果確認 | orchestrator | `TODO` | | git pull → git log でコミット確認。なければ手動実装依頼 |
-| T-405 | F-3: Integration Test 実行 | tester | `BLOCKED` | | T-404完了後 |
+| T-403a | F-3: 訪問作業トピック 実装 | flutter-dev | `DONE` | | FS-visit_work_topic.md 参照 |
+| T-403b | F-3: 訪問作業トピック テストコード実装 | tester | `DONE` | | TC-VW-I001〜I008 17件実装済み |
+| T-404 | F-3: レビュー | reviewer | `DONE` | | 承認 |
+| T-403c | リモート実行結果確認 | orchestrator | `DONE` | | 手動実施済み（2026-04-16） |
+| T-405 | F-3: Integration Test 実行 | tester | `DONE` | | 17PASS/0FAIL/0SKIP |
 
 ---
 

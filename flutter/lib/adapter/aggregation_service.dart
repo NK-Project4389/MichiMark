@@ -13,6 +13,9 @@ class AggregationService {
   AggregationService({required ActionRepository actionRepository})
       : _actionRepository = actionRepository;
 
+  /// ActionDomainを全件取得する（VisitWorkStateInterpreter などで使用）
+  Future<List<ActionDomain>> fetchActions() => _actionRepository.fetchAll();
+
   /// イベント1件の集計
   Future<AggregationResult> aggregateEvent(EventDomain event) async {
     final actions = await _actionRepository.fetchAll();
