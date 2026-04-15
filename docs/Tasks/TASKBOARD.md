@@ -504,9 +504,9 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-390 | F-2: 期間集計機能 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-dashboard.md |
-| T-391 | F-2: 期間集計機能 Spec作成 | architect | `TODO` | | docs/Requirements/REQ-dashboard.md 参照 |
-| T-392a | F-2: 期間集計機能 実装 | flutter-dev | `BLOCKED` | | |
-| T-392b | F-2: 期間集計機能 テストコード実装 | tester | `BLOCKED` | | |
+| T-391 | F-2: 期間集計機能 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-dashboard.md |
+| T-392a | F-2: 期間集計機能 実装 | flutter-dev | `TODO` | | FS-dashboard.md 参照 |
+| T-392b | F-2: 期間集計機能 テストコード実装 | tester | `TODO` | | TC-DB-001〜008 |
 | T-393 | F-2: レビュー | reviewer | `BLOCKED` | | |
 | T-394 | F-2: テスト実行 | tester | `BLOCKED` | | |
 

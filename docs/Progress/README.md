@@ -150,3 +150,4 @@
 | [2026-04-15_req__POST1-F5-MarkLink支払い登録要件書作成.md](./2026-04-15_req__POST1-F5-MarkLink支払い登録要件書作成.md) | POST-1/F-5 MarkDetail/LinkDetailからの支払い登録 要件書作成（T-361 DONE） |
 | [2026-04-15_architect__POST1-F5-Spec作成完了.md](./2026-04-15_architect__POST1-F5-Spec作成完了.md) | POST-1/F-5 FS-payment_from_mark_link Spec作成（T-362 DONE）・リモートトリガー更新 |
 | [2026-04-15_req__F-2-ダッシュボード要件書作成.md](./2026-04-15_req__F-2-ダッシュボード要件書作成.md) | F-2 ダッシュボード機能 要件書作成（T-390 DONE）・UTIL-1/UI-15/UI-16/INFRA-2 タスク追加 |
+| [2026-04-15_architect__F-2-ダッシュボードSpec作成.md](./2026-04-15_architect__F-2-ダッシュボードSpec作成.md) | F-2 ダッシュボード Spec作成（T-391 DONE）・旅費TopRoutes仮実装・DateRange設計 |
