@@ -1,6 +1,10 @@
 # 進捗記録 2026-04-16
 
 ## 完了した作業
+- chore: POST-1/F-5 実装完了進捗ファイル追加 (63c351a)
+- feat: POST-1/F-5 MarkDetail/LinkDetailからPaymentDetail登録（FS-payment_from_mark_link） (441bb8a)
+- chore: POST-1/F-5 着手申告（T-363a/b IN_PROGRESS） (456c520)
+- chore: POST-1/F-5 タスクをTODOに戻す（セッションクリア前） (88ca9d4)
 - feat: F-3 訪問作業トピック実装・17件全件PASS（T-403a/b/404/403c/405 DONE） (54cbbb2)
 - test: F-3 visitWork Integration Test 実装・修正（15PASS/1FAIL TC-VW-I004） (7f4874f)
 - chore: TAKBOARDアーカイブ分離・F-3をTODO化・F-3→F-2順序修正 (3081ffd)
