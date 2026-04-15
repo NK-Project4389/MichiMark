@@ -1,6 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'di.dart';
+import '../features/dashboard/bloc/dashboard_bloc.dart';
+import '../features/dashboard/bloc/dashboard_event.dart';
+import '../features/dashboard/view/dashboard_page.dart';
 import '../features/event_detail/bloc/event_detail_bloc.dart';
 import '../features/event_detail/bloc/event_detail_event.dart';
 import '../features/event_detail/event_detail_args.dart';
@@ -65,14 +69,28 @@ import '../repository/trans_repository.dart';
 final router = GoRouter(
   initialLocation: '/',
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => BlocProvider(
-        create: (_) => EventListBloc(
-          eventRepository: getIt<EventRepository>(),
-        )..add(const EventListStarted()),
-        child: const EventListPage(),
-      ),
+    ShellRoute(
+      builder: (context, state, child) => _ScaffoldWithBottomNav(child: child),
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => BlocProvider(
+            create: (_) => EventListBloc(
+              eventRepository: getIt<EventRepository>(),
+            )..add(const EventListStarted()),
+            child: const EventListPage(),
+          ),
+        ),
+        GoRoute(
+          path: '/dashboard',
+          builder: (context, state) => BlocProvider(
+            create: (_) => DashboardBloc(
+              eventRepository: getIt<EventRepository>(),
+            )..add(const DashboardInitialized()),
+            child: const DashboardPage(),
+          ),
+        ),
+      ],
     ),
     // 固定パスを先に定義（/event/:id より前に置かないとマッチしない）
     GoRoute(
@@ -335,3 +353,42 @@ final router = GoRouter(
     ),
   ],
 );
+
+/// ボトムナビゲーション付きScaffold（ShellRoute用）
+class _ScaffoldWithBottomNav extends StatelessWidget {
+  final Widget child;
+
+  const _ScaffoldWithBottomNav({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final location = GoRouterState.of(context).uri.toString();
+    final currentIndex = location.startsWith('/dashboard') ? 1 : 0;
+
+    return Scaffold(
+      body: child,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              context.go('/');
+            case 1:
+              context.go('/dashboard');
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event_note),
+            label: 'イベント',
+          ),
+          BottomNavigationBarItem(
+            key: Key('dashboard_tab'),
+            icon: Icon(Icons.bar_chart),
+            label: 'ダッシュボード',
+          ),
+        ],
+      ),
+    );
+  }
+}
