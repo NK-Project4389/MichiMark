@@ -102,8 +102,8 @@
 |---|---|---|---|---|---|
 | T-361 | POST-1/F-5: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_from_mark_link.md |
 | T-362 | POST-1/F-5: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_from_mark_link.md |
-| T-363a | POST-1/F-5: 実装 | flutter-dev | `TODO` | | FS-payment_from_mark_link.md 参照 |
-| T-363b | POST-1/F-5: テストコード実装 | tester | `TODO` | | |
+| T-363a | POST-1/F-5: 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-16_POST1-F5 | FS-payment_from_mark_link.md 参照 |
+| T-363b | POST-1/F-5: テストコード実装 | tester | `IN_PROGRESS` | 2026-04-16_POST1-F5 | |
 | T-364 | POST-1/F-5: レビュー | reviewer | `BLOCKED` | | T-363a/b完了後 |
 | T-365 | POST-1/F-5: テスト実行 | tester | `BLOCKED` | | T-364完了後 |
 
