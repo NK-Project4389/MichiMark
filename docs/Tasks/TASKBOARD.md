@@ -7,6 +7,7 @@
 3. タスクを着手するとき → `status` を `IN_PROGRESS`、`locked_by` に `YYYY-MM-DD_[作業内容]` を記入
 4. 完了したとき → `status` を `DONE`、`locked_by` を空欄に
 5. 着手できない状態のとき → `status` を `BLOCKED`、`notes` に理由を記入
+6. **全タスクDONEのセクションは `TASKBOARD_ARCHIVE.md` へ移動する**
 
 ## ステータス凡例
 
@@ -19,266 +20,18 @@
 
 ---
 
-## UI-1: イベント削除UI変更（スワイプ廃止→詳細画面削除アイコン）
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-210 | イベント削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-event_delete_ui_redesign.md |
-| T-211 | イベント削除UI変更 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-event_delete_ui_redesign.md |
-| T-212a | イベント削除UI変更 実装 | flutter-dev | `DONE` | | FS-event_delete_ui_redesign.md 参照 |
-| T-212b | イベント削除UI変更 テストコード実装 | tester | `DONE` | | TC-EDR-001〜006 実装済み |
-| T-213 | イベント削除UI変更 レビュー | reviewer | `DONE` | | 合格 |
-| T-214 | イベント削除UI変更 テスト実行 | tester | `DONE` | | 6件全件PASS（startAppクリーンアップ修正込み） |
-
----
-
-## UI-2: BasicInfo参照タップ編集UI改善（デザイン調整あり）
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-220 | BasicInfo参照タップ編集 デザイン提案 | designer | `DONE` | | docs/Design/draft/basic_info_tap_to_edit_design.html |
-| T-221 | BasicInfo参照タップ編集 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-basic_info_tap_to_edit.md |
-| T-222 | BasicInfo参照タップ編集 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-basic_info_tap_to_edit.md |
-| T-222a | BasicInfo参照タップ編集 実装 | flutter-dev | `DONE` | | FS-basic_info_tap_to_edit.md 参照 |
-| T-222b | BasicInfo参照タップ編集 テストコード実装 | tester | `DONE` | | TC-BTE-001〜007 実装済み（integration_test/basic_info_tap_to_edit_test.dart） |
-| T-223 | BasicInfo参照タップ編集 レビュー | reviewer | `DONE` | | 合格 |
-| T-224 | BasicInfo参照タップ編集 テスト実行 | tester | `DONE` | | 14件PASS/0FAIL/0SKIP |
-
----
-
-## UI-3: MichiInfo Mark/Link削除UI変更（デザイン調整あり）
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-230 | MichiInfo削除UI変更 デザイン提案 | designer | `DONE` | | docs/Design/draft/michi_info_delete_icon_design.html |
-| T-231 | MichiInfo削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_delete_icon.md |
-| T-232 | MichiInfo削除UI変更 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_delete_icon.md |
-| T-232a | MichiInfo削除UI変更 実装 | flutter-dev | `DONE` | | FS-michi_info_delete_icon.md 参照 |
-| T-232b | MichiInfo削除UI変更 テストコード実装 | tester | `DONE` | | TC-MID-001〜007 実装済み（006/007 はCustomPainterのためSKIP） |
-| T-233 | MichiInfo削除UI変更 レビュー | reviewer | `DONE` | | 合格 |
-| T-234 | MichiInfo削除UI変更 テスト実行 | tester | `DONE` | | 5PASS/2SKIP/0FAIL（TC-MID-001〜005 PASS・006/007 SKIP） |
-
----
-
-## UI-4: PaymentInfo カード削除UI変更
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-240 | PaymentInfo削除UI変更 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_info_delete_icon.md |
-| T-241 | PaymentInfo削除UI変更 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_info_delete_icon.md |
-| T-242a | PaymentInfo削除UI変更 実装 | flutter-dev | `DONE` | | FS-payment_info_delete_icon.md 参照 |
-| T-242b | PaymentInfo削除UI変更 テストコード実装 | tester | `DONE` | | TC-PID2-001〜003 実装済み |
-| T-243 | PaymentInfo削除UI変更 レビュー | reviewer | `DONE` | | 合格 |
-| T-244 | PaymentInfo削除UI変更 テスト実行 | tester | `DONE` | | 3PASS/0FAIL/0SKIP |
-
----
-
-## UI-5: MarkDetail/LinkDetail/PaymentDetail UI改善
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-250 | Detail画面UI改善 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-detail_screen_ui_improvement.md |
-| T-251 | Detail画面UI改善 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-detail_screen_ui_improvement.md |
-| T-252a | Detail画面UI改善 実装 | flutter-dev | `DONE` | | FS-detail_screen_ui_improvement.md 参照 |
-| T-252b | Detail画面UI改善 テストコード実装 | tester | `DONE` | | TC-DSI-001〜015 実装済み |
-| T-253 | Detail画面UI改善 レビュー | reviewer | `DONE` | | 合格 |
-| T-254 | Detail画面UI改善 テスト実行 | tester | `DONE` | | 18件PASS・openLinkDetailヘルパー修正込み |
-
----
-
-## B-6: 給油計算 ガソリン支払い者インラインチップ選択（Phase C）
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-269 | B-6: Phase C Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-gas_payer_chip_selection_phaseC.md |
-| T-270a | B-6: ガソリン支払い者チップ選択 実装 | flutter-dev | `DONE` | | FS-gas_payer_chip_selection_phaseC.md 参照 |
-| T-270b | B-6: テストコード実装 | tester | `DONE` | | TC-GPS-001〜008 実装済み（gas_payer_chip_test.dart） |
-| T-271 | B-6: レビュー | reviewer | `DONE` | | 合格 |
-| T-272 | B-6: テスト実行 | tester | `DONE` | | 8PASS/0FAIL/0SKIP（TC-GPS-001〜008 全件PASS） |
-
----
-
-## UI-6: 概要タブ セクション名追加（基本情報・集計）
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-264 | 概要タブセクション名 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-overview_tab_section_labels.md |
-| T-265 | 概要タブセクション名 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-overview_tab_section_labels.md |
-| T-266a | 概要タブセクション名 実装 | flutter-dev | `DONE` | | FS-overview_tab_section_labels.md 参照 |
-| T-266b | 概要タブセクション名 テストコード実装 | tester | `DONE` | | TC-OSL-001〜002 実装済み |
-| T-267 | 概要タブセクション名 レビュー | reviewer | `DONE` | | 合格 |
-| T-268 | 概要タブセクション名 テスト実行 | tester | `DONE` | | 4PASS/0FAIL/0SKIP（TC-OSL-001〜002 全件PASS） |
-
----
-
-## UI-7: MichiInfo / PaymentInfo 削除確認ダイアログ追加
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-280 | 削除確認ダイアログ 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-delete_confirmation_dialog.md |
-| T-281 | 削除確認ダイアログ Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-delete_confirmation_dialog.md |
-| T-282a | 削除確認ダイアログ 実装 | flutter-dev | `DONE` | | MichiInfo/PaymentInfo両対応・CupertinoDialog・StatefulWidget化 |
-| T-282b | 削除確認ダイアログ テストコード実装 | tester | `DONE` | | TC-DCD-001〜006b 17件実装済み |
-| T-283 | 削除確認ダイアログ レビュー | reviewer | `DONE` | | 承認 |
-| T-284 | 削除確認ダイアログ テスト実行 | tester | `DONE` | | 17PASS/0FAIL（showCupertinoDialog<bool>修正後・全件PASS） |
-
----
-
-## UI-8: イベント追加ボタン 選択肢スキップ遷移
-
-> 地点登録のみ / 区間登録のみ利用可能な場合、選択肢画面を経由せず直接登録画面へ遷移する
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-285 | イベント追加スキップ遷移 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-event_add_skip_selection.md |
-| T-286 | イベント追加スキップ遷移 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-event_add_skip_selection.md |
-| T-287a | イベント追加スキップ遷移 実装 | flutter-dev | `DONE` | | |
-| T-287b | イベント追加スキップ遷移 テストコード実装 | tester | `DONE` | | TC-EAS-001〜006 実装済み |
-| T-288 | イベント追加スキップ遷移 レビュー | reviewer | `DONE` | | 承認 |
-| T-289 | イベント追加スキップ遷移 テスト実行 | tester | `DONE` | | 6PASS/0FAIL/0SKIP（TC-EAS-001〜006 全件PASS） |
-
----
-
-## B-7: 削除後 集計即時反映バグ修正
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-290 | 削除後集計即時反映 バグ修正実装 | flutter-dev | `DONE` | | MichiInfoReloadedDelegate / PaymentInfoReloadedDelegate を削除ハンドラに追加 |
-| T-290b | 削除後集計即時反映 テストコード実装 | tester | `DONE` | | TC-DAU-001〜002c 6件実装済み |
-| T-291 | 削除後集計即時反映 レビュー | reviewer | `DONE` | | 承認 |
-| T-292 | 削除後集計即時反映 テスト実行 | tester | `DONE` | | 6PASS/0FAIL/0SKIP（UI-7対応: 削除ヘルパー関数をダイアログキーに修正） |
-
----
-
-## F-2: 移動コスト集計 収支バランス追加
-
-> 旅費集計と同様の収支バランス表示を燃費・給油集計にも追加
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-293 | 移動コスト集計収支バランス 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-moving_cost_balance.md |
-| T-294 | 移動コスト集計収支バランス Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-moving_cost_balance.md |
-| T-295a | 移動コスト集計収支バランス 実装 | flutter-dev | `DONE` | | |
-| T-295b | 移動コスト集計収支バランス テストコード実装 | tester | `DONE` | | |
-| T-296 | 移動コスト集計収支バランス レビュー | reviewer | `DONE` | | 承認 |
-| T-297 | 移動コスト集計収支バランス テスト実行 | tester | `DONE` | | 8PASS/0FAIL/0SKIP（TC-MCB-001〜006 全件PASS） |
-
----
-
-## F-3: 給油集計 「満タン給油で算出」文言追加
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-298 | 給油集計文言追加 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-fuel_aggregation_fulltank_label.md |
-| T-299 | 給油集計文言追加 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-fuel_aggregation_fulltank_label.md |
-| T-300a | 給油集計文言追加 実装 | flutter-dev | `DONE` | | Projection hasFuelData追加・Adapter算出・View サブテキスト追加 |
-| T-300b | 給油集計文言追加 テストコード実装 | tester | `DONE` | | TC-FFL-001〜002 4件実装済み |
-| T-301 | 給油集計文言追加 レビュー | reviewer | `DONE` | | 承認 |
-| T-302 | 給油集計文言追加 テスト実行 | tester | `DONE` | | 4PASS/0FAIL/0SKIP（TC-FFL-001〜002 全件PASS） |
-
----
-
-## UI-9: 旅費集計「支払いごとの精算」誤認防止デザイン変更
-
-> タップできるように見えてしまう問題を解消するデザイン変更
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-303 | 精算行誤認防止 デザイン提案 | designer | `DONE` | | docs/Design/draft/payment_settlement_display_design.html（B案採用） |
-| T-304 | 精算行誤認防止 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_settlement_display.md |
-| T-305 | 精算行誤認防止 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_settlement_display.md |
-| T-306a | 精算行誤認防止 実装 | flutter-dev | `DONE` | | Card→Container置き換え・Specキー名準拠 |
-| T-306b | 精算行誤認防止 テストコード実装 | tester | `DONE` | | TC-PSD-001〜002 実装済み |
-| T-307 | 精算行誤認防止 レビュー | reviewer | `DONE` | | 承認 |
-| T-308 | 精算行誤認防止 テスト実行 | tester | `DONE` | | TC-PSD-001〜002 3PASS/0FAIL/0SKIP |
-
----
-
-## F-4: MichiInfoカード トピック別表示切り替え部品
-
-> MichiInfoの一覧カードをトピックに応じて表示内容を変更できるカード部品に刷新
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-309 | MichiInfoカードトピック別表示 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_card_topic_view.md |
-| T-310 | MichiInfoカードトピック別表示 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_card_topic_view.md |
-| T-311a | MichiInfoカードトピック別表示 実装 | flutter-dev | `DONE` | | |
-| T-311b | MichiInfoカードトピック別表示 テストコード実装 | tester | `DONE` | | TC-MCV-001〜007 11件実装済み |
-| T-312 | MichiInfoカードトピック別表示 レビュー | reviewer | `DONE` | | 承認 |
-| T-313 | MichiInfoカードトピック別表示 テスト実行 | tester | `DONE` | | 11PASS/0FAIL/0SKIP（TC-MCV-001〜007 全件PASS） |
-
----
-
-## UI-10: 移動コストトピック MarkDetail/LinkDetail 名称項目非表示
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-314 | 移動コスト名称非表示 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-moving_cost_name_hidden.md |
-| T-315 | 移動コスト名称非表示 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-moving_cost_name_hidden.md（movingCostEstimatedも非表示確定） |
-| T-316a | 移動コスト名称非表示 実装 | flutter-dev | `DONE` | | topic_config.dart showNameField追加・MarkDetail/LinkDetail条件分岐 |
-| T-316b | 移動コスト名称非表示 テストコード実装 | tester | `DONE` | | TC-MCN-001〜003 実装済み |
-| T-317 | 移動コスト名称非表示 レビュー | reviewer | `DONE` | | 承認 |
-| T-318 | 移動コスト名称非表示 テスト実行 | tester | `DONE` | | 3PASS/0FAIL/0SKIP（TC-MCN-001〜003 全件PASS） |
-
----
-
-## UI-11: メンバー選択 全選択/全解除ボタン追加
-
-> MarkDetail・LinkDetail・PaymentDetailのメンバー選択に全選択・全解除ボタン追加。支払者は解除不可。
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-319 | メンバー全選択全解除 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-member_select_all_clear.md |
-| T-320 | メンバー全選択全解除 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-member_select_all_clear.md |
-| T-321a | メンバー全選択全解除 実装 | flutter-dev | `DONE` | | 6イベント追加・3Bloc・3View対応 |
-| T-321b | メンバー全選択全解除 テストコード実装 | tester | `DONE` | | TC-MSA-001〜006b 7件実装済み（Specキー名準拠） |
-| T-322 | メンバー全選択全解除 レビュー | reviewer | `DONE` | | 承認 |
-| T-323 | メンバー全選択全解除 テスト実行 | tester | `DONE` | | 7PASS/0FAIL/0SKIP（DB初期化後再実行） |
-
----
-
-## REL-1: AppStore無料版リリース準備
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-260a | michimark-web リポジトリ・Vercelデプロイ設定 | orchestrator | `DONE` | | https://michimark-web.vercel.app |
-| T-260b | プライバシーポリシーページ作成 | orchestrator | `DONE` | | https://michimark-web.vercel.app/privacy.html |
-| T-260c | サポートページ作成 | orchestrator | `DONE` | | https://michimark-web.vercel.app/support.html |
-| T-260d | App Store Connect 基本情報入力（名前・カテゴリ・価格・URL） | orchestrator | `DONE` | | docs/AppStore/metadata_ja.md 参照 |
-| T-260e | アプリ説明文・キーワード作成 | orchestrator | `DONE` | | docs/AppStore/metadata_ja.md 参照 |
-| T-260f | スクリーンショット撮影・登録（iPhone 6.5インチ以上） | orchestrator | `DONE` | | iPhone 6.9インチ5枚登録済み |
-| T-260g | 全件 Integration Test フルスイート PASS | tester | `DONE` | | 全件PASS達成（2026-04-15） |
-| T-260h | 本番ビルド → TestFlight最終確認 → 審査提出 | orchestrator | `DONE` | | 1.0.0(18) 審査提出済み 2026-04-15 |
-
----
-
 ## INFRA-1: Firebase基盤整備
 
-> REL-1（AppStore審査提出 2026-04-15）完了につきブロック解除。INV-1〜4すべての前提。
+> 一部タスクのみ残存。T-346b/348 はFirebase実機接続が必要なためBLOCKED。
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-344 | Firebase基盤整備 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-firebase_infra.md（叩き作成済み） |
+| T-344 | Firebase基盤整備 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-firebase_infra.md |
 | T-345 | Firebase基盤整備 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-firebase_infra.md |
 | T-346a | Firebase基盤整備 実装 | flutter-dev | `DONE` | | AuthRepository・Firebase初期化・DI登録実装完了 |
 | T-346b | Firebase基盤整備 テストコード実装 | tester | `BLOCKED` | | Firebase実機接続が必要なためUnit Test（fake_cloud_firestore）で対応 |
 | T-347 | Firebase基盤整備 レビュー | reviewer | `DONE` | | 承認（firebase_options gitignore追加） |
 | T-348 | Firebase基盤整備 テスト実行 | tester | `BLOCKED` | | |
-
----
-
-## INV-1: 招待機能 バックエンド実装
-
-> ⚠️ REL-1（AppStoreリリース）完了・INFRA-1完了後に着手する
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-324 | 招待機能バックエンド 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_backend.md |
-| T-325 | 招待機能バックエンド Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_backend.md |
-| T-326a | 招待機能バックエンド 実装（Next.js） | flutter-dev | `DONE` | | Next.jsセットアップ・4エンドポイント実装完了 |
-| T-326b | 招待機能バックエンド テストコード実装 | tester | `DONE` | | TC-INV1-002,003,005〜007,009〜011,013〜016 Unit 43PASS |
-| T-327 | 招待機能バックエンド レビュー | reviewer | `DONE` | | 承認（シグネチャ修正・FieldValue.increment・null安全化） |
-| T-328 | 招待機能バックエンド テスト実行 | tester | `DONE` | | Unit Test 43PASS/0FAIL（T-326b時点で実行済み） |
 
 ---
 
@@ -325,196 +78,53 @@
 
 ---
 
-## B-9: MichiInfo追加ボタン時のMark間隔
+## F-3: トピック追加（訪問作業トピック）
 
-> 追加ボタン押下時（InsertMode）にLink間にない区間でもMark間の間隔が広くなる。Linkがない区間は間隔を狭める
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-366a | B-9: MichiInfo Mark間隔 バグ修正実装 | flutter-dev | `DONE` | | |
-| T-366b | B-9: MichiInfo Mark間隔 テストコード実装 | tester | `DONE` | | integration_test/michi_info_insert_spacing_test.dart（TC-MII-001〜003、8件）|
-| T-367 | B-9: レビュー | reviewer | `DONE` | | 承認 |
-| T-368 | B-9: テスト実行 | tester | `DONE` | | 8PASS/0FAIL/0SKIP（TC-MII-001〜003 全件PASS） |
-
----
-
-## B-10: マスタ非表示の項目がDetailに表示される
-
-> マスタで非表示設定のメンバー・タグ・アクション等がMarkDetail/LinkDetail/PaymentDetailに表示されてしまう。
-> また既にイベントに登録済みのマスタが後から非表示になった場合、別の項目を選択したタイミングで非表示にする。
+> ⚠️ F-2（ダッシュボード）より先に実装すること（TopicType.visitWork参照のため）
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-369a | B-10: マスタ非表示フィルタ バグ修正実装 | flutter-dev | `DONE` | | |
-| T-369b | B-10: マスタ非表示フィルタ テストコード実装 | tester | `DONE` | | |
-| T-370 | B-10: レビュー | reviewer | `DONE` | | 承認 |
-| T-371 | B-10: テスト実行 | tester | `DONE` | | 3PASS/1SKIP/0FAIL |
+| T-401 | F-3: 訪問作業トピック 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_topic.md |
+| T-402 | F-3: 訪問作業トピック Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_topic.md |
+| T-403a | F-3: 訪問作業トピック 実装 | flutter-dev | `TODO` | | FS-visit_work_topic.md 参照 |
+| T-403b | F-3: 訪問作業トピック テストコード実装 | tester | `TODO` | | TC-VWT-001〜 |
+| T-404 | F-3: レビュー | reviewer | `BLOCKED` | | T-403a/b完了後 |
+| T-403c | リモート実行結果確認 | orchestrator | `TODO` | | git pull → git log でコミット確認。なければ手動実装依頼 |
+| T-405 | F-3: Integration Test 実行 | tester | `BLOCKED` | | T-404完了後 |
 
 ---
 
-## B-11: メンバー・タグ追加後のフォーカス継続
+## POST-1 / F-5: MichiInfo支払い情報登録 / MarkDetail・LinkDetailからPaymentDetail登録
 
-> メンバー・タグを追加した後、入力欄のフォーカスが外れて再タップが必要になる。
-> 追加後も入力欄にフォーカスを戻す。空欄でエンターした時だけ編集を終了する。
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-372a | B-11: メンバー・タグ追加後フォーカス継続 バグ修正実装 | flutter-dev | `DONE` | | |
-| T-372b | B-11: メンバー・タグ追加後フォーカス継続 テストコード実装 | tester | `DONE` | | TC-MFR-001〜004 実装済み（integration_test/member_tag_focus_refocus_test.dart） |
-| T-373 | B-11: レビュー | reviewer | `DONE` | | 承認 |
-| T-374 | B-11: テスト実行 | tester | `DONE` | | 4PASS/0FAIL/0SKIP（TC-MFR-001〜004 全件PASS） |
-
----
-
-## B-12: メンバー・タグ入力中画面遷移時にレコメンドを閉じる
-
-> メンバー・タグの入力中（レコメンドリスト表示中）に他の画面へ遷移すると、レコメンドが表示されたままになる。
-> 画面遷移時にレコメンドを閉じる（フォーカスを外す）。
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-375a | B-12: 画面遷移時レコメンドを閉じる バグ修正実装 | flutter-dev | `DONE` | | |
-| T-375b | B-12: 画面遷移時レコメンドを閉じる テストコード実装 | tester | `DONE` | | TC-RCL-001〜002 4件実装済み（integration_test/recommend_close_on_navigate_test.dart） |
-| T-376 | B-12: レビュー | reviewer | `DONE` | | 承認 |
-| T-377 | B-12: テスト実行 | tester | `DONE` | | 4PASS/0FAIL/0SKIP（TC-RCL-001・001b・002・002b） |
-
----
-
-## B-13: BasicInfo マスタ非表示フィルタ漏れ（Trans・Member・Tag）
-
-> マスタで非表示設定したTrans・Member・Tagが、概要タブのBasicInfoセクション（インライン入力）で候補として表示されてしまう。
-> B-10 はMarkDetail/LinkDetail/PaymentDetailのみ修正。BasicInfoBlocに `isVisible` フィルタが未実装。
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-378a | B-13: BasicInfo マスタ非表示フィルタ 実装 | flutter-dev | `DONE` | | basic_info_bloc.dart に isVisible フィルタ追加 |
-| T-378b | B-13: BasicInfo マスタ非表示フィルタ テストコード実装 | tester | `DONE` | | TC-BHF-001〜004 実装済み（integration_test/basic_info_master_hidden_filter_test.dart） |
-| T-379 | B-13: レビュー | reviewer | `DONE` | | 承認 |
-| T-380 | B-13: テスト実行 | tester | `DONE` | | 4PASS/0FAIL/0SKIP（TC-BHF-001〜004 全件PASS） |
-
----
-
-## B-14: イベント一覧プラスボタン トピック未選択後に再押し不可
-
-> イベント一覧の＋（FAB）を押してトピック選択シートを表示し、何も選択せずに閉じると、
-> 次回以降プラスボタンを押してもシートが開かなくなる。
-> 原因: シート未選択キャンセル時に `showTopicSelection: true` がリセットされず、
-> 次回プラス押下でも同じ State（Equatable）なのでBlocがEmitしない → Listenerが発火しない。
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-381a | B-14: プラスボタン再押し不可 実装 | flutter-dev | `DONE` | | event_list_page.dart の _handleShowTopicSelection でキャンセル時にBlocへリセットイベント送信 |
-| T-381b | B-14: プラスボタン再押し不可 テストコード実装 | tester | `DONE` | | TC-EFR-001〜002 実装済み（integration_test/event_list_fab_repress_test.dart） |
-| T-382 | B-14: レビュー | reviewer | `DONE` | | 承認 |
-| T-383 | B-14: テスト実行 | tester | `DONE` | | 2PASS/0FAIL/0SKIP（TC-EFR-001〜002 全件PASS） |
-
----
-
-## B-15: 移動コスト燃費推定 経費合計に反映されない
-
-> 移動コスト燃費推定トピックで燃費・ガソリン単価・地点を登録しても、
-> 集計タブの「経費合計」が「---」になる。
-> 原因: EventDetailOverviewAdapter の totalPaymentLabel が result.totalPayment（給油実績）のみ参照。
-> 燃費推定モードでは給油実績がないため null → 「---」表示。
-> effectiveGasPrice（推定値）をフォールバックとして使うべき。
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-384a | B-15: 燃費推定 経費合計フォールバック 実装 | flutter-dev | `DONE` | | event_detail_overview_adapter.dart の totalPaymentLabel に effectiveGasPrice fallback 追加 |
-| T-384b | B-15: 燃費推定 経費合計フォールバック テストコード実装 | tester | `DONE` | | TC-MCE-001〜002 実装済み（integration_test/moving_cost_estimated_expense_test.dart） |
-| T-385 | B-15: レビュー | reviewer | `DONE` | | 承認 |
-| T-386 | B-15: テスト実行 | tester | `DONE` | | 2PASS/0FAIL/0SKIP（TC-MCE-001〜002 全件PASS） |
-
----
-
-## B-8: 作成ボタン再押し不可バグ修正
-
-> イベント作成ボタンを押してトピック選択せずに戻ると、再度作成ボタンが押せなくなる
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-350a | B-8: 作成ボタン再押し不可 バグ修正実装 | flutter-dev | `DONE` | | isInsertMode: false リセット漏れ修正 |
-| T-350b | B-8: 作成ボタン再押し不可 テストコード実装 | tester | `DONE` | | TC-CAB-001〜002b 実装済み |
-| T-351 | B-8: レビュー | reviewer | `DONE` | | 承認 |
-| T-352 | B-8: テスト実行 | tester | `DONE` | | 4PASS/0FAIL/0SKIP（TC-CAB-001〜002b 全件PASS・テストフロー修正込み） |
-
----
-
-## UI-12: 未保存新規イベント自動削除
-
-> 概要タブBasicInfo・MarkDetail・LinkDetail・PaymentDetailで何も保存せずにイベント一覧へ戻った場合、イベントを削除する
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-353 | UI-12: 未保存新規イベント自動削除 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-unsaved_event_auto_delete.md |
-| T-354a | UI-12: 未保存新規イベント自動削除 実装 | flutter-dev | `DONE` | | |
-| T-354b | UI-12: 未保存新規イベント自動削除 テストコード実装 | tester | `DONE` | | flutter/integration_test/unsaved_event_auto_delete_test.dart |
-| T-355 | UI-12: レビュー | reviewer | `DONE` | | 承認 |
-| T-356 | UI-12: テスト実行 | tester | `DONE` | | 5PASS/0FAIL/0SKIP（TC-UAE-001〜005 PASS、TC-UAE-004は新規イベントメンバーなし制約でスキップ） |
-
----
-
-## UI-13: Detail画面 キャンセル確認ダイアログ
-
-> MarkDetail・LinkDetail・PaymentDetailでキャンセル押下時、ProjectionとDraftが異なれば確認ダイアログを表示
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-357 | UI-13: Detail画面キャンセル確認 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-detail_cancel_confirmation.md |
-| T-358a | UI-13: Detail画面キャンセル確認 実装 | flutter-dev | `DONE` | | MarkDetail・LinkDetail・PaymentDetail: initialDraft/showCancelConfirmDialog追加、DismissPressed差分判定、CancelDiscardConfirmed/CancelDialogDismissed Event追加、CupertinoAlertDialog Widget追加 |
-| T-358b | UI-13: Detail画面キャンセル確認 テストコード実装 | tester | `DONE` | | TC-DCC-001〜012 16件実装済み（integration_test/detail_cancel_confirmation_test.dart） |
-| T-359 | UI-13: レビュー | reviewer | `DONE` | | 承認 |
-| T-360 | UI-13: テスト実行 | tester | `DONE` | | 16PASS/0FAIL/0SKIP（TC-DCC-001〜012 全件PASS・カード遷移ヘルパー・NumericInputRow入力方式修正込み） |
-
----
-
-## POST-1 / F-5: MichiInfo支払い情報登録 / MarkDetail・LinkDetailからPaymentDetail登録（統合）
-
-> POST-1とF-5は同一機能のため統合。MarkDetail・LinkDetail・MichiInfoから支払い情報を直接登録できるようにする。
-> REL-1完了済みにつきブロック解除。要件定義をユーザーと伴奏して進める。
+> POST-1とF-5は同一機能のため統合。
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-361 | POST-1/F-5: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_from_mark_link.md |
 | T-362 | POST-1/F-5: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_from_mark_link.md |
-| T-363a | POST-1/F-5: 実装 | flutter-dev | `TODO` | | 4/16 2:10 JST リモート自動実行予定 |
-| T-363b | POST-1/F-5: テストコード実装 | tester | `TODO` | | 同上 |
-| T-364 | POST-1/F-5: レビュー | reviewer | `BLOCKED` | | |
-| T-365 | POST-1/F-5: テスト実行 | tester | `BLOCKED` | | |
+| T-363a | POST-1/F-5: 実装 | flutter-dev | `TODO` | | FS-payment_from_mark_link.md 参照 |
+| T-363b | POST-1/F-5: テストコード実装 | tester | `TODO` | | |
+| T-364 | POST-1/F-5: レビュー | reviewer | `BLOCKED` | | T-363a/b完了後 |
+| T-365 | POST-1/F-5: テスト実行 | tester | `BLOCKED` | | T-364完了後 |
 
 ---
 
-## B-16: 設定画面 UIスタイル枠修正
+## F-2: 期間集計機能（ダッシュボード）
 
-> 設定画面のUIが他画面（BasicInfoセクション等）と異なり枠が残っている。BasicInfoセクションを参考にスタイルを揃える。
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-387a | B-16: 設定画面UI枠修正 バグ修正実装 | flutter-dev | `DONE` | | InputBorder.none + Divider + ラベル外出し（4ファイル修正） |
-| T-387b | B-16: 設定画面UI枠修正 テストコード実装 | tester | `DONE` | | TC-SUI-001〜004 18件実装済み（integration_test/settings_ui_style_test.dart） |
-| T-388 | B-16: レビュー | reviewer | `DONE` | | 承認 |
-| T-389 | B-16: テスト実行 | tester | `DONE` | | 18PASS/0FAIL/0SKIP |
-
----
-
-## F-2: 期間集計機能
-
-> イベント一覧とは別に、期間を指定して集計できる機能。要件定義を伴奏して進める。
+> ⚠️ F-3（訪問作業トピック）完了後に実装すること（TopicType.visitWork依存）
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-390 | F-2: 期間集計機能 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-dashboard.md |
-| T-391 | F-2: 期間集計機能 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-dashboard.md |
-| T-392a | F-2: 期間集計機能 実装 | flutter-dev | `TODO` | | FS-dashboard.md 参照 |
-| T-392b | F-2: 期間集計機能 テストコード実装 | tester | `TODO` | | TC-DB-001〜008 |
-| T-393 | F-2: レビュー | reviewer | `BLOCKED` | | |
-| T-394 | F-2: テスト実行 | tester | `BLOCKED` | | |
+| T-390 | F-2: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-dashboard.md |
+| T-391 | F-2: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-dashboard.md |
+| T-392a | F-2: 実装 | flutter-dev | `TODO` | | FS-dashboard.md 参照 |
+| T-392b | F-2: テストコード実装 | tester | `TODO` | | TC-DB-001〜008 |
+| T-393 | F-2: レビュー | reviewer | `BLOCKED` | | T-392a/b完了後 |
+| T-394 | F-2: テスト実行 | tester | `BLOCKED` | | T-393完了後 |
 
 ---
 
 ## UI-14: MichiInfoタイムライン 罫線→道路イメージ
-
-> MichiInfoのタイムライン罫線を道路のビジュアルイメージに変更する。要件定義を伴奏して進める。
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
@@ -530,32 +140,22 @@
 
 ## INFRA-2: Google Workspace 移行（ドメイン設計 xlsx → Google Sheets）
 
-> Office から Google Workspace へ移行。Claude Code の Google Workspace MCP 連携を活用して
-> `docs/Domain/Domain設計一覧.xlsx` を Google Sheets に移行し、Claude Code から直接読み書きできる環境を整える。
-
-### 前提確認チェックリスト
-- Google Workspace アカウント（Google Cloud Console 含む）の用意
-- OAuth 2.0 認証情報の作成（Google Cloud Console: Desktop app タイプ）
-- Claude Code への Google Workspace MCP 登録
-
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-406 | Google Workspace MCP 動作確認 | orchestrator | `TODO` | | Google Cloud Console でOAuth設定 → MCP登録 → Claude Code から Sheets 読み書き確認 |
-| T-407 | Domain設計一覧.xlsx → Google Sheets 移行 | orchestrator | `BLOCKED` | | T-406完了後。Drive にアップロード → Sheets に変換 → URL を docs/Domain/ に記録 |
-| T-408 | 移行後の運用ルール整備 | orchestrator | `BLOCKED` | | T-407完了後。CLAUDE.md or docs/Domain/README.md に Google Sheets URL・MCP操作方法を記載 |
+| T-406 | Google Workspace MCP 動作確認 | orchestrator | `TODO` | | OAuth設定 → MCP登録 → Sheets読み書き確認 |
+| T-407 | Domain設計一覧.xlsx → Google Sheets 移行 | orchestrator | `BLOCKED` | | T-406完了後 |
+| T-408 | 移行後の運用ルール整備 | orchestrator | `BLOCKED` | | T-407完了後 |
 
 ---
 
 ## UTIL-1: CSV出力機能
 
-> イベントデータをCSV形式でエクスポートする機能。
-
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-409 | UTIL-1: CSV出力機能 要件書作成 | product-manager | `TODO` | | ユーザーと伴奏して進める |
-| T-410 | UTIL-1: CSV出力機能 Spec作成 | architect | `BLOCKED` | | T-409完了後 |
-| T-411a | UTIL-1: CSV出力機能 実装 | flutter-dev | `BLOCKED` | | |
-| T-411b | UTIL-1: CSV出力機能 テストコード実装 | tester | `BLOCKED` | | |
+| T-409 | UTIL-1: 要件書作成 | product-manager | `TODO` | | ユーザーと伴奏して進める |
+| T-410 | UTIL-1: Spec作成 | architect | `BLOCKED` | | T-409完了後 |
+| T-411a | UTIL-1: 実装 | flutter-dev | `BLOCKED` | | |
+| T-411b | UTIL-1: テストコード実装 | tester | `BLOCKED` | | |
 | T-412 | UTIL-1: レビュー | reviewer | `BLOCKED` | | |
 | T-413 | UTIL-1: テスト実行 | tester | `BLOCKED` | | |
 
@@ -563,165 +163,24 @@
 
 ## UI-15: イベントフィルター機能（日付・トピック）
 
-> イベント一覧を日付範囲・トピックで絞り込めるフィルター機能。
-
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-414 | UI-15: イベントフィルター 要件書作成 | product-manager | `TODO` | | ユーザーと伴奏して進める |
-| T-415 | UI-15: イベントフィルター Spec作成 | architect | `BLOCKED` | | T-414完了後 |
-| T-416a | UI-15: イベントフィルター 実装 | flutter-dev | `BLOCKED` | | |
-| T-416b | UI-15: イベントフィルター テストコード実装 | tester | `BLOCKED` | | |
+| T-414 | UI-15: 要件書作成 | product-manager | `TODO` | | ユーザーと伴奏して進める |
+| T-415 | UI-15: Spec作成 | architect | `BLOCKED` | | T-414完了後 |
+| T-416a | UI-15: 実装 | flutter-dev | `BLOCKED` | | |
+| T-416b | UI-15: テストコード実装 | tester | `BLOCKED` | | |
 | T-417 | UI-15: レビュー | reviewer | `BLOCKED` | | |
 | T-418 | UI-15: テスト実行 | tester | `BLOCKED` | | |
 
 ---
 
-## UI-16: スプラッシュ画面改善（アプリアイコン＋テーマカラー背景）
-
-> 起動時スプラッシュをアプリアイコン表示・背景テーマカラーに変更する。
+## UI-16: スプラッシュ画面改善
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-419 | UI-16: スプラッシュ改善 要件書作成 | product-manager | `TODO` | | |
-| T-420 | UI-16: スプラッシュ改善 Spec作成 | architect | `BLOCKED` | | T-419完了後 |
-| T-421a | UI-16: スプラッシュ改善 実装 | flutter-dev | `BLOCKED` | | |
-| T-421b | UI-16: スプラッシュ改善 テストコード実装 | tester | `BLOCKED` | | |
+| T-419 | UI-16: 要件書作成 | product-manager | `TODO` | | |
+| T-420 | UI-16: Spec作成 | architect | `BLOCKED` | | T-419完了後 |
+| T-421a | UI-16: 実装 | flutter-dev | `BLOCKED` | | |
+| T-421b | UI-16: テストコード実装 | tester | `BLOCKED` | | |
 | T-422 | UI-16: レビュー | reviewer | `BLOCKED` | | |
 | T-423 | UI-16: テスト実行 | tester | `BLOCKED` | | |
-
----
-
-~~## F-5: MarkDetail/LinkDetailからPaymentDetail情報を登録する機能~~
-
-> POST-1（T-361〜365）と統合済み。F-5タスクは廃止。
-
-## F-3: トピック追加（訪問作業トピック）
-
-> 現在のトピック（movingCost / movingCostEstimated / travelExpense）に加え、「訪問作業」用のトピックタイプを追加する。
-
-| ID | タスク | 役割 | status | locked_by | notes |
-|---|---|---|---|---|---|
-| T-401 | F-3: 訪問作業トピック 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_topic.md |
-| T-402 | F-3: 訪問作業トピック Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_topic.md |
-| T-403a | F-3: 訪問作業トピック 実装 | flutter-dev | `BLOCKED` | | T-402完了後（4/16 2:10 JST リモート自動実行予定） |
-| T-403b | F-3: 訪問作業トピック テストコード実装 | tester | `BLOCKED` | | 同上 |
-| T-404 | F-3: レビュー | reviewer | `BLOCKED` | | 同上 |
-| T-403c | リモート実行結果確認 | orchestrator | `TODO` | | 4/16 朝: git pull → git log でコミット確認。なければクロコに報告（POST-1/F-5も同セッションで実行予定） |
-| T-405 | F-3: Integration Test 実行 | tester | `BLOCKED` | | T-403c確認後: `flutter test integration_test/visit_work_topic_test.dart -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6` |
-
----
-
-## アーカイブ（DONE完了）
-
-### Phase 14: イベント削除機能 + スワイプ削除UI
-
-| ID | タスク | 役割 | status | notes |
-|---|---|---|---|---|
-| T-130 | イベント削除機能 要件書作成 | product-manager | `DONE` | 要件書: ユーザー提示仕様（カスケード削除・確認ダイアログなし・flutter_slidable使用） |
-| T-131 | イベント削除機能 Spec作成 | architect | `DONE` | docs/Spec/Features/EventDelete_Spec.md |
-| T-132 | イベント削除機能 実装 | flutter-dev | `DONE` | EventDelete_Spec.md 参照 |
-| T-133 | イベント削除機能 レビュー | reviewer | `DONE` | 承認・違反なし |
-| T-134 | イベント削除機能 テスト | tester | `DONE` | 3PASS/0FAIL |
-
-### Phase 15: バグ修正（B-1〜B-4）
-
-| ID | タスク | 役割 | status | notes |
-|---|---|---|---|---|
-| T-140 | B-1/B-2: BasicInfo燃費/ガソリン単価 単位表示・即時反映修正 | flutter-dev | `DONE` | _NumberInputField → NumericInputRow置き換え |
-| T-141 | B-3: MichiInfo 0件時 追加ボタン修正 | flutter-dev | `DONE` | items.empty時 pendingInsertAfterSeq=-1設定 |
-| T-142 | B-4: MichiInfo InsertMode時タイムライン座標ズレ修正 | flutter-dev | `DONE` | InsertMode時CustomPaint非表示 |
-| T-143 | バグ修正 レビュー | reviewer | `DONE` | |
-| T-144 | バグ修正 テスト | tester | `DONE` | 84PASS/19SKIP/0FAIL |
-
-### Phase 16: MichiInfo カード削除機能
-
-| ID | タスク | 役割 | status | notes |
-|---|---|---|---|---|
-| T-150 | MichiInfo カード削除 要件書作成 | product-manager | `DONE` | docs/Requirements/REQ-michi_info_card_delete.md |
-| T-151 | MichiInfo カード削除 Spec作成 | architect | `DONE` | docs/Spec/Features/MichiInfoCardDelete_Spec.md |
-| T-152 | MichiInfo カード削除 実装 | flutter-dev | `DONE` | MichiInfoCardDelete_Spec.md 参照 |
-| T-152b | MichiInfo カード削除 テストコード実装（Phase1） | tester | `DONE` | TC-MCD-001〜010 実装済み |
-| T-153 | MichiInfo カード削除 レビュー | reviewer | `DONE` | 承認・違反なし |
-| T-154 | MichiInfo カード削除 テスト実行（Phase2） | tester | `DONE` | 9PASS/1SKIP/0FAIL |
-
-### Phase 17: PaymentInfo カード削除機能
-
-| ID | タスク | 役割 | status | notes |
-|---|---|---|---|---|
-| T-155 | PaymentInfo カード削除 要件書作成 | product-manager | `DONE` | docs/Requirements/REQ-payment_info_card_delete.md |
-| T-156 | PaymentInfo カード削除 Spec作成 | architect | `DONE` | docs/Spec/Features/PaymentInfoCardDelete_Spec.md |
-| T-157 | PaymentInfo カード削除 実装 | flutter-dev | `DONE` | PaymentInfoCardDelete_Spec.md 参照 |
-| T-157b | PaymentInfo カード削除 テストコード実装（Phase1） | tester | `DONE` | TC-PID-001〜005 実装済み |
-| T-158 | PaymentInfo カード削除 レビュー | reviewer | `DONE` | 承認・違反なし |
-| T-159 | PaymentInfo カード削除 テスト実行（Phase2） | tester | `DONE` | 4PASS/1SKIP/0FAIL |
-
-### Phase 18: MichiInfo 挿入ボタン改善
-
-| ID | タスク | 役割 | status | notes |
-|---|---|---|---|---|
-| T-160 | MIB-001+003統合/002: Spec作成 | architect | `DONE` | docs/Spec/Features/FS-michi_info_insert_button_size.md (v2.0) |
-| T-161 | MIB-001+003統合/002: 実装 | flutter-dev | `DONE` | |
-| T-162 | MIB-001+003統合/002: レビュー | reviewer | `DONE` | 承認・違反なし |
-| T-163 | MIB-001+003統合/002: テスト | tester | `DONE` | 5PASS/0FAIL |
-| T-164 | MIB-003: デザイン提案（「＋」アイコンのみ変更） | designer | `DONE` | docs/Design/draft/michi_info_insert_icon_design.html |
-| T-165 | MIB-003: デザインレビュー・ユーザー確認 | product-manager | `DONE` | C案採用・MIB-001と統合。負のmargin不採用 |
-
-### F-1: カスタム数値キーパッド
-
-| ID | タスク | 役割 | status | notes |
-|---|---|---|---|---|
-| T-180 | カスタムキーパッド 要件書作成 | product-manager | `DONE` | docs/Requirements/REQ-custom_numeric_keypad.md |
-| T-181 | カスタムキーパッド Spec作成 | architect | `DONE` | docs/Spec/Features/FS-custom_numeric_keypad.md |
-| T-182 | カスタムキーパッド 実装 | flutter-dev | `DONE` | |
-| T-182b | カスタムキーパッド テストコード実装 | tester | `DONE` | TC-CNK-001〜009 実装済み |
-| T-183 | カスタムキーパッド レビュー | reviewer | `DONE` | 承認・違反なし |
-| T-184 | カスタムキーパッド テスト実行 | tester | `DONE` | 9PASS/0SKIP/0FAIL |
-| T-185 | 四則演算 要件書作成 | product-manager | `DONE` | docs/Requirements/REQ-custom_numeric_keypad_phase2.md |
-| T-186 | 四則演算 Spec作成 | architect | `DONE` | docs/Spec/Features/FS-custom_numeric_keypad_phase2.md |
-| T-187 | 四則演算 実装 | flutter-dev | `DONE` | |
-| T-187b | 四則演算 テストコード実装 | tester | `DONE` | TC-CNK-010〜019 実装済み |
-| T-188 | 四則演算 レビュー | reviewer | `DONE` | 承認・違反なし |
-| T-189b | 四則演算 テスト実行 | tester | `DONE` | 19PASS/0SKIP/0FAIL |
-| T-189 | Phase3 要件書・Spec作成 | product-manager / architect | `DONE` | docs/Requirements/REQ-custom_numeric_keypad_phase3.md / FS-custom_numeric_keypad_phase3.md |
-| T-190a | Phase3 実装 | flutter-dev | `DONE` | FS-custom_numeric_keypad_phase3.md 参照 |
-| T-190b | Phase3 テストコード実装 | tester | `DONE` | TC-CNK-020〜024 実装済み |
-| T-191a | Phase3 レビュー | reviewer | `DONE` | 承認・違反なし |
-| T-192a | Phase3 テスト実行 | tester | `DONE` | 5PASS/0SKIP/0FAIL |
-
-### R-1: メンバー未選択時の入力ガード
-
-| ID | タスク | 役割 | status | notes |
-|---|---|---|---|---|
-| T-170 | メンバー未選択ガード 要件書 | product-manager | `DONE` | docs/Requirements/REQ-member_required_guard.md |
-| T-171 | メンバー未選択ガード Spec作成 | architect | `DONE` | docs/Spec/Features/MemberRequiredGuard_Spec.md |
-| T-172 | メンバー未選択ガード 実装 | flutter-dev | `DONE` | MemberRequiredGuard_Spec.md 参照 |
-| T-172b | メンバー未選択ガード テストコード実装 | tester | `DONE` | TC-MRG-001〜006 実装済み |
-| T-173 | メンバー未選択ガード レビュー | reviewer | `DONE` | 承認・違反なし |
-| T-174 | メンバー未選択ガード テスト実行 | tester | `DONE` | 3PASS/3SKIP/0FAIL |
-
-### R-2: イベント詳細画面 インライン選択UI（タグ・メンバー・Trans・支払者）
-
-> 旧R-2（メンバー選択UIタグ式リニューアル）を廃止・統合。REQ-event_detail_inline_selection_ui 参照。
-
-| ID | タスク | 役割 | status | notes |
-|---|---|---|---|---|
-| T-196 | Phase A 要件書作成 | product-manager | `DONE` | docs/Requirements/REQ-event_detail_inline_selection_ui.md |
-| T-197 | Phase A Spec作成 | architect | `DONE` | docs/Spec/Features/FS-event_detail_inline_selection_ui_phaseA.md |
-| T-198a | Phase A BasicInfo 実装（Trans・Members・Tags・GasPayMember インライン化） | flutter-dev | `DONE` | |
-| T-198b | Phase A テストコード実装（TC-BII-001〜016） | tester | `DONE` | TC-BII-001〜016 実装済み |
-| T-199 | Phase A レビュー | reviewer | `DONE` | 承認・違反なし |
-| T-200 | Phase A テスト実行 | tester | `DONE` | 12PASS/0FAIL/4SKIP |
-| T-201 | Phase B Spec作成 | architect | `DONE` | docs/Spec/Features/FS-event_detail_inline_selection_ui_phaseB.md |
-| T-202a | Phase B MarkDetail・LinkDetail・PaymentDetail 実装 | flutter-dev | `DONE` | FS-event_detail_inline_selection_ui_phaseB.md 参照。dart analyze エラーゼロ確認済み |
-| T-202b | Phase B テストコード実装 | tester | `DONE` | TC-PBM-001〜014b（22ケース）実装済み |
-| T-203 | Phase B レビュー | reviewer | `DONE` | 承認・違反なし |
-| T-204 | Phase B テスト実行 | tester | `DONE` | 22PASS/0FAIL/0SKIP |
-
-### B-5: MichiInfo タブ切り替え時追加モード終了バグ修正
-
-| ID | タスク | 役割 | status | notes |
-|---|---|---|---|---|
-| T-205 | タブ切り替え追加モード終了 実装 | flutter-dev | `DONE` | MichiInfoTabDeactivated イベント追加・_onTabDeactivated ハンドラ実装 |
-| T-205b | タブ切り替え追加モード終了 テストコード実装 | tester | `DONE` | TC-B5-001〜002 実装済み |
-| T-206 | タブ切り替え追加モード終了 レビュー | reviewer | `DONE` | 承認・違反なし |
-| T-207 | タブ切り替え追加モード終了 テスト実行 | tester | `DONE` | 2PASS/0FAIL/0SKIP |
