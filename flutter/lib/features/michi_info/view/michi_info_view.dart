@@ -64,6 +64,31 @@ const Color _linkTintLightColor = Color(0xFFEDFAF4);
 const Color _linkBorderColor = Color(0xFFC3EBD8);
 
 // ────────────────────────────────────────────────────────
+// UI-14 道路帯定数
+// ────────────────────────────────────────────────────────
+
+/// 軸中心からの片側幅（px）（帯幅18px = 2 * _roadBandHalfWidth）
+const double _roadBandHalfWidth = 9.0;
+
+/// 帯上下端の丸みRadius（px）
+const double _roadBandRadius = 4.0;
+
+/// 道路帯のグレー色
+const Color _roadBandColor = Color(0xFF888888);
+
+/// 白破線センターラインの色
+const Color _centerLineColor = Color(0xFFFFFFFF);
+
+/// センターライン幅（px）
+const double _centerLineWidth = 1.5;
+
+/// 破線の実線部分の長さ（px）
+const double _dashOn = 6.0;
+
+/// 破線の空白部分の長さ（px）
+const double _dashOff = 4.0;
+
+// ────────────────────────────────────────────────────────
 // データクラス
 // ────────────────────────────────────────────────────────
 
@@ -807,7 +832,6 @@ class _MichiTimelineCanvas extends CustomPainter {
   final double scrollOffset;
 
   static const double _axisX = 20.0;
-  static const double _thinLineWidth = 1.5;
   static const double _thickLineWidth = 6.0;
   static const double _arrowHeadSize = 6.0;
   static const double _arrowStrokeWidth = 1.5;
@@ -827,18 +851,35 @@ class _MichiTimelineCanvas extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // ── 1. 細い Teal 縦線（始点ドット中心〜終点ドット中心）────────
+    // ── 1. 道路帯（グレー角丸帯 + 白破線センターライン）UI-14 ──────
     if (verticalLineEndRelY > verticalLineStartRelY) {
-      final lineStartY = _topPadding + verticalLineStartRelY - scrollOffset;
-      final lineEndY = _topPadding + verticalLineEndRelY - scrollOffset;
-      canvas.drawLine(
-        Offset(_axisX, lineStartY),
-        Offset(_axisX, lineEndY),
-        Paint()
-          ..color = _markPrimaryColor.withValues(alpha: 0.4)
-          ..strokeWidth = _thinLineWidth
-          ..strokeCap = StrokeCap.butt,
+      final roadStartY = _topPadding + verticalLineStartRelY - scrollOffset;
+      final roadEndY = _topPadding + verticalLineEndRelY - scrollOffset;
+
+      // 1-a. グレー道路帯（drawRRect）
+      final roadRect = Rect.fromLTRB(
+        _axisX - _roadBandHalfWidth,
+        roadStartY,
+        _axisX + _roadBandHalfWidth,
+        roadEndY,
       );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(roadRect, const Radius.circular(_roadBandRadius)),
+        Paint()..color = _roadBandColor,
+      );
+
+      // 1-b. 白破線センターライン（drawLine ループ）
+      final dashPaint = Paint()
+        ..color = _centerLineColor
+        ..strokeWidth = _centerLineWidth
+        ..strokeCap = StrokeCap.butt;
+
+      var y = roadStartY;
+      while (y < roadEndY) {
+        final segEnd = (y + _dashOn).clamp(y, roadEndY);
+        canvas.drawLine(Offset(_axisX, y), Offset(_axisX, segEnd), dashPaint);
+        y += _dashOn + _dashOff;
+      }
     }
 
     // ── 2. Emerald グラデーション縦線（Link カード区間）─────────

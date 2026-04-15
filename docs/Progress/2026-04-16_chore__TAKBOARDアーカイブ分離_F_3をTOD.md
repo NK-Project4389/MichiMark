@@ -1,6 +1,7 @@
 # 進捗記録 2026-04-16
 
 ## 完了した作業
+- feat: POST-1/F-5 実装・テストコード実装（T-363a/b IN_PROGRESS） (a79e559)
 - chore: POST-1/F-5 実装完了進捗ファイル追加 (63c351a)
 - feat: POST-1/F-5 MarkDetail/LinkDetailからPaymentDetail登録（FS-payment_from_mark_link） (441bb8a)
 - chore: POST-1/F-5 着手申告（T-363a/b IN_PROGRESS） (456c520)
