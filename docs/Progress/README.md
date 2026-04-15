@@ -144,3 +144,4 @@
 | [2026-04-15_chore__TestFlight-1.0.0-14-アップロード完了.md](./2026-04-15_chore__TestFlight-1.0.0-14-アップロード完了.md) | TestFlight 1.0.0(14) アップロード完了（B-13/B-14/B-15修正含む） |
 | [2026-04-15_test__IntegrationTest全件PASS達成.md](./2026-04-15_test__IntegrationTest全件PASS達成.md) | Integration Test 全件 PASS 達成・3シャード並行実行追加 |
 | [2026-04-15_chore__環境バックアップ・タスクボード整理.md](./2026-04-15_chore__環境バックアップ・タスクボード整理.md) | 開発環境バックアップ（docs/Environment/）・タスクボードDONE更新 |
+| [2026-04-15_INFRA-1_B-16.md](./2026-04-15_INFRA-1_B-16.md) | INFRA-1 Firebase基盤整備Spec作成・ER図HTML・B-16設定画面UI修正（18PASS） |

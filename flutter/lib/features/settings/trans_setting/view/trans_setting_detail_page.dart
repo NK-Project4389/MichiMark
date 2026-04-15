@@ -91,28 +91,34 @@ class _TransSettingDetailForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         _TransNameField(value: draft.transName),
         if (state.nameError != null) ...[
-          const SizedBox(height: 4),
-          _ErrorText(state.nameError!),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _ErrorText(state.nameError!),
+          ),
         ],
-        const SizedBox(height: 16),
+        const Divider(height: 1),
         _KmPerGasField(value: draft.displayKmPerGas),
         if (state.kmPerGasError != null) ...[
-          const SizedBox(height: 4),
-          _ErrorText(state.kmPerGasError!),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _ErrorText(state.kmPerGasError!),
+          ),
         ],
-        const SizedBox(height: 16),
+        const Divider(height: 1),
         _MeterValueField(value: draft.displayMeterValue),
         if (state.meterValueError != null) ...[
-          const SizedBox(height: 4),
-          _ErrorText(state.meterValueError!),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _ErrorText(state.meterValueError!),
+          ),
         ],
-        const SizedBox(height: 16),
+        const Divider(height: 1),
         SwitchListTile(
-          contentPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
           title: const Text('表示'),
           value: draft.isVisible,
           onChanged: (v) => context
@@ -120,8 +126,11 @@ class _TransSettingDetailForm extends StatelessWidget {
               .add(TransSettingDetailIsVisibleChanged(v)),
         ),
         if (state.saveErrorMessage != null) ...[
-          const SizedBox(height: 16),
-          _ErrorText(state.saveErrorMessage!),
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: _ErrorText(state.saveErrorMessage!),
+          ),
         ],
       ],
     );
@@ -171,16 +180,38 @@ class _TransNameFieldState extends State<_TransNameField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        labelText: '交通手段名',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              '交通手段名',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                hintText: '必須',
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
+              autofocus: true,
+              onChanged: (v) => context
+                  .read<TransSettingDetailBloc>()
+                  .add(TransSettingDetailNameChanged(v)),
+            ),
+          ),
+        ],
       ),
-      autofocus: true,
-      onChanged: (v) => context
-          .read<TransSettingDetailBloc>()
-          .add(TransSettingDetailNameChanged(v)),
     );
   }
 }
@@ -210,17 +241,38 @@ class _KmPerGasFieldState extends State<_KmPerGasField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        labelText: '燃費 (km/L)',
-        hintText: '例: 15.5',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              '燃費 (km/L)',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                hintText: '例: 15.5',
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              onChanged: (v) => context
+                  .read<TransSettingDetailBloc>()
+                  .add(TransSettingDetailKmPerGasChanged(v)),
+            ),
+          ),
+        ],
       ),
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      onChanged: (v) => context
-          .read<TransSettingDetailBloc>()
-          .add(TransSettingDetailKmPerGasChanged(v)),
     );
   }
 }
@@ -263,17 +315,38 @@ class _MeterValueFieldState extends State<_MeterValueField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        labelText: 'メーター (km)',
-        hintText: '例: 10,000',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              'メーター (km)',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                hintText: '例: 10,000',
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
+              keyboardType: TextInputType.number,
+              onChanged: (v) => context
+                  .read<TransSettingDetailBloc>()
+                  .add(TransSettingDetailMeterValueChanged(v)),
+            ),
+          ),
+        ],
       ),
-      keyboardType: TextInputType.number,
-      onChanged: (v) => context
-          .read<TransSettingDetailBloc>()
-          .add(TransSettingDetailMeterValueChanged(v)),
     );
   }
 }

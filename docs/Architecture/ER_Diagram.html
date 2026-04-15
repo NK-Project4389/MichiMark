@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MichiMark ER図 — ローカル（drift）& Firebase（Firestore）</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
+
+  header { background: linear-gradient(135deg, #1a1f2e 0%, #0f1117 100%); border-bottom: 1px solid #2d3748; padding: 20px 32px; display: flex; align-items: center; gap: 16px; }
+  header h1 { font-size: 20px; font-weight: 700; color: #f7fafc; }
+  header .badge { background: #2d3748; border-radius: 6px; padding: 4px 10px; font-size: 12px; color: #a0aec0; }
+
+  .legend { display: flex; gap: 24px; padding: 16px 32px; border-bottom: 1px solid #1e2533; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #a0aec0; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  .main { padding: 32px; display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-start; }
+
+  /* ── Section ── */
+  .section { flex: 1; min-width: 340px; }
+  .section-title { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #718096; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3748; }
+
+  /* ── Table card ── */
+  .table-card { border-radius: 10px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+  .table-header { padding: 10px 14px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .table-header .icon { font-size: 15px; }
+  .table-body { background: #1a1f2e; }
+  .field-row { display: flex; align-items: baseline; gap: 8px; padding: 5px 14px; border-top: 1px solid #0f1117; font-size: 12px; }
+  .field-row:first-child { border-top: none; }
+  .field-name { color: #e2e8f0; font-family: 'SF Mono', 'Fira Code', monospace; flex: 1; }
+  .field-type { color: #718096; font-size: 11px; }
+  .field-desc { color: #4a5568; font-size: 11px; margin-left: auto; text-align: right; max-width: 160px; }
+  .badge-pk { background: #744210; color: #fbd38d; border-radius: 3px; padding: 1px 5px; font-size: 10px; font-weight: 700; margin-left: 4px; }
+  .badge-fk { background: #1a365d; color: #90cdf4; border-radius: 3px; padding: 1px 5px; font-size: 10px; font-weight: 700; margin-left: 4px; }
+  .badge-arr { background: #1a3a2a; color: #68d391; border-radius: 3px; padding: 1px 5px; font-size: 10px; font-weight: 700; margin-left: 4px; }
+  .section-label { font-size: 11px; color: #4a5568; padding: 6px 14px 2px; background: #151921; font-style: italic; }
+
+  /* Colors per entity type */
+  .color-event       { background: #2b4a7e; color: #bee3f8; }
+  .color-master      { background: #2d4a2d; color: #9ae6b4; }
+  .color-junction    { background: #3d2d4a; color: #d6bcfa; }
+  .color-firebase    { background: #7c3a00; color: #fed7aa; }
+  .color-auth        { background: #4a1a1a; color: #feb2b2; }
+  .color-profile     { background: #1a3a4a; color: #90cdf4; }
+  .color-sub         { background: #2d3748; color: #e2e8f0; }
+
+  /* ── Relation arrows section ── */
+  .relations { background: #1a1f2e; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .relations-title { font-size: 11px; color: #4a5568; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .rel-row { display: flex; align-items: center; gap: 8px; font-size: 12px; padding: 4px 0; border-top: 1px solid #0f1117; }
+  .rel-row:first-of-type { border-top: none; }
+  .rel-from { color: #90cdf4; font-family: monospace; }
+  .rel-arrow { color: #4a5568; }
+  .rel-to { color: #9ae6b4; font-family: monospace; }
+  .rel-label { color: #718096; font-size: 11px; margin-left: auto; }
+
+  /* ── Migration mapping ── */
+  .mapping { background: #1a1f2e; border-radius: 10px; padding: 16px; margin-top: 8px; }
+  .mapping-title { font-size: 11px; color: #4a5568; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+  .map-row { display: grid; grid-template-columns: 1fr 40px 1fr 1fr; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid #0f1117; font-size: 12px; }
+  .map-row:first-of-type { border-top: none; }
+  .map-drift { color: #90cdf4; font-family: monospace; }
+  .map-arr { color: #4a5568; text-align: center; }
+  .map-fs { color: #fbd38d; font-family: monospace; }
+  .map-note { color: #718096; font-size: 11px; }
+
+  /* ── Firestore tree ── */
+  .fs-tree { background: #1a1f2e; border-radius: 10px; padding: 16px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; line-height: 1.8; }
+  .fs-tree .col { color: #fbd38d; }
+  .fs-tree .doc { color: #f7fafc; }
+  .fs-tree .field { color: #718096; }
+  .fs-tree .key { color: #90cdf4; }
+  .fs-tree .arr-field { color: #68d391; }
+  .fs-tree .sub { color: #d6bcfa; }
+  .fs-tree .comment { color: #4a5568; font-style: italic; }
+  .fs-tree .indent1 { padding-left: 20px; }
+  .fs-tree .indent2 { padding-left: 40px; }
+  .fs-tree .indent3 { padding-left: 60px; }
+  .fs-tree .indent4 { padding-left: 80px; }
+
+  .divider-label { display: flex; align-items: center; gap: 12px; margin: 24px 0 16px; }
+  .divider-label::before, .divider-label::after { content: ''; flex: 1; height: 1px; background: #2d3748; }
+  .divider-label span { font-size: 11px; color: #4a5568; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🗺 MichiMark ER図</h1>
+  <span class="badge">ローカル（drift / SQLite）</span>
+  <span class="badge">Firebase（Firestore）</span>
+  <span class="badge">v1.0 · 2026-04-15</span>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#2b4a7e"></div>イベント系テーブル</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#2d4a2d"></div>マスターテーブル</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#3d2d4a"></div>中間テーブル（M:N）</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#7c3a00"></div>Firestoreコレクション</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#4a1a1a"></div>Firebase Auth</div>
+  <span style="margin-left:auto;font-size:11px;color:#4a5568"><span class="badge-pk">PK</span> 主キー　<span class="badge-fk">FK</span> 外部キー　<span class="badge-arr">[ ]</span> Arrayフィールド</span>
+</div>
+
+<div class="main">
+
+  <!-- ───────────────────── LEFT: drift ───────────────────── -->
+  <div class="section">
+    <div class="section-title">📦 ローカル — drift / SQLite</div>
+
+    <!-- Master tables -->
+    <div class="table-card">
+      <div class="table-header color-master"><span class="icon">👤</span> members</div>
+      <div class="table-body">
+        <div class="field-row"><span class="field-name">id <span class="badge-pk">PK</span></span><span class="field-type">TEXT</span><span class="field-desc">UUID</span></div>
+        <div class="field-row"><span class="field-name">memberName</span><span class="field-type">TEXT</span></div>
+        <div class="field-row"><span class="field-name">mailAddress</span><span class="field-type">TEXT?</span></div>
+        <div class="field-row"><span class="field-name">isVisible</span><span class="field-type">BOOL</span></div>
+        <div class="field-row"><span class="field-name">isDeleted</span><span class="field-type">BOOL</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header color-master"><span class="icon">🚗</span> transports</div>
+      <div class="table-body">
+        <div class="field-row"><span class="field-name">id <span class="badge-pk">PK</span></span><span class="field-type">TEXT</span><span class="field-desc">UUID</span></div>
+        <div class="field-row"><span class="field-name">transName</span><span class="field-type">TEXT</span></div>
+        <div class="field-row"><span class="field-name">kmPerGas</span><span class="field-type">INT?</span><span class="field-desc">燃費 ×10</span></div>
+        <div class="field-row"><span class="field-name">meterValue</span><span class="field-type">INT?</span><span class="field-desc">累積メーター初期値</span></div>
+        <div class="field-row"><span class="field-name">isVisible</span><span class="field-type">BOOL</span></div>
+        <div class="field-row"><span class="field-name">isDeleted</span><span class="field-type">BOOL</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header color-master"><span class="icon">🏷</span> tags</div>
+      <div class="table-body">
+        <div class="field-row"><span class="field-name">id <span class="badge-pk">PK</span></span><span class="field-type">TEXT</span></div>
+        <div class="field-row"><span class="field-name">tagName</span><span class="field-type">TEXT</span></div>
+        <div class="field-row"><span class="field-name">isVisible / isDeleted</span><span class="field-type">BOOL</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header color-master"><span class="icon">⚡</span> actions</div>
+      <div class="table-body">
+        <div class="field-row"><span class="field-name">id <span class="badge-pk">PK</span></span><span class="field-type">TEXT</span></div>
+        <div class="field-row"><span class="field-name">actionName</span><span class="field-type">TEXT</span></div>
+        <div class="field-row"><span class="field-name">fromState</span><span class="field-type">TEXT?</span><span class="field-desc">遷移前の状態</span></div>
+        <div class="field-row"><span class="field-name">toState</span><span class="field-type">TEXT?</span><span class="field-desc">遷移後の状態</span></div>
+        <div class="field-row"><span class="field-name">isToggle</span><span class="field-type">BOOL</span></div>
+        <div class="field-row"><span class="field-name">togglePairId</span><span class="field-type">TEXT?</span><span class="field-desc">ペアActionのID</span></div>
+        <div class="field-row"><span class="field-name">needsTransition</span><span class="field-type">BOOL</span></div>
+        <div class="field-row"><span class="field-name">isVisible / isDeleted</span><span class="field-type">BOOL</span></div>
+      </div>
+    </div>
+
+    <!-- Event tables -->
+    <div class="table-card">
+      <div class="table-header color-event"><span class="icon">📅</span> events</div>
+      <div class="table-body">
+        <div class="field-row"><span class="field-name">id <span class="badge-pk">PK</span></span><span class="field-type">TEXT</span></div>
+        <div class="field-row"><span class="field-name">eventName</span><span class="field-type">TEXT</span></div>
+        <div class="field-row"><span class="field-name">transId <span class="badge-fk">FK</span></span><span class="field-type">TEXT?</span><span class="field-desc">→ transports</span></div>
+        <div class="field-row"><span class="field-name">kmPerGas</span><span class="field-type">INT?</span><span class="field-desc">イベント上書き燃費</span></div>
+        <div class="field-row"><span class="field-name">pricePerGas</span><span class="field-type">INT?</span><span class="field-desc">ガソリン単価</span></div>
+        <div class="field-row"><span class="field-name">payMemberId <span class="badge-fk">FK</span></span><span class="field-type">TEXT?</span><span class="field-desc">→ members</span></div>
+        <div class="field-row"><span class="field-name">isDeleted</span><span class="field-type">BOOL</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header color-event"><span class="icon">📍</span> mark_links</div>
+      <div class="table-body">
+        <div class="field-row"><span class="field-name">id <span class="badge-pk">PK</span></span><span class="field-type">TEXT</span></div>
+        <div class="field-row"><span class="field-name">eventId <span class="badge-fk">FK</span></span><span class="field-type">TEXT</span><span class="field-desc">→ events</span></div>
+        <div class="field-row"><span class="field-name">markLinkSeq</span><span class="field-type">INT</span><span class="field-desc">表示順</span></div>
+        <div class="field-row"><span class="field-name">markLinkType</span><span class="field-type">TEXT</span><span class="field-desc">'mark' / 'link'</span></div>
+        <div class="field-row"><span class="field-name">markLinkDate</span><span class="field-type">DATETIME</span></div>
+        <div class="field-row"><span class="field-name">markLinkName</span><span class="field-type">TEXT?</span></div>
+        <div class="field-row"><span class="field-name">meterValue</span><span class="field-type">INT?</span></div>
+        <div class="field-row"><span class="field-name">distanceValue</span><span class="field-type">INT?</span></div>
+        <div class="field-row"><span class="field-name">memo</span><span class="field-type">TEXT?</span></div>
+        <div class="field-row"><span class="field-name">isFuel</span><span class="field-type">BOOL</span></div>
+        <div class="field-row"><span class="field-name">pricePerGas / gasQuantity / gasPrice</span><span class="field-type">INT?</span></div>
+        <div class="field-row"><span class="field-name">gasPayerId <span class="badge-fk">FK</span></span><span class="field-type">TEXT?</span><span class="field-desc">→ members</span></div>
+        <div class="field-row"><span class="field-name">isDeleted</span><span class="field-type">BOOL</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header color-event"><span class="icon">💴</span> payments</div>
+      <div class="table-body">
+        <div class="field-row"><span class="field-name">id <span class="badge-pk">PK</span></span><span class="field-type">TEXT</span></div>
+        <div class="field-row"><span class="field-name">eventId <span class="badge-fk">FK</span></span><span class="field-type">TEXT</span><span class="field-desc">→ events</span></div>
+        <div class="field-row"><span class="field-name">paymentSeq</span><span class="field-type">INT</span></div>
+        <div class="field-row"><span class="field-name">paymentAmount</span><span class="field-type">INT</span><span class="field-desc">円</span></div>
+        <div class="field-row"><span class="field-name">paymentMemberId <span class="badge-fk">FK</span></span><span class="field-type">TEXT</span><span class="field-desc">→ members</span></div>
+        <div class="field-row"><span class="field-name">paymentMemo</span><span class="field-type">TEXT?</span></div>
+        <div class="field-row"><span class="field-name">isDeleted</span><span class="field-type">BOOL</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header color-event"><span class="icon">⏱</span> action_time_logs</div>
+      <div class="table-body">
+        <div class="field-row"><span class="field-name">id <span class="badge-pk">PK</span></span><span class="field-type">TEXT</span></div>
+        <div class="field-row"><span class="field-name">eventId <span class="badge-fk">FK</span></span><span class="field-type">TEXT</span><span class="field-desc">→ events</span></div>
+        <div class="field-row"><span class="field-name">actionId <span class="badge-fk">FK</span></span><span class="field-type">TEXT</span><span class="field-desc">→ actions</span></div>
+        <div class="field-row"><span class="field-name">timestamp</span><span class="field-type">DATETIME</span></div>
+        <div class="field-row"><span class="field-name">isDeleted</span><span class="field-type">BOOL</span></div>
+      </div>
+    </div>
+
+    <!-- Junction tables -->
+    <div class="table-card">
+      <div class="table-header color-junction"><span class="icon">🔗</span> 中間テーブル（M:N）</div>
+      <div class="table-body">
+        <div class="section-label">event_members</div>
+        <div class="field-row"><span class="field-name">eventId <span class="badge-fk">FK</span></span><span class="field-desc">→ events</span></div>
+        <div class="field-row"><span class="field-name">memberId <span class="badge-fk">FK</span></span><span class="field-desc">→ members</span></div>
+        <div class="section-label">event_tags</div>
+        <div class="field-row"><span class="field-name">eventId <span class="badge-fk">FK</span></span><span class="field-desc">→ events</span></div>
+        <div class="field-row"><span class="field-name">tagId <span class="badge-fk">FK</span></span><span class="field-desc">→ tags</span></div>
+        <div class="section-label">mark_link_members</div>
+        <div class="field-row"><span class="field-name">markLinkId <span class="badge-fk">FK</span></span><span class="field-desc">→ mark_links</span></div>
+        <div class="field-row"><span class="field-name">memberId <span class="badge-fk">FK</span></span><span class="field-desc">→ members</span></div>
+        <div class="section-label">mark_link_actions</div>
+        <div class="field-row"><span class="field-name">markLinkId <span class="badge-fk">FK</span></span><span class="field-desc">→ mark_links</span></div>
+        <div class="field-row"><span class="field-name">actionId <span class="badge-fk">FK</span></span><span class="field-desc">→ actions</span></div>
+        <div class="section-label">payment_split_members</div>
+        <div class="field-row"><span class="field-name">paymentId <span class="badge-fk">FK</span></span><span class="field-desc">→ payments</span></div>
+        <div class="field-row"><span class="field-name">memberId <span class="badge-fk">FK</span></span><span class="field-desc">→ members</span></div>
+      </div>
+    </div>
+
+    <!-- Relations -->
+    <div class="relations">
+      <div class="relations-title">リレーション</div>
+      <div class="rel-row"><span class="rel-from">events</span><span class="rel-arrow">1 ──&lt; N</span><span class="rel-to">mark_links</span></div>
+      <div class="rel-row"><span class="rel-from">events</span><span class="rel-arrow">1 ──&lt; N</span><span class="rel-to">payments</span></div>
+      <div class="rel-row"><span class="rel-from">events</span><span class="rel-arrow">1 ──&lt; N</span><span class="rel-to">action_time_logs</span></div>
+      <div class="rel-row"><span class="rel-from">events</span><span class="rel-arrow">N ──&gt; 1</span><span class="rel-to">transports</span></div>
+      <div class="rel-row"><span class="rel-from">events</span><span class="rel-arrow">N ──&gt; 1?</span><span class="rel-to">members</span><span class="rel-label">ガソリン支払者</span></div>
+      <div class="rel-row"><span class="rel-from">events</span><span class="rel-arrow">M ─── N</span><span class="rel-to">members</span><span class="rel-label">via event_members</span></div>
+      <div class="rel-row"><span class="rel-from">events</span><span class="rel-arrow">M ─── N</span><span class="rel-to">tags</span><span class="rel-label">via event_tags</span></div>
+      <div class="rel-row"><span class="rel-from">mark_links</span><span class="rel-arrow">M ─── N</span><span class="rel-to">members</span><span class="rel-label">via mark_link_members</span></div>
+      <div class="rel-row"><span class="rel-from">mark_links</span><span class="rel-arrow">M ─── N</span><span class="rel-to">actions</span><span class="rel-label">via mark_link_actions</span></div>
+      <div class="rel-row"><span class="rel-from">payments</span><span class="rel-arrow">M ─── N</span><span class="rel-to">members</span><span class="rel-label">via payment_split_members</span></div>
+      <div class="rel-row"><span class="rel-from">action_time_logs</span><span class="rel-arrow">N ──&gt; 1</span><span class="rel-to">actions</span></div>
+    </div>
+  </div>
+
+  <!-- ───────────────────── RIGHT: Firestore ───────────────────── -->
+  <div class="section">
+    <div class="section-title">🔥 Firebase — Auth & Firestore</div>
+
+    <!-- Firebase Auth -->
+    <div class="table-card">
+      <div class="table-header color-auth"><span class="icon">🔐</span> Firebase Auth</div>
+      <div class="table-body">
+        <div class="field-row"><span class="field-name">uid</span><span class="field-type">String</span><span class="field-desc">Anonymous or Apple Linked</span></div>
+        <div class="field-row"><span class="field-name">isAnonymous</span><span class="field-type">Boolean</span><span class="field-desc">Apple連携でfalseになる</span></div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;color:#718096;padding:4px 4px 12px;display:flex;gap:8px;align-items:center">
+      <span style="color:#4a5568">初回起動</span>→ Anonymous Auth 自動発行
+      &nbsp;|&nbsp;
+      <span style="color:#4a5568">任意</span>→ Apple Sign In でリンク（UID不変）
+    </div>
+
+    <!-- Firestore tree -->
+    <div class="table-card">
+      <div class="table-header color-firebase"><span class="icon">🗄</span> Firestore コレクション構造</div>
+      <div class="table-body">
+        <div class="fs-tree" style="padding:12px 14px">
+          <div><span class="col">users</span><span class="comment"> /{uid}</span></div>
+          <div class="indent1"><span class="sub">├─</span> <span class="doc">profile</span> <span class="comment">（1件固定）</span></div>
+          <div class="indent2"><span class="key">uid</span>, <span class="key">isAppleLinked</span>, <span class="key">schemaVersion</span></div>
+          <div class="indent1">&nbsp;</div>
+          <div class="indent1"><span class="sub">├─</span> <span class="col">members</span><span class="comment"> /{memberId}</span></div>
+          <div class="indent2"><span class="key">memberName</span>, <span class="key">mailAddress</span>, <span class="key">isVisible</span>, <span class="key">isDeleted</span></div>
+          <div class="indent1">&nbsp;</div>
+          <div class="indent1"><span class="sub">├─</span> <span class="col">trans</span><span class="comment"> /{transId}</span></div>
+          <div class="indent2"><span class="key">transName</span>, <span class="key">kmPerGas</span>, <span class="key">meterValue</span>, <span class="key">isVisible</span>, <span class="key">isDeleted</span></div>
+          <div class="indent1">&nbsp;</div>
+          <div class="indent1"><span class="sub">├─</span> <span class="col">tags</span><span class="comment"> /{tagId}</span></div>
+          <div class="indent2"><span class="key">tagName</span>, <span class="key">isVisible</span>, <span class="key">isDeleted</span></div>
+          <div class="indent1">&nbsp;</div>
+          <div class="indent1"><span class="sub">├─</span> <span class="col">actions</span><span class="comment"> /{actionId}</span></div>
+          <div class="indent2"><span class="key">actionName</span>, <span class="key">fromState</span>, <span class="key">toState</span></div>
+          <div class="indent2"><span class="key">isToggle</span>, <span class="key">togglePairId</span>, <span class="key">needsTransition</span></div>
+          <div class="indent1">&nbsp;</div>
+          <div class="indent1"><span class="sub">├─</span> <span class="col">topics</span><span class="comment"> /{topicId}</span></div>
+          <div class="indent2"><span class="key">topicName</span>, <span class="key">topicType</span>, <span class="key">color</span>, <span class="key">isVisible</span>, <span class="key">isDeleted</span></div>
+          <div class="indent1">&nbsp;</div>
+          <div class="indent1"><span class="sub">└─</span> <span class="col">events</span><span class="comment"> /{eventId}</span></div>
+          <div class="indent2"><span class="key">eventName</span>, <span class="key">transId</span>, <span class="key">kmPerGas</span>, <span class="key">pricePerGas</span></div>
+          <div class="indent2"><span class="key">payMemberId</span>, <span class="key">topicId</span></div>
+          <div class="indent2"><span class="arr-field">memberIds: [ ]</span><span class="comment"> &lt;-- event_members をArray化</span></div>
+          <div class="indent2"><span class="arr-field">tagIds: [ ]</span><span class="comment"> &lt;-- event_tags をArray化</span></div>
+          <div class="indent2"><span class="key">isDeleted</span></div>
+          <div class="indent2">&nbsp;</div>
+          <div class="indent2"><span class="sub">├─</span> <span class="col">markLinks</span><span class="comment"> /{markLinkId}</span></div>
+          <div class="indent3"><span class="key">markLinkSeq</span>, <span class="key">markLinkType</span>, <span class="key">markLinkDate</span></div>
+          <div class="indent3"><span class="key">markLinkName</span>, <span class="key">meterValue</span>, <span class="key">distanceValue</span>, <span class="key">memo</span></div>
+          <div class="indent3"><span class="arr-field">memberIds: [ ]</span><span class="comment"> &lt;-- mark_link_members をArray化</span></div>
+          <div class="indent3"><span class="arr-field">actionIds: [ ]</span><span class="comment"> &lt;-- mark_link_actions をArray化</span></div>
+          <div class="indent3"><span class="key">isFuel</span>, <span class="key">pricePerGas</span>, <span class="key">gasQuantity</span>, <span class="key">gasPrice</span>, <span class="key">gasPayerId</span></div>
+          <div class="indent3"><span class="key">isDeleted</span></div>
+          <div class="indent2">&nbsp;</div>
+          <div class="indent2"><span class="sub">├─</span> <span class="col">payments</span><span class="comment"> /{paymentId}</span></div>
+          <div class="indent3"><span class="key">paymentSeq</span>, <span class="key">paymentAmount</span>, <span class="key">paymentMemberId</span>, <span class="key">paymentMemo</span></div>
+          <div class="indent3"><span class="arr-field">splitMemberIds: [ ]</span><span class="comment"> &lt;-- payment_split_members をArray化</span></div>
+          <div class="indent3"><span class="key">isDeleted</span></div>
+          <div class="indent2">&nbsp;</div>
+          <div class="indent2"><span class="sub">└─</span> <span class="col">actionTimeLogs</span><span class="comment"> /{logId}</span></div>
+          <div class="indent3"><span class="key">actionId</span>, <span class="key">timestamp</span>, <span class="key">isDeleted</span></div>
+          <div class="indent3" style="color:#4a5568;font-size:11px">※ イベント全体のログ。MarkLink単位ではなくEvent単位で管理。</div>
+          <div class="indent3" style="color:#4a5568;font-size:11px">　アクション現在状態 = 全logのtimestamp順集計で決定。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- drift vs Firestore mapping -->
+    <div class="mapping">
+      <div class="mapping-title">drift → Firestore 変換マッピング</div>
+      <div class="map-row" style="font-size:10px;color:#4a5568;font-weight:600;">
+        <span>drift テーブル</span><span></span><span>Firestore</span><span>変換ポイント</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">members</span><span class="map-arr">→</span>
+        <span class="map-fs">users/{uid}/members/</span><span class="map-note">フィールド1:1対応</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">transports</span><span class="map-arr">→</span>
+        <span class="map-fs">users/{uid}/trans/</span><span class="map-note">フィールド1:1対応</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">tags</span><span class="map-arr">→</span>
+        <span class="map-fs">users/{uid}/tags/</span><span class="map-note">フィールド1:1対応</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">actions</span><span class="map-arr">→</span>
+        <span class="map-fs">users/{uid}/actions/</span><span class="map-note">フィールド1:1対応</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">events</span><span class="map-arr">→</span>
+        <span class="map-fs">users/{uid}/events/</span><span class="map-note">中間テーブルはArray化</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">mark_links</span><span class="map-arr">→</span>
+        <span class="map-fs">events/{id}/markLinks/</span><span class="map-note">サブコレクション</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">payments</span><span class="map-arr">→</span>
+        <span class="map-fs">events/{id}/payments/</span><span class="map-note">サブコレクション</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">action_time_logs</span><span class="map-arr">→</span>
+        <span class="map-fs">events/{id}/actionTimeLogs/</span><span class="map-note">サブコレクション（Event単位）</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">event_members</span><span class="map-arr">→</span>
+        <span class="map-fs">events.memberIds[ ]</span><span class="map-note">中間テーブル → Array</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">event_tags</span><span class="map-arr">→</span>
+        <span class="map-fs">events.tagIds[ ]</span><span class="map-note">中間テーブル → Array</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">mark_link_members</span><span class="map-arr">→</span>
+        <span class="map-fs">markLinks.memberIds[ ]</span><span class="map-note">中間テーブル → Array</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">mark_link_actions</span><span class="map-arr">→</span>
+        <span class="map-fs">markLinks.actionIds[ ]</span><span class="map-note">中間テーブル → Array</span>
+      </div>
+      <div class="map-row">
+        <span class="map-drift">payment_split_members</span><span class="map-arr">→</span>
+        <span class="map-fs">payments.splitMemberIds[ ]</span><span class="map-note">中間テーブル → Array</span>
+      </div>
+    </div>
+
+    <!-- Security Rules overview -->
+    <div class="table-card" style="margin-top:16px">
+      <div class="table-header color-profile"><span class="icon">🛡</span> Security Rules（概要）</div>
+      <div class="table-body" style="padding:12px 14px;font-size:12px;line-height:1.8;font-family:monospace;color:#a0aec0">
+        <div><span style="color:#68d391">match</span> /users/<span style="color:#fbd38d">{uid}</span>/<span style="color:#d6bcfa">{document=**}</span> &#123;</div>
+        <div style="padding-left:20px"><span style="color:#68d391">allow</span> read, write: <span style="color:#68d391">if</span></div>
+        <div style="padding-left:40px"><span style="color:#90cdf4">request.auth</span> != null</div>
+        <div style="padding-left:40px">&amp;&amp; <span style="color:#90cdf4">request.auth.uid</span> == <span style="color:#fbd38d">uid</span>;</div>
+        <div>&#125;</div>
+        <div style="color:#4a5568;margin-top:8px;font-family:sans-serif;font-size:11px">招待メンバーのアクセス制御は INV-1 Spec で定義</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

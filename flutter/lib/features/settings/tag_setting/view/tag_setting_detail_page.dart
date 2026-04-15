@@ -89,22 +89,24 @@ class _TagSettingDetailForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         _TagNameField(value: draft.tagName),
         if (state.validationError != null) ...[
-          const SizedBox(height: 4),
-          Text(
-            state.validationError!,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.error,
-              fontSize: 12,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              state.validationError!,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
+                fontSize: 12,
+              ),
             ),
           ),
         ],
-        const SizedBox(height: 16),
+        const Divider(height: 1),
         SwitchListTile(
-          contentPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
           title: const Text('表示'),
           value: draft.isVisible,
           onChanged: (v) => context
@@ -112,11 +114,14 @@ class _TagSettingDetailForm extends StatelessWidget {
               .add(TagSettingDetailIsVisibleChanged(v)),
         ),
         if (state.saveErrorMessage != null) ...[
-          const SizedBox(height: 16),
-          Text(
-            state.saveErrorMessage!,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.error,
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(
+              state.saveErrorMessage!,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
+              ),
             ),
           ),
         ],
@@ -150,16 +155,38 @@ class _TagNameFieldState extends State<_TagNameField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        labelText: 'タグ名',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              'タグ名',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                hintText: '必須',
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
+              autofocus: true,
+              onChanged: (v) => context
+                  .read<TagSettingDetailBloc>()
+                  .add(TagSettingDetailNameChanged(v)),
+            ),
+          ),
+        ],
       ),
-      autofocus: true,
-      onChanged: (v) => context
-          .read<TagSettingDetailBloc>()
-          .add(TagSettingDetailNameChanged(v)),
     );
   }
 }

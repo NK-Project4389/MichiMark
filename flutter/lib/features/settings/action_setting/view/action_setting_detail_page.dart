@@ -92,35 +92,40 @@ class _ActionSettingDetailForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         _ActionNameField(value: draft.actionName),
         if (state.validationError != null) ...[
-          const SizedBox(height: 4),
-          Text(
-            state.validationError!,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.error,
-              fontSize: 12,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              state.validationError!,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
+                fontSize: 12,
+              ),
             ),
           ),
         ],
-        const SizedBox(height: 16),
+        const Divider(height: 1),
         SwitchListTile(
-          contentPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
           title: const Text('表示'),
           value: draft.isVisible,
           onChanged: (v) => context
               .read<ActionSettingDetailBloc>()
               .add(ActionSettingDetailIsVisibleChanged(v)),
         ),
-        const Divider(),
-        const SizedBox(height: 8),
-        const Text(
-          '状態遷移設定',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        const Divider(height: 1),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Text(
+            '状態遷移設定',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
         ),
-        const SizedBox(height: 8),
         _ActionStateDropdown(
           label: '遷移後の状態',
           hint: '状態変化なし（未設定）',
@@ -129,9 +134,9 @@ class _ActionSettingDetailForm extends StatelessWidget {
               .read<ActionSettingDetailBloc>()
               .add(ActionSettingDetailToStateChanged(v)),
         ),
-        const SizedBox(height: 8),
+        const Divider(height: 1),
         SwitchListTile(
-          contentPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
           title: const Text('トグル型Action'),
           subtitle: const Text('休憩開始/終了のようなペアのAction'),
           value: draft.isToggle,
@@ -139,8 +144,9 @@ class _ActionSettingDetailForm extends StatelessWidget {
               .read<ActionSettingDetailBloc>()
               .add(ActionSettingDetailIsToggleChanged(v)),
         ),
+        const Divider(height: 1),
         SwitchListTile(
-          contentPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
           title: const Text('状態遷移あり'),
           subtitle: const Text('オフにするとログ記録のみで状態遷移しない'),
           value: draft.needsTransition,
@@ -149,11 +155,14 @@ class _ActionSettingDetailForm extends StatelessWidget {
               .add(ActionSettingDetailNeedsTransitionChanged(v)),
         ),
         if (state.saveErrorMessage != null) ...[
-          const SizedBox(height: 16),
-          Text(
-            state.saveErrorMessage!,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.error,
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(
+              state.saveErrorMessage!,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
+              ),
             ),
           ),
         ],
@@ -178,26 +187,47 @@ class _ActionStateDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<ActionState?>(
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-      ),
-      hint: Text(hint),
-      value: value,
-      items: [
-        DropdownMenuItem<ActionState?>(
-          value: null,
-          child: Text(hint),
-        ),
-        ...ActionState.values.map(
-          (s) => DropdownMenuItem<ActionState?>(
-            value: s,
-            child: Text(s.label),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
           ),
-        ),
-      ],
-      onChanged: onChanged,
+          Expanded(
+            child: DropdownButtonFormField<ActionState?>(
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
+              hint: Text(hint),
+              value: value,
+              items: [
+                DropdownMenuItem<ActionState?>(
+                  value: null,
+                  child: Text(hint),
+                ),
+                ...ActionState.values.map(
+                  (s) => DropdownMenuItem<ActionState?>(
+                    value: s,
+                    child: Text(s.label),
+                  ),
+                ),
+              ],
+              onChanged: onChanged,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -227,16 +257,38 @@ class _ActionNameFieldState extends State<_ActionNameField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: const InputDecoration(
-        labelText: '行動名',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              '行動名',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                hintText: '必須',
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
+              autofocus: true,
+              onChanged: (v) => context
+                  .read<ActionSettingDetailBloc>()
+                  .add(ActionSettingDetailNameChanged(v)),
+            ),
+          ),
+        ],
       ),
-      autofocus: true,
-      onChanged: (v) => context
-          .read<ActionSettingDetailBloc>()
-          .add(ActionSettingDetailNameChanged(v)),
     );
   }
 }

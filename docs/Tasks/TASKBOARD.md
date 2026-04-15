@@ -254,13 +254,13 @@
 
 ## INFRA-1: Firebase基盤整備
 
-> ⚠️ REL-1（AppStoreリリース）完了後に着手する。INV-1〜4すべての前提。
+> REL-1（AppStore審査提出 2026-04-15）完了につきブロック解除。INV-1〜4すべての前提。
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-344 | Firebase基盤整備 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-firebase_infra.md（叩き作成済み） |
-| T-345 | Firebase基盤整備 Spec作成 | architect | `BLOCKED` | | REL-1完了後に着手 |
-| T-346a | Firebase基盤整備 実装 | flutter-dev | `BLOCKED` | | Anonymous Auth＋Apple Sign In＋Firestore移行 |
+| T-345 | Firebase基盤整備 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-firebase_infra.md |
+| T-346a | Firebase基盤整備 実装 | flutter-dev | `TODO` | | FS-firebase_infra.md 参照 |
 | T-346b | Firebase基盤整備 テストコード実装 | tester | `BLOCKED` | | |
 | T-347 | Firebase基盤整備 レビュー | reviewer | `BLOCKED` | | |
 | T-348 | Firebase基盤整備 テスト実行 | tester | `BLOCKED` | | |
@@ -484,6 +484,50 @@
 | T-365 | POST-1: テスト実行 | tester | `BLOCKED` | | |
 
 ---
+
+---
+
+## B-16: 設定画面 UIスタイル枠修正
+
+> 設定画面のUIが他画面（BasicInfoセクション等）と異なり枠が残っている。BasicInfoセクションを参考にスタイルを揃える。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-387a | B-16: 設定画面UI枠修正 バグ修正実装 | flutter-dev | `DONE` | | InputBorder.none + Divider + ラベル外出し（4ファイル修正） |
+| T-387b | B-16: 設定画面UI枠修正 テストコード実装 | tester | `DONE` | | TC-SUI-001〜004 18件実装済み（integration_test/settings_ui_style_test.dart） |
+| T-388 | B-16: レビュー | reviewer | `DONE` | | 承認 |
+| T-389 | B-16: テスト実行 | tester | `DONE` | | 18PASS/0FAIL/0SKIP |
+
+---
+
+## F-2: 期間集計機能
+
+> イベント一覧とは別に、期間を指定して集計できる機能。要件定義を伴奏して進める。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-390 | F-2: 期間集計機能 要件書作成 | product-manager | `TODO` | | ユーザーと伴奏して進める |
+| T-391 | F-2: 期間集計機能 Spec作成 | architect | `BLOCKED` | | T-390完了後 |
+| T-392a | F-2: 期間集計機能 実装 | flutter-dev | `BLOCKED` | | |
+| T-392b | F-2: 期間集計機能 テストコード実装 | tester | `BLOCKED` | | |
+| T-393 | F-2: レビュー | reviewer | `BLOCKED` | | |
+| T-394 | F-2: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## UI-14: MichiInfoタイムライン 罫線→道路イメージ
+
+> MichiInfoのタイムライン罫線を道路のビジュアルイメージに変更する。要件定義を伴奏して進める。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-395 | UI-14: デザイン提案 | designer | `TODO` | | 道路イメージのデザイン案を作成 |
+| T-396 | UI-14: 要件書作成 | product-manager | `BLOCKED` | | T-395・ユーザー確認後 |
+| T-397 | UI-14: Spec作成 | architect | `BLOCKED` | | T-396完了後 |
+| T-398a | UI-14: 実装 | flutter-dev | `BLOCKED` | | |
+| T-398b | UI-14: テストコード実装 | tester | `BLOCKED` | | |
+| T-399 | UI-14: レビュー | reviewer | `BLOCKED` | | |
+| T-400 | UI-14: テスト実行 | tester | `BLOCKED` | | |
 
 ---
 
