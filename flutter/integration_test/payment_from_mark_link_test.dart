@@ -599,8 +599,16 @@ void main() {
     }
 
     // 削除ボタンが表示されるまでスクロール
+    final deleteButtonFinder = find.byWidgetPredicate((widget) {
+      if (widget.key is ValueKey<String>) {
+        final keyStr = (widget.key as ValueKey<String>).value;
+        return keyStr.startsWith('paymentInfo_button_delete_');
+      }
+      return false;
+    });
+
     for (var i = 0; i < 5; i++) {
-      if (find.byKey(const Key('paymentInfo_button_delete')).evaluate().isNotEmpty) break;
+      if (deleteButtonFinder.evaluate().isNotEmpty) break;
       final listViews = find.byType(ListView);
       if (listViews.evaluate().isNotEmpty) {
         await tester.drag(listViews.first, const Offset(0, -300));
@@ -608,12 +616,12 @@ void main() {
       }
     }
 
-    if (find.byKey(const Key('paymentInfo_button_delete')).evaluate().isEmpty) {
+    if (deleteButtonFinder.evaluate().isEmpty) {
       print('[SKIP] 削除ボタンが見つからないためスキップします');
       return;
     }
 
-    await tester.tap(find.byKey(const Key('paymentInfo_button_delete')).first);
+    await tester.tap(deleteButtonFinder.first);
     await tester.pump(const Duration(milliseconds: 500));
 
     // 確認ダイアログで削除を実行

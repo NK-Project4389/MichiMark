@@ -604,7 +604,7 @@ class _PaymentSection extends StatelessWidget {
               Text('支払', style: labelStyle),
               const Spacer(),
               IconButton(
-                key: const Key('linkDetail_button_paymentPlus'),
+                key: const Key('payment_plus_button'),
                 icon: const Icon(Icons.add),
                 onPressed: () => context
                     .read<LinkDetailBloc>()

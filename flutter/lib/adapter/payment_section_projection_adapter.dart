@@ -26,14 +26,14 @@ class PaymentSectionProjectionAdapter {
 
     return PaymentSectionProjection(
       items: filtered.map(_toPaymentItem).toList(),
-      displayTotalAmount: '${_numberFormat.format(total)} 円',
+      displayTotalAmount: '${_numberFormat.format(total)}円',
     );
   }
 
   static PaymentItemProjection _toPaymentItem(PaymentDomain d) =>
       PaymentItemProjection(
         id: d.id,
-        displayAmount: '${_numberFormat.format(d.paymentAmount)} 円',
+        displayAmount: '${_numberFormat.format(d.paymentAmount)}円',
         payer: _toMemberItem(d.paymentMember),
         splitMembers: d.splitMembers.map(_toMemberItem).toList(),
         memo: d.paymentMemo,
