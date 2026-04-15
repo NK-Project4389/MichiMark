@@ -246,9 +246,9 @@
 | T-260c | サポートページ作成 | orchestrator | `DONE` | | https://michimark-web.vercel.app/support.html |
 | T-260d | App Store Connect 基本情報入力（名前・カテゴリ・価格・URL） | orchestrator | `DONE` | | docs/AppStore/metadata_ja.md 参照 |
 | T-260e | アプリ説明文・キーワード作成 | orchestrator | `DONE` | | docs/AppStore/metadata_ja.md 参照 |
-| T-260f | スクリーンショット撮影・登録（iPhone 6.5インチ以上） | orchestrator | `TODO` | | |
-| T-260g | 全件 Integration Test フルスイート PASS | tester | `TODO` | | UI-8完了後に実施 |
-| T-260h | 本番ビルド → TestFlight最終確認 → 審査提出 | orchestrator | `TODO` | | T-260g完了後 |
+| T-260f | スクリーンショット撮影・登録（iPhone 6.5インチ以上） | orchestrator | `DONE` | | iPhone 6.9インチ5枚登録済み |
+| T-260g | 全件 Integration Test フルスイート PASS | tester | `IN_PROGRESS` | 2026-04-15_chore__AppStore審査提出完了 | 241PASS/112SKIP/11FAIL 残11件修正中 |
+| T-260h | 本番ビルド → TestFlight最終確認 → 審査提出 | orchestrator | `DONE` | | 1.0.0(18) 審査提出済み 2026-04-15 |
 
 ---
 
