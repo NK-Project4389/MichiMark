@@ -540,10 +540,11 @@
 |---|---|---|---|---|---|
 | T-401 | F-3: 訪問作業トピック 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_topic.md |
 | T-402 | F-3: 訪問作業トピック Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_topic.md |
-| T-403a | F-3: 訪問作業トピック 実装 | flutter-dev | `BLOCKED` | | T-402完了後 |
-| T-403b | F-3: 訪問作業トピック テストコード実装 | tester | `BLOCKED` | | |
-| T-404 | F-3: レビュー | reviewer | `BLOCKED` | | |
-| T-405 | F-3: テスト実行 | tester | `BLOCKED` | | |
+| T-403a | F-3: 訪問作業トピック 実装 | flutter-dev | `BLOCKED` | | T-402完了後（4/16 2:10 JST リモート自動実行予定） |
+| T-403b | F-3: 訪問作業トピック テストコード実装 | tester | `BLOCKED` | | 同上 |
+| T-404 | F-3: レビュー | reviewer | `BLOCKED` | | 同上 |
+| T-403c | リモート実行結果確認 | orchestrator | `TODO` | | 4/16 朝: git pull → git log でコミット確認。なければクロコに報告 |
+| T-405 | F-3: Integration Test 実行 | tester | `BLOCKED` | | T-403c確認後: `flutter test integration_test/visit_work_topic_test.dart -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6` |
 
 ---
 
