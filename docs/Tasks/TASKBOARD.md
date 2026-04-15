@@ -476,9 +476,9 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-361 | POST-1/F-5: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_from_mark_link.md |
-| T-362 | POST-1/F-5: Spec作成 | architect | `TODO` | | T-361完了 → 着手可能 |
-| T-363a | POST-1/F-5: 実装 | flutter-dev | `BLOCKED` | | |
-| T-363b | POST-1/F-5: テストコード実装 | tester | `BLOCKED` | | |
+| T-362 | POST-1/F-5: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_from_mark_link.md |
+| T-363a | POST-1/F-5: 実装 | flutter-dev | `TODO` | | 4/16 2:10 JST リモート自動実行予定 |
+| T-363b | POST-1/F-5: テストコード実装 | tester | `TODO` | | 同上 |
 | T-364 | POST-1/F-5: レビュー | reviewer | `BLOCKED` | | |
 | T-365 | POST-1/F-5: テスト実行 | tester | `BLOCKED` | | |
 

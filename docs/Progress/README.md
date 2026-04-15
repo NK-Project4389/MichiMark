@@ -148,3 +148,4 @@
 | [2026-04-15_INFRA-1_B-16.md](./2026-04-15_INFRA-1_B-16.md) | INFRA-1 Firebase基盤整備Spec作成・ER図HTML・B-16設定画面UI修正（18PASS） |
 | [2026-04-15_test__INV-1-Unit-Test-43PASS.md](./2026-04-15_test__INV-1-Unit-Test-43PASS.md) | INV-1 招待機能バックエンド Unit Test 43件PASS（T-326b DONE） |
 | [2026-04-15_req__POST1-F5-MarkLink支払い登録要件書作成.md](./2026-04-15_req__POST1-F5-MarkLink支払い登録要件書作成.md) | POST-1/F-5 MarkDetail/LinkDetailからの支払い登録 要件書作成（T-361 DONE） |
+| [2026-04-15_architect__POST1-F5-Spec作成完了.md](./2026-04-15_architect__POST1-F5-Spec作成完了.md) | POST-1/F-5 FS-payment_from_mark_link Spec作成（T-362 DONE）・リモートトリガー更新 |
