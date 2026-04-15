@@ -10,6 +10,8 @@ App Store審査待ち期間中に残っていたIntegration Test の FAIL を全
 ---
 
 ## 完了した作業
+- chore: 開発環境バックアップ追加（tools/ClaudeCode設定） (bee8714)
+- chore: T-260g/T-295a/b/T-296 タスクボードをDONEに更新 (8b84996)
 - test: Integration Test 全件PASS達成（TC-BTE-006/B5/PID2/BUG-002/DCD/FEU修正） (5bf8456)
 
 ### 3シャード並行実行の追加
