@@ -701,6 +701,7 @@ class _MichiInfoListState extends State<_MichiInfoList> {
               top: 48,
               child: ClipRect(
                 child: CustomPaint(
+                  key: const Key('michiInfo_canvas_timeline'),
                   painter: _MichiTimelineCanvas(
                     spans: timelineData.spans,
                     linkSegments: timelineData.linkSegments,
@@ -1088,7 +1089,12 @@ class _TimelineItem extends StatelessWidget {
     final hasActionButtons = isMark && markActionItems.isNotEmpty;
     final rowHeight = isMark ? _cardHeight : _linkCardHeight;
 
+    final itemKey = isMark
+        ? Key('michiInfo_item_mark_${item.id}')
+        : Key('michiInfo_item_link_${item.id}');
+
     return Column(
+      key: itemKey,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(
