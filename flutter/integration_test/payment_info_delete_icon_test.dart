@@ -14,6 +14,7 @@
 ///   pay-002: 昼食代 ¥2,400（支払者: 花子）
 ///   合計: ¥5,600
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
@@ -165,9 +166,9 @@ void main() {
   });
 
   // ────────────────────────────────────────────────────────
-  // TC-PID2-003: 削除アイコンタップで即削除される（ダイアログなし）
+  // TC-PID2-003: 削除アイコンタップで確認ダイアログが表示され、削除できる
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-PID2-003: 削除アイコンタップで即削除される（ダイアログなし）', (tester) async {
+  testWidgets('TC-PID2-003: 削除アイコンタップで確認ダイアログが表示され削除できる', (tester) async {
     final navigated = await goToPaymentInfoTab(tester);
     if (!navigated) {
       markTestSkipped(
@@ -188,8 +189,7 @@ void main() {
     }
 
     // pay-002 が事前に存在するか確認
-    final otherExists =
-        find.byKey(otherDeleteIconKey).evaluate().isNotEmpty;
+    final otherExists = find.byKey(otherDeleteIconKey).evaluate().isNotEmpty;
     print('[TC-PID2-003] pay-002 削除アイコン存在: $otherExists');
 
     // 削除アイコンをタップ（操作前に可視状態を保証）
@@ -197,13 +197,25 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(find.byKey(deleteIconKey));
 
-    // タップ直後: AlertDialog が表示されていないことを確認（即削除）
-    await tester.pump(const Duration(milliseconds: 300));
+    // CupertinoAlertDialog が表示されるまで待つ
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.byType(CupertinoAlertDialog).evaluate().isNotEmpty) break;
+    }
+
+    // 確認ダイアログが表示されていること
     expect(
-      find.byType(AlertDialog),
-      findsNothing,
-      reason: '削除アイコンタップ直後に AlertDialog が表示されないこと（確認なし即削除）',
+      find.byType(CupertinoAlertDialog),
+      findsOneWidget,
+      reason: '削除アイコンタップ後に確認ダイアログが表示されること',
     );
+
+    // ダイアログの「削除」ボタンをタップ
+    final deleteButton = find.byKey(
+        const Key('deleteConfirmDialog_button_delete'));
+    expect(deleteButton, findsOneWidget,
+        reason: '確認ダイアログに削除ボタンが存在すること');
+    await tester.tap(deleteButton);
 
     // 削除処理の完了を待つ
     for (var i = 0; i < 15; i++) {
@@ -227,12 +239,5 @@ void main() {
         reason: '削除していない伝票 (pay-002) の削除アイコンが引き続き表示されていること',
       );
     }
-
-    // 削除後も AlertDialog が表示されていないことを最終確認
-    expect(
-      find.byType(AlertDialog),
-      findsNothing,
-      reason: '削除完了後も AlertDialog が表示されていないこと',
-    );
   });
 }

@@ -133,21 +133,6 @@ void main() {
       (tester) async {
     await startApp(tester);
 
-    // 現在のリスト件数を取得
-    int getItemCount() {
-      final listView = find.byType(ListView);
-      if (listView.evaluate().isEmpty) return 0;
-      return find
-          .descendant(
-            of: listView.first,
-            matching: find.byType(GestureDetector),
-          )
-          .evaluate()
-          .length;
-    }
-
-    final initialItemCount = getItemCount();
-
     // FABをタップしてTopicSelectionSheetを表示
     final fab = find.byType(FloatingActionButton);
     expect(fab, findsOneWidget, reason: 'EventList画面にFABが表示されること');
@@ -178,6 +163,76 @@ void main() {
     expect(find.byIcon(Icons.chevron_left), findsOneWidget,
         reason: 'トピック選択後にEventDetail画面に遷移できること');
 
+    // BasicInfoが表示されるまで待つ（読込モード or 編集モードどちらでも可）
+    for (var i = 0; i < 30; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+      final hasReadMode = find
+          .byKey(const Key('basicInfoRead_container_section'))
+          .evaluate()
+          .isNotEmpty;
+      final hasSaveButton = find
+          .byKey(const Key('basicInfoForm_button_save'))
+          .evaluate()
+          .isNotEmpty;
+      if (hasReadMode || hasSaveButton) break;
+    }
+
+    // 読込モードなら編集モードへ切り替え
+    if (find
+        .byKey(const Key('basicInfoRead_container_section'))
+        .evaluate()
+        .isNotEmpty) {
+      await tester
+          .tap(find.byKey(const Key('basicInfoRead_container_section')).first);
+      for (var i = 0; i < 15; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+        if (find
+            .byKey(const Key('basicInfoForm_button_save'))
+            .evaluate()
+            .isNotEmpty) break;
+      }
+    }
+
+    // イベント名を入力（一意な名前でEventListから検索できるようにする）
+    const newEventName = 'TC-BUG-002テスト用イベント';
+    final textFields = find.byType(TextField);
+    if (textFields.evaluate().isNotEmpty) {
+      await tester.tap(textFields.first);
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(textFields.first, newEventName);
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+
+    // 保存ボタンをスクロールして表示 → タップ
+    for (var i = 0; i < 5; i++) {
+      if (find
+          .byKey(const Key('basicInfoForm_button_save'))
+          .evaluate()
+          .isNotEmpty) break;
+      final listViews = find.byType(ListView);
+      if (listViews.evaluate().isNotEmpty) {
+        await tester.drag(listViews.first, const Offset(0, -400));
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+    }
+    if (find
+        .byKey(const Key('basicInfoForm_button_save'))
+        .evaluate()
+        .isNotEmpty) {
+      await tester
+          .ensureVisible(find.byKey(const Key('basicInfoForm_button_save')));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.byKey(const Key('basicInfoForm_button_save')));
+      // 保存完了（参照モードに戻る）まで待つ
+      for (var i = 0; i < 15; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+        if (find
+            .byKey(const Key('basicInfoRead_container_section'))
+            .evaluate()
+            .isNotEmpty) break;
+      }
+    }
+
     // 戻るボタン（chevron_left）をタップしてEventListに戻る
     final backButton = find.byIcon(Icons.chevron_left);
     await tester.tap(backButton.first);
@@ -190,15 +245,24 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
 
     // EventListに戻っていることを確認
-    expect(find.text('イベント'), findsOneWidget,
-        reason: 'EventListに戻れること');
+    expect(find.text('イベント'), findsOneWidget, reason: 'EventListに戻れること');
 
-    // リスト件数が増えていることを確認
-    final updatedItemCount = getItemCount();
+    // 保存したイベント名をスクロールしながら探す（ListView.builder lazyレンダリング対策）
+    bool newEventFound = false;
+    for (var i = 0; i < 15; i++) {
+      if (find.text(newEventName).evaluate().isNotEmpty) {
+        newEventFound = true;
+        break;
+      }
+      final listView = find.byType(ListView);
+      if (listView.evaluate().isNotEmpty) {
+        await tester.drag(listView.first, const Offset(0, -300));
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+    }
 
-    expect(updatedItemCount, greaterThan(initialItemCount),
+    expect(newEventFound, true,
         reason:
-            '新規イベント作成後にEventListへ戻ったとき、リスト件数が増えていること（バグ修正確認）。'
-            '修正前: $initialItemCount件 → 修正後: $updatedItemCount件');
+            '新規イベント作成後にEventListへ戻ったとき、保存したイベント「$newEventName」が一覧に表示されること（バグ修正確認）');
   });
 }

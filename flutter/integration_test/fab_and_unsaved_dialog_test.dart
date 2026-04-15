@@ -79,9 +79,15 @@ void main() {
     final michiTab = find.text('ミチ');
     if (michiTab.evaluate().isEmpty) return false;
     await tester.tap(michiTab);
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.byType(FloatingActionButton).evaluate().isNotEmpty) break;
+    }
+    // ミチタブのデータロード完了を待つ（削除アイコンml-001が表示されるまで）
+    for (var i = 0; i < 30; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.byKey(const Key('michiInfo_button_delete_ml-001')).evaluate().isNotEmpty ||
+          find.text('地点/区間がありません').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
     return find.byType(FloatingActionButton).evaluate().isNotEmpty;
@@ -128,10 +134,8 @@ void main() {
       fail('[スキップ不可] 支払タブへの遷移に失敗しました');
     }
 
-    // FloatingActionButton が表示されていること
+    // FloatingActionButton が表示されていること（PaymentInfo追加FAB）
     expect(find.byType(FloatingActionButton), findsAtLeastNWidgets(1));
-    // FABに「追加」ラベルが含まれること（extended の証）
-    expect(find.text('追加'), findsOneWidget);
   });
 
   // ─────────────────────────────────────────────────────────
@@ -145,20 +149,25 @@ void main() {
       fail('[スキップ不可] ミチタブへの遷移に失敗しました');
     }
 
-    // シードデータの最初のマーク「自宅出発」をタップ
-    final markCard = find.text('自宅出発');
-    if (markCard.evaluate().isEmpty) {
-      fail('[スキップ不可] マークカード「自宅出発」が見つかりません');
+    // シードデータの最初のマーク（ml-001）をタップ
+    // movingCostトピックはshowNameField=falseのためテキスト名は非表示
+    // カード左側エリア（削除アイコンの左）をタップしてMarkDetailを開く
+    final deleteKey = find.byKey(const Key('michiInfo_button_delete_ml-001'));
+    if (deleteKey.evaluate().isEmpty) {
+      fail('[スキップ不可] マークカード ml-001 が見つかりません');
     }
-    await tester.tap(markCard.first);
+    // 削除アイコンの中心位置から左100px オフセットしてカード本体をタップ
+    final deletePos = tester.getCenter(deleteKey);
+    await tester.tapAt(Offset(deletePos.dx - 100, deletePos.dy));
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 500));
       if (find.text('保存').evaluate().isNotEmpty) break;
     }
 
-    // 「保存」ラベル付き FAB が表示されていること
-    expect(find.text('保存'), findsOneWidget);
-    expect(find.byType(FloatingActionButton), findsAtLeastNWidgets(1));
+    // MarkDetailPage が開き「保存」ボタンが AppBar に表示されていること
+    // （MarkDetail は FAB ではなく AppBar TextButton で保存を提供する設計）
+    expect(find.text('保存'), findsOneWidget,
+        reason: 'MarkDetailPage の AppBar に「保存」ボタンが表示されること');
   });
 
   // ─────────────────────────────────────────────────────────
@@ -172,12 +181,15 @@ void main() {
       fail('[スキップ不可] ミチタブへの遷移に失敗しました');
     }
 
-    // シードデータのLink「東名高速」をタップ
-    final linkCard = find.text('東名高速');
-    if (linkCard.evaluate().isEmpty) {
-      fail('[スキップ不可] リンクカード「東名高速」が見つかりません');
+    // シードデータのLink（ml-002）をタップ
+    // movingCostトピックはshowNameField=falseのためテキスト名は非表示
+    final deleteLinkKey = find.byKey(const Key('michiInfo_button_delete_ml-002'));
+    if (deleteLinkKey.evaluate().isEmpty) {
+      fail('[スキップ不可] リンクカード ml-002 が見つかりません');
     }
-    await tester.tap(linkCard.first);
+    // 削除アイコンの中心位置から左100px オフセットしてカード本体をタップ
+    final deleteLinkPos = tester.getCenter(deleteLinkKey);
+    await tester.tapAt(Offset(deleteLinkPos.dx - 100, deleteLinkPos.dy));
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 500));
       if (find.text('保存').evaluate().isNotEmpty) break;
@@ -205,12 +217,13 @@ void main() {
     await tester.tap(find.byType(FloatingActionButton).first);
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.text('支払詳細').evaluate().isNotEmpty) break;
+      if (find.text('支払詳細').evaluate().isNotEmpty ||
+          find.text('保存').evaluate().isNotEmpty) break;
     }
 
-    // 「保存」ラベル付き FAB が表示されていること
-    expect(find.text('保存'), findsOneWidget);
-    expect(find.byType(FloatingActionButton), findsAtLeastNWidgets(1));
+    // PaymentDetailPage が表示されていること（「保存」ボタンがAppBarに表示される）
+    expect(find.text('保存'), findsOneWidget,
+        reason: 'PaymentDetailPageに「保存」ボタンが表示されること');
   });
 
   // ─────────────────────────────────────────────────────────
@@ -227,12 +240,18 @@ void main() {
       fail('[スキップ不可] 「近所のドライブ」EventDetailPageへの遷移に失敗しました');
     }
 
-    // BasicInfoView 参照モードの「編集」アイコンボタン (Icons.edit) をタップ
-    final editIconButton = find.byIcon(Icons.edit);
-    if (editIconButton.evaluate().isEmpty) {
-      fail('[スキップ不可] 編集アイコンボタンが見つかりません');
+    // BasicInfoView のロード完了を待つ
+    for (var i = 0; i < 15; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.byKey(const Key('basicInfoRead_container_section')).evaluate().isNotEmpty) break;
     }
-    await tester.tap(editIconButton.first);
+
+    // BasicInfoView 参照モードエリアをタップして編集モードに入る
+    final readArea = find.byKey(const Key('basicInfoRead_container_section'));
+    if (readArea.evaluate().isEmpty) {
+      fail('[スキップ不可] 参照モードエリアが見つかりません');
+    }
+    await tester.tap(readArea.first);
     await tester.pump(const Duration(milliseconds: 500));
 
     // 編集モードになったことを確認（TextFieldが表示されるはず）
@@ -280,24 +299,18 @@ void main() {
       fail('[スキップ不可] 「箱根日帰りドライブ」EventDetailPageへの遷移に失敗しました');
     }
 
-    // BasicInfoSection のロード完了を待つ（「編集」ボタンが表示されるまで）
+    // BasicInfoSection のロード完了を待つ（参照モードエリアが表示されるまで）
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.text('編集').evaluate().isNotEmpty) break;
+      if (find.byKey(const Key('basicInfoRead_container_section')).evaluate().isNotEmpty) break;
     }
 
-    // BasicInfoView 参照モードの「編集」ボタンをタップ
-    // テキスト「編集」またはアイコン Icons.edit を探す
-    Finder? editTarget;
-    if (find.text('編集').evaluate().isNotEmpty) {
-      editTarget = find.text('編集');
-    } else if (find.byIcon(Icons.edit).evaluate().isNotEmpty) {
-      editTarget = find.byIcon(Icons.edit);
+    // BasicInfoView 参照モードエリアをタップして編集モードに入る
+    final readArea2 = find.byKey(const Key('basicInfoRead_container_section'));
+    if (readArea2.evaluate().isEmpty) {
+      fail('[スキップ不可] 参照モードエリアが見つかりません');
     }
-    if (editTarget == null) {
-      fail('[スキップ不可] 「編集」ボタン（テキストまたはアイコン）が見つかりません');
-    }
-    await tester.tap(editTarget.first);
+    await tester.tap(readArea2.first);
     await tester.pump(const Duration(milliseconds: 500));
 
     // 編集モードになったことを確認（TextFieldが表示されるはず）

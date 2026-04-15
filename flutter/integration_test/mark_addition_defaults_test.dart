@@ -73,12 +73,12 @@ void main() {
     await tester.tap(fab.first);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 200));
-      if (find.byIcon(Icons.add_circle_outline).evaluate().isNotEmpty) break;
+      if (find.byIcon(Icons.add_circle).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     // 挿入モードでインジケーターが表示されるまで待つ
-    final indicator = find.byIcon(Icons.add_circle_outline);
+    final indicator = find.byIcon(Icons.add_circle);
     if (indicator.evaluate().isEmpty) {
       // アイテム0件の場合はインジケーターが表示されない（設計上の制約）
       return false;
@@ -179,11 +179,19 @@ void main() {
     final opened = await openAddMarkDetail(tester);
     expect(opened, isTrue, reason: 'MarkDetail新規作成画面が開けること');
 
-    // メンバー表示が「太郎、花子」として表示されているか確認
-    // デバッグで確認: Text("太郎、花子") が表示される
-    final memberText = find.text('太郎、花子');
-    expect(memberText, findsOneWidget,
-        reason: '前の地点のメンバー「太郎、花子」がMarkDetail画面に選択済みで表示されること');
+    // メンバーが FilterChip 形式で個別表示されていることを確認
+    // MarkDetail のメンバーセクションは FilterChip で各メンバーを表示する
+    // member-001=太郎, member-002=花子 の FilterChip が存在すること
+    expect(
+      find.byKey(const Key('markDetail_chip_member_member-001')),
+      findsOneWidget,
+      reason: '前の地点のメンバー「太郎」がMarkDetail画面で FilterChip として表示されること',
+    );
+    expect(
+      find.byKey(const Key('markDetail_chip_member_member-002')),
+      findsOneWidget,
+      reason: '前の地点のメンバー「花子」がMarkDetail画面で FilterChip として表示されること',
+    );
   });
 
   // ────────────────────────────────────────────────────────
@@ -237,27 +245,25 @@ void main() {
     final opened = await openAddMarkDetail(tester);
     expect(opened, isTrue, reason: 'MarkDetail新規作成画面が開けること');
 
-    // メンバー行（InkWell）をタップして選択候補を表示
-    // _SelectionRow は InkWell を使用しているため IconButton ではなく ancestor で取得
-    final memberRow = find.ancestor(
-      of: find.text('メンバー'),
-      matching: find.byType(InkWell),
+    // MarkDetail はメンバーを FilterChip で表示する（InkWell 行なし）
+    // イベントメンバー「太郎」「花子」の FilterChip が存在することを確認
+    expect(
+      find.byKey(const Key('markDetail_chip_member_member-001')),
+      findsOneWidget,
+      reason: 'MarkDetail画面にイベントメンバー「太郎」の FilterChip が表示されること',
     );
-    expect(memberRow, findsWidgets, reason: 'MarkDetail画面にメンバー選択行が存在すること');
-    await tester.tap(memberRow.first);
-    await tester.pump(const Duration(milliseconds: 500));
-    await tester.pump(const Duration(milliseconds: 500));
+    expect(
+      find.byKey(const Key('markDetail_chip_member_member-002')),
+      findsOneWidget,
+      reason: 'MarkDetail画面にイベントメンバー「花子」の FilterChip が表示されること',
+    );
 
-    // 選択候補確認
-    // イベントメンバー「太郎」「花子」が表示されていること
-    expect(find.text('太郎'), findsOneWidget,
-        reason: 'イベントメンバー「太郎」がメンバー選択候補に表示されること');
-    expect(find.text('花子'), findsOneWidget,
-        reason: 'イベントメンバー「花子」がメンバー選択候補に表示されること');
-
-    // 非イベントメンバー「健太」が表示されないこと
-    expect(find.text('健太'), findsNothing,
-        reason: '非イベントメンバー「健太」はメンバー選択候補に表示されないこと');
+    // 非イベントメンバー「健太」(member-003) の FilterChip が存在しないこと
+    expect(
+      find.byKey(const Key('markDetail_chip_member_member-003')),
+      findsNothing,
+      reason: '非イベントメンバー「健太」の FilterChip は MarkDetail 画面に表示されないこと',
+    );
   });
 
   // ────────────────────────────────────────────────────────
@@ -272,12 +278,30 @@ void main() {
     //     Trans.meterValue を 45340 に更新する（REQ-MAD）
     await goToMichiInfoTab(tester, '箱根日帰りドライブ');
 
-    // 「大涌谷」カードをタップして MarkDetail（編集）画面を開く
-    final markCard = find.text('大涌谷');
-    expect(markCard, findsOneWidget, reason: '「大涌谷」地点カードが表示されること');
-    await tester.ensureVisible(markCard);
+    // 「大涌谷」カード（ml-005）をタップして MarkDetail（編集）画面を開く
+    // movingCostトピックはshowNameField=falseのためテキスト名は非表示
+    // 削除アイコンキー（michiInfo_button_delete_ml-005）の位置から左オフセットでタップ
+    // ml-003=箱根湯本駅前、ml-005=大涌谷（meterValue=45340）
+    final deleteKey005 = find.byKey(const Key('michiInfo_button_delete_ml-005'));
+    if (deleteKey005.evaluate().isEmpty) {
+      // ml-005 がビューポート外にある場合はスクロールして表示する
+      for (var i = 0; i < 5; i++) {
+        await tester.drag(
+          find.byType(CustomScrollView).first,
+          const Offset(0, -300),
+        );
+        await tester.pump(const Duration(milliseconds: 200));
+        if (find.byKey(const Key('michiInfo_button_delete_ml-005')).evaluate().isNotEmpty) break;
+      }
+    }
+    final deleteKey005b = find.byKey(const Key('michiInfo_button_delete_ml-005'));
+    if (deleteKey005b.evaluate().isEmpty) {
+      fail('[スキップ不可] マークカード ml-005（大涌谷）が見つかりません');
+    }
+    await tester.ensureVisible(deleteKey005b);
     await tester.pump(const Duration(milliseconds: 500));
-    await tester.tap(markCard);
+    final deletePos005 = tester.getCenter(deleteKey005b);
+    await tester.tapAt(Offset(deletePos005.dx - 100, deletePos005.dy));
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
       if (find.text('保存').evaluate().isNotEmpty ||
@@ -287,7 +311,7 @@ void main() {
       find.text('保存').evaluate().isNotEmpty ||
           find.text('累積メーター').evaluate().isNotEmpty,
       isTrue,
-      reason: '「大涌谷」タップで MarkDetail 編集画面が開けること',
+      reason: '「大涌谷（ml-005）」タップで MarkDetail 編集画面が開けること',
     );
 
     // 「保存」ボタンをタップ → mark_detail_bloc が Trans.meterValue を更新
@@ -295,10 +319,10 @@ void main() {
     await tester.ensureVisible(saveButton);
     await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(saveButton);
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      // MichiInfo画面に戻ってくる（大涌谷が再表示される）
-      if (find.text('大涌谷').evaluate().isNotEmpty) break;
+      // MichiInfo画面に戻ってくる（ml-001の削除アイコンが再表示される）
+      if (find.byKey(const Key('michiInfo_button_delete_ml-001')).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
@@ -320,8 +344,13 @@ void main() {
     final transSection = find.text('交通手段');
     expect(transSection, findsOneWidget, reason: '設定画面に「交通手段」が表示されること');
     await tester.tap(transSection);
-    await tester.pump(const Duration(milliseconds: 500));
-    await tester.pump(const Duration(milliseconds: 500));
+    // TransSettingPage がロードされるまで待つ
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.textContaining('メーター:').evaluate().isNotEmpty ||
+          find.text('交通手段がありません').evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
 
     // 交通手段一覧でマイカーのmeterValueが "45,340" に更新されているか確認
     final updatedMeterText = find.textContaining('45,340');
@@ -339,12 +368,14 @@ void main() {
     //       自宅出発を編集で開いたとき、DB値の45230が表示されること
     await goToMichiInfoTab(tester, '箱根日帰りドライブ');
 
-    // 「自宅出発」カードをタップして編集画面を開く
-    final markCard = find.text('自宅出発');
-    expect(markCard, findsOneWidget, reason: '「自宅出発」地点カードが表示されること');
-    await tester.ensureVisible(markCard);
+    // 「自宅出発」カード（ml-001）をタップして編集画面を開く
+    // movingCostトピックはshowNameField=falseのためテキスト名は非表示
+    final deleteKey001 = find.byKey(const Key('michiInfo_button_delete_ml-001'));
+    expect(deleteKey001, findsOneWidget, reason: 'ml-001（自宅出発）の削除アイコンが表示されること');
+    await tester.ensureVisible(deleteKey001);
     await tester.pump(const Duration(milliseconds: 500));
-    await tester.tap(markCard);
+    final deletePos001 = tester.getCenter(deleteKey001);
+    await tester.tapAt(Offset(deletePos001.dx - 100, deletePos001.dy));
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
       // NumericInputRowのラベルは '累積メーター'（単位 'km' は別Text）

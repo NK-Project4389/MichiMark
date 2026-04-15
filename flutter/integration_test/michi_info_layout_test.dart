@@ -59,7 +59,18 @@ void main() {
     final michiTab = find.text('ミチ');
     if (michiTab.evaluate().isEmpty) return false;
     await tester.tap(michiTab);
-    await tester.pump(const Duration(milliseconds: 500));
+    for (var i = 0; i < 15; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.byType(FloatingActionButton).evaluate().isNotEmpty) break;
+    }
+    for (var i = 0; i < 15; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      // movingCostトピックはshowNameField=falseのためテキスト名は非表示
+      // ml-001の削除アイコンキーで表示確認
+      if (find.byKey(const Key('michiInfo_button_delete_ml-001')).evaluate().isNotEmpty ||
+          find.text('地点/区間がありません').evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
 
     return true;
   }
@@ -86,7 +97,17 @@ void main() {
     final michiTab = find.text('ミチ');
     if (michiTab.evaluate().isEmpty) return false;
     await tester.tap(michiTab);
-    await tester.pump(const Duration(milliseconds: 500));
+    for (var i = 0; i < 15; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.byType(FloatingActionButton).evaluate().isNotEmpty) break;
+    }
+    for (var i = 0; i < 15; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.text('自宅出発').evaluate().isNotEmpty ||
+          find.text('地点/区間がありません').evaluate().isNotEmpty ||
+          find.byType(ListView).evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
 
     return true;
   }
@@ -113,12 +134,13 @@ void main() {
           reason: '空リスト時もFABが表示されること');
     } else {
       // v3.0: 凡例文言が「Mark間合計」「区間距離（Link）」に更新されている
-      // Mark行（自宅出発）が表示されていること
-      expect(find.text('自宅出発'), findsOneWidget,
-          reason: 'Mark行「自宅出発」が表示されること');
-      // Link行（東名高速）が表示されていること
-      expect(find.text('東名高速'), findsOneWidget,
-          reason: 'Link行「東名高速」が表示されること');
+      // Mark行（ml-001: 自宅出発）が存在すること
+      // movingCostトピックはshowNameField=falseのためテキスト名は非表示。削除アイコンキーで確認
+      expect(find.byKey(const Key('michiInfo_button_delete_ml-001')), findsOneWidget,
+          reason: 'Mark行（ml-001）が表示されること');
+      // Link行（ml-002: 東名高速）が存在すること
+      expect(find.byKey(const Key('michiInfo_button_delete_ml-002')), findsOneWidget,
+          reason: 'Link行（ml-002）が表示されること');
       // 凡例が表示されていること（v3.0文言）
       final hasV3Legend =
           find.text('Mark間合計').evaluate().isNotEmpty ||
@@ -410,15 +432,16 @@ void main() {
       return;
     }
 
-    // Mark行（自宅出発）とLink行（東名高速）が存在することを確認
-    expect(find.text('自宅出発'), findsOneWidget,
-        reason: 'Mark行「自宅出発」が表示されていること');
-    expect(find.text('東名高速'), findsOneWidget,
-        reason: 'Link行「東名高速」が表示されていること');
+    // Mark行（ml-001: 自宅出発）とLink行（ml-002: 東名高速）が存在することを確認
+    // movingCostトピックはshowNameField=falseのためテキスト名は非表示。削除アイコンキーで確認
+    expect(find.byKey(const Key('michiInfo_button_delete_ml-001')), findsOneWidget,
+        reason: 'Mark行（ml-001）が表示されていること');
+    expect(find.byKey(const Key('michiInfo_button_delete_ml-002')), findsOneWidget,
+        reason: 'Link行（ml-002）が表示されていること');
 
-    // Mark行のRenderBoxの右端位置を取得
-    final markFinder = find.text('自宅出発');
-    final linkFinder = find.text('東名高速');
+    // Mark行のRenderBoxの右端位置を取得（削除アイコンコンテナのRenderBoxを使用）
+    final markFinder = find.byKey(const Key('michiInfo_button_delete_ml-001'));
+    final linkFinder = find.byKey(const Key('michiInfo_button_delete_ml-002'));
 
     final markElement = markFinder.evaluate().first;
     final linkElement = linkFinder.evaluate().first;
@@ -481,15 +504,16 @@ void main() {
       return;
     }
 
-    // 東名高速（distanceValue: 85）が表示されていること
-    final linkFinder = find.text('東名高速');
-    if (linkFinder.evaluate().isEmpty) {
-      markTestSkipped('TS-10: Link「東名高速」が見つからない');
+    // ml-002（東名高速 / distanceValue: 85）が表示されていること
+    // movingCostトピックはshowNameField=falseのためテキスト名は非表示。削除アイコンキーで確認
+    final linkKey = find.byKey(const Key('michiInfo_button_delete_ml-002'));
+    if (linkKey.evaluate().isEmpty) {
+      markTestSkipped('TS-10: Link行（ml-002）が見つからない');
       return;
     }
 
-    expect(linkFinder, findsOneWidget,
-        reason: 'Link行「東名高速」が表示されていること');
+    expect(linkKey, findsOneWidget,
+        reason: 'Link行（ml-002: 東名高速）が表示されていること');
 
     // 区間距離テキスト（km含む）が表示されていること
     // 85km → 表示フォーマットによっては「85km」「85 km」「0.085km」等
@@ -552,24 +576,24 @@ void main() {
     }
 
     // 5アイテム全て（Mark×3 + Link×2）が表示されていること
-    expect(find.text('自宅出発'), findsOneWidget,
-        reason: 'Mark行「自宅出発」が表示されていること');
-    expect(find.text('東名高速'), findsOneWidget,
-        reason: 'Link行「東名高速」が表示されていること');
-    expect(find.text('箱根湯本駅前'), findsOneWidget,
-        reason: 'Mark行「箱根湯本駅前」が表示されていること');
+    // movingCostトピックはshowNameField=falseのためテキスト名は非表示。削除アイコンキーで確認
+    expect(find.byKey(const Key('michiInfo_button_delete_ml-001')), findsOneWidget,
+        reason: 'Mark行（ml-001: 自宅出発）が表示されていること');
+    expect(find.byKey(const Key('michiInfo_button_delete_ml-002')), findsOneWidget,
+        reason: 'Link行（ml-002: 東名高速）が表示されていること');
+    expect(find.byKey(const Key('michiInfo_button_delete_ml-003')), findsOneWidget,
+        reason: 'Mark行（ml-003: 箱根湯本駅前）が表示されていること');
 
-    // 芦ノ湖スカイラインはスクロールが必要な場合があるため存在確認のみ
-    // ListView.builderのlazy renderingに対応してスクロール確認
-    final ashikoText = find.text('芦ノ湖スカイライン');
+    // ml-004（芦ノ湖スカイライン）はスクロールが必要な場合があるため存在確認のみ
+    final ashikoKey = find.byKey(const Key('michiInfo_button_delete_ml-004'));
 
     // スクロールして確認
-    if (ashikoText.evaluate().isEmpty) {
+    if (ashikoKey.evaluate().isEmpty) {
       for (var i = 0; i < 5; i++) {
         await tester.drag(
             find.byType(CustomScrollView).first, const Offset(0, -200));
         await tester.pump(const Duration(milliseconds: 200));
-        if (ashikoText.evaluate().isNotEmpty) break;
+        if (ashikoKey.evaluate().isNotEmpty) break;
       }
     }
 
@@ -602,10 +626,11 @@ void main() {
         reason: 'CustomPaint（_MichiTimelinePainter）が描画されていること');
 
     // Mark行・Link行が表示されていること
-    expect(find.text('自宅出発'), findsOneWidget,
-        reason: 'Mark行が表示されていること');
-    expect(find.text('東名高速'), findsOneWidget,
-        reason: 'Link行が表示されていること');
+    // movingCostトピックはshowNameField=falseのためテキスト名は非表示。削除アイコンキーで確認
+    expect(find.byKey(const Key('michiInfo_button_delete_ml-001')), findsOneWidget,
+        reason: 'Mark行（ml-001）が表示されていること');
+    expect(find.byKey(const Key('michiInfo_button_delete_ml-002')), findsOneWidget,
+        reason: 'Link行（ml-002）が表示されていること');
 
     // 注意: 三角ポインター廃止・罫線接続はCustomPainterの描画内容のため、
     // Integration Testではピクセル比較が必要。本テストはビジュアル要素の存在確認のみ。
@@ -630,8 +655,9 @@ void main() {
     }
 
     // スクロール前の状態確認
-    expect(find.text('自宅出発'), findsOneWidget,
-        reason: 'スクロール前: Mark行「自宅出発」が表示されていること');
+    // movingCostトピックはshowNameField=falseのためテキスト名は非表示。削除アイコンキーで確認
+    expect(find.byKey(const Key('michiInfo_button_delete_ml-001')), findsOneWidget,
+        reason: 'スクロール前: Mark行（ml-001）が表示されていること');
 
     // CustomScrollViewを探してスクロール
     final scrollView = find.byType(CustomScrollView);
@@ -645,9 +671,11 @@ void main() {
       // （スパン矢印の距離テキストが消えていないことを確認）
       final kmTextsAfterScroll = find.textContaining('km');
       // km テキストが残っているか、またはスクロールで新しいアイテムが表示されたことを確認
-      final hasVisibleItems = find.text('箱根湯本駅前').evaluate().isNotEmpty ||
-          find.text('芦ノ湖スカイライン').evaluate().isNotEmpty ||
-          find.text('大涌谷').evaluate().isNotEmpty;
+      // movingCostはshowNameField=falseのためテキスト名は非表示。削除アイコンキーで確認
+      final hasVisibleItems =
+          find.byKey(const Key('michiInfo_button_delete_ml-003')).evaluate().isNotEmpty ||
+          find.byKey(const Key('michiInfo_button_delete_ml-004')).evaluate().isNotEmpty ||
+          find.byKey(const Key('michiInfo_button_delete_ml-005')).evaluate().isNotEmpty;
 
       expect(hasVisibleItems || kmTextsAfterScroll.evaluate().isNotEmpty, isTrue,
           reason: 'スクロール後もタイムラインアイテムまたは距離テキストが表示されていること');
@@ -693,19 +721,20 @@ void main() {
     // _MarkActionButtonsが表示される可能性がある
     // アクションボタンが存在する場合、Markカードの下にボタン行が表示されること
 
-    // 自宅出発Mark（actions: [写真撮影]）が表示されていること
-    expect(find.text('自宅出発'), findsOneWidget,
-        reason: 'アクション付きMark行「自宅出発」が表示されていること');
+    // ml-001（自宅出発 / actions: [写真撮影]）が表示されていること
+    // movingCostトピックはshowNameField=falseのためテキスト名は非表示。削除アイコンキーで確認
+    expect(find.byKey(const Key('michiInfo_button_delete_ml-001')), findsOneWidget,
+        reason: 'アクション付きMark行（ml-001）が表示されていること');
 
-    // 大涌谷Mark（actions: [観光, 食事, 買い物]）をスクロールして確認
-    final okutamaFinder = find.text('大涌谷');
-    if (okutamaFinder.evaluate().isEmpty) {
+    // ml-005（大涌谷 / actions: [観光, 食事, 買い物]）をスクロールして確認
+    final okutamaKey = find.byKey(const Key('michiInfo_button_delete_ml-005'));
+    if (okutamaKey.evaluate().isEmpty) {
       final scrollView = find.byType(CustomScrollView);
       if (scrollView.evaluate().isNotEmpty) {
         for (var i = 0; i < 5; i++) {
           await tester.drag(scrollView.first, const Offset(0, -200));
           await tester.pump(const Duration(milliseconds: 200));
-          if (find.text('大涌谷').evaluate().isNotEmpty) break;
+          if (find.byKey(const Key('michiInfo_button_delete_ml-005')).evaluate().isNotEmpty) break;
         }
       }
     }
@@ -745,10 +774,11 @@ void main() {
         reason: 'Mark行・Link行それぞれにCustomPaint（_MichiTimelinePainter）が存在すること（複数行）');
 
     // Mark行・Link行ともに表示されていること
-    expect(find.text('自宅出発'), findsOneWidget,
-        reason: 'Mark行が表示されていること');
-    expect(find.text('東名高速'), findsOneWidget,
-        reason: 'Link行が表示されていること');
+    // movingCostトピックはshowNameField=falseのためテキスト名は非表示。削除アイコンキーで確認
+    expect(find.byKey(const Key('michiInfo_button_delete_ml-001')), findsOneWidget,
+        reason: 'Mark行（ml-001）が表示されていること');
+    expect(find.byKey(const Key('michiInfo_button_delete_ml-002')), findsOneWidget,
+        reason: 'Link行（ml-002）が表示されていること');
 
     // 注意: 罫線接続（三角ポインターなし）の確認は CustomPainter の描画内容のため、
     // Integration Test ではピクセルレベルの描画確認が必要。

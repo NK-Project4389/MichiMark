@@ -65,8 +65,8 @@ void main() {
     await tester.tap(find.byType(FloatingActionButton));
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 200));
-      // InsertMode 中はインジケーター (insert_indicator_top) が表示される
-      if (find.byKey(const Key('insert_indicator_top')).evaluate().isNotEmpty) {
+      // InsertMode 中はインジケーター (michiInfo_button_insertIndicator_head) が表示される
+      if (find.byKey(const Key('michiInfo_button_insertIndicator_head')).evaluate().isNotEmpty) {
         break;
       }
     }
@@ -113,9 +113,9 @@ void main() {
     // ── Step 3: FAB をタップして追加モードに入る ──
     await enterInsertMode(tester);
 
-    // 追加モード中はインジケーター（insert_indicator_top）が表示されること
+    // 追加モード中はインジケーター（michiInfo_button_insertIndicator_head）が表示されること
     expect(
-      find.byKey(const Key('insert_indicator_top')),
+      find.byKey(const Key('michiInfo_button_insertIndicator_head')),
       findsOneWidget,
       reason: '追加モード中に先頭インジケーターが表示されること',
     );
@@ -144,9 +144,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     // ── Step 6: 追加モードが終了していることを確認 ──
-    // 追加モードが終了している場合、insert_indicator_top は非表示になる
+    // 追加モードが終了している場合、michiInfo_button_insertIndicator_head は非表示になる
     expect(
-      find.byKey(const Key('insert_indicator_top')),
+      find.byKey(const Key('michiInfo_button_insertIndicator_head')),
       findsNothing,
       reason: 'ミチタブに戻った後は追加モードが終了していること（インジケーターが非表示）',
     );
@@ -195,7 +195,7 @@ void main() {
 
     // 追加モード中はインジケーターが表示されること
     expect(
-      find.byKey(const Key('insert_indicator_top')),
+      find.byKey(const Key('michiInfo_button_insertIndicator_head')),
       findsOneWidget,
       reason: '追加モード中に先頭インジケーターが表示されること',
     );
@@ -221,7 +221,7 @@ void main() {
 
     // 追加モードが終了していることを確認（インジケーター非表示）
     expect(
-      find.byKey(const Key('insert_indicator_top')),
+      find.byKey(const Key('michiInfo_button_insertIndicator_head')),
       findsNothing,
       reason: '支払タブ切り替え後にミチタブへ戻ると追加モードが終了していること',
     );

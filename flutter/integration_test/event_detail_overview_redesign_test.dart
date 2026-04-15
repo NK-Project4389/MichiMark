@@ -53,10 +53,10 @@ void main() {
       if (find.text('概要').evaluate().isNotEmpty ||
           find.text('ミチ').evaluate().isNotEmpty) break;
     }
-    // BasicInfoSection のロード完了を待つ（「編集」ボタンが表示されるまで）
+    // BasicInfoSection のロード完了を待つ（「タップして編集」ヒントが表示されるまで）
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byIcon(Icons.edit).evaluate().isNotEmpty) break;
+      if (find.text('タップして編集').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
     return true;
@@ -109,8 +109,8 @@ void main() {
       return;
     }
 
-    // 「編集」ボタンが表示されること
-    expect(find.byIcon(Icons.edit), findsOneWidget, reason: '参照モードで編集アイコンボタンが表示されること');
+    // 参照モードで「タップして編集」ヒントが表示されること
+    expect(find.text('タップして編集'), findsOneWidget, reason: '参照モードで「タップして編集」ヒントが表示されること');
     // 「保存」ボタンが表示されないこと
     expect(find.text('保存'), findsNothing, reason: '参照モードで「保存」ボタンが表示されないこと');
   });
@@ -132,16 +132,16 @@ void main() {
       return;
     }
 
-    // 「編集」ボタンをタップ
-    final editButton = find.byIcon(Icons.edit);
-    expect(editButton, findsOneWidget, reason: '編集アイコンボタンが存在すること');
-    await tester.tap(editButton);
+    // BasicInfoView の参照モードエリア（GestureDetector）をタップして編集モードに入る
+    final readArea = find.byKey(const Key('basicInfoRead_container_section'));
+    expect(readArea, findsOneWidget, reason: '参照モードエリア（basicInfoRead_container_section）が存在すること');
+    await tester.tap(readArea);
     for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
 
     // 「保存」ボタンに切り替わること
     expect(find.text('保存'), findsOneWidget, reason: '「保存」ボタンが表示されること');
-    // 「編集」アイコンボタンが消えること
-    expect(find.byIcon(Icons.edit), findsNothing, reason: '編集アイコンボタンが非表示になること');
+    // 「キャンセル」ボタンが表示されること（編集モードに切り替わったことの確認）
+    expect(find.text('キャンセル'), findsOneWidget, reason: '「キャンセル」ボタンが表示されること');
     // TextField（入力フォーム）が表示されること
     expect(find.byType(TextField), findsWidgets, reason: '編集モードで入力フォームが表示されること');
   });
@@ -163,8 +163,8 @@ void main() {
       return;
     }
 
-    // 「編集」アイコンをタップ
-    await tester.tap(find.byIcon(Icons.edit).first);
+    // BasicInfoView の参照モードエリアをタップして編集モードに入る
+    await tester.tap(find.byKey(const Key('basicInfoRead_container_section')));
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.byType(TextField).evaluate().isNotEmpty) break;
@@ -185,15 +185,15 @@ void main() {
     }
     await tester.tap(saveButton);
 
-    // 保存完了を待つ（編集アイコンが再表示されるまで）
+    // 保存完了を待つ（「タップして編集」ヒントが再表示されるまで）
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byIcon(Icons.edit).evaluate().isNotEmpty) break;
+      if (find.text('タップして編集').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     // 参照モードに戻ること
-    expect(find.byIcon(Icons.edit), findsOneWidget, reason: '保存後に参照モード（編集アイコン）に戻ること');
+    expect(find.text('タップして編集'), findsOneWidget, reason: '保存後に参照モード（「タップして編集」ヒント）に戻ること');
     expect(find.text('保存'), findsNothing, reason: '保存後に「保存」ボタンが非表示になること');
 
     // 変更後のイベント名が表示されること
@@ -201,7 +201,7 @@ void main() {
         reason: '変更後のイベント名が表示されること');
 
     // テストデータを元に戻す
-    await tester.tap(find.byIcon(Icons.edit).first);
+    await tester.tap(find.byKey(const Key('basicInfoRead_container_section')));
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.byType(TextField).evaluate().isNotEmpty) break;
@@ -219,7 +219,7 @@ void main() {
       // 保存完了まで最大 15秒待機
       for (var i = 0; i < 50; i++) {
         await tester.pump(const Duration(milliseconds: 300));
-        if (find.byIcon(Icons.edit).evaluate().isNotEmpty) break;
+        if (find.text('タップして編集').evaluate().isNotEmpty) break;
       }
     }
   });
@@ -268,8 +268,8 @@ void main() {
       return;
     }
 
-    // 「編集」ボタンをタップ
-    await tester.tap(find.byIcon(Icons.edit).first);
+    // BasicInfoView の参照モードエリアをタップして編集モードに入る
+    await tester.tap(find.byKey(const Key('basicInfoRead_container_section')));
     for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
 
     // 「ミチ」タブをタップ
@@ -300,8 +300,8 @@ void main() {
       return;
     }
 
-    // 編集モードに入る
-    await tester.tap(find.byIcon(Icons.edit).first);
+    // BasicInfoView の参照モードエリアをタップして編集モードに入る
+    await tester.tap(find.byKey(const Key('basicInfoRead_container_section')));
     for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
 
     // 「ミチ」タブをタップしてアラートを出す
@@ -342,8 +342,8 @@ void main() {
       return;
     }
 
-    // 編集モードに入りイベント名を変更
-    await tester.tap(find.byIcon(Icons.edit).first);
+    // BasicInfoView の参照モードエリアをタップして編集モードに入り、イベント名を変更
+    await tester.tap(find.byKey(const Key('basicInfoRead_container_section')));
     for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
     await tester.enterText(find.byType(TextField).first, '変更テスト用イベント名');
     await tester.pump(const Duration(milliseconds: 300));
@@ -391,8 +391,8 @@ void main() {
       return;
     }
 
-    // 編集モードに入る
-    await tester.tap(find.byIcon(Icons.edit).first);
+    // BasicInfoView の参照モードエリアをタップして編集モードに入る
+    await tester.tap(find.byKey(const Key('basicInfoRead_container_section')));
     for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
 
     // 「ミチ」タブをタップしてアラートを出す

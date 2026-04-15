@@ -115,19 +115,19 @@ void main() {
     await tester.tap(find.byType(FloatingActionButton));
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 200));
-      if (find.byIcon(Icons.add_circle_outline).evaluate().isNotEmpty) break;
+      if (find.byIcon(Icons.add_circle).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     // InsertMode になりインジケーター（add_circle_outline）が表示されること
     expect(
-      find.byIcon(Icons.add_circle_outline),
+      find.byIcon(Icons.add_circle),
       findsWidgets,
       reason: 'InsertMode中にインジケーターが表示されること',
     );
 
     // インジケーターをタップ → BottomSheetが表示される
-    await tester.tap(find.byIcon(Icons.add_circle_outline).first);
+    await tester.tap(find.byIcon(Icons.add_circle).first);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 200));
       if (find.text('地点を追加').evaluate().isNotEmpty) break;
@@ -148,9 +148,9 @@ void main() {
   });
 
   // ────────────────────────────────────────────────────────
-  // TC-MAB-002: travelExpense FABタップでInsertMode→インジケータータップでBottomSheet（地点のみ）
+  // TC-MAB-002: travelExpense FABタップでInsertMode→インジケータータップでMarkDetail直接遷移
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-MAB-002: travelExpenseイベントのFABタップでInsertMode→インジケータータップでBottomSheet（地点のみ）',
+  testWidgets('TC-MAB-002: travelExpenseイベントのFABタップでInsertMode→インジケータータップでMarkDetail直接遷移（BottomSheet非表示）',
       (tester) async {
     await startApp(tester);
 
@@ -178,37 +178,44 @@ void main() {
     await tester.tap(find.byType(FloatingActionButton));
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 200));
-      if (find.byIcon(Icons.add_circle_outline).evaluate().isNotEmpty) break;
+      if (find.byIcon(Icons.add_circle).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     // InsertMode になりインジケーターが表示されること
     expect(
-      find.byIcon(Icons.add_circle_outline),
+      find.byIcon(Icons.add_circle),
       findsWidgets,
       reason: 'InsertMode中にインジケーターが表示されること',
     );
 
-    // インジケーターをタップ → BottomSheetが表示される
-    await tester.tap(find.byIcon(Icons.add_circle_outline).first);
-    for (var i = 0; i < 10; i++) {
-      await tester.pump(const Duration(milliseconds: 200));
-      if (find.text('地点を追加').evaluate().isNotEmpty) break;
+    // インジケーターをタップ → BottomSheetを経由せず MarkDetail 画面へ直接遷移する
+    await tester.tap(find.byIcon(Icons.add_circle).first);
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      // MarkDetail 画面が開いたことを「保存」または「名称」テキストで確認
+      if (find.text('保存').evaluate().isNotEmpty ||
+          find.text('名称').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
-    // travelExpense では「区間を追加」が表示されないこと
+    // ボトムシートは表示されないこと（「地点を追加」「区間を追加」が表示されない）
+    expect(
+      find.text('地点を追加'),
+      findsNothing,
+      reason: 'travelExpenseではインジケータータップ後にBottomSheet「地点を追加」が表示されないこと',
+    );
     expect(
       find.text('区間を追加'),
       findsNothing,
-      reason: 'travelExpenseでは「区間を追加」が表示されないこと',
+      reason: 'travelExpenseではインジケータータップ後にBottomSheet「区間を追加」が表示されないこと',
     );
 
-    // 「地点を追加」が表示されること
+    // MarkDetail 画面（地点追加画面）が直接表示されること
     expect(
-      find.text('地点を追加'),
+      find.text('保存'),
       findsOneWidget,
-      reason: 'travelExpenseのBottomSheetに「地点を追加」が表示されること',
+      reason: 'travelExpenseではインジケータータップ後にMarkDetail画面が直接表示されること',
     );
   });
 

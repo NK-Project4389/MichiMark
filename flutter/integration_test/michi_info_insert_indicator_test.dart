@@ -90,9 +90,9 @@ void main() {
     // InsertMode が OFF の状態（FABタップ前）を確認
     // 先頭インジケーターが存在しないこと
     expect(
-      find.byKey(const Key('insert_indicator_top')),
+      find.byKey(const Key('michiInfo_button_insertIndicator_head')),
       findsNothing,
-      reason: 'InsertMode OFF 時は insert_indicator_top が存在しないこと',
+      reason: 'InsertMode OFF 時は michiInfo_button_insertIndicator_head が存在しないこと',
     );
 
     // add_circle アイコン（インジケーター）が画面上に存在しないこと
@@ -116,15 +116,15 @@ void main() {
     await tester.tap(fab);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byKey(const Key('insert_indicator_top')).evaluate().isNotEmpty) break;
+      if (find.byKey(const Key('michiInfo_button_insertIndicator_head')).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
-    // 先頭インジケーター（insert_indicator_top）が表示されること
+    // 先頭インジケーター（michiInfo_button_insertIndicator_head）が表示されること
     expect(
-      find.byKey(const Key('insert_indicator_top')),
+      find.byKey(const Key('michiInfo_button_insertIndicator_head')),
       findsOneWidget,
-      reason: 'InsertMode ON 時は insert_indicator_top が先頭に表示されること',
+      reason: 'InsertMode ON 時は michiInfo_button_insertIndicator_head が先頭に表示されること',
     );
   });
 
@@ -176,12 +176,12 @@ void main() {
     await tester.tap(fab);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byKey(const Key('insert_indicator_top')).evaluate().isNotEmpty) break;
+      if (find.byKey(const Key('michiInfo_button_insertIndicator_head')).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     // 先頭インジケーターが表示されていること
-    final topIndicator = find.byKey(const Key('insert_indicator_top'));
+    final topIndicator = find.byKey(const Key('michiInfo_button_insertIndicator_head'));
     expect(topIndicator, findsOneWidget, reason: '先頭インジケーターが表示されること');
 
     // 先頭インジケーターをタップ
@@ -251,7 +251,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     // カード間インジケーターが存在することを確認
-    // insert_indicator_top 以外のインジケーターを探す
+    // michiInfo_button_insertIndicator_head 以外のインジケーターを探す
     // add_circle アイコンが2件以上存在し、2番目以降がカード間インジケーター
     final allIndicators = find.byIcon(Icons.add_circle);
     expect(

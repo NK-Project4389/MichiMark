@@ -6,8 +6,9 @@
 
 | ロール | シミュレーター | UDID |
 |---|---|---|
-| **shard 0（前半）** | iPhone 16 #1 | `DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6` |
-| **shard 1（後半）** | iPhone 16 #2 (MichiMark) | `21CE8289-283C-40FD-9A1E-43B5439CFF35` |
+| **shard 0（1/3）** | iPhone 16 #1 | `DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6` |
+| **shard 1（2/3）** | iPhone 16 #2 (MichiMark) | `21CE8289-283C-40FD-9A1E-43B5439CFF35` |
+| **shard 2（3/3）** | iPhone 16 #3 (MichiMark) | `B6008734-29AB-4371-9A20-BED4FE322BF4` |
 
 ### NomikaiShare（独立・競合なし）
 
@@ -24,12 +25,15 @@
 # ── 単体テスト実行（ファイル指定・シャード不要）──
 flutter test integration_test/<feature>_test.dart -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6
 
-# ── 全件実行：シャード並行（2ターミナルで同時実行）──
+# ── 全件実行：シャード並行（3ターミナルで同時実行）──
 # ターミナル1
-flutter test integration_test/ -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6 --total-shards=2 --shard-index=0
+flutter test integration_test/ -d DD988F7B-F6D3-47B3-8830-3B2BE0E09FD6 --total-shards=3 --shard-index=0
 
 # ターミナル2
-flutter test integration_test/ -d 21CE8289-283C-40FD-9A1E-43B5439CFF35 --total-shards=2 --shard-index=1
+flutter test integration_test/ -d 21CE8289-283C-40FD-9A1E-43B5439CFF35 --total-shards=3 --shard-index=1
+
+# ターミナル3
+flutter test integration_test/ -d B6008734-29AB-4371-9A20-BED4FE322BF4 --total-shards=3 --shard-index=2
 ```
 
 > ⚠️ **1シミュレーター = 1プロセス厳守**: 同一シミュレーターに複数プロセスを当てない。

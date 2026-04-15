@@ -48,74 +48,74 @@ void main() {
     );
     if (cards.evaluate().isEmpty) return false;
     await tester.tap(cards.first);
+    // EventDetailが表示されるまで待つ（タブバーの「概要」またはchevron_leftで判定）
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.text('概要').evaluate().isNotEmpty) break;
-    }
-    for (var i = 0; i < 10; i++) {
-      await tester.pump(const Duration(milliseconds: 300));
-      if (find.byIcon(Icons.edit).evaluate().isNotEmpty) break;
+      if (find.text('概要').evaluate().isNotEmpty ||
+          find.byIcon(Icons.chevron_left).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
-    final result = find.byIcon(Icons.edit).evaluate().isNotEmpty;
+    final result = find.text('概要').evaluate().isNotEmpty ||
+        find.byIcon(Icons.chevron_left).evaluate().isNotEmpty;
     print('[openEventDetail] 開けた: $result');
     return result;
   }
 
   Future<bool> enterEditMode(WidgetTester tester) async {
-    final editButton = find.byIcon(Icons.edit);
-    if (editButton.evaluate().isEmpty) return false;
-    await tester.tap(editButton);
-    for (var i = 0; i < 10; i++) {
-      await tester.pump(const Duration(milliseconds: 300));
-      if (find.text('キャンセル').evaluate().isNotEmpty) break;
+    // BasicInfoはtap-to-editのため、読込モードのセクションをタップして編集モードへ
+    final readSection =
+        find.byKey(const Key('basicInfoRead_container_section'));
+    if (readSection.evaluate().isEmpty) {
+      // すでに編集モードかもしれないので保存ボタンの有無で判定
+      return find
+          .byKey(const Key('basicInfoForm_button_save'))
+          .evaluate()
+          .isNotEmpty;
     }
-    await tester.pump(const Duration(milliseconds: 300));
-    return find.text('キャンセル').evaluate().isNotEmpty;
-  }
-
-  Future<bool> openTransSelection(WidgetTester tester) async {
-    final transRow = find.ancestor(
-      of: find.text('交通手段'),
-      matching: find.byType(InkWell),
-    );
-    if (transRow.evaluate().isEmpty) return false;
-    await tester.tap(transRow.first);
+    await tester.tap(readSection.first);
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.widgetWithText(TextButton, '確定').evaluate().isNotEmpty) break;
+      if (find
+          .byKey(const Key('basicInfoForm_button_save'))
+          .evaluate()
+          .isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
-    return find.widgetWithText(TextButton, '確定').evaluate().isNotEmpty;
+    return find
+        .byKey(const Key('basicInfoForm_button_save'))
+        .evaluate()
+        .isNotEmpty;
   }
 
+  /// 編集モードで交通手段チップセクションが表示されているか確認する。
+  /// BasicInfo編集モードでは交通手段はFilterChipでインライン表示される（別画面なし）。
+  Future<bool> openTransSelection(WidgetTester tester) async {
+    return find.text('交通手段').evaluate().isNotEmpty;
+  }
+
+  /// 指定交通手段のFilterChipをタップして選択する（確定ボタンは不要）。
   Future<bool> selectTransAndConfirm(WidgetTester tester, String transName) async {
-    final item = find.text(transName);
-    if (item.evaluate().isEmpty) {
-      print('[selectTransAndConfirm] "$transName" が見つかりませんでした');
+    final chip = find.ancestor(
+      of: find.text(transName),
+      matching: find.byType(FilterChip),
+    );
+    if (chip.evaluate().isEmpty) {
+      print('[selectTransAndConfirm] "$transName" のFilterChipが見つかりませんでした');
       return false;
     }
-    await tester.tap(item.first);
-    await tester.pump(const Duration(milliseconds: 300));
-
-    final confirmButton = find.widgetWithText(TextButton, '確定');
-    if (confirmButton.evaluate().isEmpty) return false;
-    await tester.tap(confirmButton.first, warnIfMissed: false);
-    for (var i = 0; i < 15; i++) {
-      await tester.pump(const Duration(milliseconds: 300));
-      if (find.text('キャンセル').evaluate().isNotEmpty) break;
-    }
+    await tester.tap(chip.first);
     await tester.pump(const Duration(milliseconds: 500));
-    return find.text('キャンセル').evaluate().isNotEmpty;
+    return true;
   }
 
-  /// NumericInputRow（key: 'km_per_gas_input_row'）内のTextFieldの値を返す
+  /// NumericInputRow（key: 'numeric_input_tap_燃費'）に表示されているText値を返す。
+  /// NumericInputRowはTextField不使用・GestureDetector+Textで値を表示する設計。
   String? getKmPerGasFieldValue(WidgetTester tester) {
-    final row = find.byKey(const Key('km_per_gas_input_row'));
-    if (row.evaluate().isEmpty) return null;
-    final textFields = find.descendant(of: row, matching: find.byType(TextField));
-    if (textFields.evaluate().isEmpty) return null;
-    return (tester.widget<TextField>(textFields.first)).controller?.text;
+    final tapWidget = find.byKey(const Key('numeric_input_tap_燃費'));
+    if (tapWidget.evaluate().isEmpty) return null;
+    final texts = find.descendant(of: tapWidget, matching: find.byType(Text));
+    if (texts.evaluate().isEmpty) return null;
+    return (tester.widget<Text>(texts.first)).data;
   }
 
   /// 設定から交通手段（kmPerGas=null）を新規作成してイベント一覧に戻る。
@@ -362,16 +362,42 @@ void main() {
       print('[TC-FEU-003] 交通手段選択後の燃費欄: "$kmPerGasAfterSelection"');
       expect(kmPerGasAfterSelection, equals('15.5'));
 
-      final kmPerGasTextField = find.descendant(
-        of: find.byKey(const Key('km_per_gas_input_row')),
-        matching: find.byType(TextField),
-      );
-      await tester.ensureVisible(kmPerGasTextField);
-      await tester.pump(const Duration(milliseconds: 500));
-      await tester.tap(kmPerGasTextField);
+      // NumericInputRowはTextField不使用。GestureDetector(numeric_input_tap_燃費)をタップして
+      // CustomNumericKeypadを開き、'20.0'を入力する
+      final tapWidget = find.byKey(const Key('numeric_input_tap_燃費'));
+      await tester.ensureVisible(tapWidget);
       await tester.pump(const Duration(milliseconds: 300));
-      await tester.enterText(kmPerGasTextField, '20.0');
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.tap(tapWidget);
+      // キーパッドが開くまで待つ
+      for (var i = 0; i < 10; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+        if (find
+            .byKey(const Key('custom_numeric_keypad'))
+            .evaluate()
+            .isNotEmpty) break;
+      }
+      // クリアして '20.0' を入力
+      await tester.tap(find.byKey(const Key('keypad_clear')));
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.tap(find.byKey(const Key('keypad_digit_2')));
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.tap(find.byKey(const Key('keypad_digit_0')));
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.tap(find.byKey(const Key('keypad_dot')));
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.tap(find.byKey(const Key('keypad_digit_0')));
+      await tester.pump(const Duration(milliseconds: 200));
+      // 確認ボタンをタップ
+      await tester.tap(find.byKey(const Key('keypad_confirm')));
+      // キーパッドが閉じるまで待つ
+      for (var i = 0; i < 10; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+        if (find
+            .byKey(const Key('custom_numeric_keypad'))
+            .evaluate()
+            .isEmpty) break;
+      }
+      await tester.pump(const Duration(milliseconds: 300));
 
       final kmPerGasAfterManual = getKmPerGasFieldValue(tester);
       print('[TC-FEU-003] 手動変更後の燃費欄: "$kmPerGasAfterManual"');

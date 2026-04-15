@@ -55,7 +55,7 @@ void main() {
     }
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byIcon(Icons.edit).evaluate().isNotEmpty) break;
+      if (find.text('タップして編集').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
     return true;
@@ -66,17 +66,60 @@ void main() {
     final michiTab = find.text('ミチ');
     if (michiTab.evaluate().isEmpty) return;
     await tester.tap(michiTab);
-    await tester.pump(const Duration(milliseconds: 500));
+    for (var i = 0; i < 15; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.byType(FloatingActionButton).evaluate().isNotEmpty) break;
+    }
+    for (var i = 0; i < 30; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      // movingCost/movingCostEstimatedはshowNameField=falseのためテキスト名は非表示
+      // 削除アイコンキーが表示されればロード完了
+      if (find.byKey(const Key('michiInfo_button_delete_ml-001')).evaluate().isNotEmpty ||
+          find.byKey(const Key('michiInfo_button_delete_ml-009')).evaluate().isNotEmpty ||
+          find.text('地点/区間がありません').evaluate().isNotEmpty) break;
+    }
     await tester.pump(const Duration(milliseconds: 300));
   }
 
-  /// 既存 Mark をタップして MarkDetail を開く。
-  /// markName に一致するテキストを含む行をタップする。
+  /// 既存 Mark/Link を削除アイコンキーから左オフセットでタップして Detail を開く。
+  /// markLinkId: MarkLinkDomain の id (例: 'ml-001')
+  Future<bool> openMarkLinkById(WidgetTester tester, String markLinkId) async {
+    final deleteKey = find.byKey(Key('michiInfo_button_delete_$markLinkId'));
+    // スクロールしながら対象を探す
+    if (deleteKey.evaluate().isEmpty) {
+      for (var i = 0; i < 10; i++) {
+        await tester.drag(find.byType(CustomScrollView).first, const Offset(0, -300));
+        await tester.pump(const Duration(milliseconds: 200));
+        if (find.byKey(Key('michiInfo_button_delete_$markLinkId')).evaluate().isNotEmpty) break;
+      }
+    }
+    if (deleteKey.evaluate().isEmpty) return false;
+    await tester.ensureVisible(deleteKey);
+    await tester.pump(const Duration(milliseconds: 500));
+    final pos = tester.getCenter(deleteKey);
+    // 削除アイコンの左100pxをタップしてカード本体をタップ
+    await tester.tapAt(Offset(pos.dx - 100, pos.dy));
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.text('給油').evaluate().isNotEmpty ||
+          find.text('保存').evaluate().isNotEmpty ||
+          find.text('累積メーター').evaluate().isNotEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
+    return find.text('給油').evaluate().isNotEmpty ||
+        find.text('保存').evaluate().isNotEmpty ||
+        find.text('累積メーター').evaluate().isNotEmpty;
+  }
+
+  /// 既存 Mark をタップして MarkDetail を開く（後方互換）。
   Future<bool> openExistingMark(WidgetTester tester, String markName) async {
-    // スクロールしながら対象 Mark を探す
+    // showNameField=false のトピックではテキスト名が非表示
+    // テキストが見つかればテキストでタップ、見つからなければfalseを返す
     for (var i = 0; i < 10; i++) {
       if (find.text(markName).evaluate().isNotEmpty) break;
-      await tester.drag(find.byType(CustomScrollView).first, const Offset(0, -300));
+      if (find.byType(CustomScrollView).evaluate().isNotEmpty) {
+        await tester.drag(find.byType(CustomScrollView).first, const Offset(0, -300));
+      }
       await tester.pump(const Duration(milliseconds: 200));
     }
     if (find.text(markName).evaluate().isEmpty) return false;
@@ -91,11 +134,13 @@ void main() {
     return true;
   }
 
-  /// 既存 Link をタップして LinkDetail を開く。
+  /// 既存 Link をタップして LinkDetail を開く（後方互換）。
   Future<bool> openExistingLink(WidgetTester tester, String linkName) async {
     for (var i = 0; i < 10; i++) {
       if (find.text(linkName).evaluate().isNotEmpty) break;
-      await tester.drag(find.byType(CustomScrollView).first, const Offset(0, -300));
+      if (find.byType(CustomScrollView).evaluate().isNotEmpty) {
+        await tester.drag(find.byType(CustomScrollView).first, const Offset(0, -300));
+      }
       await tester.pump(const Duration(milliseconds: 200));
     }
     if (find.text(linkName).evaluate().isEmpty) return false;
@@ -141,43 +186,54 @@ void main() {
     }
   }
 
-  /// ガソリン支払者選択行をタップしてメンバーを選択・確定する。
+  /// ガソリン支払者をFilterChipで選択する。
+  /// MarkDetailでは _GasPayerChipSection がインライン選択チップを表示する。
+  /// キー: markDetail_chip_gasPayer_${memberId}
   Future<bool> selectGasPayer(WidgetTester tester, String memberName) async {
-    // ガソリン支払者行が画面外の可能性があるので ensureVisible
-    final gasPayerRow = find.ancestor(
-      of: find.text('ガソリン支払者'),
-      matching: find.byType(InkWell),
-    );
-    if (gasPayerRow.evaluate().isEmpty) {
+    // memberName → memberId マッピング（シードデータ準拠）
+    final memberIdMap = {
+      '太郎': 'member-001',
+      '花子': 'member-002',
+      '健太': 'member-003',
+    };
+    final memberId = memberIdMap[memberName];
+    if (memberId == null) {
+      print('[selectGasPayer] 未知のメンバー名: $memberName');
+      return false;
+    }
+
+    // ガソリン支払者セクションが表示されているか確認
+    final gasPayerLabel = find.text('ガソリン支払者');
+    if (gasPayerLabel.evaluate().isEmpty) {
       print('[selectGasPayer] ガソリン支払者行が見つかりません');
       return false;
     }
-    await tester.ensureVisible(gasPayerRow.first);
-    await tester.pump(const Duration(milliseconds: 500));
-    await tester.tap(gasPayerRow.first);
-    for (var i = 0; i < 15; i++) {
-      await tester.pump(const Duration(milliseconds: 300));
-      if (find.text('確定').evaluate().isNotEmpty) break;
-    }
-    await tester.pump(const Duration(milliseconds: 300));
 
-    // メンバーを選択
-    final memberItem = find.text(memberName);
-    if (memberItem.evaluate().isEmpty) {
-      print('[selectGasPayer] メンバー "$memberName" が見つかりません');
+    // FilterChipをタップして選択
+    // MarkDetail: markDetail_chip_gasPayer_${memberId}
+    // LinkDetail: linkDetail_chip_gasPayer_${memberId}
+    var chipKey = find.byKey(Key('markDetail_chip_gasPayer_$memberId'));
+    if (chipKey.evaluate().isEmpty) {
+      chipKey = find.byKey(Key('linkDetail_chip_gasPayer_$memberId'));
+    }
+    if (chipKey.evaluate().isEmpty) {
+      // 画面外の可能性があるのでスクロール
+      for (var i = 0; i < 5; i++) {
+        await tester.ensureVisible(gasPayerLabel.first);
+        await tester.pump(const Duration(milliseconds: 200));
+        final mk = find.byKey(Key('markDetail_chip_gasPayer_$memberId'));
+        final lk = find.byKey(Key('linkDetail_chip_gasPayer_$memberId'));
+        if (mk.evaluate().isNotEmpty) { chipKey = mk; break; }
+        if (lk.evaluate().isNotEmpty) { chipKey = lk; break; }
+      }
+    }
+    if (chipKey.evaluate().isEmpty) {
+      print('[selectGasPayer] FilterChip *_chip_gasPayer_$memberId が見つかりません');
       return false;
     }
-    await tester.tap(memberItem.first);
+    await tester.ensureVisible(chipKey.first);
     await tester.pump(const Duration(milliseconds: 300));
-
-    // 確定ボタンをタップ
-    final confirmButton = find.text('確定');
-    if (confirmButton.evaluate().isEmpty) return false;
-    await tester.tap(confirmButton.first, warnIfMissed: false);
-    for (var i = 0; i < 15; i++) {
-      await tester.pump(const Duration(milliseconds: 300));
-      if (find.text('保存').evaluate().isNotEmpty) break;
-    }
+    await tester.tap(chipKey.first);
     await tester.pump(const Duration(milliseconds: 300));
     return true;
   }
@@ -221,8 +277,9 @@ void main() {
     // 2. ミチタブを開く
     await goToMichiTab(tester);
 
-    // 3. Mark をタップして MarkDetail を開く
-    final markOpened = await openExistingMark(tester, '出発地点');
+    // 3. Mark をタップして MarkDetail を開く（ml-009: 出発地点）
+    // movingCostEstimatedはshowNameField=falseのためIDで直接タップ
+    final markOpened = await openMarkLinkById(tester, 'ml-009');
     expect(markOpened, isTrue, reason: '「出発地点」 Mark が開けること');
 
     // 期待結果: 給油フラグのスイッチが表示されない
@@ -260,8 +317,9 @@ void main() {
     // 2. ミチタブを開く
     await goToMichiTab(tester);
 
-    // 3. Mark をタップして MarkDetail を開く
-    final markOpened = await openExistingMark(tester, '自宅出発');
+    // 3. Mark をタップして MarkDetail を開く（ml-001: 自宅出発）
+    // movingCostはshowNameField=falseのためIDで直接タップ
+    final markOpened = await openMarkLinkById(tester, 'ml-001');
     expect(markOpened, isTrue, reason: '「自宅出発」 Mark が開けること');
 
     // 期待結果: 給油フラグのスイッチが表示される
@@ -291,8 +349,9 @@ void main() {
 
     await goToMichiTab(tester);
 
-    // 大涌谷（isFuel=true のシードデータ Mark）を開く
-    final markOpened = await openExistingMark(tester, '大涌谷');
+    // 大涌谷（ml-005 / isFuel=true のシードデータ Mark）を開く
+    // movingCostはshowNameField=falseのためIDで直接タップ
+    final markOpened = await openMarkLinkById(tester, 'ml-005');
     expect(markOpened, isTrue, reason: '「大涌谷」 Mark が開けること');
 
     // 2. 給油フラグをONにする
@@ -313,8 +372,8 @@ void main() {
     // 5. 保存ボタンをタップする
     await tapSaveButton(tester);
 
-    // 6. 同じ MarkDetail を再度開く
-    await openExistingMark(tester, '大涌谷');
+    // 6. 同じ MarkDetail を再度開く（ml-005: 大涌谷）
+    await openMarkLinkById(tester, 'ml-005');
 
     // 給油ON状態でロードされたか確認
     await turnFuelSwitchOn(tester);
@@ -346,8 +405,9 @@ void main() {
 
     await goToMichiTab(tester);
 
-    // 東名高速（Link）を開く
-    final linkOpened = await openExistingLink(tester, '東名高速');
+    // 東名高速（ml-002 / Link）を開く
+    // movingCostはshowNameField=falseのためIDで直接タップ
+    final linkOpened = await openMarkLinkById(tester, 'ml-002');
     expect(linkOpened, isTrue, reason: '「東名高速」 Link が開けること');
 
     // 2. 給油フラグをONにする
@@ -368,8 +428,8 @@ void main() {
     // 5. 保存ボタンをタップする
     await tapSaveButton(tester);
 
-    // 6. 同じ LinkDetail を再度開く
-    await openExistingLink(tester, '東名高速');
+    // 6. 同じ LinkDetail を再度開く（ml-002: 東名高速）
+    await openMarkLinkById(tester, 'ml-002');
 
     // 給油ON状態でロードされたか確認
     await turnFuelSwitchOn(tester);
@@ -401,8 +461,9 @@ void main() {
 
     await goToMichiTab(tester);
 
-    // 自宅出発（isFuel=false のシードデータ Mark）を開く
-    final markOpened = await openExistingMark(tester, '自宅出発');
+    // 自宅出発（ml-001 / isFuel=false のシードデータ Mark）を開く
+    // movingCostはshowNameField=falseのためIDで直接タップ
+    final markOpened = await openMarkLinkById(tester, 'ml-001');
     expect(markOpened, isTrue, reason: '「自宅出発」 Mark が開けること');
 
     // 2. 給油フラグがOFFであることを確認（またはOFFにする）

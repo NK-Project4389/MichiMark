@@ -64,21 +64,22 @@ void main() {
         break;
       }
     }
+    // BasicInfoSection のロード完了を待つ（「タップして編集」ヒントが表示されるまで）
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byIcon(Icons.edit).evaluate().isNotEmpty) {
+      if (find.text('タップして編集').evaluate().isNotEmpty) {
         break;
       }
     }
     await tester.pump(const Duration(milliseconds: 300));
-    return find.byIcon(Icons.edit).evaluate().isNotEmpty;
+    return find.text('タップして編集').evaluate().isNotEmpty;
   }
 
-  /// BasicInfo タブの「編集」アイコンをタップして編集モードに入る。
+  /// BasicInfo タブの参照モードエリアをタップして編集モードに入る。
   Future<bool> enterEditMode(WidgetTester tester) async {
-    final editButton = find.byIcon(Icons.edit);
-    if (editButton.evaluate().isEmpty) return false;
-    await tester.tap(editButton);
+    final readArea = find.byKey(const Key('basicInfoRead_container_section'));
+    if (readArea.evaluate().isEmpty) return false;
+    await tester.tap(readArea);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('キャンセル').evaluate().isNotEmpty) break;

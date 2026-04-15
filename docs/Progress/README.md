@@ -142,3 +142,4 @@
 | [2026-04-14_fix__B13-B14-B15-バグ修正3件完了.md](./2026-04-14_fix__B13-B14-B15-バグ修正3件完了.md) | B-13〜B-15 バグ修正3件完了（BasicInfo非表示フィルタ・FAB再押し・燃費推定経費合計）8PASS/0FAIL |
 - [2026-04-15](./2026-04-15_chore__マーケター_デザイナー_スクリーンショットビジ.md)
 | [2026-04-15_chore__TestFlight-1.0.0-14-アップロード完了.md](./2026-04-15_chore__TestFlight-1.0.0-14-アップロード完了.md) | TestFlight 1.0.0(14) アップロード完了（B-13/B-14/B-15修正含む） |
+| [2026-04-15_test__IntegrationTest全件PASS達成.md](./2026-04-15_test__IntegrationTest全件PASS達成.md) | Integration Test 全件 PASS 達成・3シャード並行実行追加 |

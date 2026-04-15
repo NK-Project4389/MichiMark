@@ -123,16 +123,15 @@ void main() {
     expect(find.text('概要'), findsOneWidget,
         reason: '概要タブが表示されていること');
 
-    // 「編集」ボタンをタップして編集モードに入る
-    final editButton = find.text('編集');
-    if (editButton.evaluate().isEmpty) {
-      // 編集ボタンがない場合はedit iconを試す
-      final editIcon = find.byIcon(Icons.edit);
-      expect(editIcon, findsOneWidget, reason: '編集ボタンが存在すること');
-      await tester.tap(editIcon);
-    } else {
-      await tester.tap(editButton);
+    // BasicInfoView の参照モードエリアをタップして編集モードに入る
+    // BasicInfoReadView のロード完了を待つ（「タップして編集」ヒントが表示されるまで）
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.byKey(const Key('basicInfoRead_container_section')).evaluate().isNotEmpty) break;
     }
+    final readArea = find.byKey(const Key('basicInfoRead_container_section'));
+    expect(readArea, findsOneWidget, reason: '参照モードエリ���が存在すること');
+    await tester.tap(readArea);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('ガソリン支払者').evaluate().isNotEmpty) break;

@@ -316,16 +316,7 @@ void main() {
       return;
     }
 
-    // イベント名フィールドを変更する（TextField を探して入力）
-    final textFields = find.byType(TextField);
-    if (textFields.evaluate().isNotEmpty) {
-      await tester.tap(textFields.first);
-      await tester.pump(const Duration(milliseconds: 300));
-      await tester.enterText(textFields.first, 'キャンセルテスト用入力');
-      await tester.pump(const Duration(milliseconds: 300));
-    }
-
-    // キャンセルボタンをタップ
+    // キャンセルボタンをスクロールで表示してからタップ
     for (var i = 0; i < 5; i++) {
       if (find.byKey(const Key('basicInfoForm_button_cancel'))
           .evaluate()

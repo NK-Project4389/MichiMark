@@ -149,7 +149,7 @@ void main() {
 
     // インジケーターが表示されること（add_circle_outline アイコンが少なくとも1件）
     expect(
-      find.byIcon(Icons.add_circle_outline),
+      find.byIcon(Icons.add_circle),
       findsWidgets,
       reason: '挿入モード中はインジケーターが各カード間に表示されること',
     );
@@ -192,7 +192,7 @@ void main() {
 
     // インジケーターが消えること
     expect(
-      find.byIcon(Icons.add_circle_outline),
+      find.byIcon(Icons.add_circle),
       findsNothing,
       reason: '通常モードに戻るとインジケーターが消えること',
     );
@@ -210,7 +210,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターが表示されていることを確認
-    final indicators = find.byIcon(Icons.add_circle_outline);
+    final indicators = find.byIcon(Icons.add_circle);
     expect(indicators, findsWidgets, reason: 'インジケーターが表示されること');
 
     // 最初のインジケーターをタップ
@@ -234,9 +234,9 @@ void main() {
   });
 
   // ────────────────────────────────────────────────────────
-  // TC-MCI-005: BottomSheet をスワイプで閉じると挿入モードが継続する
+  // TC-MCI-005: BottomSheet をスワイプで閉じると挿入モードが終了する（B-8修正後の仕様）
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-MCI-005: BottomSheetをスワイプで閉じると挿入モードが継続する', (tester) async {
+  testWidgets('TC-MCI-005: BottomSheetをスワイプで閉じると挿入モードが終了しインジケーターが消える', (tester) async {
     await goToMichiInfoTab(tester, '箱根日帰りドライブ');
 
     // FABタップ（挿入モードへ）
@@ -244,7 +244,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターをタップ
-    final indicators = find.byIcon(Icons.add_circle_outline);
+    final indicators = find.byIcon(Icons.add_circle);
     expect(indicators, findsWidgets, reason: 'インジケーターが表示されること');
     await tester.tap(indicators.first);
     await tester.pump(const Duration(milliseconds: 500));
@@ -260,23 +260,28 @@ void main() {
 
     // BottomSheet をドラッグ（スワイプ）して閉じる
     await tester.drag(find.byType(BottomSheet), const Offset(0, 300));
-    await tester.pump(const Duration(milliseconds: 500));
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 200));
+      if (find.byIcon(Icons.add_circle).evaluate().isEmpty) break;
+    }
+    await tester.pump(const Duration(milliseconds: 300));
 
-    // 挿入モードが継続していること（インジケーターが表示されたまま）
+    // B-8修正後の仕様: BottomSheetをキャンセル（スワイプで閉じる）すると
+    // MichiInfoInsertPointCancelled が dispatch され挿入モードが終了する
     expect(
-      find.byIcon(Icons.add_circle_outline),
-      findsWidgets,
-      reason: 'BottomSheetを閉じた後も挿入モードが継続してインジケーターが表示されること',
+      find.byIcon(Icons.add_circle),
+      findsNothing,
+      reason: 'BottomSheetをスワイプで閉じるとMichiInfoInsertPointCancelledが発行され挿入モードが終了してインジケーターが消えること（B-8修正後の仕様）',
     );
 
-    // FABアイコンが close のままであること
+    // FABアイコンが add に戻ること
     expect(
       find.descendant(
         of: find.byType(FloatingActionButton),
-        matching: find.byIcon(Icons.close),
+        matching: find.byIcon(Icons.add),
       ),
       findsOneWidget,
-      reason: 'BottomSheetを閉じた後もFABアイコンがcloseのままであること',
+      reason: 'BottomSheetをスワイプで閉じると挿入モードが終了してFABアイコンがaddに戻ること',
     );
   });
 
@@ -292,7 +297,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターをタップ
-    final indicators = find.byIcon(Icons.add_circle_outline);
+    final indicators = find.byIcon(Icons.add_circle);
     expect(indicators, findsWidgets, reason: 'インジケーターが表示されること');
     await tester.tap(indicators.first);
     await tester.pump(const Duration(milliseconds: 500));
@@ -331,7 +336,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターをタップ（最初のインジケーター = 1枚目のカードの後）
-    final indicators = find.byIcon(Icons.add_circle_outline);
+    final indicators = find.byIcon(Icons.add_circle);
     expect(indicators, findsWidgets, reason: 'インジケーターが表示されること');
     await tester.tap(indicators.first);
     await tester.pump(const Duration(milliseconds: 500));
@@ -433,7 +438,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターをタップ
-    final indicators = find.byIcon(Icons.add_circle_outline);
+    final indicators = find.byIcon(Icons.add_circle);
     expect(indicators, findsWidgets, reason: 'インジケーターが表示されること');
     await tester.tap(indicators.first);
     await tester.pump(const Duration(milliseconds: 500));
@@ -475,7 +480,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターをタップ
-    final indicators = find.byIcon(Icons.add_circle_outline);
+    final indicators = find.byIcon(Icons.add_circle);
     expect(indicators, findsWidgets, reason: 'インジケーターが表示されること');
     await tester.tap(indicators.first);
     await tester.pump(const Duration(milliseconds: 500));
@@ -579,7 +584,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
 
     // インジケーターが表示されていることを確認
-    final indicatorsBefore = find.byIcon(Icons.add_circle_outline);
+    final indicatorsBefore = find.byIcon(Icons.add_circle);
     expect(indicatorsBefore, findsWidgets, reason: 'インジケーターが表示されること');
 
     // 末尾インジケーターに到達するまでスクロール
@@ -593,7 +598,7 @@ void main() {
     }
 
     // 末尾インジケーターをタップ（最後に表示されているインジケーター）
-    final indicatorsAtEnd = find.byIcon(Icons.add_circle_outline);
+    final indicatorsAtEnd = find.byIcon(Icons.add_circle);
     if (indicatorsAtEnd.evaluate().isEmpty) {
       markTestSkipped('TC-MCI-010: 末尾インジケーターが見つからないためスキップ');
       return;
