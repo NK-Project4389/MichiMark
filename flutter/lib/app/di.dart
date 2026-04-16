@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:get_it/get_it.dart';
 
 import '../adapter/aggregation_service.dart';
+import '../features/invite_code_input/repository/invitation_repository.dart';
+import '../features/invite_code_input/repository/impl/stub_invitation_repository.dart';
 import '../repository/action_repository.dart';
 import '../repository/auth_repository.dart';
 import '../repository/event_repository.dart';
@@ -54,6 +56,11 @@ void setupDi() {
   );
   getIt.registerSingleton<AggregationService>(
     AggregationService(actionRepository: getIt<ActionRepository>()),
+  );
+
+  // --- InvitationRepository（スタブ実装・API未実装のため） ---
+  getIt.registerLazySingleton<InvitationRepository>(
+    () => const StubInvitationRepository(),
   );
 
   // --- drift 実装に切り替える場合 ---

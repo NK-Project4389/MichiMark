@@ -37,6 +37,14 @@ class OpenSettingsDelegate extends EventListDelegate {
   List<Object?> get props => [];
 }
 
+/// 招待コード入力画面へ遷移する
+class OpenInviteCodeDelegate extends EventListDelegate {
+  const OpenInviteCodeDelegate();
+
+  @override
+  List<Object?> get props => [];
+}
+
 // ---------------------------------------------------------------------------
 
 sealed class EventListState extends Equatable {

@@ -391,7 +391,7 @@ OK タップ後: `router.go('/events/${eventId}')`
 | TC-INV3-006 | not_found コード → エラーメッセージ「見つかりません」表示 | Step1入力→次へ→エラーメッセージ確認 | 高 |
 | TC-INV3-007 | already_joined → エラーメッセージ「すでに参加しています」表示 | Step1入力→次へ→Step2→参加→エラーメッセージ確認 | 高 |
 | TC-INV3-008 | Step2でメンバー未選択時は「参加する」ボタンがdisabled | Step2遷移後→選択なし→ボタンdisabled確認 | 中 |
-| TC-INV3-009 | Step2で「戻る」タップ → Step1に戻りコード入力が保持される | Step2→戻る→Step1→コード確認 | 中 |
+| TC-INV3-009 | Step2で「戻る」タップ → Step1に戻りコード入力がリセット（空）になる | Step2→戻る→Step1→コードが空であることを確認 | 中 |
 | TC-INV3-010 | イベント一覧画面に「招待コードで参加」ボタンが表示され、タップでInviteCodeInputPageへ遷移 | 一覧画面→ボタンタップ→画面遷移確認 | 高 |
 
 ---

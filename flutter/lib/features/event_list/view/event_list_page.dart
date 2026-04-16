@@ -42,6 +42,14 @@ class _EventListPageState extends State<EventListPage> {
             centerTitle: true,
             actions: [
               IconButton(
+                key: const Key('event_list_invite_code_button'),
+                icon: const Icon(Icons.card_membership),
+                tooltip: '招待コードで参加',
+                onPressed: () => context
+                    .read<EventListBloc>()
+                    .add(const EventListInviteCodeButtonPressed()),
+              ),
+              IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () => context
                     .read<EventListBloc>()
@@ -109,6 +117,8 @@ class _EventListPageState extends State<EventListPage> {
         });
       case OpenSettingsDelegate():
         context.push('/settings');
+      case OpenInviteCodeDelegate():
+        context.push('/invite-code');
     }
   }
 }

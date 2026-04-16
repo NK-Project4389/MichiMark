@@ -38,6 +38,14 @@ class EventListSettingsButtonPressed extends EventListEvent {
   List<Object?> get props => [];
 }
 
+/// 招待コードボタンが押されたとき
+class EventListInviteCodeButtonPressed extends EventListEvent {
+  const EventListInviteCodeButtonPressed();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// BottomSheetでTopicTypeが選択されたとき
 class EventListTopicSelectedForNewEvent extends EventListEvent {
   final TopicType topicType;

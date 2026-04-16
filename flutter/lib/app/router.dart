@@ -58,6 +58,9 @@ import '../adapter/aggregation_service.dart';
 import '../features/aggregation/bloc/aggregation_bloc.dart';
 import '../features/aggregation/bloc/aggregation_event.dart';
 import '../features/aggregation/view/aggregation_page.dart';
+import '../features/invite_code_input/bloc/invite_code_input_bloc.dart';
+import '../features/invite_code_input/repository/invitation_repository.dart';
+import '../features/invite_code_input/view/invite_code_input_page.dart';
 import '../domain/master/member/member_domain.dart';
 import '../repository/action_repository.dart';
 import '../repository/event_repository.dart';
@@ -203,6 +206,16 @@ final router = GoRouter(
           child: const SelectionPage(),
         );
       },
+    ),
+    // InviteCodeInput
+    GoRoute(
+      path: '/invite-code',
+      builder: (context, state) => BlocProvider(
+        create: (_) => InviteCodeInputBloc(
+          invitationRepository: getIt<InvitationRepository>(),
+        ),
+        child: const InviteCodeInputPage(),
+      ),
     ),
     // Aggregation
     GoRoute(
