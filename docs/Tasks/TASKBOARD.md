@@ -56,8 +56,8 @@
 |---|---|---|---|---|---|
 | T-329 | 招待Webページ 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_web_page.md |
 | T-330 | 招待Webページ Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_web_page.md |
-| T-331a | 招待Webページ 実装（Next.js） | flutter-dev | `TODO` | | FS-invitation_web_page.md 参照 |
-| T-331b | 招待Webページ テストコード実装 | tester | `TODO` | | TC-INV2-001〜008 |
+| T-331a | 招待Webページ 実装（Next.js） | flutter-dev | `IN_PROGRESS` | 2026-04-16_INV2実装 | FS-invitation_web_page.md 参照 |
+| T-331b | 招待Webページ テストコード実装 | tester | `IN_PROGRESS` | 2026-04-16_INV2テストコード | TC-INV2-001〜008 |
 | T-332 | 招待Webページ レビュー | reviewer | `BLOCKED` | | T-331a/b完了後 |
 | T-333 | 招待Webページ テスト実行 | tester | `BLOCKED` | | T-332完了後 |
 
@@ -71,8 +71,8 @@
 |---|---|---|---|---|---|
 | T-334 | 招待コード入力 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_code_input.md |
 | T-335 | 招待コード入力 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_code_input.md |
-| T-336a | 招待コード入力 実装 | flutter-dev | `TODO` | | FS-invitation_code_input.md 参照 |
-| T-336b | 招待コード入力 テストコード実装 | tester | `TODO` | | TC-INV3-001〜010 |
+| T-336a | 招待コード入力 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-16_INV3実装 | FS-invitation_code_input.md 参照 |
+| T-336b | 招待コード入力 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-16_INV3テストコード | TC-INV3-001〜010 |
 | T-337 | 招待コード入力 レビュー | reviewer | `BLOCKED` | | T-336a/b完了後 |
 | T-338 | 招待コード入力 テスト実行 | tester | `BLOCKED` | | T-337完了後 |
 
