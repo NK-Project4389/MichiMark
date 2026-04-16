@@ -132,9 +132,9 @@
 |---|---|---|---|---|---|
 | T-390 | F-2: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-dashboard.md |
 | T-391 | F-2: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-dashboard.md |
-| T-392a | F-2: 実装 | flutter-dev | `TODO` | | FS-dashboard.md 参照 |
-| T-392b | F-2: テストコード実装 | tester | `TODO` | | TC-DB-001〜008 |
-| T-393 | F-2: レビュー | reviewer | `BLOCKED` | | T-392a/b完了後 |
+| T-392a | F-2: 実装 | flutter-dev | `DONE` | | FS-dashboard.md 参照 |
+| T-392b | F-2: テストコード実装 | tester | `DONE` | | TC-DB-001〜008 |
+| T-393 | F-2: レビュー | reviewer | `TODO` | | T-392a/b完了後 |
 | T-394 | F-2: テスト実行 | tester | `BLOCKED` | | T-393完了後 |
 
 ---
@@ -146,9 +146,9 @@
 | T-395 | UI-14: デザイン提案 | designer | `DONE` | | docs/Design/draft/michi_info_road_timeline_design.html |
 | T-396 | UI-14: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_road_timeline.md |
 | T-397 | UI-14: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_road_timeline.md |
-| T-398a | UI-14: 実装 | flutter-dev | `TODO` | | FS-michi_info_road_timeline.md 参照 |
-| T-398b | UI-14: テストコード実装 | tester | `TODO` | | TC-RDT-001〜005 |
-| T-399 | UI-14: レビュー | reviewer | `BLOCKED` | | T-398a/b完了後 |
+| T-398a | UI-14: 実装 | flutter-dev | `DONE` | | FS-michi_info_road_timeline.md 参照 |
+| T-398b | UI-14: テストコード実装 | tester | `DONE` | | TC-RDT-001〜005 |
+| T-399 | UI-14: レビュー | reviewer | `TODO` | | T-398a/b完了後 |
 | T-400 | UI-14: テスト実行 | tester | `BLOCKED` | | T-399完了後 |
 
 ---
