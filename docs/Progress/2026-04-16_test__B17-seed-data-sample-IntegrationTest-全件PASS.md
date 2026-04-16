@@ -6,6 +6,7 @@
 ---
 
 ## 完了した作業
+- docs: セッション進捗更新（TC-VW-I004・F-2・UI-14・INV-2・INV-3 全完了） (2c5f0b5)
 - fix: INV-3 テストFAIL修正（スタブ分岐対応・入力文字列修正）・T-333/T-338 DONE (56e06cb)
 - test: B-17 本番シードデータ Integration Test 全件PASS（TC-SD-001〜001c） (d12d124)
 

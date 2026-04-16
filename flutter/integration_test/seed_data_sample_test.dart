@@ -142,17 +142,3 @@ void main() {
   //     「横浜エリア訪問ルート」が現在日から3日前の日付で表示されること
   // ────────────────────────────────────────────────────────
 }
-
-// ────────────────────────────────────────────────────────
-// ユーティリティ: byKeyPrefix finder
-// ────────────────────────────────────────────────────────
-
-extension _FinderExtension on CommonFinders {
-  Finder byKeyPrefix(String prefix) {
-    return find.byWidgetPredicate(
-      (widget) =>
-          widget.key is ValueKey<String> &&
-          (widget.key! as ValueKey<String>).value.startsWith(prefix),
-    );
-  }
-}

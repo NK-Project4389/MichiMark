@@ -159,3 +159,4 @@
 | [2026-04-16_fix__TC-VW-I004-cachedEvent更新バグ修正・F2-UI14テスト完了.md](./2026-04-16_fix__TC-VW-I004-cachedEvent更新バグ修正・F2-UI14テスト完了.md) | TC-VW-I004バグ修正（17PASS）・F-2（20PASS）・UI-14（9PASS）全件PASS |
 | [2026-04-16_test__B17-seed-data-sample-IntegrationTest-全件PASS.md](./2026-04-16_test__B17-seed-data-sample-IntegrationTest-全件PASS.md) | B-17 本番シードデータ見直し Integration Test 3PASS/0FAIL（TC-SD-001〜001c） |
 | [2026-04-16_feat__INV-2-INV-3-実装完了.md](./2026-04-16_feat__INV-2-INV-3-実装完了.md) | TC-VW-I004修正・F-2/UI-14テスト・INV-2（73PASS）・INV-3（12PASS）全完了 |
+| [2026-04-16_session__AppStore公開_改善サイクル_B17シードデータ.md](./2026-04-16_session__AppStore公開_改善サイクル_B17シードデータ.md) | App Store公開・改善サイクルPhase1・B-17シードデータ見直し完了 |

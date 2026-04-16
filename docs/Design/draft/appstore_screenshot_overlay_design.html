@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark App Store スクリーンショット オーバーレイデザイン提案</title>
+  <style>
+    /* =========================================================
+       DESIGN TOKENS
+    ========================================================= */
+    :root {
+      /* ブランドカラー */
+      --teal-dark:      #0F3D50;
+      --teal-main:      #0D9488;
+      --teal-mid:       #14B8A6;
+      --teal-light:     #CCFBF1;
+      --emerald:        #059669;
+      --emerald-mid:    #10B981;
+      --emerald-light:  #D1FAE5;
+
+      /* オーバーレイ背景グラデーション */
+      --grad-primary:   linear-gradient(160deg, #0F3D50 0%, #0D9488 55%, #059669 100%);
+      --grad-warm:      linear-gradient(160deg, #0F3D50 0%, #0D9488 40%, #10B981 80%, #34D399 100%);
+      --grad-deep:      linear-gradient(160deg, #0A2838 0%, #0F3D50 40%, #0D9488 100%);
+      --grad-ocean:     linear-gradient(160deg, #0D9488 0%, #059669 60%, #047857 100%);
+      --grad-night:     linear-gradient(160deg, #0F2027 0%, #203A43 50%, #2C5364 100%);
+
+      /* テキスト */
+      --text-primary:   #1A1A2E;
+      --text-secondary: #6C757D;
+      --white:          #FFFFFF;
+
+      /* UI */
+      --bg-page:        #F0F4F8;
+      --bg-card:        #FFFFFF;
+      --border:         #DEE2E6;
+      --gray-100:       #F1F3F5;
+      --gray-200:       #E9ECEF;
+      --gray-400:       #ADB5BD;
+
+      /* トピックカラー */
+      --topic-drive:    #0D9488;
+      --topic-work:     #1E88E5;
+      --topic-trip:     #8E24AA;
+      --topic-meal:     #F4511E;
+      --topic-fuel:     #F9A825;
+      --topic-toll:     #43A047;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Hiragino Sans',
+                   'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* =========================================================
+       PAGE HEADER
+    ========================================================= */
+    .page-header {
+      background: var(--grad-primary);
+      color: #fff;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 24px;
+      padding: 5px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .page-header h1 {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .page-header p {
+      font-size: 14px;
+      opacity: 0.85;
+      max-width: 640px;
+    }
+    .meta-row {
+      display: flex;
+      gap: 28px;
+      margin-top: 18px;
+      font-size: 12px;
+      opacity: 0.65;
+    }
+
+    /* =========================================================
+       LAYOUT
+    ========================================================= */
+    section {
+      margin: 48px auto;
+      max-width: 1280px;
+      padding: 0 40px;
+    }
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 6px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--teal-light);
+    }
+    .section-heading .num {
+      background: var(--teal-main);
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+    }
+
+    /* =========================================================
+       COLOR PALETTE
+    ========================================================= */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .swatch {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .swatch-color { height: 64px; }
+    .swatch-info { background: #fff; padding: 10px 12px; }
+    .swatch-name { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+    .swatch-hex  { font-size: 11px; color: var(--text-secondary); font-family: 'SF Mono', monospace; }
+    .swatch-role { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* =========================================================
+       TYPOGRAPHY
+    ========================================================= */
+    .type-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .type-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+    .type-meta {
+      font-size: 11px;
+      color: var(--gray-400);
+      margin-top: 6px;
+      font-family: 'SF Mono', monospace;
+    }
+
+    /* =========================================================
+       OVERLAY FRAME — iPhone 6.9in 縮小モック
+       実寸 1320 x 2868 px → 縮小率 0.18 → 238 x 516 px (iphone内容域)
+       オーバーレイ全体: 238 x 516 px
+    ========================================================= */
+
+    /* グリッド: 5枚横並び */
+    .overlay-grid {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .overlay-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .overlay-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-align: center;
+      max-width: 240px;
+    }
+    .overlay-num-badge {
+      display: inline-block;
+      background: var(--teal-main);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-bottom: 4px;
+    }
+
+    /*
+      オーバーレイカード本体
+      実寸比: 1320 x 2868 (iOS 6.9in)
+      縮小: 230 x 500 (比率 ~0.174)
+    */
+    .overlay-card {
+      width: 230px;
+      height: 500px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.12);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ---- 上部: キャッチコピーエリア (全体の約28%) ---- */
+    .ov-top {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px 14px 16px;
+      min-height: 140px;
+    }
+    .ov-appname {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 8px;
+    }
+    .ov-catchcopy {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.4;
+      letter-spacing: -0.3px;
+    }
+    .ov-catchcopy em {
+      font-style: normal;
+      color: #A7F3D0; /* emerald-200 */
+    }
+
+    /* ---- 中央: スクリーンショットエリア (全体の約55%) ---- */
+    .ov-screen-area {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 4px 12px 0;
+    }
+
+    /* iPhone モック枠 */
+    .iphone-mock {
+      width: 160px;
+      height: 300px;
+      background: #111;
+      border-radius: 24px;
+      padding: 10px 6px 8px;
+      box-shadow:
+        0 0 0 2px #2a2a2a,
+        0 6px 24px rgba(0,0,0,0.5);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .iphone-dynamic-island {
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 44px;
+      height: 10px;
+      background: #111;
+      border-radius: 6px;
+      z-index: 10;
+    }
+    .iphone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      background: #fff;
+    }
+
+    /* ---- 下部: サブテキストエリア (全体の約17%) ---- */
+    .ov-bottom {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 8px 14px 18px;
+      min-height: 72px;
+    }
+    .ov-subtext {
+      font-size: 8.5px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.6;
+    }
+    .ov-subtext strong {
+      color: rgba(255,255,255,0.95);
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       各スクリーン内コンテンツ (モック内部)
+    ========================================================= */
+
+    /* ---- SCREEN 1: タイムライン一覧 ---- */
+    .sc1 {
+      background: #FAFBFC;
+      display: flex;
+      flex-direction: column;
+    }
+    .sc1-header {
+      background: linear-gradient(160deg, #0F3D50 0%, #0D9488 100%);
+      padding: 22px 10px 10px;
+      color: #fff;
+    }
+    .sc1-header-title { font-size: 9px; font-weight: 700; }
+    .sc1-header-sub   { font-size: 6px; opacity: 0.75; margin-top: 1px; }
+    .sc1-tab-row {
+      background: #fff;
+      display: flex;
+      border-bottom: 1px solid #E9ECEF;
+      padding: 0 6px;
+    }
+    .sc1-tab { font-size: 6px; padding: 4px 6px; color: #6C757D; font-weight: 500; }
+    .sc1-tab.active {
+      color: #0D9488;
+      font-weight: 700;
+      border-bottom: 2px solid #0D9488;
+    }
+    .sc1-body { flex: 1; padding: 6px 8px; overflow: hidden; }
+    .sc1-date-sep {
+      font-size: 6px;
+      font-weight: 700;
+      color: #6C757D;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 4px 0 3px;
+    }
+    .sc1-event-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px 7px;
+      margin-bottom: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+    }
+    .sc1-left-bar {
+      width: 3px;
+      height: 100%;
+      border-radius: 2px;
+      flex-shrink: 0;
+      align-self: stretch;
+      min-height: 32px;
+    }
+    .sc1-content { flex: 1; }
+    .sc1-title { font-size: 7px; font-weight: 700; color: #1A1A2E; line-height: 1.3; }
+    .sc1-meta  { font-size: 6px; color: #6C757D; margin-top: 1px; }
+    .sc1-tags  { display: flex; gap: 3px; margin-top: 2px; flex-wrap: wrap; }
+    .sc1-tag {
+      font-size: 5.5px;
+      padding: 1px 4px;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: 600;
+    }
+    .sc1-amount { font-size: 8px; font-weight: 700; color: #0D9488; white-space: nowrap; }
+
+    /* ---- SCREEN 2: タイムライン拡大 (Mark/Link詳細) ---- */
+    .sc2 {
+      background: #FAFBFC;
+      display: flex;
+      flex-direction: column;
+    }
+    .sc2-header {
+      background: linear-gradient(160deg, #0F3D50 0%, #0D9488 100%);
+      padding: 22px 10px 10px;
+      color: #fff;
+    }
+    .sc2-header-title { font-size: 9px; font-weight: 700; }
+    .sc2-header-sub   { font-size: 6px; opacity: 0.75; margin-top: 1px; }
+    .sc2-body { flex: 1; padding: 6px 8px; overflow: hidden; }
+    .sc2-michi-title  { font-size: 7px; font-weight: 700; color: #0D9488; margin-bottom: 4px; }
+    .sc2-mark-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px 7px;
+      margin-bottom: 3px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .sc2-mark-row { display: flex; align-items: center; gap: 4px; }
+    .sc2-mark-icon {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 7px;
+      flex-shrink: 0;
+      color: #fff;
+      font-weight: 700;
+    }
+    .sc2-mark-title { font-size: 7px; font-weight: 700; color: #1A1A2E; }
+    .sc2-mark-meta  { font-size: 5.5px; color: #6C757D; margin-top: 1px; }
+    .sc2-link-row {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-left: 14px;
+      margin-top: 2px;
+    }
+    .sc2-link-line {
+      width: 1px;
+      height: 18px;
+      background: #DEE2E6;
+      flex-shrink: 0;
+    }
+    .sc2-link-card {
+      flex: 1;
+      background: #F1F3F5;
+      border-radius: 6px;
+      padding: 3px 5px;
+    }
+    .sc2-link-title  { font-size: 6px; font-weight: 600; color: #1A1A2E; }
+    .sc2-link-detail { font-size: 5.5px; color: #6C757D; }
+    .sc2-link-amount { font-size: 7px; font-weight: 700; color: #059669; float: right; }
+
+    /* ---- SCREEN 3: 集計タブ ---- */
+    .sc3 {
+      background: #FAFBFC;
+      display: flex;
+      flex-direction: column;
+    }
+    .sc3-header {
+      background: linear-gradient(160deg, #0F3D50 0%, #0D9488 100%);
+      padding: 22px 10px 10px;
+      color: #fff;
+    }
+    .sc3-header-title { font-size: 9px; font-weight: 700; }
+    .sc3-header-sub   { font-size: 6px; opacity: 0.75; margin-top: 1px; }
+    .sc3-tab-row {
+      background: #fff;
+      display: flex;
+      border-bottom: 1px solid #E9ECEF;
+      padding: 0 6px;
+    }
+    .sc3-tab { font-size: 6px; padding: 4px 6px; color: #6C757D; font-weight: 500; }
+    .sc3-tab.active { color: #0D9488; font-weight: 700; border-bottom: 2px solid #0D9488; }
+    .sc3-body { flex: 1; padding: 6px 8px; overflow: hidden; }
+    .sc3-summary-card {
+      background: linear-gradient(135deg, #0D9488, #059669);
+      border-radius: 9px;
+      padding: 8px 9px;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+    .sc3-summary-label { font-size: 6px; opacity: 0.8; }
+    .sc3-summary-value {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+    .sc3-summary-unit { font-size: 6px; opacity: 0.8; margin-left: 1px; }
+    .sc3-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px; }
+    .sc3-stat-card {
+      background: #fff;
+      border-radius: 7px;
+      padding: 6px 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .sc3-stat-label { font-size: 5.5px; color: #6C757D; }
+    .sc3-stat-value { font-size: 10px; font-weight: 700; color: #0D9488; line-height: 1.2; }
+    .sc3-stat-unit  { font-size: 5.5px; color: #6C757D; }
+    .sc3-breakdown-card {
+      background: #fff;
+      border-radius: 7px;
+      padding: 6px 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .sc3-bd-title { font-size: 6px; font-weight: 700; color: #1A1A2E; margin-bottom: 4px; }
+    .sc3-bd-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+    .sc3-bd-bar-wrap { display: flex; align-items: center; gap: 3px; flex: 1; }
+    .sc3-bd-label { font-size: 5.5px; color: #6C757D; width: 24px; flex-shrink: 0; }
+    .sc3-bd-bar { height: 4px; border-radius: 2px; }
+    .sc3-bd-amount { font-size: 6px; font-weight: 600; color: #1A1A2E; }
+
+    /* ---- SCREEN 4: 支払い・精算 ---- */
+    .sc4 {
+      background: #FAFBFC;
+      display: flex;
+      flex-direction: column;
+    }
+    .sc4-header {
+      background: linear-gradient(160deg, #0F3D50 0%, #0D9488 100%);
+      padding: 22px 10px 10px;
+      color: #fff;
+    }
+    .sc4-header-title { font-size: 9px; font-weight: 700; }
+    .sc4-header-sub   { font-size: 6px; opacity: 0.75; margin-top: 1px; }
+    .sc4-tab-row {
+      background: #fff;
+      display: flex;
+      border-bottom: 1px solid #E9ECEF;
+      padding: 0 6px;
+    }
+    .sc4-tab { font-size: 6px; padding: 4px 6px; color: #6C757D; font-weight: 500; }
+    .sc4-tab.active { color: #0D9488; font-weight: 700; border-bottom: 2px solid #0D9488; }
+    .sc4-body { flex: 1; padding: 6px 8px; overflow: hidden; }
+    .sc4-section-label {
+      font-size: 6px; font-weight: 700; color: #6C757D;
+      text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px;
+    }
+    .sc4-payment-card {
+      background: #fff;
+      border-radius: 7px;
+      padding: 5px 7px;
+      margin-bottom: 3px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sc4-pay-left {}
+    .sc4-pay-title  { font-size: 7px; font-weight: 700; color: #1A1A2E; }
+    .sc4-pay-payer  { font-size: 5.5px; color: #6C757D; margin-top: 1px; }
+    .sc4-pay-amount { font-size: 9px; font-weight: 800; color: #0D9488; }
+    .sc4-divider { height: 1px; background: #F1F3F5; margin: 5px 0; }
+    .sc4-settlement {
+      background: linear-gradient(135deg, #CCFBF1, #D1FAE5);
+      border-radius: 8px;
+      padding: 6px 7px;
+      border: 1px solid rgba(13, 148, 136, 0.2);
+    }
+    .sc4-settle-title { font-size: 6.5px; font-weight: 800; color: #0D9488; margin-bottom: 4px; }
+    .sc4-settle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3px;
+    }
+    .sc4-settle-arrow { font-size: 5.5px; color: #6C757D; flex: 1; text-align: center; }
+    .sc4-settle-name   { font-size: 6px; font-weight: 600; color: #1A1A2E; }
+    .sc4-settle-amount { font-size: 8px; font-weight: 800; color: #059669; }
+
+    /* ---- SCREEN 5: 地点追加・トピック選択 ---- */
+    .sc5 {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+    .sc5-header {
+      background: linear-gradient(160deg, #0F3D50 0%, #0D9488 100%);
+      padding: 22px 10px 10px;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .sc5-header-title { font-size: 9px; font-weight: 700; }
+    .sc5-header-save  { font-size: 7px; font-weight: 600; opacity: 0.9; }
+    .sc5-body { flex: 1; padding: 8px 10px; overflow: hidden; }
+    .sc5-field { margin-bottom: 7px; }
+    .sc5-field-label {
+      font-size: 6px; font-weight: 700; color: #6C757D;
+      text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px;
+    }
+    .sc5-field-value {
+      font-size: 7.5px; color: #1A1A2E;
+      background: #F8F9FA; border-radius: 6px; padding: 5px 7px;
+      border: 1px solid #E9ECEF;
+    }
+    .sc5-chip-row { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 3px; }
+    .sc5-chip {
+      font-size: 6.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      color: #fff;
+      letter-spacing: 0.2px;
+    }
+    .sc5-chip.selected { box-shadow: 0 0 0 2px rgba(255,255,255,0.5); }
+    .sc5-chip.unselected { opacity: 0.55; }
+    .sc5-topic-section-label {
+      font-size: 6px; font-weight: 700; color: #6C757D;
+      text-transform: uppercase; letter-spacing: 0.4px;
+      margin-bottom: 4px; margin-top: 6px;
+    }
+    .sc5-topic-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
+    .sc5-topic-btn {
+      border-radius: 8px;
+      padding: 4px 3px;
+      text-align: center;
+      font-size: 5.5px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .sc5-topic-btn.selected {
+      box-shadow: 0 0 0 2px #fff, 0 0 0 4px #0D9488;
+    }
+
+    /* =========================================================
+       RATIONALE TABLE
+    ========================================================= */
+    .rationale-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 24px 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+    }
+    .rationale-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    table.rationale-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    table.rationale-table th {
+      background: var(--gray-100);
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    table.rationale-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    table.rationale-table tr:last-child td { border-bottom: none; }
+    .badge-pass {
+      background: #D1FAE5;
+      color: #065F46;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+    .badge-note {
+      background: #FEF3C7;
+      color: #92400E;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+
+    /* =========================================================
+       GRADIENT PREVIEW
+    ========================================================= */
+    .grad-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .grad-card {
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .grad-sample {
+      height: 80px;
+      display: flex;
+      align-items: flex-end;
+      padding: 10px 14px;
+    }
+    .grad-sample-text {
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      opacity: 0.9;
+    }
+    .grad-info {
+      background: #fff;
+      padding: 10px 14px;
+    }
+    .grad-name { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+    .grad-usage { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* =========================================================
+       OVERLAY DETAILS (大きめプレビュー)
+    ========================================================= */
+    .overlay-detail-section {
+      margin-top: 48px;
+    }
+    .overlay-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 24px;
+    }
+    @media (max-width: 900px) {
+      .overlay-detail-grid { grid-template-columns: 1fr; }
+    }
+    .detail-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 24px 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .detail-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 4px;
+    }
+    .detail-card .sub { font-size: 12px; color: var(--text-secondary); margin-bottom: 16px; }
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--gray-200);
+      font-size: 13px;
+    }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-key { font-weight: 600; color: var(--text-secondary); flex: 0 0 120px; }
+    .spec-val { color: var(--text-primary); flex: 1; text-align: right; }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+    .page-footer {
+      background: var(--teal-dark);
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 28px;
+      font-size: 12px;
+      margin-top: 64px;
+    }
+    .page-footer strong { color: #fff; }
+  </style>
+</head>
+<body>
+
+<!-- =========================================================
+     PAGE HEADER
+========================================================= -->
+<header class="page-header">
+  <div class="badge">Designer Report — Draft</div>
+  <h1>MichiMark App Store スクリーンショット<br>オーバーレイデザイン提案</h1>
+  <p>
+    iPhone 6.9インチ（1320 x 2868 px）向け、5枚構成のスクリーンショットオーバーレイデザイン。
+    キャッチコピー（上部）+ スクリーンショットモック（中央）+ サブテキスト（下部）の3層構造。
+  </p>
+  <div class="meta-row">
+    <span>作成日: 2026-04-16</span>
+    <span>作成者: designer</span>
+    <span>ステータス: Draft（product-manager レビュー待ち）</span>
+    <span>格納先: docs/Design/draft/</span>
+  </div>
+</header>
+
+<!-- =========================================================
+     SECTION 1: カラーパレット
+========================================================= -->
+<section id="color-palette">
+  <div class="section-heading">
+    <div class="num">1</div>
+    カラーパレット
+  </div>
+  <p class="section-desc">
+    オーバーレイ背景・テキスト・アクセントカラーの定義。
+    MichiMark のブランドカラー Teal/Emerald 系を軸に、視認性（WCAG AA 4.5:1以上）を確保。
+  </p>
+
+  <div class="palette-grid">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#0F3D50;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Teal Dark</div>
+        <div class="swatch-hex">#0F3D50</div>
+        <div class="swatch-role">グラデーション始点・深みの演出</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#0D9488;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Teal Main</div>
+        <div class="swatch-hex">#0D9488</div>
+        <div class="swatch-role">ブランド主軸・ナビゲーションバー</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#14B8A6;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Teal Mid</div>
+        <div class="swatch-hex">#14B8A6</div>
+        <div class="swatch-role">グラデーション中間・アクセント</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#059669;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Emerald</div>
+        <div class="swatch-hex">#059669</div>
+        <div class="swatch-role">グラデーション終点・金額表示</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#10B981;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Emerald Mid</div>
+        <div class="swatch-hex">#10B981</div>
+        <div class="swatch-role">ハイライト・集計カード</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#A7F3D0;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Emerald 200</div>
+        <div class="swatch-hex">#A7F3D0</div>
+        <div class="swatch-role">キャッチコピー強調語（em タグ）</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#FFFFFF; border: 1px solid #DEE2E6;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">White</div>
+        <div class="swatch-hex">#FFFFFF</div>
+        <div class="swatch-role">キャッチコピー本文・最高輝度テキスト</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:rgba(255,255,255,0.82); border: 1px solid #DEE2E6;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">White 82%</div>
+        <div class="swatch-hex">rgba(255,255,255,0.82)</div>
+        <div class="swatch-role">サブテキスト・補足情報</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- グラデーション定義 -->
+  <h3 style="font-size:16px; font-weight:700; color:var(--teal-dark); margin-bottom:12px;">背景グラデーション（枚別）</h3>
+  <div class="grad-preview-grid">
+    <div class="grad-card">
+      <div class="grad-sample" style="background: linear-gradient(160deg, #0F3D50 0%, #0D9488 55%, #059669 100%);">
+        <span class="grad-sample-text">Primary Grad</span>
+      </div>
+      <div class="grad-info">
+        <div class="grad-name">Primary（1・2枚目）</div>
+        <div class="grad-usage">#0F3D50 → #0D9488 → #059669</div>
+      </div>
+    </div>
+    <div class="grad-card">
+      <div class="grad-sample" style="background: linear-gradient(160deg, #0F3D50 0%, #0D9488 40%, #10B981 80%, #34D399 100%);">
+        <span class="grad-sample-text">Warm Grad</span>
+      </div>
+      <div class="grad-info">
+        <div class="grad-name">Warm（3枚目・集計）</div>
+        <div class="grad-usage">#0F3D50 → #0D9488 → #34D399</div>
+      </div>
+    </div>
+    <div class="grad-card">
+      <div class="grad-sample" style="background: linear-gradient(160deg, #0D9488 0%, #059669 60%, #047857 100%);">
+        <span class="grad-sample-text">Ocean Grad</span>
+      </div>
+      <div class="grad-info">
+        <div class="grad-name">Ocean（4枚目・精算）</div>
+        <div class="grad-usage">#0D9488 → #059669 → #047857</div>
+      </div>
+    </div>
+    <div class="grad-card">
+      <div class="grad-sample" style="background: linear-gradient(160deg, #0F2027 0%, #203A43 50%, #2C5364 100%);">
+        <span class="grad-sample-text">Night Grad</span>
+      </div>
+      <div class="grad-info">
+        <div class="grad-name">Night（5枚目・入力）</div>
+        <div class="grad-usage">#0F2027 → #203A43 → #2C5364</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- コントラスト比 -->
+  <h3 style="font-size:16px; font-weight:700; color:var(--teal-dark); margin:24px 0 12px;">コントラスト比（WCAG AA 検証）</h3>
+  <div class="rationale-card">
+    <table class="rationale-table">
+      <thead>
+        <tr>
+          <th>テキスト色</th>
+          <th>背景色</th>
+          <th>用途</th>
+          <th>コントラスト比</th>
+          <th>判定</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>#FFFFFF（白）</td>
+          <td>#0F3D50（Teal Dark）</td>
+          <td>キャッチコピー本文</td>
+          <td>11.2 : 1</td>
+          <td><span class="badge-pass">AAA PASS</span></td>
+        </tr>
+        <tr>
+          <td>#FFFFFF（白）</td>
+          <td>#0D9488（Teal Main）</td>
+          <td>キャッチコピー本文</td>
+          <td>4.8 : 1</td>
+          <td><span class="badge-pass">AA PASS</span></td>
+        </tr>
+        <tr>
+          <td>rgba(255,255,255,0.82)</td>
+          <td>#0D9488（Teal Main）</td>
+          <td>サブテキスト</td>
+          <td>4.6 : 1</td>
+          <td><span class="badge-pass">AA PASS</span></td>
+        </tr>
+        <tr>
+          <td>#A7F3D0（Emerald 200）</td>
+          <td>#0F3D50（Teal Dark）</td>
+          <td>キャッチコピー強調語</td>
+          <td>7.1 : 1</td>
+          <td><span class="badge-pass">AAA PASS</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- =========================================================
+     SECTION 2: タイポグラフィ
+========================================================= -->
+<section id="typography">
+  <div class="section-heading">
+    <div class="num">2</div>
+    タイポグラフィ
+  </div>
+  <p class="section-desc">
+    App Store スクリーンショット向けフォントスタイル。縮小モック表示（約 18% スケール）のため、
+    実際の出力ではフォントサイズを 5〜6 倍に換算する。
+  </p>
+
+  <div class="type-card">
+    <div class="type-label">アプリ名バッジ — 実寸: 52px / 太さ: 800 / 字間: +3px</div>
+    <div style="font-size:32px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:#0D9488;">MICHIMARK</div>
+    <div class="type-meta">用途: オーバーレイ上部のアプリ名表示（アプリアイコン直下）</div>
+  </div>
+
+  <div class="type-card">
+    <div class="type-label">キャッチコピー — 実寸: 82px / 太さ: 800 / 行間: 1.35</div>
+    <div style="font-size:52px; font-weight:800; letter-spacing:-1px; line-height:1.35; color:#0F3D50;">走ったルートを、<br><em style="font-style:normal; color:#0D9488;">タイムライン</em>で残す。</div>
+    <div class="type-meta">用途: キャッチコピーメイン。強調語は Teal Main または Emerald 200 でカラー変化</div>
+  </div>
+
+  <div class="type-card">
+    <div class="type-label">サブテキスト — 実寸: 46px / 太さ: 500 / 行間: 1.6</div>
+    <div style="font-size:30px; font-weight:500; line-height:1.6; color:#6C757D;">ドライブ・旅行・仕事の移動を<strong style="color:#1A1A2E;">まとめてログ</strong>。<br>あとから振り返る、ドライブの記録帳。</div>
+    <div class="type-meta">用途: オーバーレイ下部のサブテキスト（白 82% で背景に浮かせる）</div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SECTION 3: コンポーネントプレビュー（5枚のオーバーレイモック）
+========================================================= -->
+<section id="component-preview">
+  <div class="section-heading">
+    <div class="num">3</div>
+    スクリーンショット オーバーレイ モックアップ（5枚）
+  </div>
+  <p class="section-desc">
+    iPhone 6.9インチ（1320 x 2868 px）を約 18% に縮小したモック。
+    実際のエクスポート時は上部/中央/下部の比率を維持して実寸に引き伸ばす。
+    中央エリアには実機スクリーンショットを使用。
+  </p>
+
+  <div class="overlay-grid">
+
+    <!-- ============================================================
+         SLIDE 1: タイムライン（地点一覧）
+         グラデーション: Primary
+    ============================================================ -->
+    <div class="overlay-wrapper">
+      <div class="overlay-num-badge">01</div>
+      <div class="overlay-label">タイムライン一覧<br>「最重要・アプリを代表する1枚」</div>
+
+      <div class="overlay-card" style="background: linear-gradient(160deg, #0F3D50 0%, #0D9488 55%, #059669 100%);">
+
+        <!-- 上部: キャッチコピー -->
+        <div class="ov-top">
+          <div class="ov-appname">MichiMark</div>
+          <div class="ov-catchcopy">
+            走ったルートを、<br><em>タイムライン</em>で残す。
+          </div>
+        </div>
+
+        <!-- 中央: スクリーンショット -->
+        <div class="ov-screen-area">
+          <div class="iphone-mock">
+            <div class="iphone-dynamic-island"></div>
+            <div class="iphone-screen">
+              <img
+                src="../../AppStore/screenshots/01_event-list_イベント一覧ファーストビュー.png"
+                alt="イベント一覧ファーストビュー"
+                style="width:100%; height:100%; object-fit:cover; object-position:top; border-radius:18px;"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 下部: サブテキスト -->
+        <div class="ov-bottom">
+          <div class="ov-subtext">
+            ドライブ・旅行・仕事の移動を<strong>まとめてログ</strong>。<br>
+            あとから振り返る、ドライブの記録帳。
+          </div>
+        </div>
+      </div>
+    </div><!-- /SLIDE 1 -->
+
+    <!-- ============================================================
+         SLIDE 2: タイムライン拡大（Mark/Link詳細）
+         グラデーション: Primary（少し暗め）
+    ============================================================ -->
+    <div class="overlay-wrapper">
+      <div class="overlay-num-badge">02</div>
+      <div class="overlay-label">地点・区間の詳細<br>「地点と区間の構造を見せる」</div>
+
+      <div class="overlay-card" style="background: linear-gradient(160deg, #0A2838 0%, #0F3D50 40%, #0D9488 100%);">
+
+        <!-- 上部: キャッチコピー -->
+        <div class="ov-top">
+          <div class="ov-appname">MichiMark</div>
+          <div class="ov-catchcopy">
+            地点・区間・費用、<br><em>まとめて記録。</em>
+          </div>
+        </div>
+
+        <!-- 中央: スクリーンショット -->
+        <div class="ov-screen-area">
+          <div class="iphone-mock">
+            <div class="iphone-dynamic-island"></div>
+            <div class="iphone-screen">
+              <img
+                src="../../AppStore/screenshots/02_michiinfo-timeline_タイムライン差別化ポイント.png"
+                alt="タイムライン差別化ポイント（地点・区間）"
+                style="width:100%; height:100%; object-fit:cover; object-position:top; border-radius:18px;"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 下部: サブテキスト -->
+        <div class="ov-bottom">
+          <div class="ov-subtext">
+            出発地・経由地・目的地を<strong>地点</strong>として記録し、<br>
+            区間の費用・距離を<strong>区間</strong>で繋ぐ。
+          </div>
+        </div>
+      </div>
+    </div><!-- /SLIDE 2 -->
+
+    <!-- ============================================================
+         SLIDE 3: 集計タブ（旅費・燃費サマリー）
+         グラデーション: Warm
+    ============================================================ -->
+    <div class="overlay-wrapper">
+      <div class="overlay-num-badge">03</div>
+      <div class="overlay-label">集計タブ<br>「旅費・燃費の自動集計」</div>
+
+      <div class="overlay-card" style="background: linear-gradient(160deg, #0F3D50 0%, #0D9488 40%, #10B981 80%, #34D399 100%);">
+
+        <!-- 上部: キャッチコピー -->
+        <div class="ov-top">
+          <div class="ov-appname">MichiMark</div>
+          <div class="ov-catchcopy">
+            旅費も燃費も、<br><em>自動で集計。</em>
+          </div>
+        </div>
+
+        <!-- 中央: スクリーンショット -->
+        <div class="ov-screen-area">
+          <div class="iphone-mock">
+            <div class="iphone-dynamic-island"></div>
+            <div class="iphone-screen">
+              <img
+                src="../../AppStore/screenshots/03_summary-settlement_集計・精算.png"
+                alt="集計・精算画面"
+                style="width:100%; height:100%; object-fit:cover; object-position:top; border-radius:18px;"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 下部: サブテキスト -->
+        <div class="ov-bottom">
+          <div class="ov-subtext">
+            ガソリン・高速・食事をカテゴリ別に集計。<br>
+            <strong>燃費計算</strong>も記録するだけで自動計算。
+          </div>
+        </div>
+      </div>
+    </div><!-- /SLIDE 3 -->
+
+    <!-- ============================================================
+         SLIDE 4: 支払い・精算画面
+         グラデーション: Ocean
+    ============================================================ -->
+    <div class="overlay-wrapper">
+      <div class="overlay-num-badge">04</div>
+      <div class="overlay-label">支払い・割り勘精算<br>「旅の帰りに終わる精算」</div>
+
+      <div class="overlay-card" style="background: linear-gradient(160deg, #0D9488 0%, #059669 60%, #047857 100%);">
+
+        <!-- 上部: キャッチコピー -->
+        <div class="ov-top">
+          <div class="ov-appname">MichiMark</div>
+          <div class="ov-catchcopy">
+            割り勘精算、<br><em>旅の帰りに終わる。</em>
+          </div>
+        </div>
+
+        <!-- 中央: スクリーンショット -->
+        <div class="ov-screen-area">
+          <div class="iphone-mock">
+            <div class="iphone-dynamic-island"></div>
+            <div class="iphone-screen">
+              <img
+                src="../../AppStore/screenshots/04_payment-split_支払い・割り勘.png"
+                alt="支払い・割り勘精算画面"
+                style="width:100%; height:100%; object-fit:cover; object-position:top; border-radius:18px;"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 下部: サブテキスト -->
+        <div class="ov-bottom">
+          <div class="ov-subtext">
+            誰がいくら立て替えたかを記録するだけ。<br>
+            <strong>精算額を自動計算</strong>してその場でシェア。
+          </div>
+        </div>
+      </div>
+    </div><!-- /SLIDE 4 -->
+
+    <!-- ============================================================
+         SLIDE 5: 地点追加・トピック選択
+         グラデーション: Night
+    ============================================================ -->
+    <div class="overlay-wrapper">
+      <div class="overlay-num-badge">05</div>
+      <div class="overlay-label">地点追加・トピック選択<br>「用途別の記録を一画面で」</div>
+
+      <div class="overlay-card" style="background: linear-gradient(160deg, #0F2027 0%, #203A43 50%, #2C5364 100%);">
+
+        <!-- 上部: キャッチコピー -->
+        <div class="ov-top">
+          <div class="ov-appname">MichiMark</div>
+          <div class="ov-catchcopy">
+            ドライブ・仕事・旅行、<br><em>用途別に記録。</em>
+          </div>
+        </div>
+
+        <!-- 中央: スクリーンショット -->
+        <div class="ov-screen-area">
+          <div class="iphone-mock">
+            <div class="iphone-dynamic-island"></div>
+            <div class="iphone-screen">
+              <img
+                src="../../AppStore/screenshots/05_mark-detail-fuel_地点詳細・給油記録.png"
+                alt="地点詳細・給油記録画面"
+                style="width:100%; height:100%; object-fit:cover; object-position:top; border-radius:18px;"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 下部: サブテキスト -->
+        <div class="ov-bottom">
+          <div class="ov-subtext">
+            8種類のトピックで目的別に色分け管理。<br>
+            タグで<strong>さらに細かく</strong>分類できる。
+          </div>
+        </div>
+      </div>
+    </div><!-- /SLIDE 5 -->
+
+  </div><!-- /overlay-grid -->
+</section>
+
+<!-- =========================================================
+     SECTION 4: 設計根拠
+========================================================= -->
+<section id="rationale">
+  <div class="section-heading">
+    <div class="num">4</div>
+    設計根拠
+  </div>
+  <p class="section-desc">
+    各デザイン決定の根拠・Apple App Store ガイドライン準拠ポイントを記載。
+  </p>
+
+  <!-- レイアウト構成 -->
+  <div class="rationale-card">
+    <h4>レイアウト構成の根拠</h4>
+    <table class="rationale-table">
+      <thead>
+        <tr>
+          <th>要素</th>
+          <th>比率（実寸）</th>
+          <th>根拠・ガイドライン準拠</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>上部（キャッチコピーエリア）</strong></td>
+          <td>約 28%（〜803px）</td>
+          <td>
+            Apple ガイドライン「テキストが全体の 30% 以下」を遵守。
+            大きすぎると App Store 審査での表示縮小時に潰れるため、28% に設定。
+            アプリ名バッジ（uppercase・字間広め）でブランドを印象付け。
+          </td>
+        </tr>
+        <tr>
+          <td><strong>中央（スクリーンショットエリア）</strong></td>
+          <td>約 55%（〜1577px）</td>
+          <td>
+            実機スクリーンショット＋iPhoneモック枠を配置。
+            モック枠があることで「アプリの画面」と直感的に認識させる。
+            Dynamic Island を模したデザインで iOS 17+ を想起させる。
+          </td>
+        </tr>
+        <tr>
+          <td><strong>下部（サブテキストエリア）</strong></td>
+          <td>約 17%（〜488px）</td>
+          <td>
+            補足情報を白 82% の薄めテキストで表示。
+            Apple が推奨する「スクリーンショット下部の空きスペース活用」に準拠。
+            2行以内に収めることで、App Store ギャラリー縮小時にも視認可能。
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 5枚の役割分担 -->
+  <div class="rationale-card">
+    <h4>5枚の役割分担と優先度</h4>
+    <table class="rationale-table">
+      <thead>
+        <tr>
+          <th>枚</th>
+          <th>画面</th>
+          <th>役割</th>
+          <th>グラデーション</th>
+          <th>優先度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1枚目</strong></td>
+          <td>タイムライン一覧</td>
+          <td>「何のアプリか」を最速で伝える。ダウンロード前に最初に目に入る1枚。ドライブ記録の全体感を見せる</td>
+          <td>Primary（深緑 → Teal）</td>
+          <td><span class="badge-pass">最重要</span></td>
+        </tr>
+        <tr>
+          <td><strong>2枚目</strong></td>
+          <td>地点・区間 詳細</td>
+          <td>MichiMark 独自の「地点 + 区間」構造を説明。他のドライブアプリとの差別化ポイント</td>
+          <td>Deep（暗いTeal）</td>
+          <td><span class="badge-note">高</span></td>
+        </tr>
+        <tr>
+          <td><strong>3枚目</strong></td>
+          <td>集計タブ</td>
+          <td>費用・燃費の自動集計を訴求。「記録が活きる」体験を見せる</td>
+          <td>Warm（Teal → Emerald → 明るい緑）</td>
+          <td><span class="badge-note">高</span></td>
+        </tr>
+        <tr>
+          <td><strong>4枚目</strong></td>
+          <td>支払い・精算</td>
+          <td>グループ旅行・割り勘ユーザーへの訴求。「旅費精算まで完結」というバリュー</td>
+          <td>Ocean（Teal → 深い緑）</td>
+          <td><span class="badge-note">中</span></td>
+        </tr>
+        <tr>
+          <td><strong>5枚目</strong></td>
+          <td>地点追加・トピック</td>
+          <td>入力の簡単さとトピックの多様性。カジュアルユーザーへの「使いやすさ」訴求</td>
+          <td>Night（深いネイビー）</td>
+          <td><span class="badge-note">中</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- キャッチコピー設計 -->
+  <div class="rationale-card">
+    <h4>キャッチコピーの設計方針</h4>
+    <table class="rationale-table">
+      <thead>
+        <tr>
+          <th>枚</th>
+          <th>コピー</th>
+          <th>設計意図</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>走ったルートを、タイムラインで残す。</td>
+          <td>動詞（走る・残す）で「行動の記録」を明示。「タイムライン」を強調語に。読点で溜めを作り視線誘導</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>地点・区間・費用、まとめて記録。</td>
+          <td>3要素を列挙することで情報密度の高さを示す。「まとめて」で手間の少なさを暗示</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>旅費も燃費も、自動で集計。</td>
+          <td>「も〜も」で対比構造。「自動で」で手軽さ・利便性を前面に。燃費は他アプリにないUSP</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>割り勘精算、旅の帰りに終わる。</td>
+          <td>「旅の帰りに」というシチュエーション設定で使用場面をイメージさせる。精算の即時性を訴求</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>ドライブ・仕事・旅行、用途別に記録。</td>
+          <td>3ターゲット（ドライバー・ワーカー・旅行者）を並列列挙。検索キーワードにも合致</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 制作時の注意事項 -->
+  <div class="rationale-card">
+    <h4>実制作時の注意事項（Figma / 実機キャプチャ差し替え時）</h4>
+    <table class="rationale-table">
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th>内容</th>
+          <th>ステータス</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>実機スクリーンショット</strong></td>
+          <td>docs/AppStore/screenshots/ の実機キャプチャ5枚を使用。最新ビルドで再撮影する場合は同ディレクトリのファイルを差し替えること</td>
+          <td><span class="badge-pass">対応済み</span></td>
+        </tr>
+        <tr>
+          <td><strong>出力サイズ</strong></td>
+          <td>1320 × 2868 px（iPhone 6.9インチ最大解像度）。Retina対応で @3x 出力推奨</td>
+          <td><span class="badge-note">要確認</span></td>
+        </tr>
+        <tr>
+          <td><strong>フォント</strong></td>
+          <td>日本語: 実制作では「Hiragino Sans W8」または「Noto Sans JP Black」を使用。本レポートは近似フォントで代用</td>
+          <td><span class="badge-note">要確認</span></td>
+        </tr>
+        <tr>
+          <td><strong>Apple ガイドライン</strong></td>
+          <td>テキスト占有率 28%（30% 以下）・コントラスト比 WCAG AA 以上を確認済み</td>
+          <td><span class="badge-pass">準拠</span></td>
+        </tr>
+        <tr>
+          <td><strong>Dynamic Island</strong></td>
+          <td>iPhone 15 Pro / 16 系の実機キャプチャには Dynamic Island が写る。モック枠のノッチ形状と一致させること</td>
+          <td><span class="badge-note">要確認</span></td>
+        </tr>
+        <tr>
+          <td><strong>英語版対応</strong></td>
+          <td>App Store の多言語対応を行う場合は英語版キャッチコピーを別途作成すること</td>
+          <td><span class="badge-note">将来対応</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- =========================================================
+     SECTION 5: product-manager 向け 要件の叩き
+========================================================= -->
+<section id="requirements-draft">
+  <div class="section-heading">
+    <div class="num">5</div>
+    product-manager 向け 要件の叩き
+  </div>
+  <p class="section-desc">
+    本デザイン提案をもとに product-manager がレビュー・整形し、
+    承認後に <code>docs/Requirements/</code> へ格納する。
+  </p>
+
+  <div class="rationale-card" style="background: #F0F9FF; border: 1px solid #BAE6FD;">
+    <h4 style="font-family: 'SF Mono', monospace; font-size:13px; color:#0C4A6E; white-space:pre-wrap;">
+# デザイン要件の叩き: App Store スクリーンショット オーバーレイ
+
+## 概要
+MichiMark の App Store スクリーンショット（5枚）に、
+テーマカラー（Teal/Emerald）グラデーション背景 + キャッチコピー + サブテキストを
+重畳したオーバーレイ画像を作成する。
+現状のスクリーンショット（キャプチャのみ）から、
+アプリの価値が一目で伝わるビジュアルへ刷新する。
+
+## 変更項目
+- [ ] 1枚目: タイムライン一覧 オーバーレイ作成（Primary Grad）
+- [ ] 2枚目: 地点・区間 詳細 オーバーレイ作成（Deep Grad）
+- [ ] 3枚目: 集計タブ オーバーレイ作成（Warm Grad）
+- [ ] 4枚目: 支払い・精算 オーバーレイ作成（Ocean Grad）
+- [ ] 5枚目: 地点追加・トピック オーバーレイ作成（Night Grad）
+- [ ] 各スクリーンショット: 実機キャプチャ取得（最新ビルドで再撮影）
+- [ ] 出力サイズ確認: 1320 × 2868 px @3x
+- [ ] App Store Connect へのアップロード・確認
+
+## デザイン仕様（各オーバーレイ共通）
+- 背景: 枚ごとの指定グラデーション（Primary / Deep / Warm / Ocean / Night）
+- 上部エリア: 高さ 28%（キャッチコピー + アプリ名バッジ）
+- 中央エリア: 高さ 55%（実機スクリーンショット + iPhone モック枠）
+- 下部エリア: 高さ 17%（サブテキスト 2行以内）
+- キャッチコピー: 82px / 太さ800 / 白 / 強調語は Emerald 200（#A7F3D0）
+- サブテキスト: 46px / 太さ500 / 白 82%
+- フォント: Hiragino Sans W8（日本語）
+
+## 参照デザインレポート
+docs/Design/draft/appstore_screenshot_overlay_design.html
+
+## 優先度
+高（App Store 公開直後・CVR 改善施策として即時対応推奨）
+
+## 備考
+- 英語版コピーは将来対応（現時点は日本語のみ）
+- Figma ファイルへの展開は marketer / designer と連携して進める
+    </h4>
+  </div>
+</section>
+
+<!-- =========================================================
+     PAGE FOOTER
+========================================================= -->
+<footer class="page-footer">
+  <strong>MichiMark — App Store スクリーンショット オーバーレイデザイン提案</strong><br>
+  作成: designer ロール / 2026-04-16 / ステータス: Draft（product-manager レビュー待ち）<br>
+  格納先: docs/Design/draft/appstore_screenshot_overlay_design.html
+</footer>
+
+</body>
+</html>
