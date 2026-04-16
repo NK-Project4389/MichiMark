@@ -157,3 +157,4 @@
 | [2026-04-16_milestone__AppStore配信達成.md](./2026-04-16_milestone__AppStore配信達成.md) | 🎉 MichiMark App Store 配信達成（2026-04-16） |
 | [2026-04-16_test__F-2-UI14-IntegrationTest全件PASS.md](./2026-04-16_test__F-2-UI14-IntegrationTest全件PASS.md) | F-2 ダッシュボード + UI-14 道路タイムライン Integration Test 全件PASS（20PASS+9PASS） |
 | [2026-04-16_fix__TC-VW-I004-cachedEvent更新バグ修正・F2-UI14テスト完了.md](./2026-04-16_fix__TC-VW-I004-cachedEvent更新バグ修正・F2-UI14テスト完了.md) | TC-VW-I004バグ修正（17PASS）・F-2（20PASS）・UI-14（9PASS）全件PASS |
+| [2026-04-16_test__B17-seed-data-sample-IntegrationTest-全件PASS.md](./2026-04-16_test__B17-seed-data-sample-IntegrationTest-全件PASS.md) | B-17 本番シードデータ見直し Integration Test 3PASS/0FAIL（TC-SD-001〜001c） |

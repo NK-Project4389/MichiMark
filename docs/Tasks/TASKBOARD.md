@@ -30,8 +30,8 @@
 | T-433 | B-17: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-seed_data_sample.md |
 | T-434a | B-17: シードデータ実装 | flutter-dev | `DONE` | | FS-seed_data_sample.md 参照 |
 | T-434b | B-17: テストコード実装 | tester | `DONE` | | TC-SD-001〜009（TC-SD-001のみ実装、TC-SD-002〜009はSKIP） |
-| T-435 | B-17: レビュー | reviewer | `BLOCKED` | | |
-| T-436 | B-17: テスト実行 | tester | `BLOCKED` | | |
+| T-435 | B-17: レビュー | reviewer | `DONE` | | 承認 |
+| T-436 | B-17: テスト実行 | tester | `DONE` | | 3PASS/0FAIL（TC-SD-001〜001c） |
 
 ---
 

@@ -40,14 +40,15 @@ void main() {
   // ヘルパー関数
   // ────────────────────────────────────────────────────────
 
-  /// アプリを起動してイベント一覧画面（eventList_page）が表示されるまで待つ。
+  /// アプリを起動してイベント一覧画面が表示されるまで待つ。
+  /// event_list_invite_code_button（AppBarのボタン）の出現で判定する。
   Future<void> launchApp(WidgetTester tester) async {
     await GetIt.I.reset();
     app_router.router.go('/');
     app.main();
     for (var i = 0; i < 30; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.byKey(const Key('eventList_page')).evaluate().isNotEmpty) {
+      if (find.byKey(const Key('event_list_invite_code_button')).evaluate().isNotEmpty) {
         return;
       }
     }
@@ -63,9 +64,9 @@ void main() {
     (tester) async {
       await launchApp(tester);
 
-      // イベント一覧ページが表示されていること
+      // イベント一覧ページが表示されていること（招待コードボタンの存在で判定）
       expect(
-        find.byKey(const Key('eventList_page')),
+        find.byKey(const Key('event_list_invite_code_button')),
         findsOneWidget,
       );
     },
@@ -85,13 +86,20 @@ void main() {
   );
 
   testWidgets(
-    'TC-SD-001c: イベント一覧に最初のイベントカード（eventList_card_0）が表示されること',
+    'TC-SD-001c: イベント一覧にListViewが表示されること（シードデータが投入されていること）',
     (tester) async {
       await launchApp(tester);
 
-      // 少なくとも1件目のカードが存在すること
+      // ListView が表示されるまで追加待機（データロード完了を待つ）
+      for (var i = 0; i < 20; i++) {
+        if (find.byType(ListView).evaluate().isNotEmpty) break;
+        if (find.text('イベントがありません').evaluate().isNotEmpty) break;
+        await tester.pump(const Duration(milliseconds: 500));
+      }
+
+      // ListView が表示されること（シードデータが1件以上ある場合のみ表示される）
       expect(
-        find.byKey(const Key('eventList_card_0')),
+        find.byType(ListView),
         findsOneWidget,
       );
     },
@@ -133,4 +141,18 @@ void main() {
   //   - 手動確認項目: 「箱根日帰りドライブ」が現在日から7日前、
   //     「横浜エリア訪問ルート」が現在日から3日前の日付で表示されること
   // ────────────────────────────────────────────────────────
+}
+
+// ────────────────────────────────────────────────────────
+// ユーティリティ: byKeyPrefix finder
+// ────────────────────────────────────────────────────────
+
+extension _FinderExtension on CommonFinders {
+  Finder byKeyPrefix(String prefix) {
+    return find.byWidgetPredicate(
+      (widget) =>
+          widget.key is ValueKey<String> &&
+          (widget.key! as ValueKey<String>).value.startsWith(prefix),
+    );
+  }
 }
