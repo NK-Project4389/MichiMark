@@ -231,9 +231,8 @@ void main() {
     expect(labelFinder, findsOneWidget);
 
     // テキストが「km」または「---」を含むこと
-    final widget = tester.widget<Text>(
-      find.descendant(of: labelFinder, matching: find.byType(Text)).first,
-    );
+    // moving_cost_total_distance_label キーは Text ウィジェット自体に付与されている
+    final widget = tester.widget<Text>(labelFinder);
     final text = widget.data ?? '';
     expect(text.contains('km') || text.contains('---'), isTrue);
   });

@@ -54,6 +54,7 @@ class TravelExpenseDashboardView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: events.take(3).map((e) {
               return Container(
+                key: Key('travel_calendar_badge_${e.eventId}'),
                 width: 6,
                 height: 6,
                 margin: const EdgeInsets.symmetric(horizontal: 1),

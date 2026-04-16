@@ -134,8 +134,8 @@
 | T-391 | F-2: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-dashboard.md |
 | T-392a | F-2: 実装 | flutter-dev | `DONE` | | FS-dashboard.md 参照 |
 | T-392b | F-2: テストコード実装 | tester | `DONE` | | TC-DB-001〜008 |
-| T-393 | F-2: レビュー | reviewer | `TODO` | | T-392a/b完了後 |
-| T-394 | F-2: テスト実行 | tester | `BLOCKED` | | T-393完了後 |
+| T-393 | F-2: レビュー | reviewer | `DONE` | | 承認 |
+| T-394 | F-2: テスト実行 | tester | `TODO` | | T-393完了後 |
 
 ---
 
@@ -148,8 +148,8 @@
 | T-397 | UI-14: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_road_timeline.md |
 | T-398a | UI-14: 実装 | flutter-dev | `DONE` | | FS-michi_info_road_timeline.md 参照 |
 | T-398b | UI-14: テストコード実装 | tester | `DONE` | | TC-RDT-001〜005 |
-| T-399 | UI-14: レビュー | reviewer | `TODO` | | T-398a/b完了後 |
-| T-400 | UI-14: テスト実行 | tester | `BLOCKED` | | T-399完了後 |
+| T-399 | UI-14: レビュー | reviewer | `DONE` | | 承認 |
+| T-400 | UI-14: テスト実行 | tester | `TODO` | | T-399完了後 |
 
 ---
 

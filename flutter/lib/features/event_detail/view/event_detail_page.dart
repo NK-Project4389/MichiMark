@@ -444,6 +444,20 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
                 ));
           },
         ),
+        // PaymentInfoタブ選択時にPaymentInfoReloadRequestedを発火する
+        BlocListener<EventDetailBloc, EventDetailState>(
+          listenWhen: (prev, curr) {
+            if (prev is! EventDetailLoaded || curr is! EventDetailLoaded) {
+              return false;
+            }
+            return prev.draft.selectedTab != EventDetailTab.paymentInfo &&
+                curr.draft.selectedTab == EventDetailTab.paymentInfo;
+          },
+          listener: (context, state) {
+            if (!context.mounted) return;
+            context.read<PaymentInfoBloc>().add(const PaymentInfoReloadRequested());
+          },
+        ),
         // BasicInfoSavedDelegate受信後にcachedEventを更新する + isSavedAtLeastOnce を true にする
         BlocListener<BasicInfoBloc, BasicInfoState>(
           listenWhen: (prev, curr) =>
