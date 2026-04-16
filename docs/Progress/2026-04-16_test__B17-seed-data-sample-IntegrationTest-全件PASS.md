@@ -6,6 +6,8 @@
 ---
 
 ## 完了した作業
+- fix: INV-3 テストFAIL修正（スタブ分岐対応・入力文字列修正）・T-333/T-338 DONE (56e06cb)
+- test: B-17 本番シードデータ Integration Test 全件PASS（TC-SD-001〜001c） (d12d124)
 
 ### B-17 Integration Test 実行（T-436）
 
