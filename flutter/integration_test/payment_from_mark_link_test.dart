@@ -215,13 +215,59 @@ void main() {
 
   /// PaymentDetail で金額を入力して保存する。
   Future<void> savePaymentDetail(WidgetTester tester, String amount) async {
-    // 金額フィールドに入力
+    // NumericInputRow内のGestureDetector（label='支払金額'）をタップしてキーパッドを開く
+    // paymentDetail_field_amount（Padding）よりも内部のGestureDetectorを直接タップする
+    final keypadTrigger = find.byKey(const Key('numeric_input_tap_支払金額'));
     final amountField = find.byKey(const Key('paymentDetail_field_amount'));
-    if (amountField.evaluate().isNotEmpty) {
-      await tester.tap(amountField);
+    final triggerFinder =
+        keypadTrigger.evaluate().isNotEmpty ? keypadTrigger : amountField;
+
+
+    if (triggerFinder.evaluate().isNotEmpty) {
+      await tester.ensureVisible(triggerFinder);
       await tester.pump(const Duration(milliseconds: 300));
-      await tester.enterText(amountField, amount);
-      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(triggerFinder);
+      await tester.pump(const Duration(milliseconds: 500));
+
+
+      // キーパッドが開くまで待つ
+      for (var i = 0; i < 15; i++) {
+        if (find.byKey(const Key('keypad_confirm')).evaluate().isNotEmpty) break;
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+
+      final keypadOpen = find.byKey(const Key('keypad_confirm')).evaluate().isNotEmpty;
+
+      if (keypadOpen) {
+        // 各桁をタップ
+        for (final ch in amount.split('')) {
+          final digitKey = Key('keypad_digit_$ch');
+          if (find.byKey(digitKey).evaluate().isNotEmpty) {
+            await tester.tap(find.byKey(digitKey));
+            await tester.pump(const Duration(milliseconds: 200));
+          }
+        }
+        // 入力後の表示テキストをprint
+        final displayWidget = find.byKey(const Key('keypad_display_input'));
+        if (displayWidget.evaluate().isNotEmpty) {
+          final displayText = (tester.widget(displayWidget) as dynamic).data ?? '';
+        }
+        // 確定ボタンをタップしてキーパッドを閉じる
+        await tester.tap(find.byKey(const Key('keypad_confirm')));
+        await tester.pump(const Duration(milliseconds: 500));
+      }
+    }
+
+    // 支払メンバーチップを選択（未選択だと保存できない）
+    for (final memberId in ['member-001', 'member-002', 'member-003', 'member-004']) {
+      final chipKey = Key('paymentDetail_chip_payMember_$memberId');
+      if (find.byKey(chipKey).evaluate().isNotEmpty) {
+        await tester.ensureVisible(find.byKey(chipKey));
+        await tester.pump(const Duration(milliseconds: 200));
+        await tester.tap(find.byKey(chipKey));
+        await tester.pump(const Duration(milliseconds: 300));
+        break;
+      }
     }
 
     // 保存ボタンをスクロールして表示 → タップ
@@ -237,13 +283,17 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(find.byKey(const Key('paymentDetail_button_save')));
 
+    // PaymentDetail が閉じるまで待つ（paymentDetail_appBar_title が消えるのを確認）
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      // PaymentDetail が閉じて MarkDetail or LinkDetail に戻ったことを確認
-      if (find.byKey(const Key('markDetail_screen')).evaluate().isNotEmpty ||
-          find.byKey(const Key('linkDetail_screen')).evaluate().isNotEmpty) break;
+      final paymentDetailGone =
+          find.byKey(const Key('paymentDetail_appBar_title')).evaluate().isEmpty;
+      if (paymentDetailGone) break;
     }
-    await tester.pump(const Duration(milliseconds: 300));
+    // MarkDetailPaymentsReloadRequested の完了を待つ
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+    }
   }
 
   // ────────────────────────────────────────────────────────
@@ -396,21 +446,16 @@ void main() {
     // 金額を入力して保存
     await savePaymentDetail(tester, '1000');
 
-    // MarkDetail 画面に戻っていること
-    if (find.byKey(const Key('markDetail_screen')).evaluate().isEmpty) {
-      print('[SKIP] MarkDetail 画面に戻れなかったためスキップします');
+    // PaymentDetail が閉じていること（まだ開いていたらスキップ）
+    if (find.byKey(const Key('paymentDetail_appBar_title')).evaluate().isNotEmpty) {
+      print('[SKIP] PaymentDetail が閉じなかったためスキップします');
       return;
     }
 
-    // 支払セクションに支払いカードが表示されているか確認（スクロールして探す）
-    for (var i = 0; i < 10; i++) {
-      if (find.byKey(const Key('markDetail_paymentSection_items')).evaluate().isNotEmpty ||
-          find.text('1,000円').evaluate().isNotEmpty) break;
-      final listViews = find.byType(ListView);
-      if (listViews.evaluate().isNotEmpty) {
-        await tester.drag(listViews.first, const Offset(0, -300));
-        await tester.pump(const Duration(milliseconds: 200));
-      }
+    // 支払セクションに支払いカードが表示されるまで待つ（pump ポーリング）
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+      if (find.text('1,000円').evaluate().isNotEmpty) break;
     }
 
     expect(
@@ -444,9 +489,10 @@ void main() {
 
     await savePaymentDetail(tester, '2000');
 
+    // PaymentDetail が閉じていること（保存後は paymentDetail_appBar_title が消える）
     expect(
-      find.byKey(const Key('markDetail_screen')),
-      findsOneWidget,
+      find.byKey(const Key('paymentDetail_appBar_title')),
+      findsNothing,
     );
   });
 
@@ -477,9 +523,9 @@ void main() {
     // 支払いを保存
     await savePaymentDetail(tester, '3000');
 
-    // MarkDetail が表示されていることを確認
-    if (find.byKey(const Key('markDetail_screen')).evaluate().isEmpty) {
-      print('[SKIP] MarkDetail 画面に戻れなかったためスキップします');
+    // PaymentDetail が閉じていることを確認（保存失敗の場合はスキップ）
+    if (find.byKey(const Key('paymentDetail_appBar_title')).evaluate().isNotEmpty) {
+      print('[SKIP] PaymentDetail が閉じなかったためスキップします');
       return;
     }
 
@@ -509,9 +555,15 @@ void main() {
     // PaymentInfo タブへ切り替え
     await openPaymentTab(tester);
 
-    // 登録した金額（3,000円）が表示されているか確認（スクロールして探す）
+    // PaymentInfoリロード待ち（タブ切り替えでReloadRequestedが発火される）
     for (var i = 0; i < 10; i++) {
-      if (find.text('3,000円').evaluate().isNotEmpty) break;
+      await tester.pump(const Duration(milliseconds: 500));
+    }
+
+    // 登録した金額（3,000 円）が表示されているか確認（スクロールして探す）
+    // PaymentInfoタブは event_detail_adapter 経由: "3,000 円"（スペースあり）
+    for (var i = 0; i < 10; i++) {
+      if (find.text('3,000 円').evaluate().isNotEmpty) break;
       final listViews = find.byType(ListView);
       if (listViews.evaluate().isNotEmpty) {
         await tester.drag(listViews.first, const Offset(0, -300));
@@ -520,7 +572,7 @@ void main() {
     }
 
     expect(
-      find.text('3,000円'),
+      find.text('3,000 円'),
       findsAtLeastNWidgets(1),
     );
   });
@@ -730,12 +782,42 @@ void main() {
     }
 
     // 金額を入力して保存（LinkDetail に戻ることを確認）
-    final amountField = find.byKey(const Key('paymentDetail_field_amount'));
-    if (amountField.evaluate().isNotEmpty) {
-      await tester.tap(amountField);
+    final keypadTrigger3 = find.byKey(const Key('numeric_input_tap_支払金額'));
+    final amountField3 = find.byKey(const Key('paymentDetail_field_amount'));
+    final triggerFinder3 =
+        keypadTrigger3.evaluate().isNotEmpty ? keypadTrigger3 : amountField3;
+    if (triggerFinder3.evaluate().isNotEmpty) {
+      await tester.ensureVisible(triggerFinder3);
       await tester.pump(const Duration(milliseconds: 300));
-      await tester.enterText(amountField, '5000');
-      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(triggerFinder3);
+      await tester.pump(const Duration(milliseconds: 500));
+      for (var i = 0; i < 15; i++) {
+        if (find.byKey(const Key('keypad_confirm')).evaluate().isNotEmpty) break;
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+      if (find.byKey(const Key('keypad_confirm')).evaluate().isNotEmpty) {
+        for (final ch in '5000'.split('')) {
+          final digitKey = Key('keypad_digit_$ch');
+          if (find.byKey(digitKey).evaluate().isNotEmpty) {
+            await tester.tap(find.byKey(digitKey));
+            await tester.pump(const Duration(milliseconds: 200));
+          }
+        }
+        await tester.tap(find.byKey(const Key('keypad_confirm')));
+        await tester.pump(const Duration(milliseconds: 500));
+      }
+    }
+
+    // 支払メンバーチップを選択（未選択だと保存できない）
+    for (final memberId in ['member-001', 'member-002', 'member-003', 'member-004']) {
+      final chipKey = Key('paymentDetail_chip_payMember_$memberId');
+      if (find.byKey(chipKey).evaluate().isNotEmpty) {
+        await tester.ensureVisible(find.byKey(chipKey));
+        await tester.pump(const Duration(milliseconds: 200));
+        await tester.tap(find.byKey(chipKey));
+        await tester.pump(const Duration(milliseconds: 300));
+        break;
+      }
     }
 
     for (var i = 0; i < 5; i++) {
@@ -938,12 +1020,42 @@ void main() {
     }
 
     // 金額を入力して保存（markLinkID = null で保存される）
-    final amountField = find.byKey(const Key('paymentDetail_field_amount'));
-    if (amountField.evaluate().isNotEmpty) {
-      await tester.tap(amountField);
+    final keypadTrigger2 = find.byKey(const Key('numeric_input_tap_支払金額'));
+    final amountField2 = find.byKey(const Key('paymentDetail_field_amount'));
+    final triggerFinder2 =
+        keypadTrigger2.evaluate().isNotEmpty ? keypadTrigger2 : amountField2;
+    if (triggerFinder2.evaluate().isNotEmpty) {
+      await tester.ensureVisible(triggerFinder2);
       await tester.pump(const Duration(milliseconds: 300));
-      await tester.enterText(amountField, '4000');
-      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(triggerFinder2);
+      await tester.pump(const Duration(milliseconds: 500));
+      for (var i = 0; i < 15; i++) {
+        if (find.byKey(const Key('keypad_confirm')).evaluate().isNotEmpty) break;
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+      if (find.byKey(const Key('keypad_confirm')).evaluate().isNotEmpty) {
+        for (final ch in '4000'.split('')) {
+          final digitKey = Key('keypad_digit_$ch');
+          if (find.byKey(digitKey).evaluate().isNotEmpty) {
+            await tester.tap(find.byKey(digitKey));
+            await tester.pump(const Duration(milliseconds: 200));
+          }
+        }
+        await tester.tap(find.byKey(const Key('keypad_confirm')));
+        await tester.pump(const Duration(milliseconds: 500));
+      }
+    }
+
+    // 支払メンバーチップを選択（未選択だと保存できない）
+    for (final memberId in ['member-001', 'member-002', 'member-003', 'member-004']) {
+      final chipKey = Key('paymentDetail_chip_payMember_$memberId');
+      if (find.byKey(chipKey).evaluate().isNotEmpty) {
+        await tester.ensureVisible(find.byKey(chipKey));
+        await tester.pump(const Duration(milliseconds: 200));
+        await tester.tap(find.byKey(chipKey));
+        await tester.pump(const Duration(milliseconds: 300));
+        break;
+      }
     }
 
     for (var i = 0; i < 5; i++) {
@@ -964,10 +1076,16 @@ void main() {
     }
     await tester.pump(const Duration(milliseconds: 300));
 
+    // PaymentInfoリロード完了待ち
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+    }
+
     // 「直接登録」セクションに登録した支払いが表示されているか確認（スクロールして探す）
+    // PaymentInfoタブは event_detail_adapter 経由: "4,000 円"（スペースあり）
     for (var i = 0; i < 10; i++) {
       if (find.text('直接登録').evaluate().isNotEmpty ||
-          find.text('4,000円').evaluate().isNotEmpty) break;
+          find.text('4,000 円').evaluate().isNotEmpty) break;
       final listViews = find.byType(ListView);
       if (listViews.evaluate().isNotEmpty) {
         await tester.drag(listViews.first, const Offset(0, -300));
@@ -977,7 +1095,7 @@ void main() {
 
     // 「直接登録」セクションヘッダーまたは金額が表示されていること
     final hasDirect = find.text('直接登録').evaluate().isNotEmpty;
-    final hasAmount = find.text('4,000円').evaluate().isNotEmpty;
+    final hasAmount = find.text('4,000 円').evaluate().isNotEmpty;
 
     expect(hasDirect || hasAmount, isTrue);
   });

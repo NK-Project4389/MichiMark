@@ -131,6 +131,7 @@ class PaymentDetailBloc
         paymentMember: newPayMember,
         splitMembers: splitMembers,
         paymentMemo: draft.paymentMemo,
+        markLinkID: draft.markLinkID,
       );
       emit(current.copyWith(draft: newDraft));
     }

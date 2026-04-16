@@ -20,6 +20,21 @@
 
 ---
 
+## B-17: 本番シードデータ見直し
+
+> テストデータが本番配信されているため、ユーザーが入力イメージしやすいサンプルデータに差し替える。全クリアではなくサンプルを用意する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-432 | B-17: サンプルデータ内容の設計・要件書作成 | product-manager | `TODO` | | どんなシナリオのサンプルを用意するかユーザーと相談 |
+| T-433 | B-17: Spec作成 | architect | `BLOCKED` | | T-432完了後 |
+| T-434a | B-17: シードデータ実装 | flutter-dev | `BLOCKED` | | |
+| T-434b | B-17: テストコード実装 | tester | `BLOCKED` | | |
+| T-435 | B-17: レビュー | reviewer | `BLOCKED` | | |
+| T-436 | B-17: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
 ## INFRA-1: Firebase基盤整備
 
 > 一部タスクのみ残存。T-346b/348 はFirebase実機接続が必要なためBLOCKED。
@@ -102,10 +117,10 @@
 |---|---|---|---|---|---|
 | T-361 | POST-1/F-5: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_from_mark_link.md |
 | T-362 | POST-1/F-5: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_from_mark_link.md |
-| T-363a | POST-1/F-5: 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-16_POST1-F5 | FS-payment_from_mark_link.md 参照 |
-| T-363b | POST-1/F-5: テストコード実装 | tester | `IN_PROGRESS` | 2026-04-16_POST1-F5 | |
-| T-364 | POST-1/F-5: レビュー | reviewer | `BLOCKED` | | T-363a/b完了後 |
-| T-365 | POST-1/F-5: テスト実行 | tester | `BLOCKED` | | T-364完了後 |
+| T-363a | POST-1/F-5: 実装 | flutter-dev | `DONE` | | FS-payment_from_mark_link.md 参照 |
+| T-363b | POST-1/F-5: テストコード実装 | tester | `DONE` | | TC-PML-I001〜I010 実装済み |
+| T-364 | POST-1/F-5: レビュー | reviewer | `DONE` | | 承認 |
+| T-365 | POST-1/F-5: テスト実行 | tester | `DONE` | | 15PASS/0FAIL/3SKIP(LinkDetail未実装) |
 
 ---
 
@@ -184,3 +199,33 @@
 | T-421b | UI-16: テストコード実装 | tester | `BLOCKED` | | |
 | T-422 | UI-16: レビュー | reviewer | `BLOCKED` | | |
 | T-423 | UI-16: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## REL-2: App Store 公開後 改善サイクル
+
+> 🎉 App Store 公開（2026-04-16）を受けて開始する公開後の改善サイクル。
+> marketer が戦略立案・分析・草案提示を担当。ビジュアル制作は designer に連携。
+
+### Phase 1: 現状把握・戦略立案
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-424 | App Store ページ現状レビュー・改善草案作成 | marketer | `DONE` | | docs/Marketing/appstore-1.0.0-2026-04-16.md |
+| T-425 | SNS発信戦略立案・初投稿文草案作成 | marketer | `DONE` | | docs/Marketing/sns/ |
+| T-426 | サクセスストーリー草案作成 | marketer | `DONE` | | docs/Marketing/stories/ |
+
+### Phase 2: ビジュアル制作
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-427 | App Store スクリーンショット用デザイン作成 | designer | `DONE` | | docs/Design/draft/appstore_screenshot_overlay_design.html |
+| T-428 | SNS用バナー・投稿ビジュアル作成 | designer | `TODO` | | T-425ユーザー承認後 |
+
+### Phase 3: 月次分析サイクル（運用開始）
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-429 | 月次分析レポート作成・改善提案（初回） | marketer | `BLOCKED` | | T-424〜428完了後・公開から1ヶ月後（2026-05-16目安）|
+| T-430 | UX/機能改善要件書作成（分析結果から） | product-manager | `BLOCKED` | | T-429完了後 |
+| T-431 | App Store メタデータ更新草案作成 | marketer | `BLOCKED` | | T-429完了後 |

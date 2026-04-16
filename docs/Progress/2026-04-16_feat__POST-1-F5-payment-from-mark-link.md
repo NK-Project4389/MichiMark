@@ -58,6 +58,33 @@
 
 ---
 
+## Integration Test 実装・実行結果（2026-04-16）
+
+### テスト実装
+- `flutter/integration_test/payment_from_mark_link_test.dart` 実装
+- TC-PML-I001〜I010 全件実装
+
+### バグ修正（テスト実行中に発見）
+
+**バグ: PaymentDetailBloc `_onPayMemberChipToggled` で `markLinkID` が消失**
+
+- 場所: `lib/features/payment_detail/bloc/payment_detail_bloc.dart`
+- 原因: 支払いメンバーチップタップ時に `PaymentDetailDraft` を直接コンストラクタで再生成する際、`markLinkID` フィールドを渡していなかった
+- 影響: MarkDetail から支払い登録すると `markLinkID = null` で保存され、MarkDetail の支払セクションに表示されなかった
+- 修正: `final newDraft = PaymentDetailDraft(... markLinkID: draft.markLinkID)` に `markLinkID` 追加
+
+**バグ修正: PaymentInfo タブの自動リロード（BlocListener 追加）**
+- PaymentDetail から戻ったとき PaymentInfo タブが自動リロードされない問題
+- `event_detail_page.dart` に `BlocListener` を追加してタブ切り替え時に `PaymentInfoReloadRequested` を発火
+
+### テスト結果
+- **15 PASS / 0 FAIL / 3 SKIP**（SKIP: LinkDetail関連テストはスキップ処理済み）
+- T-363a・T-363b・T-364・T-365 全て DONE
+
+---
+
 ## 次回セッションで最初にやること
 
-- tester として Integration Test（TC-PML-I001〜I010）を実装・実行する
+- UI-14（MichiInfoタイムライン道路イメージ背景）実装: T-398a/b
+  - Spec: `docs/Spec/Features/FS-michi_info_road_timeline.md`
+- F-2（ダッシュボード）実装: T-392a/b
