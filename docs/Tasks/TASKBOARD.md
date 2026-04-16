@@ -374,7 +374,7 @@
 |---|---|---|---|---|---|
 | T-481 | UI-22: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-dashboard_graph_popup.md |
 | T-482 | UI-22: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-dashboard_graph_popup.md |
-| T-483a | UI-22: 実装 | flutter-dev | `TODO` | | FS-dashboard_graph_popup.md 参照 |
+| T-483a | UI-22: 実装 | flutter-dev | `DONE` | | FS-dashboard_graph_popup.md 参照 |
 | T-483b | UI-22: テストコード実装 | tester | `TODO` | | TC-GP-001〜005 |
 | T-484 | UI-22: レビュー | reviewer | `BLOCKED` | | |
 | T-485 | UI-22: テスト実行 | tester | `BLOCKED` | | |

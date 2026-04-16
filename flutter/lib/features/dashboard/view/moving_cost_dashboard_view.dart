@@ -1,11 +1,22 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import '../../../shared/theme/graph_tooltip_constants.dart';
 import '../projection/moving_cost_dashboard_projection.dart';
 
-class MovingCostDashboardView extends StatelessWidget {
+class MovingCostDashboardView extends StatefulWidget {
   final MovingCostDashboardProjection projection;
 
   const MovingCostDashboardView({super.key, required this.projection});
+
+  @override
+  State<MovingCostDashboardView> createState() =>
+      _MovingCostDashboardViewState();
+}
+
+class _MovingCostDashboardViewState extends State<MovingCostDashboardView> {
+  bool _isLongPressing = false;
+  int? _longPressedBarIndex;
+  int? _tappedBarIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -23,81 +34,211 @@ class MovingCostDashboardView extends StatelessWidget {
   }
 
   Widget _buildChart(BuildContext context) {
-    final entries = projection.dailyEntries;
-    final maxDistance = entries.fold(0.0, (m, e) => e.distanceKm > m ? e.distanceKm : m);
-    final maxCost = entries.fold(0, (m, e) => e.cumulativeCostYen > m ? e.cumulativeCostYen : m);
+    final entries = widget.projection.dailyEntries;
+    final maxDistance =
+        entries.fold(0.0, (m, e) => e.distanceKm > m ? e.distanceKm : m);
+    final maxCost = entries.fold(
+        0, (m, e) => e.cumulativeCostYen > m ? e.cumulativeCostYen : m);
 
-    return SizedBox(
-      key: const Key('moving_cost_dashboard_chart'),
-      height: 200,
-      child: BarChart(
-        BarChartData(
-          alignment: BarChartAlignment.spaceAround,
-          maxY: maxDistance > 0 ? maxDistance * 1.2 : 10,
-          barGroups: entries.asMap().entries.map((e) {
-            final idx = e.key;
-            final entry = e.value;
-            return BarChartGroupData(
-              x: idx,
-              barRods: [
-                BarChartRodData(
-                  toY: entry.distanceKm,
-                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
-                  width: 16,
-                  borderRadius: BorderRadius.circular(4),
+    final showTapTooltip = !_isLongPressing && _tappedBarIndex != null;
+    final showLongPressTooltip =
+        _isLongPressing && _longPressedBarIndex != null;
+
+    return Stack(
+      children: [
+        SizedBox(
+          key: const Key('moving_cost_dashboard_chart'),
+          height: 200,
+          child: BarChart(
+            BarChartData(
+              alignment: BarChartAlignment.spaceAround,
+              maxY: maxDistance > 0 ? maxDistance * 1.2 : 10,
+              barGroups: entries.asMap().entries.map((e) {
+                final idx = e.key;
+                final entry = e.value;
+                return BarChartGroupData(
+                  x: idx,
+                  barRods: [
+                    BarChartRodData(
+                      toY: entry.distanceKm,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.7),
+                      width: 16,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ],
+                );
+              }).toList(),
+              titlesData: FlTitlesData(
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 36,
+                    getTitlesWidget: (value, meta) => Text(
+                      value.toStringAsFixed(0),
+                      style: const TextStyle(fontSize: 10),
+                    ),
+                  ),
                 ),
-              ],
-            );
-          }).toList(),
-          titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 36,
-                getTitlesWidget: (value, meta) => Text(
-                  value.toStringAsFixed(0),
-                  style: const TextStyle(fontSize: 10),
+                rightTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: maxCost > 0,
+                    reservedSize: 40,
+                    getTitlesWidget: (value, meta) {
+                      if (maxCost == 0) return const SizedBox.shrink();
+                      final costValue = (value / 200 * maxCost).round();
+                      return Text(
+                        '¥$costValue',
+                        style: const TextStyle(fontSize: 9),
+                      );
+                    },
+                  ),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value, meta) {
+                      final idx = value.toInt();
+                      if (idx < 0 || idx >= entries.length) {
+                        return const SizedBox.shrink();
+                      }
+                      return Text(
+                        entries[idx].dateLabel,
+                        style: const TextStyle(fontSize: 10),
+                      );
+                    },
+                  ),
+                ),
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
                 ),
               ),
-            ),
-            rightTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: maxCost > 0,
-                reservedSize: 40,
-                getTitlesWidget: (value, meta) {
-                  if (maxCost == 0) return const SizedBox.shrink();
-                  final costValue = (value / 200 * maxCost).round();
-                  return Text(
-                    '¥$costValue',
-                    style: const TextStyle(fontSize: 9),
-                  );
-                },
-              ),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  final idx = value.toInt();
-                  if (idx < 0 || idx >= entries.length) {
-                    return const SizedBox.shrink();
+              borderData: FlBorderData(show: false),
+              gridData: const FlGridData(show: true),
+              barTouchData: BarTouchData(
+                touchCallback: (event, response) {
+                  final touchedIndex =
+                      response?.spot?.touchedBarGroupIndex;
+
+                  if (event is FlLongPressStart) {
+                    setState(() {
+                      _isLongPressing = true;
+                      _longPressedBarIndex = touchedIndex;
+                      _tappedBarIndex = null;
+                    });
+                  } else if (event is FlLongPressMoveUpdate) {
+                    if (touchedIndex != null &&
+                        touchedIndex != _longPressedBarIndex) {
+                      setState(() {
+                        _longPressedBarIndex = touchedIndex;
+                      });
+                    }
+                  } else if (event is FlLongPressEnd) {
+                    setState(() {
+                      _isLongPressing = false;
+                      _longPressedBarIndex = null;
+                    });
+                  } else if (event is FlTapUpEvent) {
+                    setState(() {
+                      _tappedBarIndex = touchedIndex;
+                    });
                   }
-                  return Text(
-                    entries[idx].dateLabel,
-                    style: const TextStyle(fontSize: 10),
-                  );
                 },
+                touchTooltipData: BarTouchTooltipData(
+                  getTooltipColor: (_) =>
+                      GraphTooltipConstants.graphTooltipBackgroundColor,
+                  fitInsideHorizontally: true,
+                  fitInsideVertically: true,
+                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                    if (groupIndex < 0 || groupIndex >= entries.length) {
+                      return null;
+                    }
+                    final entry = entries[groupIndex];
+                    final isLongPress = _isLongPressing &&
+                        _longPressedBarIndex == groupIndex;
+
+                    if (isLongPress) {
+                      final distanceText =
+                          '${entry.distanceKm.toStringAsFixed(1)} km';
+                      final costText = _formatCost(entry.costYen);
+                      return BarTooltipItem(
+                        '${entry.dateLabel}\n$distanceText\n$costText',
+                        const TextStyle(
+                          color: GraphTooltipConstants.graphTooltipTextColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      );
+                    } else {
+                      final costText = _formatCost(entry.costYen);
+                      return BarTooltipItem(
+                        '${entry.dateLabel}\n$costText',
+                        const TextStyle(
+                          color: GraphTooltipConstants.graphTooltipTextColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
-            ),
-            topTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
             ),
           ),
-          borderData: FlBorderData(show: false),
-          gridData: const FlGridData(show: true),
         ),
-      ),
+        // テスト用キー付き不可視 Widget（タップ時ポップアップ表示確認）
+        // fl_chart のツールチップは Widget ツリーに直接キーを付けられないため、
+        // ローカルステートと連動した不可視 Semantics Widget をチャートに重ねる。
+        if (showTapTooltip)
+          Positioned(
+            key: const Key('movingCost_tooltip_tap'),
+            right: 0,
+            top: 0,
+            child: _TooltipTestMarker(
+              semanticsLabel: () {
+                final idx = _tappedBarIndex!;
+                if (idx >= 0 && idx < entries.length) {
+                  final entry = entries[idx];
+                  return '${entry.dateLabel} ${_formatCost(entry.costYen)}';
+                }
+                return '';
+              }(),
+            ),
+          ),
+        // テスト用キー付き不可視 Widget（長押し時ポップアップ表示確認）
+        if (showLongPressTooltip)
+          Positioned(
+            key: const Key('movingCost_tooltip_longpress'),
+            right: 0,
+            top: 0,
+            child: _TooltipTestMarker(
+              semanticsLabel: () {
+                final idx = _longPressedBarIndex!;
+                if (idx >= 0 && idx < entries.length) {
+                  final entry = entries[idx];
+                  final distanceText =
+                      '${entry.distanceKm.toStringAsFixed(1)} km';
+                  final costText = _formatCost(entry.costYen);
+                  return '${entry.dateLabel} $distanceText $costText';
+                }
+                return '';
+              }(),
+            ),
+          ),
+      ],
     );
+  }
+
+  String _formatCost(int? costYen) {
+    if (!widget.projection.hasFuelData || costYen == null) {
+      return '---';
+    }
+    return '¥${costYen.toString().replaceAllMapped(
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (m) => '${m[1]},',
+        )}';
   }
 
   Widget _buildKpiCards(BuildContext context) {
@@ -109,7 +250,7 @@ class MovingCostDashboardView extends StatelessWidget {
               child: _KpiCard(
                 widgetKey: const Key('moving_cost_total_distance_label'),
                 label: '総走行距離',
-                value: projection.totalDistanceLabel,
+                value: widget.projection.totalDistanceLabel,
               ),
             ),
             const SizedBox(width: 12),
@@ -117,20 +258,39 @@ class MovingCostDashboardView extends StatelessWidget {
               child: _KpiCard(
                 widgetKey: const Key('moving_cost_total_cost_label'),
                 label: '総コスト',
-                value: projection.totalCostLabel,
+                value: widget.projection.totalCostLabel,
               ),
             ),
           ],
         ),
-        if (projection.hasFuelData) ...[
+        if (widget.projection.hasFuelData) ...[
           const SizedBox(height: 12),
           _KpiCard(
             widgetKey: const Key('moving_cost_avg_fuel_label'),
             label: '平均燃費',
-            value: projection.avgFuelEfficiencyLabel,
+            value: widget.projection.avgFuelEfficiencyLabel,
           ),
         ],
       ],
+    );
+  }
+}
+
+/// テスト検証用マーカーWidget。
+///
+/// fl_chart のツールチップは Widget ツリーに直接キーを付けられないため、
+/// ローカルステートと連動した不可視 Widget をチャートに重ねることで
+/// Integration Test からのキー参照を可能にする。
+class _TooltipTestMarker extends StatelessWidget {
+  final String semanticsLabel;
+
+  const _TooltipTestMarker({required this.semanticsLabel});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: semanticsLabel,
+      child: const SizedBox(width: 1, height: 1),
     );
   }
 }
