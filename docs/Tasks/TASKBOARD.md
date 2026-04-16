@@ -26,10 +26,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-432 | B-17: サンプルデータ内容の設計・要件書作成 | product-manager | `TODO` | | どんなシナリオのサンプルを用意するかユーザーと相談 |
-| T-433 | B-17: Spec作成 | architect | `BLOCKED` | | T-432完了後 |
-| T-434a | B-17: シードデータ実装 | flutter-dev | `BLOCKED` | | |
-| T-434b | B-17: テストコード実装 | tester | `BLOCKED` | | |
+| T-432 | B-17: サンプルデータ内容の設計・要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-seed_data_sample.md |
+| T-433 | B-17: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-seed_data_sample.md |
+| T-434a | B-17: シードデータ実装 | flutter-dev | `TODO` | | FS-seed_data_sample.md 参照 |
+| T-434b | B-17: テストコード実装 | tester | `DONE` | | TC-SD-001〜009（TC-SD-001のみ実装、TC-SD-002〜009はSKIP） |
 | T-435 | B-17: レビュー | reviewer | `BLOCKED` | | |
 | T-436 | B-17: テスト実行 | tester | `BLOCKED` | | |
 
@@ -56,10 +56,10 @@
 |---|---|---|---|---|---|
 | T-329 | 招待Webページ 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_web_page.md |
 | T-330 | 招待Webページ Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_web_page.md |
-| T-331a | 招待Webページ 実装（Next.js） | flutter-dev | `IN_PROGRESS` | 2026-04-16_INV2実装 | FS-invitation_web_page.md 参照 |
-| T-331b | 招待Webページ テストコード実装 | tester | `IN_PROGRESS` | 2026-04-16_INV2テストコード | TC-INV2-001〜008 |
-| T-332 | 招待Webページ レビュー | reviewer | `BLOCKED` | | T-331a/b完了後 |
-| T-333 | 招待Webページ テスト実行 | tester | `BLOCKED` | | T-332完了後 |
+| T-331a | 招待Webページ 実装（Next.js） | flutter-dev | `DONE` | | FS-invitation_web_page.md 参照 |
+| T-331b | 招待Webページ テストコード実装 | tester | `DONE` | | TC-INV2-001〜008（26テスト） |
+| T-332 | 招待Webページ レビュー | reviewer | `DONE` | | 承認 |
+| T-333 | 招待Webページ テスト実行 | tester | `TODO` | | T-332完了後 |
 
 ---
 
