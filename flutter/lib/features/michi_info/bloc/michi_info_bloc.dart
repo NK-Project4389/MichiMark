@@ -302,6 +302,13 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
         updatedAt: now,
       );
       await _eventRepository.saveActionTimeLog(log);
+      // アクションログ保存後に cachedEvent を更新させるため MichiInfoReloadedDelegate を emit する。
+      // EventDetailScaffoldInner の BlocListener がこれを受けて
+      // EventDetailCachedEventUpdateRequested を発火し、cachedEvent（actionTimeLogs含む）を最新化する。
+      // これにより概要タブに切り替えたときに最新のアクションログで集計が行われる。
+      if (state case MichiInfoLoaded current) {
+        emit(current.copyWith(delegate: const MichiInfoReloadedDelegate()));
+      }
     } on Exception {
       // ログ記録失敗は一覧UIに影響を与えない
     }
