@@ -59,7 +59,7 @@
 | T-331a | 招待Webページ 実装（Next.js） | flutter-dev | `DONE` | | FS-invitation_web_page.md 参照 |
 | T-331b | 招待Webページ テストコード実装 | tester | `DONE` | | TC-INV2-001〜008（26テスト） |
 | T-332 | 招待Webページ レビュー | reviewer | `DONE` | | 承認 |
-| T-333 | 招待Webページ テスト実行 | tester | `TODO` | | T-332完了後 |
+| T-333 | 招待Webページ テスト実行 | tester | `DONE` | | 73PASS/0FAIL/0SKIP |
 
 ---
 
@@ -74,7 +74,7 @@
 | T-336a | 招待コード入力 実装 | flutter-dev | `DONE` | | FS-invitation_code_input.md 参照 |
 | T-336b | 招待コード入力 テストコード実装 | tester | `DONE` | | TC-INV3-001〜010（12テスト） |
 | T-337 | 招待コード入力 レビュー | reviewer | `DONE` | | 承認 |
-| T-338 | 招待コード入力 テスト実行 | tester | `TODO` | | T-337完了後 |
+| T-338 | 招待コード入力 テスト実行 | tester | `DONE` | | 12PASS/0FAIL/0SKIP |
 
 ---
 
