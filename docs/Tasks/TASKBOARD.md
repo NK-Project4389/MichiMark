@@ -229,3 +229,167 @@
 | T-429 | 月次分析レポート作成・改善提案（初回） | marketer | `BLOCKED` | | T-424〜428完了後・公開から1ヶ月後（2026-05-16目安）|
 | T-430 | UX/機能改善要件書作成（分析結果から） | product-manager | `BLOCKED` | | T-429完了後 |
 | T-431 | App Store メタデータ更新草案作成 | marketer | `BLOCKED` | | T-429完了後 |
+
+---
+
+## F-7: イベント招待機能 UI配置（概要タブ/ヘッダ）
+
+> イベント詳細画面の概要タブまたはヘッダ上に招待機能への導線を配置する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-437 | F-7: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_ui_placement.md |
+| T-438 | F-7: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_ui_placement.md |
+| T-439a | F-7: 実装 | flutter-dev | `TODO` | | FS-invitation_ui_placement.md 参照 |
+| T-439b | F-7: テストコード実装 | tester | `TODO` | | TC-IUP-001〜007 |
+| T-440 | F-7: レビュー | reviewer | `BLOCKED` | | |
+| T-441 | F-7: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## UI-17: ダッシュボードタブ左側配置・初期タブ化
+
+> ダッシュボードタブをタブバーの左側（先頭）に配置し、初期表示タブにする。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-442 | UI-17: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-dashboard_tab_position.md |
+| T-443 | UI-17: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-dashboard_tab_position.md |
+| T-444a | UI-17: 実装 | flutter-dev | `DONE` | | router.dart: initialLocation変更・タブ順序変更・Key付与 |
+| T-444b | UI-17: テストコード実装 | tester | `BLOCKED` | | |
+| T-445 | UI-17: レビュー | reviewer | `BLOCKED` | | |
+| T-446 | UI-17: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## UI-18: ダッシュボードタブ名変更（イベント→イベント一覧）
+
+> ダッシュボードのタブ名を「イベント」から「イベント一覧」に変更する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-447 | UI-18: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-dashboard_tab_rename.md |
+| T-448 | UI-18: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-dashboard_tab_rename.md |
+| T-449a | UI-18: 実装 | flutter-dev | `DONE` | | タブラベル・AppBarタイトル「イベント一覧」に変更 |
+| T-449b | UI-18: テストコード実装 | tester | `BLOCKED` | | |
+| T-450 | UI-18: レビュー | reviewer | `BLOCKED` | | |
+| T-451 | UI-18: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## UI-19: 訪問作業 道タブ マークアクションバッジ・削除ボタン改善
+
+> 訪問作業トピックの道タブでマークのアクションバッジが小さく、削除ボタンが隣接して誤タップしやすい問題をデザインから見直す。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-452 | UI-19: デザイン提案 | designer | `DONE` | | docs/Design/draft/visit_work_action_badge_redesign.html |
+| T-453 | UI-19: 要件書作成 | product-manager | `BLOCKED` | | T-452完了後 |
+| T-454 | UI-19: Spec作成 | architect | `BLOCKED` | | T-453完了後 |
+| T-455a | UI-19: 実装 | flutter-dev | `BLOCKED` | | |
+| T-455b | UI-19: テストコード実装 | tester | `BLOCKED` | | |
+| T-456 | UI-19: レビュー | reviewer | `BLOCKED` | | |
+| T-457 | UI-19: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## B-19: 訪問作業シードデータ区間削除・IntTest見直し
+
+> 訪問作業では区間は作成されないため、シードデータから区間データを削除。必要に応じてIntegration Testのスルーテスト項目も見直す。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-458 | B-19: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_seed_data_fix.md |
+| T-459 | B-19: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_seed_data_fix.md |
+| T-460a | B-19: 実装 | flutter-dev | `BLOCKED` | | |
+| T-460b | B-19: テストコード実装 | tester | `BLOCKED` | | |
+| T-461 | B-19: レビュー | reviewer | `BLOCKED` | | |
+| T-462 | B-19: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## F-6: 訪問作業からメンバー項目を除外
+
+> 訪問作業トピックではメンバー項目は不要なため、非表示にする。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-463 | F-6: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_no_member.md |
+| T-464 | F-6: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_no_member.md |
+| T-465a | F-6: 実装 | flutter-dev | `BLOCKED` | | |
+| T-465b | F-6: テストコード実装 | tester | `BLOCKED` | | |
+| T-466 | F-6: レビュー | reviewer | `BLOCKED` | | |
+| T-467 | F-6: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## B-18: 訪問作業トピック マークから支払い保存できないバグ
+
+> 新規登録時、訪問作業トピックでマークから支払い情報を登録しようとしたとき、保存ボタンを押しても反応がない。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-468a | B-18: バグ修正 | flutter-dev | `TODO` | | |
+| T-468b | B-18: テストコード実装 | tester | `TODO` | | |
+| T-469 | B-18: レビュー | reviewer | `BLOCKED` | | |
+| T-470 | B-18: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## UI-20: マスター項目詳細 保存/キャンセルボタンを画面下部に配置
+
+> マスター項目詳細画面の「保存」「キャンセル」ボタン配置をMarkDetail等と同じように画面下部に配置する（ヘッダの「保存」ボタン廃止）。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-471 | UI-20: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-master_detail_button_layout.md |
+| T-472 | UI-20: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-master_detail_button_layout.md |
+| T-473a | UI-20: 実装 | flutter-dev | `DONE` | | FS-master_detail_button_layout.md 参照 |
+| T-473b | UI-20: テストコード実装 | tester | `TODO` | | TC-MDB-001〜020 |
+| T-474 | UI-20: レビュー | reviewer | `BLOCKED` | | |
+| T-475 | UI-20: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## UI-21: マスター項目の「＋」ボタンを右下FABに配置
+
+> マスター項目ごとの一覧で右上にある「＋」マークを、MichiInfo等と同様に右下のFABボタンとして配置する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-476 | UI-21: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-master_list_fab_button.md |
+| T-477 | UI-21: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-master_list_fab_button.md |
+| T-478a | UI-21: 実装 | flutter-dev | `DONE` | | FS-master_list_fab_button.md 参照 |
+| T-478b | UI-21: テストコード実装 | tester | `TODO` | | TC-FAB-001〜012 |
+| T-479 | UI-21: レビュー | reviewer | `BLOCKED` | | |
+| T-480 | UI-21: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## UI-22: ダッシュボード移動コストグラフ ポップアップ改善
+
+> 移動コストグラフの棒タップ時のポップアップが黒文字+濃い緑背景で見づらい。日付単位で長押ししたら距離と金額が表示されるようにする。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-481 | UI-22: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-dashboard_graph_popup.md |
+| T-482 | UI-22: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-dashboard_graph_popup.md |
+| T-483a | UI-22: 実装 | flutter-dev | `TODO` | | FS-dashboard_graph_popup.md 参照 |
+| T-483b | UI-22: テストコード実装 | tester | `TODO` | | TC-GP-001〜005 |
+| T-484 | UI-22: レビュー | reviewer | `BLOCKED` | | |
+| T-485 | UI-22: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## B-20: 訪問作業シードデータ ActionTime情報追加
+
+> 訪問作業のシードデータを充実させる。特にActionTime情報が未設定なので追加する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-486 | B-20: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_seed_data_actiontime.md |
+| T-487 | B-20: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_seed_data_actiontime.md |
+| T-488a | B-20: 実装 | flutter-dev | `BLOCKED` | | |
+| T-488b | B-20: テストコード実装 | tester | `BLOCKED` | | |
+| T-489 | B-20: レビュー | reviewer | `BLOCKED` | | |
+| T-490 | B-20: テスト実行 | tester | `BLOCKED` | | |

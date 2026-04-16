@@ -34,19 +34,18 @@ class TransSettingPage extends StatelessWidget {
               appBar: AppBar(
                 title: const Text('交通手段'),
                 centerTitle: true,
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    color: const Color(0xFFF59E0B),
-                    onPressed: () => context
-                        .read<TransSettingBloc>()
-                        .add(const TransSettingAddTapped()),
-                  ),
-                ],
               ),
               body: items.isEmpty
                   ? const Center(child: Text('交通手段がありません'))
                   : _buildList(context, items),
+              floatingActionButton: FloatingActionButton(
+                key: const Key('transSetting_fab_add'),
+                backgroundColor: const Color(0xFFF59E0B),
+                onPressed: () => context
+                    .read<TransSettingBloc>()
+                    .add(const TransSettingAddTapped()),
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
             ),
         };
       },

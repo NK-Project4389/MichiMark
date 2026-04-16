@@ -32,19 +32,18 @@ class MemberSettingPage extends StatelessWidget {
               appBar: AppBar(
                 title: const Text('メンバー'),
                 centerTitle: true,
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    color: const Color(0xFFF59E0B),
-                    onPressed: () => context
-                        .read<MemberSettingBloc>()
-                        .add(const MemberSettingAddTapped()),
-                  ),
-                ],
               ),
               body: items.isEmpty
                   ? const Center(child: Text('メンバーがいません'))
                   : _buildList(context, items),
+              floatingActionButton: FloatingActionButton(
+                key: const Key('memberSetting_fab_add'),
+                backgroundColor: const Color(0xFFF59E0B),
+                onPressed: () => context
+                    .read<MemberSettingBloc>()
+                    .add(const MemberSettingAddTapped()),
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
             ),
         };
       },

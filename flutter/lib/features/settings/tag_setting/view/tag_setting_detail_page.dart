@@ -49,6 +49,7 @@ class _TagSettingDetailScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
+          key: const Key('tagSettingDetail_appBar_backButton'),
           icon: const Icon(Icons.chevron_left),
           onPressed: () => context
               .read<TagSettingDetailBloc>()
@@ -56,24 +57,6 @@ class _TagSettingDetailScaffold extends StatelessWidget {
         ),
         title: Text(state.draft.tagName.isEmpty ? 'タグ' : state.draft.tagName),
         centerTitle: true,
-        actions: [
-          if (state.isSaving)
-            const Padding(
-              padding: EdgeInsets.all(12),
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            )
-          else
-            TextButton(
-              onPressed: () => context
-                  .read<TagSettingDetailBloc>()
-                  .add(const TagSettingDetailSaveTapped()),
-              child: const Text('保存'),
-            ),
-        ],
       ),
       body: _TagSettingDetailForm(draft: state.draft, state: state),
     );
@@ -125,6 +108,39 @@ class _TagSettingDetailForm extends StatelessWidget {
             ),
           ),
         ],
+        const SizedBox(height: 24),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              OutlinedButton(
+                key: const Key('tagSettingDetail_button_cancel'),
+                onPressed: () => context
+                    .read<TagSettingDetailBloc>()
+                    .add(const TagSettingDetailBackTapped()),
+                child: const Text('キャンセル'),
+              ),
+              const SizedBox(width: 16),
+              ElevatedButton(
+                key: const Key('tagSettingDetail_button_save'),
+                onPressed: state.isSaving
+                    ? null
+                    : () => context
+                        .read<TagSettingDetailBloc>()
+                        .add(const TagSettingDetailSaveTapped()),
+                child: state.isSaving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('保存'),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
       ],
     );
   }

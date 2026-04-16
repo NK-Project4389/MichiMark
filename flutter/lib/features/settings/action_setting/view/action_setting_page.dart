@@ -34,19 +34,18 @@ class ActionSettingPage extends StatelessWidget {
               appBar: AppBar(
                 title: const Text('行動'),
                 centerTitle: true,
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    color: const Color(0xFFF59E0B),
-                    onPressed: () => context
-                        .read<ActionSettingBloc>()
-                        .add(const ActionSettingAddTapped()),
-                  ),
-                ],
               ),
               body: items.isEmpty
                   ? const Center(child: Text('行動がありません'))
                   : _buildList(context, items),
+              floatingActionButton: FloatingActionButton(
+                key: const Key('actionSetting_fab_add'),
+                backgroundColor: const Color(0xFFF59E0B),
+                onPressed: () => context
+                    .read<ActionSettingBloc>()
+                    .add(const ActionSettingAddTapped()),
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
             ),
         };
       },

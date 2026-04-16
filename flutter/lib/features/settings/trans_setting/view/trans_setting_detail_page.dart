@@ -49,6 +49,7 @@ class _TransSettingDetailScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
+          key: const Key('transSettingDetail_appBar_backButton'),
           icon: const Icon(Icons.chevron_left),
           onPressed: () => context
               .read<TransSettingDetailBloc>()
@@ -58,24 +59,6 @@ class _TransSettingDetailScaffold extends StatelessWidget {
           state.draft.transName.isEmpty ? '交通手段' : state.draft.transName,
         ),
         centerTitle: true,
-        actions: [
-          if (state.isSaving)
-            const Padding(
-              padding: EdgeInsets.all(12),
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            )
-          else
-            TextButton(
-              onPressed: () => context
-                  .read<TransSettingDetailBloc>()
-                  .add(const TransSettingDetailSaveTapped()),
-              child: const Text('保存'),
-            ),
-        ],
       ),
       body: _TransSettingDetailForm(draft: state.draft, state: state),
     );
@@ -132,6 +115,39 @@ class _TransSettingDetailForm extends StatelessWidget {
             child: _ErrorText(state.saveErrorMessage!),
           ),
         ],
+        const SizedBox(height: 24),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              OutlinedButton(
+                key: const Key('transSettingDetail_button_cancel'),
+                onPressed: () => context
+                    .read<TransSettingDetailBloc>()
+                    .add(const TransSettingDetailBackTapped()),
+                child: const Text('キャンセル'),
+              ),
+              const SizedBox(width: 16),
+              ElevatedButton(
+                key: const Key('transSettingDetail_button_save'),
+                onPressed: state.isSaving
+                    ? null
+                    : () => context
+                        .read<TransSettingDetailBloc>()
+                        .add(const TransSettingDetailSaveTapped()),
+                child: state.isSaving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('保存'),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
       ],
     );
   }

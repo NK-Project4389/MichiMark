@@ -32,19 +32,18 @@ class TagSettingPage extends StatelessWidget {
               appBar: AppBar(
                 title: const Text('タグ'),
                 centerTitle: true,
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    color: const Color(0xFFF59E0B),
-                    onPressed: () => context
-                        .read<TagSettingBloc>()
-                        .add(const TagSettingAddTapped()),
-                  ),
-                ],
               ),
               body: items.isEmpty
                   ? const Center(child: Text('タグがありません'))
                   : _buildList(context, items),
+              floatingActionButton: FloatingActionButton(
+                key: const Key('tagSetting_fab_add'),
+                backgroundColor: const Color(0xFFF59E0B),
+                onPressed: () => context
+                    .read<TagSettingBloc>()
+                    .add(const TagSettingAddTapped()),
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
             ),
         };
       },
