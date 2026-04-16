@@ -71,10 +71,10 @@
 |---|---|---|---|---|---|
 | T-334 | 招待コード入力 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_code_input.md |
 | T-335 | 招待コード入力 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_code_input.md |
-| T-336a | 招待コード入力 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-16_INV3実装 | FS-invitation_code_input.md 参照 |
-| T-336b | 招待コード入力 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-16_INV3テストコード | TC-INV3-001〜010 |
-| T-337 | 招待コード入力 レビュー | reviewer | `BLOCKED` | | T-336a/b完了後 |
-| T-338 | 招待コード入力 テスト実行 | tester | `BLOCKED` | | T-337完了後 |
+| T-336a | 招待コード入力 実装 | flutter-dev | `DONE` | | FS-invitation_code_input.md 参照 |
+| T-336b | 招待コード入力 テストコード実装 | tester | `DONE` | | TC-INV3-001〜010（12テスト） |
+| T-337 | 招待コード入力 レビュー | reviewer | `DONE` | | 承認 |
+| T-338 | 招待コード入力 テスト実行 | tester | `TODO` | | T-337完了後 |
 
 ---
 
