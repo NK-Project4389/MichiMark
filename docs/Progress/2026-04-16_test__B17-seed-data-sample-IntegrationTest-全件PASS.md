@@ -6,6 +6,8 @@
 ---
 
 ## 完了した作業
+- chore: エージェントモデル配分見直し・PM/test-analyzer新設・役割連携フロー更新 (0dda88a)
+- feat: F-7/INV-4/UI-17〜22/B-18〜20/F-6 一括実装・Firebase Firestore Repository・テストコード107件 (e824a69)
 - docs: Ver1.1 App Storeページ見直し草案・REL-3タスク追加 (ba205d1)
 - feat: UI-22 ダッシュボード移動コストグラフ ポップアップ改善 (c24501f)
 - feat: UI-20/UI-21 マスター詳細ボタン下部配置・一覧FAB追加 (a42c9a0)
