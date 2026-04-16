@@ -406,3 +406,13 @@
 | T-491 | REL-3: スクリーンショット用オーバーレイデザイン作成 | designer | `BLOCKED` | | INV-4完了後。6枚構成・キャッチコピー重畳。T-427のv1.0デザインをベースに更新 |
 | T-492 | REL-3: スクリーンショット撮影・組み立て | designer | `BLOCKED` | | T-491完了後。実機スクショ＋オーバーレイ合成 |
 | T-493 | REL-3: メタデータ確定・App Store Connect 更新 | marketer | `BLOCKED` | | T-492完了後。説明文・キーワード・プロモーションテキスト・スクショ一括反映 |
+
+---
+
+## OPS-1: エージェントモデル配分切り替え（4/17 7:00以降）
+
+> Sonnet週間使用量が6日目で上限到達したため、モデル配分を最適化する。4/17 7:00リセット後に通常運用配分に切り替える。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-494 | OPS-1: 全エージェントのモデルを通常運用配分に切り替え | orchestrator | `TODO` | | 4/17 7:00以降に実施。PM:Opus / Architect:Sonnet / flutter-dev:Sonnet / reviewer:Sonnet / tester:Haiku / test-analyzer:Sonnet / orchestrator:Haiku / designer:Sonnet / marketer:Sonnet / charter-reviewer:Haiku |

@@ -1,7 +1,7 @@
 ---
 name: designer
 description: MichiMarkのUIデザイン・テーマカラー・ビジュアル設計を担当するエージェント。HTML形式のレポートで提案を行い、必要に応じてデザイン系MCPサーバーに接続する。アプリ反映が必要な場合はproduct-manager向けの要件の叩きを作成して渡す。
-model: claude-sonnet-4-6
+model: claude-opus-4-6
 tools: Read,Write,Edit,Grep,Glob,WebFetch,WebSearch
 ---
 

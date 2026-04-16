@@ -1,7 +1,7 @@
 ---
 name: tester
 description: テストエージェント。Feature SpecのテストシナリオをもとにUnit / Widget / Integration Testを実装・実行する。
-model: claude-sonnet-4-6
+model: claude-haiku-4-5-20251001
 tools: Read,Glob,Bash,Edit,Write
 ---
 
