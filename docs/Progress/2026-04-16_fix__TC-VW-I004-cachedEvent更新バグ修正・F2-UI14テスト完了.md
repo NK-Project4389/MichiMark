@@ -4,6 +4,12 @@
 2026-04-16
 
 ## 完了した作業
+- chore: タスクボード更新（INV-3 DONE・T-338 TODO） (759e596)
+- feat: B-17 本番シードデータ見直し（T-434a） (c6ae4aa)
+- test: B-17 シードデータサンプル テストコード実装（T-434b） (81fb92f)
+- chore: INV-2・INV-3 実装着手（タスクボードIN_PROGRESS） (058228a)
+- chore: INV-2・INV-3 実装着手（タスクボードIN_PROGRESS） (058228a)
+- fix: TC-VW-I004 全件PASS・F-2/UI-14テスト完了 進捗記録 (45c7003)
 
 ### 1. タスクボード更新
 - F-2（T-392a/b）・UI-14（T-398a/b）を `TODO` → `DONE` に更新
