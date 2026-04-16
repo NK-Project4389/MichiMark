@@ -1,7 +1,7 @@
 ---
 name: architect
 description: MichiMarkのアーキテクチャ設計・Feature構成の設計を担当するエージェント。新しいFeatureの追加や設計変更の提案を行う。実装は行わない。
-model: claude-opus-4-6
+model: claude-sonnet-4-6
 tools: Read,Write,Edit,Grep,Glob
 ---
 

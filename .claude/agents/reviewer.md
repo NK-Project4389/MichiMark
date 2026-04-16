@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: 生成されたFlutterコードがMichiMarkの設計憲章に従っているかレビューするエージェント。アーキテクチャ違反・アンチパターンを検出する。実装↔テストコードの整合性チェックも担当。
-model: claude-opus-4-6
+model: claude-sonnet-4-6
 tools: Read,Grep,Glob
 ---
 

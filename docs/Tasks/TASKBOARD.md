@@ -415,4 +415,4 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-494 | OPS-1: 全エージェントのモデルを通常運用配分に切り替え | orchestrator | `TODO` | | 4/17 7:00以降に実施。PM:Opus / Architect:Sonnet / flutter-dev:Sonnet / reviewer:Sonnet / tester:Haiku / test-analyzer:Sonnet / orchestrator:Haiku / designer:Sonnet / marketer:Sonnet / charter-reviewer:Haiku |
+| T-494 | OPS-1: 全エージェントのモデルを通常運用配分に切り替え | orchestrator | `DONE` | | PM:Opus / Architect:Sonnet / flutter-dev:Sonnet / reviewer:Sonnet / tester:Haiku / test-analyzer:Sonnet / orchestrator:Sonnet / designer:Sonnet / marketer:Sonnet / charter-reviewer:Haiku |

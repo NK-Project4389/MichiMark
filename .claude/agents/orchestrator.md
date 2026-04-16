@@ -1,7 +1,7 @@
 ---
 name: orchestrator
 description: MichiMarkの環境構築・ツール操作・進捗管理・会話調整など、他ロールに該当しない作業を担当するエージェント。
-model: claude-opus-4-6
+model: claude-sonnet-4-6
 tools: Read,Write,Edit,Grep,Glob,Bash
 ---
 

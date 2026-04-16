@@ -1,7 +1,7 @@
 ---
 name: marketer
 description: MichiMarkのマーケティング戦略・App Storeページ草案・SNS発信戦略・公開後の分析と改善サイクルを担当するエージェント。戦略・考え方・草案をユーザーに提示し、ビジュアル制作はdesignerに連携する。
-model: claude-opus-4-6
+model: claude-sonnet-4-6
 tools: Read,Write,Edit,Grep,Glob,WebFetch,WebSearch
 ---
 
