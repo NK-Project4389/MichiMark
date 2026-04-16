@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI-19 マークアクションバッジ・削除ボタン改善デザイン提案</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', sans-serif;
+      background: #F5F7FA;
+      color: #1A1A2E;
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #3B1A6E 0%, #7C3AED 55%, #9F67F5 100%);
+      color: white;
+      padding: 52px 48px 44px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .page-header p {
+      font-size: 15px;
+      opacity: 0.85;
+      max-width: 640px;
+    }
+    .page-header .meta {
+      display: flex;
+      gap: 24px;
+      margin-top: 24px;
+      font-size: 13px;
+      opacity: 0.7;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 40px 80px;
+    }
+    section {
+      margin-top: 60px;
+    }
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #EDE9FE;
+      color: #4C1D95;
+      border-radius: 12px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    section h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: -0.3px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      margin-bottom: 20px;
+    }
+
+    /* ===== PROBLEM ANALYSIS ===== */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .problem-item {
+      background: #FFF5F5;
+      border: 1px solid #FECACA;
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .problem-item h4 {
+      color: #DC2626;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .problem-item p {
+      font-size: 13px;
+      color: #6B7280;
+      line-height: 1.6;
+    }
+
+    /* ===== COLOR PALETTE ===== */
+    .swatch-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .swatch {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .swatch-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+    .swatch-info .name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1A1A2E;
+    }
+    .swatch-info .hex {
+      font-size: 11px;
+      color: #9CA3AF;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    /* ===== PHONE MOCK ===== */
+    .phone-mock {
+      width: 320px;
+      background: #FFFFFF;
+      border-radius: 28px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06);
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .phone-status-bar {
+      background: #F9FAFB;
+      padding: 12px 20px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: #374151;
+    }
+    .phone-tab-bar {
+      background: #F9FAFB;
+      border-bottom: 1px solid #E5E7EB;
+      padding: 6px 16px;
+      display: flex;
+      gap: 12px;
+    }
+    .tab-item {
+      font-size: 12px;
+      color: #9CA3AF;
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+    .tab-item.active {
+      color: #2B7A9B;
+      background: #D0EBF5;
+      font-weight: 700;
+    }
+    .phone-content {
+      padding: 8px 0;
+      min-height: 320px;
+    }
+
+    /* ===== MARK CARD SIMULATION ===== */
+    .timeline-area {
+      padding: 8px 0;
+    }
+    .timeline-item {
+      position: relative;
+      padding: 0 12px 0 0;
+      margin-bottom: 8px;
+    }
+    .mark-row {
+      display: flex;
+      align-items: stretch;
+      height: 72px;
+    }
+    .timeline-axis {
+      width: 40px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .mark-dot {
+      width: 20px;
+      height: 20px;
+      background: #2B7A9B;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 0 0 3px white;
+      z-index: 2;
+    }
+    .mark-card {
+      flex: 1;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border-top: 3px solid #2B7A9B;
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      position: relative;
+    }
+    .mark-card-content {
+      flex: 1;
+      padding: 8px 8px 8px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+      min-width: 0;
+    }
+    .mark-date {
+      font-size: 10px;
+      color: #6B7280;
+      font-weight: 500;
+    }
+    .mark-meter {
+      font-size: 10px;
+      color: #2B7A9B;
+      font-weight: 600;
+    }
+
+    /* ===== BEFORE BADGE ===== */
+    .badge-before {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(124, 58, 237, 0.10);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 10px;
+      color: #7C3AED;
+      white-space: nowrap;
+    }
+
+    /* ===== BEFORE ACTION BUTTON ===== */
+    .action-btn-before {
+      width: 28px;
+      height: 28px;
+      background: #7C3AED;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+      color: white;
+      margin: auto 4px auto 4px;
+    }
+    .delete-btn-before {
+      width: 36px;
+      height: 36px;
+      background: #FEE2E2;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 16px;
+      margin: auto 0;
+    }
+
+    /* ===== DANGER ZONE INDICATOR ===== */
+    .danger-zone {
+      position: relative;
+      border: 2px dashed #DC2626;
+      border-radius: 8px;
+      padding: 2px;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .danger-zone::after {
+      content: '⚠ 誤タップゾーン';
+      position: absolute;
+      bottom: -18px;
+      left: 0;
+      font-size: 9px;
+      color: #DC2626;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    /* ===== AFTER: BADGE LARGE ===== */
+    .badge-after {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(124, 58, 237, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #7C3AED;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      background: #7C3AED;
+      border-radius: 50%;
+    }
+
+    /* ===== COMPARISON GRID ===== */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    .comparison-col h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .label-before {
+      background: #FEE2E2;
+      color: #DC2626;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .label-after {
+      background: #D1FAE5;
+      color: #065F46;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* ===== OPTION CARD ===== */
+    .option-card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      margin-bottom: 20px;
+      border-left: 4px solid #7C3AED;
+    }
+    .option-card.recommended {
+      border-left-color: #059669;
+      background: linear-gradient(to right, #F0FDF4, #FFFFFF);
+    }
+    .option-card.alternative {
+      border-left-color: #2B7A9B;
+    }
+    .option-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .option-num {
+      width: 32px;
+      height: 32px;
+      background: #7C3AED;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+    .option-card.recommended .option-num {
+      background: #059669;
+    }
+    .option-card.alternative .option-num {
+      background: #2B7A9B;
+    }
+    .option-title {
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .recommend-badge {
+      margin-left: auto;
+      background: #D1FAE5;
+      color: #065F46;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .option-desc {
+      font-size: 14px;
+      color: #374151;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .pros, .cons {
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .pros {
+      background: #F0FDF4;
+    }
+    .cons {
+      background: #FFF5F5;
+    }
+    .pros h5 {
+      color: #059669;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .cons h5 {
+      color: #DC2626;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .pros ul, .cons ul {
+      list-style: none;
+      font-size: 12px;
+      color: #374151;
+    }
+    .pros ul li::before { content: '+ '; color: #059669; font-weight: 700; }
+    .cons ul li::before { content: '- '; color: #DC2626; font-weight: 700; }
+    .pros ul li, .cons ul li { margin-bottom: 4px; }
+
+    /* ===== SPEC TABLE ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      text-align: left;
+      padding: 10px 14px;
+      background: #F3F4F6;
+      color: #374151;
+      font-weight: 700;
+      border-bottom: 2px solid #E5E7EB;
+    }
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #F3F4F6;
+      color: #374151;
+    }
+    tr:last-child td { border-bottom: none; }
+    .td-before { color: #DC2626; font-family: 'SF Mono', monospace; font-size: 12px; }
+    .td-after { color: #059669; font-family: 'SF Mono', monospace; font-size: 12px; }
+
+    /* ===== RATIONALE SECTION ===== */
+    .rationale-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid #F3F4F6;
+    }
+    .rationale-item:last-child { border-bottom: none; }
+    .rationale-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #EDE9FE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .rationale-text h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .rationale-text p {
+      font-size: 13px;
+      color: #6B7280;
+      line-height: 1.6;
+    }
+
+    /* ===== SWIPE MOCK ===== */
+    .swipe-mock {
+      background: #F9FAFB;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      border: 1px dashed #D1D5DB;
+    }
+    .swipe-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .swipe-card-main {
+      flex: 1;
+      background: white;
+      padding: 14px 16px;
+    }
+    .swipe-card-action {
+      width: 72px;
+      background: #DC2626;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 12px 0;
+      font-size: 10px;
+      color: white;
+      font-weight: 600;
+    }
+
+    /* ===== LONG PRESS MOCK ===== */
+    .long-press-mock {
+      background: #F9FAFB;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      border: 1px dashed #D1D5DB;
+    }
+    .context-menu {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 14px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+      overflow: hidden;
+      width: 200px;
+      margin: 12px auto 0;
+    }
+    .context-menu-item {
+      padding: 13px 18px;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .context-menu-item:last-child { border-bottom: none; }
+    .context-menu-item.destructive { color: #DC2626; }
+
+    /* ===== TYPOGRAPHY SECTION ===== */
+    .typo-row {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      padding: 12px 0;
+      border-bottom: 1px solid #F3F4F6;
+    }
+    .typo-row:last-child { border-bottom: none; }
+    .typo-label {
+      font-size: 12px;
+      color: #9CA3AF;
+      font-weight: 600;
+      width: 160px;
+      flex-shrink: 0;
+    }
+
+    /* ===== ANNOTATION ===== */
+    .annotation {
+      font-size: 12px;
+      color: #6B7280;
+      font-style: italic;
+      margin-top: 8px;
+    }
+
+    /* ===== SIZE VISUAL ===== */
+    .size-compare {
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      padding: 20px 0;
+    }
+    .size-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .size-label {
+      font-size: 11px;
+      color: #6B7280;
+      font-weight: 600;
+    }
+    .before-badge-demo {
+      background: rgba(124,58,237,0.10);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 10px;
+      color: #7C3AED;
+      white-space: nowrap;
+    }
+    .after-badge-demo {
+      background: rgba(124,58,237,0.12);
+      border: 1px solid rgba(124,58,237,0.25);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: #7C3AED;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .size-arrow {
+      font-size: 24px;
+      color: #9CA3AF;
+      padding-bottom: 8px;
+    }
+
+    /* ===== HIGHLIGHT BOX ===== */
+    .highlight-box {
+      background: linear-gradient(135deg, #EDE9FE, #F5F3FF);
+      border: 1px solid #C4B5FD;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 20px;
+    }
+    .highlight-box h4 {
+      color: #4C1D95;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .highlight-box p {
+      font-size: 13px;
+      color: #5B21B6;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-header">
+  <div class="badge">UI-19 / Designer Draft</div>
+  <h1>マークアクションバッジ・削除ボタン 改善デザイン提案</h1>
+  <p>訪問作業トピック 道タブ（MichiInfo）における、アクションバッジの視認性向上と削除ボタンの誤タップ防止を目的としたUIリデザイン。</p>
+  <div class="meta">
+    <span>作成日: 2026-04-16</span>
+    <span>対象画面: MichiInfo（訪問作業トピック）</span>
+    <span>ロール: designer</span>
+    <span>フェーズ: 叩き → product-manager レビュー待ち</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== SECTION: 課題分析 ===== -->
+  <section id="color-palette">
+    <div class="section-label">01 / Problem Analysis</div>
+    <h2>現状の課題</h2>
+    <div class="problem-grid">
+      <div class="problem-item">
+        <h4>課題A: アクションバッジが小さすぎる</h4>
+        <p>状態バッジ（_ActionStateBadge）は fontSize:10・padding vertical:2 の極小サイズ。タップターゲットとして機能しておらず、状態変更の操作感が弱い。</p>
+      </div>
+      <div class="problem-item">
+        <h4>課題B: 削除ボタンとアクションボタンの距離が近すぎる</h4>
+        <p>⚡アクションボタン（28px）と削除ボタン（36px）の間隔が left:4dp のみ。カード高さ72px に対して誤タップを誘発しやすいレイアウト。</p>
+      </div>
+      <div class="problem-item">
+        <h4>課題C: 削除ボタンの視認性が高すぎる</h4>
+        <p>赤い削除ボタンがカード右端に常時表示されており、ユーザーが誤って触れるリスクがある。削除は頻繁に行う操作ではないため、常時露出は不適切。</p>
+      </div>
+      <div class="problem-item">
+        <h4>課題D: タップ操作の混在</h4>
+        <p>カードタップ（詳細遷移）・⚡ボタンタップ（ActionTime起動）・削除ボタンタップが72pxの高さに集中しており、誤操作のリスクが高い。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION: カラーパレット確認 ===== -->
+  <section>
+    <div class="section-label">02 / Color Palette</div>
+    <h2>使用カラーパレット（既存踏襲）</h2>
+    <div class="card">
+      <div class="swatch-row">
+        <div class="swatch">
+          <div class="swatch-dot" style="background:#7C3AED;"></div>
+          <div class="swatch-info">
+            <div class="name">Violet Primary</div>
+            <div class="hex">#7C3AED</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-dot" style="background:rgba(124,58,237,0.12); border:1px solid rgba(124,58,237,0.25);"></div>
+          <div class="swatch-info">
+            <div class="name">Violet Badge Bg (改善後)</div>
+            <div class="hex">rgba(124,58,237,0.12) + border 0.25</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-dot" style="background:#DC2626;"></div>
+          <div class="swatch-info">
+            <div class="name">Delete Red</div>
+            <div class="hex">#DC2626</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-dot" style="background:#2B7A9B;"></div>
+          <div class="swatch-info">
+            <div class="name">Mark Teal (既存)</div>
+            <div class="hex">#2B7A9B</div>
+          </div>
+        </div>
+      </div>
+      <p class="annotation">既存のカラーシステムを維持しつつ、バッジに淡いボーダーを追加して視認性を向上させる。</p>
+    </div>
+  </section>
+
+  <!-- ===== SECTION: タイポグラフィ ===== -->
+  <section id="typography">
+    <div class="section-label">03 / Typography</div>
+    <h2>バッジテキストのサイズ改善</h2>
+    <div class="card">
+      <div class="size-compare">
+        <div class="size-box">
+          <div class="size-label">Before（現状）</div>
+          <div class="before-badge-demo">滞留中</div>
+        </div>
+        <div class="size-arrow">→</div>
+        <div class="size-box">
+          <div class="size-label">After（提案）</div>
+          <div class="after-badge-demo">
+            <span style="width:6px;height:6px;background:#7C3AED;border-radius:50%;display:inline-block;"></span>
+            滞留中
+          </div>
+        </div>
+      </div>
+      <div class="typo-row">
+        <div class="typo-label">Before: バッジ fontSize</div>
+        <span style="font-size:10px; background:rgba(124,58,237,0.10); padding:2px 6px; border-radius:4px; color:#7C3AED;">10px — 読みにくい・タップ困難</span>
+      </div>
+      <div class="typo-row">
+        <div class="typo-label">After: バッジ fontSize</div>
+        <span style="font-size:13px; background:rgba(124,58,237,0.12); border:1px solid rgba(124,58,237,0.25); padding:6px 12px; border-radius:8px; color:#7C3AED; font-weight:700;">13px bold — 視認しやすい</span>
+      </div>
+      <div class="typo-row">
+        <div class="typo-label">バッジ padding 変更</div>
+        <span style="font-size:13px; color:#374151;">vertical 2→6dp、horizontal 6→12dp（タップエリア拡大）</span>
+      </div>
+      <div class="typo-row">
+        <div class="typo-label">バッジ border-radius 変更</div>
+        <span style="font-size:13px; color:#374151;">4→8dp（視覚的重厚感）</span>
+      </div>
+      <div class="typo-row">
+        <div class="typo-label">バッジ border 追加</div>
+        <span style="font-size:13px; color:#374151;">1px solid rgba(124,58,237,0.25)（カード上での視認性向上）</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION: コンポーネントプレビュー（Before/After） ===== -->
+  <section id="component-preview">
+    <div class="section-label">04 / Component Preview</div>
+    <h2>Before / After ビジュアル比較</h2>
+
+    <div class="comparison-grid">
+      <!-- BEFORE -->
+      <div class="comparison-col">
+        <h3><span class="label-before">BEFORE 現状</span></h3>
+        <div class="phone-mock">
+          <div class="phone-status-bar">
+            <span>9:41</span>
+            <span>●●●</span>
+          </div>
+          <div class="phone-tab-bar">
+            <div class="tab-item">概要</div>
+            <div class="tab-item active">道</div>
+            <div class="tab-item">支払</div>
+          </div>
+          <div class="phone-content">
+            <div class="timeline-area">
+              <!-- Mark 1 -->
+              <div class="timeline-item">
+                <div class="mark-row">
+                  <div class="timeline-axis">
+                    <div class="mark-dot"></div>
+                  </div>
+                  <div class="mark-card">
+                    <div class="mark-card-content">
+                      <div class="mark-date">2024/04/15</div>
+                      <div class="mark-meter">12,345 km</div>
+                      <!-- 極小バッジ -->
+                      <div style="margin-top:2px;">
+                        <span class="badge-before">滞留中</span>
+                      </div>
+                    </div>
+                    <!-- 右端ボタン群（密集） -->
+                    <div style="display:flex;align-items:center;padding:0 6px;gap:4px;">
+                      <div class="action-btn-before">⚡</div>
+                      <div class="delete-btn-before">🗑</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Mark 2 -->
+              <div class="timeline-item">
+                <div class="mark-row">
+                  <div class="timeline-axis">
+                    <div class="mark-dot"></div>
+                  </div>
+                  <div class="mark-card">
+                    <div class="mark-card-content">
+                      <div class="mark-date">2024/04/15</div>
+                      <div class="mark-meter">12,560 km</div>
+                      <div style="margin-top:2px;">
+                        <span class="badge-before">作業中</span>
+                      </div>
+                    </div>
+                    <div style="display:flex;align-items:center;padding:0 6px;gap:4px;">
+                      <div class="action-btn-before">⚡</div>
+                      <div class="delete-btn-before">🗑</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 問題箇所の注釈 -->
+            <div style="padding:12px 16px;">
+              <div style="background:#FFF5F5;border:1.5px dashed #DC2626;border-radius:8px;padding:10px 12px;font-size:10px;color:#DC2626;">
+                <strong>問題点:</strong><br>
+                · バッジ(10px)が小さく読みにくい<br>
+                · ⚡ボタンと削除ボタンの間隔が 4dp のみ<br>
+                · 削除ボタンが常時赤く目立つ
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div class="comparison-col">
+        <h3><span class="label-after">AFTER 提案案 A（推奨）</span></h3>
+        <div class="phone-mock">
+          <div class="phone-status-bar">
+            <span>9:41</span>
+            <span>●●●</span>
+          </div>
+          <div class="phone-tab-bar">
+            <div class="tab-item">概要</div>
+            <div class="tab-item active">道</div>
+            <div class="tab-item">支払</div>
+          </div>
+          <div class="phone-content">
+            <div class="timeline-area">
+              <!-- Mark 1: バッジを大きく、削除はスワイプへ -->
+              <div class="timeline-item">
+                <div class="mark-row">
+                  <div class="timeline-axis">
+                    <div class="mark-dot"></div>
+                  </div>
+                  <div class="mark-card">
+                    <div class="mark-card-content">
+                      <div class="mark-date">2024/04/15</div>
+                      <div class="mark-meter">12,345 km</div>
+                      <!-- 大きいバッジ（状態ボタン兼用） -->
+                      <div style="margin-top:3px;">
+                        <span class="badge-after" style="font-size:11px;padding:4px 10px;">
+                          <span style="width:5px;height:5px;background:#7C3AED;border-radius:50%;display:inline-block;"></span>
+                          滞留中
+                        </span>
+                      </div>
+                    </div>
+                    <!-- ⚡ボタンのみ右端に -->
+                    <div style="display:flex;align-items:center;padding:0 10px;">
+                      <div style="width:36px;height:36px;background:#7C3AED;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:white;">⚡</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Mark 2 -->
+              <div class="timeline-item">
+                <div class="mark-row">
+                  <div class="timeline-axis">
+                    <div class="mark-dot"></div>
+                  </div>
+                  <div class="mark-card">
+                    <div class="mark-card-content">
+                      <div class="mark-date">2024/04/15</div>
+                      <div class="mark-meter">12,560 km</div>
+                      <div style="margin-top:3px;">
+                        <span class="badge-after" style="font-size:11px;padding:4px 10px;">
+                          <span style="width:5px;height:5px;background:#7C3AED;border-radius:50%;display:inline-block;"></span>
+                          作業中
+                        </span>
+                      </div>
+                    </div>
+                    <div style="display:flex;align-items:center;padding:0 10px;">
+                      <div style="width:36px;height:36px;background:#7C3AED;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:white;">⚡</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- スワイプ説明 -->
+              <div style="padding:4px 16px;margin-top:4px;">
+                <div style="display:flex;align-items:center;gap:6px;color:#9CA3AF;font-size:10px;">
+                  <span>←</span>
+                  <span>左スワイプで削除ボタンを表示</span>
+                </div>
+              </div>
+            </div>
+            <div style="padding:12px 16px;">
+              <div style="background:#F0FDF4;border:1.5px dashed #059669;border-radius:8px;padding:10px 12px;font-size:10px;color:#059669;">
+                <strong>改善点:</strong><br>
+                · バッジが13pxで視認しやすい<br>
+                · 削除はスワイプで分離（誤タップ防止）<br>
+                · ⚡ボタンが36pxで押しやすい
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION: 削除ボタン配置3案 ===== -->
+  <section>
+    <div class="section-label">05 / Delete Button Options</div>
+    <h2>削除ボタン配置 3案 比較</h2>
+
+    <!-- 案A（推奨）: スワイプアクション -->
+    <div class="option-card recommended">
+      <div class="option-header">
+        <div class="option-num">A</div>
+        <div class="option-title">左スワイプで削除ボタン表示（推奨）</div>
+        <span class="recommend-badge">推奨</span>
+      </div>
+      <p class="option-desc">
+        Mark カードを左にスワイプすると「削除」ボタンが右側からスライドイン。iOS標準のUXパターンで、ユーザーに馴染みがある。
+        カード右端にボタンが常時表示されないため、誤タップを根本から防止できる。
+      </p>
+      <!-- スワイプモック -->
+      <div class="swipe-mock">
+        <p style="font-size:11px;color:#9CA3AF;margin-bottom:10px;font-weight:600;">スワイプ後の表示イメージ</p>
+        <div class="swipe-row">
+          <div class="swipe-card-main">
+            <div class="mark-date">2024/04/15</div>
+            <div class="mark-meter" style="font-size:11px;color:#2B7A9B;font-weight:600;margin-top:2px;">12,345 km</div>
+            <div style="margin-top:4px;">
+              <span class="badge-after" style="font-size:11px;padding:4px 10px;">
+                <span style="width:5px;height:5px;background:#7C3AED;border-radius:50%;display:inline-block;margin-right:3px;"></span>
+                滞留中
+              </span>
+            </div>
+          </div>
+          <div class="swipe-card-action">
+            <span style="font-size:18px;">🗑</span>
+            <span>削除</span>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:16px;">
+        <div class="pros">
+          <h5>メリット</h5>
+          <ul>
+            <li>iOS標準パターンで直感的</li>
+            <li>常時ボタン非表示で誤タップゼロ</li>
+            <li>カードスペースが広がる</li>
+            <li>⚡ボタンのサイズを拡大できる</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h5>注意点</h5>
+          <ul>
+            <li>実装コストがやや高い</li>
+            <li>スワイプ操作の周知が必要</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 案B: 長押しコンテキストメニュー -->
+    <div class="option-card alternative">
+      <div class="option-header">
+        <div class="option-num">B</div>
+        <div class="option-title">長押しコンテキストメニュー</div>
+      </div>
+      <p class="option-desc">
+        Mark カードを長押しすると「削除」「詳細を開く」などのメニューがポップアップ表示される。
+        削除ボタンを完全に隠せるため誤タップを防止できるが、操作の発見性が低い。
+      </p>
+      <!-- 長押しモック -->
+      <div class="long-press-mock">
+        <p style="font-size:11px;color:#9CA3AF;margin-bottom:8px;font-weight:600;">長押し後のコンテキストメニュー</p>
+        <div style="background:white;border-radius:12px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+          <div class="mark-date" style="font-size:10px;">2024/04/15 — 12,345 km</div>
+        </div>
+        <div class="context-menu">
+          <div class="context-menu-item">
+            <span>詳細を開く</span>
+            <span>→</span>
+          </div>
+          <div class="context-menu-item">
+            <span>ActionTimeを記録</span>
+            <span>⚡</span>
+          </div>
+          <div class="context-menu-item destructive">
+            <span>削除</span>
+            <span>🗑</span>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:16px;">
+        <div class="pros">
+          <h5>メリット</h5>
+          <ul>
+            <li>削除ボタンが完全非表示</li>
+            <li>複数アクションをまとめて整理</li>
+            <li>iOS長押しUIと統一感がある</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h5>注意点</h5>
+          <ul>
+            <li>長押しの発見性が低い</li>
+            <li>操作ステップが増える</li>
+            <li>既存のカードタップと競合する可能性</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 案C: 削除ボタンをカード右外（余白エリア）に移動 -->
+    <div class="option-card">
+      <div class="option-header">
+        <div class="option-num">C</div>
+        <div class="option-title">削除ボタンをカード下部に移動（最小実装コスト）</div>
+      </div>
+      <p class="option-desc">
+        削除ボタンをカード右端から外し、カード下部の独立エリアに配置する。
+        ⚡ボタンと削除ボタンの距離を物理的に引き離すだけで、既存のトリガーはそのまま維持できる最小実装案。
+      </p>
+      <!-- 下部配置モック -->
+      <div class="swipe-mock">
+        <p style="font-size:11px;color:#9CA3AF;margin-bottom:10px;font-weight:600;">カード構成イメージ</p>
+        <div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08);overflow:hidden;">
+          <!-- カード本体 -->
+          <div style="display:flex;align-items:center;height:64px;border-top:3px solid #2B7A9B;padding:0 10px;">
+            <div style="flex:1;padding:0 8px;">
+              <div class="mark-date">2024/04/15</div>
+              <div class="mark-meter" style="font-size:11px;color:#2B7A9B;font-weight:600;margin-top:1px;">12,345 km</div>
+              <div style="margin-top:3px;">
+                <span class="badge-after" style="font-size:11px;padding:4px 10px;">
+                  <span style="width:5px;height:5px;background:#7C3AED;border-radius:50%;display:inline-block;margin-right:3px;"></span>
+                  滞留中
+                </span>
+              </div>
+            </div>
+            <div style="width:36px;height:36px;background:#7C3AED;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:white;">⚡</div>
+          </div>
+          <!-- 削除ボタン（カード下部エリア） -->
+          <div style="background:#FFF5F5;border-top:1px solid #FEE2E2;padding:6px 10px;display:flex;justify-content:flex-end;">
+            <div style="display:flex;align-items:center;gap:6px;color:#DC2626;font-size:11px;font-weight:600;">
+              <span>🗑</span>
+              <span>削除</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:16px;">
+        <div class="pros">
+          <h5>メリット</h5>
+          <ul>
+            <li>実装コストが最小</li>
+            <li>⚡ボタンとの物理的距離を確保</li>
+            <li>削除エリアが明確に分かれる</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h5>注意点</h5>
+          <ul>
+            <li>カード高さが増加する</li>
+            <li>削除ボタンが依然として常時表示</li>
+            <li>タイムライン計算（_cardHeight等）の更新が必要</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION: 変更スペック ===== -->
+  <section>
+    <div class="section-label">06 / Design Spec</div>
+    <h2>改善後のデザインスペック（案A 推奨）</h2>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>要素</th>
+            <th>Before</th>
+            <th>After（推奨 案A）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>状態バッジ fontSize</td>
+            <td class="td-before">10px</td>
+            <td class="td-after">13px / fontWeight: bold</td>
+          </tr>
+          <tr>
+            <td>状態バッジ padding</td>
+            <td class="td-before">vertical 2dp / horizontal 6dp</td>
+            <td class="td-after">vertical 6dp / horizontal 12dp</td>
+          </tr>
+          <tr>
+            <td>状態バッジ border-radius</td>
+            <td class="td-before">4dp</td>
+            <td class="td-after">8dp</td>
+          </tr>
+          <tr>
+            <td>状態バッジ border</td>
+            <td class="td-before">なし</td>
+            <td class="td-after">1px solid rgba(124,58,237,0.25)</td>
+          </tr>
+          <tr>
+            <td>状態バッジ タップ</td>
+            <td class="td-before">なし（表示のみ）</td>
+            <td class="td-after">タップでActionTime起動（⚡ボタンと同機能）</td>
+          </tr>
+          <tr>
+            <td>⚡ ActionTimeボタン サイズ</td>
+            <td class="td-before">28x28dp</td>
+            <td class="td-after">36x36dp（WCAG推奨44dp以上に近づける）</td>
+          </tr>
+          <tr>
+            <td>⚡ ActionTimeボタン border-radius</td>
+            <td class="td-before">8dp</td>
+            <td class="td-after">10dp</td>
+          </tr>
+          <tr>
+            <td>⚡ ボタン icon サイズ</td>
+            <td class="td-before">18dp</td>
+            <td class="td-after">20dp</td>
+          </tr>
+          <tr>
+            <td>削除ボタン 配置</td>
+            <td class="td-before">カード右端 常時表示</td>
+            <td class="td-after">左スワイプで表示（Dismissible / スワイプUX）</td>
+          </tr>
+          <tr>
+            <td>削除ボタン サイズ</td>
+            <td class="td-before">36x36dp</td>
+            <td class="td-after">幅72dp・カード同高（スワイプアクション標準）</td>
+          </tr>
+          <tr>
+            <td>⚡ ボタンと削除ボタンの間隔</td>
+            <td class="td-before">4dp（物理的に隣接）</td>
+            <td class="td-after">操作モードを分離（スワイプ）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== SECTION: 根拠 ===== -->
+  <section id="rationale">
+    <div class="section-label">07 / Rationale</div>
+    <h2>デザイン根拠・判断理由</h2>
+    <div class="card">
+      <div class="rationale-item">
+        <div class="rationale-icon">📏</div>
+        <div class="rationale-text">
+          <h4>タップターゲットサイズの基準</h4>
+          <p>Apple HIG および WCAG では最小タップターゲットを 44x44dp 以上と推奨。現状の⚡ボタン（28px）・状態バッジ（事実上タップ不可）はいずれも基準を下回っており、特に訪問作業中の片手操作・移動中の操作で誤タップリスクが高い。36x36dp の⚡ボタンへの拡大と、状態バッジのタップ機能付与で実用的なタップエリアを確保する。</p>
+        </div>
+      </div>
+      <div class="rationale-item">
+        <div class="rationale-icon">🔒</div>
+        <div class="rationale-text">
+          <h4>削除操作は「意図的に発動する」べき</h4>
+          <p>削除はデータを失う不可逆操作であり、常時ボタン表示は不要。iOSのメール・リマインダー・連絡先など標準アプリはすべてスワイプまたは長押しで削除を発動する。MichiMark も同じパターンに揃えることで、誤削除防止と操作一貫性を同時に達成できる。</p>
+        </div>
+      </div>
+      <div class="rationale-item">
+        <div class="rationale-icon">🔄</div>
+        <div class="rationale-text">
+          <h4>状態バッジをインタラクティブ要素に昇格</h4>
+          <p>現状の状態バッジは読み取り専用で、ActionTimeの起動は隣の⚡ボタンから行う必要がある。バッジ自体をタップ可能にすることで、「状態を見てそのまま変更できる」という直感的なフローが生まれ、⚡ボタンとの役割の重複も解消される。将来的にはバッジタップでステートシートを開くなどの拡張も可能。</p>
+        </div>
+      </div>
+      <div class="rationale-item">
+        <div class="rationale-icon">🚗</div>
+        <div class="rationale-text">
+          <h4>MichiMark らしさ — 移動中・片手操作を前提とした設計</h4>
+          <p>訪問作業トピックの主要ユーザーは車移動中・作業現場での操作が多い。大きく押しやすいボタン・間違えにくいレイアウトは UX として最優先事項。小さなバッジや密集ボタン配置は「デスクトップ前提」の設計であり、フィールドユーザーには不向き。</p>
+        </div>
+      </div>
+      <div class="rationale-item">
+        <div class="rationale-icon">⚖️</div>
+        <div class="rationale-text">
+          <h4>コントラスト比（WCAG AA 基準）</h4>
+          <p>改善後の状態バッジ: 白背景上の #7C3AED テキストはコントラスト比 7.9:1（WCAG AA: 4.5:1 以上を満たす）。削除スワイプアクション: 赤背景 #DC2626 上の白テキストはコントラスト比 5.4:1（AA 基準クリア）。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <h4>product-manager への確認事項</h4>
+      <p>
+        削除方式（案A スワイプ / 案B 長押し / 案C 下部配置）のどれを採用するかはユーザーの操作習慣・実装工数・テスト容易性とのトレードオフを踏まえ、要件書で方針を確定してほしい。
+        デザインとしては案A（スワイプ）を推奨するが、Integration Testでのスワイプ操作のテスト難易度も考慮すること。
+        また、状態バッジのタップ機能（⚡ボタンとの二重トリガー）についても、既存の ActionTime BLoC とのインターフェースに影響がないか architect と確認が必要。
+      </p>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

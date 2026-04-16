@@ -80,13 +80,16 @@ class _BasicInfoReadView extends StatelessWidget {
               label: '交通手段',
               value: draft.selectedTrans?.transName ?? '未選択',
             ),
-            const SizedBox(height: 12),
-            _ReadRow(
-              label: 'メンバー',
-              value: draft.selectedMembers.isEmpty
-                  ? '未選択'
-                  : draft.selectedMembers.map((m) => m.memberName).join('、'),
-            ),
+            if (topicConfig.showMarkMembers) ...[
+              const SizedBox(height: 12),
+              _ReadRow(
+                key: const Key('basicInfo_memberSection'),
+                label: 'メンバー',
+                value: draft.selectedMembers.isEmpty
+                    ? '未選択'
+                    : draft.selectedMembers.map((m) => m.memberName).join('、'),
+              ),
+            ],
             const SizedBox(height: 12),
             _ReadRow(
               label: 'タグ',
@@ -135,7 +138,7 @@ class _ReadRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _ReadRow({required this.label, required this.value});
+  const _ReadRow({super.key, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -196,12 +199,15 @@ class _BasicInfoForm extends StatelessWidget {
           allTrans: allTrans,
           selectedTrans: draft.selectedTrans,
         ),
-        const Divider(height: 1),
-        _MemberInputSection(
-          selectedMembers: draft.selectedMembers,
-          memberSuggestions: memberSuggestions,
-          allMembers: allMembers,
-        ),
+        if (topicConfig.showMarkMembers) ...[
+          const Divider(height: 1),
+          _MemberInputSection(
+            key: const Key('basicInfo_memberSection'),
+            selectedMembers: draft.selectedMembers,
+            memberSuggestions: memberSuggestions,
+            allMembers: allMembers,
+          ),
+        ],
         const Divider(height: 1),
         _TagInputSection(
           selectedTags: draft.selectedTags,
@@ -394,6 +400,7 @@ class _MemberInputSection extends StatefulWidget {
   final List<MemberDomain> allMembers;
 
   const _MemberInputSection({
+    super.key,
     required this.selectedMembers,
     required this.memberSuggestions,
     required this.allMembers,

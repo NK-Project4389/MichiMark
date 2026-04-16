@@ -70,20 +70,11 @@ import '../repository/topic_repository.dart';
 import '../repository/trans_repository.dart';
 
 final router = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/dashboard',
   routes: [
     ShellRoute(
       builder: (context, state, child) => _ScaffoldWithBottomNav(child: child),
       routes: [
-        GoRoute(
-          path: '/',
-          builder: (context, state) => BlocProvider(
-            create: (_) => EventListBloc(
-              eventRepository: getIt<EventRepository>(),
-            )..add(const EventListStarted()),
-            child: const EventListPage(),
-          ),
-        ),
         GoRoute(
           path: '/dashboard',
           builder: (context, state) => BlocProvider(
@@ -91,6 +82,15 @@ final router = GoRouter(
               eventRepository: getIt<EventRepository>(),
             )..add(const DashboardInitialized()),
             child: const DashboardPage(),
+          ),
+        ),
+        GoRoute(
+          path: '/',
+          builder: (context, state) => BlocProvider(
+            create: (_) => EventListBloc(
+              eventRepository: getIt<EventRepository>(),
+            )..add(const EventListStarted()),
+            child: const EventListPage(),
           ),
         ),
       ],
@@ -376,7 +376,7 @@ class _ScaffoldWithBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
-    final currentIndex = location.startsWith('/dashboard') ? 1 : 0;
+    final currentIndex = location.startsWith('/dashboard') ? 0 : 1;
 
     return Scaffold(
       body: child,
@@ -385,20 +385,21 @@ class _ScaffoldWithBottomNav extends StatelessWidget {
         onTap: (index) {
           switch (index) {
             case 0:
-              context.go('/');
-            case 1:
               context.go('/dashboard');
+            case 1:
+              context.go('/');
           }
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.event_note),
-            label: 'イベント',
-          ),
-          BottomNavigationBarItem(
             key: Key('dashboard_tab'),
             icon: Icon(Icons.bar_chart),
             label: 'ダッシュボード',
+          ),
+          BottomNavigationBarItem(
+            key: Key('event_list_tab'),
+            icon: Icon(Icons.event_note),
+            label: 'イベント一覧',
           ),
         ],
       ),

@@ -38,7 +38,7 @@ class _EventListPageState extends State<EventListPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('イベント'),
+            title: const Text('イベント一覧'),
             centerTitle: true,
             actions: [
               IconButton(

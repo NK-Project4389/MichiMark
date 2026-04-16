@@ -1,3 +1,5 @@
+import '../../invite_link_share/domain/create_invitation_request.dart';
+import '../../invite_link_share/domain/create_invitation_response.dart';
 import '../domain/invite_code_member_item.dart';
 
 /// 招待コード検証APIレスポンス（成功時）
@@ -37,4 +39,10 @@ abstract class InvitationRepository {
     required String uid,
     required String memberId,
   });
+
+  /// POST /api/invitations
+  /// 招待リンク生成
+  Future<CreateInvitationResponse> createInvitation(
+    CreateInvitationRequest request,
+  );
 }

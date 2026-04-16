@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/invitation/invitation_role.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../domain/topic/topic_theme_color.dart';
 import '../../../domain/transaction/event/event_domain.dart';
@@ -56,6 +57,22 @@ class EventDetailDeletedDelegate extends EventDetailDelegate {
   List<Object?> get props => [];
 }
 
+/// owner が「メンバーを招待」をタップ → INV-4 招待設定シートへ遷移
+class EventDetailOpenInviteLinkDelegate extends EventDetailDelegate {
+  const EventDetailOpenInviteLinkDelegate();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 非owner が「招待コードを入力」をタップ → INV-3 招待コード入力画面へ遷移
+class EventDetailOpenInviteCodeInputDelegate extends EventDetailDelegate {
+  const EventDetailOpenInviteCodeInputDelegate();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// TopicConfig変更を子Blocへ伝播するようPageに通知する（起動時の一方向初期化用）
 class EventDetailTopicConfigPropagateDelegate extends EventDetailDelegate {
   final TopicConfig topicConfig;
@@ -98,6 +115,9 @@ class EventDetailLoaded extends EventDetailState {
   /// BasicInfo・MichiInfo・PaymentInfo のいずれかを1件以上保存したら true
   final bool isSavedAtLeastOnce;
 
+  /// 現在のユーザーの権限。null は権限情報未取得または未参加
+  final InvitationRole? userRole;
+
   const EventDetailLoaded({
     required this.projection,
     required this.draft,
@@ -109,6 +129,7 @@ class EventDetailLoaded extends EventDetailState {
     this.showDeleteConfirmDialog = false,
     this.isNewEvent = false,
     this.isSavedAtLeastOnce = false,
+    this.userRole,
   }) : topicConfig = topicConfig ?? const TopicConfig(
           showMeterValue: true,
           showFuelDetail: true,
@@ -133,6 +154,8 @@ class EventDetailLoaded extends EventDetailState {
     bool? showDeleteConfirmDialog,
     bool? isNewEvent,
     bool? isSavedAtLeastOnce,
+    InvitationRole? userRole,
+    bool clearUserRole = false,
   }) {
     return EventDetailLoaded(
       projection: projection ?? this.projection,
@@ -145,6 +168,7 @@ class EventDetailLoaded extends EventDetailState {
       showDeleteConfirmDialog: showDeleteConfirmDialog ?? this.showDeleteConfirmDialog,
       isNewEvent: isNewEvent ?? this.isNewEvent,
       isSavedAtLeastOnce: isSavedAtLeastOnce ?? this.isSavedAtLeastOnce,
+      userRole: clearUserRole ? null : (userRole ?? this.userRole),
     );
   }
 
@@ -160,6 +184,7 @@ class EventDetailLoaded extends EventDetailState {
         showDeleteConfirmDialog,
         isNewEvent,
         isSavedAtLeastOnce,
+        userRole,
       ];
 }
 

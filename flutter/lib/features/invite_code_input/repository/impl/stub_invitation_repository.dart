@@ -1,3 +1,5 @@
+import '../../../invite_link_share/domain/create_invitation_request.dart';
+import '../../../invite_link_share/domain/create_invitation_response.dart';
 import '../../bloc/invite_code_input_bloc.dart';
 import '../../domain/invite_code_member_item.dart';
 import '../invitation_repository.dart';
@@ -51,5 +53,17 @@ class StubInvitationRepository implements InvitationRepository {
       default:
         return const JoinResult(eventId: 'stub-event-001', role: 'viewer');
     }
+  }
+
+  @override
+  Future<CreateInvitationResponse> createInvitation(
+    CreateInvitationRequest request,
+  ) async {
+    return CreateInvitationResponse(
+      token: 'stub-token-inv4',
+      code: 'STB-0001',
+      expiresAt: DateTime.now().add(Duration(hours: request.expiresHours)),
+      inviteUrl: 'https://michimark.example.com/invite/stub-token-inv4',
+    );
   }
 }

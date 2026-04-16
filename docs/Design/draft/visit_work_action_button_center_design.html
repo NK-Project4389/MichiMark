@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UI-19: 訪問作業 Mark カード — アクションボタン中央配置デザイン</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f3f4f6; color: #1a1a2e; padding: 24px; line-height: 1.6; }
+  h1 { font-size: 20px; margin-bottom: 8px; }
+  h2 { font-size: 16px; margin: 32px 0 12px; color: #374151; border-bottom: 2px solid #e5e7eb; padding-bottom: 4px; }
+  h3 { font-size: 14px; margin: 16px 0 8px; color: #6b7280; }
+  p, li { font-size: 13px; color: #4b5563; }
+  ul { padding-left: 20px; margin-bottom: 12px; }
+  .section { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .compare { display: flex; gap: 24px; flex-wrap: wrap; }
+  .compare > div { flex: 1; min-width: 300px; }
+  .label { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .label.bad { color: #dc2626; }
+  .label.good { color: #059669; }
+
+  /* ── カード共通 ── */
+  .card-wrap { background: #f9fafb; border-radius: 10px; padding: 12px; margin-bottom: 8px; }
+  .timeline-dot { width: 10px; height: 10px; border-radius: 50%; background: #7c3aed; margin-right: 10px; flex-shrink: 0; }
+
+  /* ── Before カード ── */
+  .before-card { display: flex; align-items: center; padding: 8px 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 6px; }
+  .before-content { flex: 1; }
+  .before-name { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+  .before-date { font-size: 11px; color: #6b7280; }
+  .before-badge { font-size: 10px; background: #ede9fe; color: #7c3aed; padding: 2px 6px; border-radius: 4px; margin-right: 4px; }
+  .before-action-btn { width: 28px; height: 28px; background: #7c3aed; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; margin-left: 4px; flex-shrink: 0; }
+  .before-delete-btn { width: 36px; height: 36px; background: #fee2e2; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #dc2626; font-size: 18px; margin-left: 4px; flex-shrink: 0; }
+
+  /* ── After カード ── */
+  .after-card { display: flex; align-items: center; padding: 10px 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 6px; min-height: 64px; }
+  .after-left { display: flex; flex-direction: column; align-items: flex-start; min-width: 54px; margin-right: 8px; flex-shrink: 0; }
+  .after-date { font-size: 11px; color: #6b7280; font-weight: 500; }
+  .after-badge { font-size: 11px; font-weight: 600; background: #ede9fe; color: #7c3aed; padding: 3px 8px; border-radius: 6px; margin-top: 4px; white-space: nowrap; }
+  .after-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .after-name { font-size: 13px; font-weight: 700; color: #1a1a2e; text-align: center; }
+  .after-action-btn { display: flex; align-items: center; gap: 4px; background: #7c3aed; color: #fff; border-radius: 10px; padding: 6px 16px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 4px; }
+  .after-action-btn .icon { font-size: 16px; }
+  .after-right { display: flex; flex-direction: column; align-items: flex-end; margin-left: 8px; flex-shrink: 0; }
+  .after-delete-btn { width: 28px; height: 28px; background: #fee2e2; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #dc2626; font-size: 14px; flex-shrink: 0; opacity: 0.6; }
+
+  /* ── スペック表 ── */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+  th, td { padding: 6px 10px; border: 1px solid #e5e7eb; text-align: left; }
+  th { background: #f9fafb; font-weight: 600; color: #374151; }
+  .highlight { background: #f0fdf4; }
+
+  .note { background: #fffbeb; border-left: 3px solid #f59e0b; padding: 10px 14px; border-radius: 4px; font-size: 12px; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<h1>UI-19: 訪問作業 Mark カード — アクションボタン中央配置</h1>
+<p>MichiInfo 訪問作業（visitWork）トピックのMarkカードUI改善提案</p>
+
+<!-- ━━━━━━━━━━━━━━━━━ Before / After 比較 ━━━━━━━━━━━━━━━━━ -->
+<div class="section">
+  <h2>Before / After 比較</h2>
+  <div class="compare">
+    <!-- Before -->
+    <div>
+      <div class="label bad">Before（現状）</div>
+      <div class="card-wrap">
+        <div class="before-card">
+          <div class="timeline-dot"></div>
+          <div class="before-content">
+            <div class="before-name">A社（横浜駅前）</div>
+            <div class="before-date">4/13 10:00</div>
+            <div style="margin-top:2px"><span class="before-badge">作業中</span></div>
+          </div>
+          <div class="before-action-btn">⚡</div>
+          <div class="before-delete-btn">🗑</div>
+        </div>
+        <div class="before-card">
+          <div class="timeline-dot"></div>
+          <div class="before-content">
+            <div class="before-name">B社（みなとみらい）</div>
+            <div class="before-date">4/13 11:05</div>
+            <div style="margin-top:2px"><span class="before-badge">待機中</span></div>
+          </div>
+          <div class="before-action-btn">⚡</div>
+          <div class="before-delete-btn">🗑</div>
+        </div>
+      </div>
+      <ul>
+        <li>⚡ ボタンが 28x28dp で小さい</li>
+        <li>削除ボタン（36x36dp）が隣接し <strong>誤タップ</strong> しやすい</li>
+        <li>状態バッジが 10px で視認性が低い</li>
+      </ul>
+    </div>
+
+    <!-- After -->
+    <div>
+      <div class="label good">After（提案）</div>
+      <div class="card-wrap">
+        <div class="after-card">
+          <div class="timeline-dot"></div>
+          <div class="after-left">
+            <span class="after-date">4/13 10:00</span>
+            <span class="after-badge">作業中</span>
+          </div>
+          <div class="after-center">
+            <span class="after-name">A社（横浜駅前）</span>
+            <div class="after-action-btn"><span class="icon">⚡</span> アクション</div>
+          </div>
+          <div class="after-right">
+            <div class="after-delete-btn">🗑</div>
+          </div>
+        </div>
+        <div class="after-card">
+          <div class="timeline-dot"></div>
+          <div class="after-left">
+            <span class="after-date">4/13 11:05</span>
+            <span class="after-badge">待機中</span>
+          </div>
+          <div class="after-center">
+            <span class="after-name">B社（みなとみらい）</span>
+            <div class="after-action-btn"><span class="icon">⚡</span> アクション</div>
+          </div>
+          <div class="after-right">
+            <div class="after-delete-btn">🗑</div>
+          </div>
+        </div>
+      </div>
+      <ul>
+        <li>「⚡ アクション」ボタンが <strong>中央に大きく配置</strong></li>
+        <li>削除ボタンは右端に小さく・薄く配置（距離確保）</li>
+        <li>日付＋状態バッジが左側にコンパクトにまとまる</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━ レイアウト構造 ━━━━━━━━━━━━━━━━━ -->
+<div class="section">
+  <h2>レイアウト構造</h2>
+  <h3>カード内 Row 構成（左→右）</h3>
+  <table>
+    <tr>
+      <th>領域</th>
+      <th>内容</th>
+      <th>サイズ</th>
+      <th>配置</th>
+    </tr>
+    <tr>
+      <td>タイムラインドット</td>
+      <td>紫色の丸</td>
+      <td>10dp</td>
+      <td>固定幅</td>
+    </tr>
+    <tr>
+      <td><strong>左カラム</strong></td>
+      <td>日付テキスト（上）+ 状態バッジ（下）</td>
+      <td>54dp 固定幅</td>
+      <td>Column, alignStart</td>
+    </tr>
+    <tr class="highlight">
+      <td><strong>中央カラム（Expanded）</strong></td>
+      <td>地点名（上）+ 「⚡ アクション」ボタン（下）</td>
+      <td>残り幅すべて</td>
+      <td>Column, alignCenter</td>
+    </tr>
+    <tr>
+      <td><strong>右カラム</strong></td>
+      <td>削除ボタン（小さめ・薄め）</td>
+      <td>28dp 固定幅</td>
+      <td>固定幅, alignEnd</td>
+    </tr>
+  </table>
+
+  <h3>アクションボタン仕様</h3>
+  <table>
+    <tr><th>項目</th><th>Before</th><th>After</th></tr>
+    <tr><td>サイズ</td><td>28 x 28dp</td><td><strong>横 padding:16dp + テキスト幅 x 高さ 36dp</strong></td></tr>
+    <tr><td>タップ領域</td><td>28dp（WCAG非準拠）</td><td><strong>44dp以上（WCAG準拠）</strong></td></tr>
+    <tr><td>ラベル</td><td>⚡アイコンのみ</td><td><strong>⚡ アクション（テキスト付き）</strong></td></tr>
+    <tr><td>角丸</td><td>8dp</td><td>10dp</td></tr>
+    <tr><td>背景色</td><td>#7C3AED</td><td>#7C3AED（変更なし）</td></tr>
+    <tr><td>文字色</td><td>白</td><td>白（変更なし）</td></tr>
+    <tr><td>フォントサイズ</td><td>—</td><td>13px / bold</td></tr>
+  </table>
+
+  <h3>削除ボタン仕様</h3>
+  <table>
+    <tr><th>項目</th><th>Before</th><th>After</th></tr>
+    <tr><td>サイズ</td><td>36 x 36dp</td><td><strong>28 x 28dp（縮小）</strong></td></tr>
+    <tr><td>不透明度</td><td>1.0</td><td><strong>0.6（薄く）</strong></td></tr>
+    <tr><td>⚡ボタンとの距離</td><td>4dp（隣接！）</td><td><strong>中央のExpanded分だけ離れる（80dp以上）</strong></td></tr>
+    <tr><td>アイコンサイズ</td><td>20dp</td><td>14dp</td></tr>
+  </table>
+
+  <h3>状態バッジ仕様</h3>
+  <table>
+    <tr><th>項目</th><th>Before</th><th>After</th></tr>
+    <tr><td>フォントサイズ</td><td>10px</td><td><strong>11px</strong></td></tr>
+    <tr><td>フォントウェイト</td><td>normal</td><td><strong>600 (semibold)</strong></td></tr>
+    <tr><td>padding</td><td>2px 6px</td><td><strong>3px 8px</strong></td></tr>
+    <tr><td>角丸</td><td>4dp</td><td><strong>6dp</strong></td></tr>
+    <tr><td>配置</td><td>コンテンツColumn末尾</td><td><strong>左カラム・日付の下</strong></td></tr>
+  </table>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━ 適用範囲 ━━━━━━━━━━━━━━━━━ -->
+<div class="section">
+  <h2>適用範囲</h2>
+  <ul>
+    <li><strong>visitWork トピックの Mark カードのみ</strong> に適用（<code>topicConfig.showActionTimeButton == true</code>）</li>
+    <li>movingCost / travelExpense トピックのカードレイアウトは変更しない</li>
+    <li>Link（区間）カードは変更しない</li>
+  </ul>
+
+  <div class="note">
+    <strong>実装ノート:</strong> <code>_buildMarkCardContent()</code> 内の分岐で <code>topicConfig.showActionTimeButton</code> が true の場合に中央配置レイアウトを適用する。
+    false の場合は従来レイアウトを維持する。Row 構成の変更は <code>_buildCard()</code> メソッド内で条件分岐する。
+  </div>
+</div>
+
+</body>
+</html>

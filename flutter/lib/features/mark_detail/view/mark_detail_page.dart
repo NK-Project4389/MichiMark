@@ -215,11 +215,14 @@ class _MarkDetailForm extends StatelessWidget {
           const Divider(height: 1),
         ],
         _DateRow(date: draft.markLinkDate, dateFormat: dateFormat),
-        const Divider(height: 1),
-        _MemberChipSection(
-          availableMembers: availableMembers,
-          selectedMembers: draft.selectedMembers,
-        ),
+        if (topicConfig.showMarkMembers) ...[
+          const Divider(height: 1),
+          _MemberChipSection(
+            key: const Key('markDetail_memberSection'),
+            availableMembers: availableMembers,
+            selectedMembers: draft.selectedMembers,
+          ),
+        ],
         if (topicConfig.showMeterValue) ...[
           const Divider(height: 1),
           NumericInputRow(
@@ -472,6 +475,7 @@ class _MemberChipSection extends StatelessWidget {
   final List<MemberDomain> selectedMembers;
 
   const _MemberChipSection({
+    super.key,
     required this.availableMembers,
     required this.selectedMembers,
   });

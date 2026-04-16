@@ -6,6 +6,10 @@
 ---
 
 ## 完了した作業
+- docs: Ver1.1 App Storeページ見直し草案・REL-3タスク追加 (ba205d1)
+- feat: UI-22 ダッシュボード移動コストグラフ ポップアップ改善 (c24501f)
+- feat: UI-20/UI-21 マスター詳細ボタン下部配置・一覧FAB追加 (a42c9a0)
+- chore: TestFlight 1.1.0(12) アップロード・バージョン更新・進捗記録 (5c63b9d)
 - chore: App Store公開・改善サイクルPhase1・B-17シードデータ見直し完了 (4681679)
 - docs: セッション進捗更新（TC-VW-I004・F-2・UI-14・INV-2・INV-3 全完了） (2c5f0b5)
 - fix: INV-3 テストFAIL修正（スタブ分岐対応・入力文字列修正）・T-333/T-338 DONE (56e06cb)

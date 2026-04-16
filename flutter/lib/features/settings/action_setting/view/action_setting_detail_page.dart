@@ -226,7 +226,7 @@ class _ActionStateDropdown extends StatelessWidget {
                 contentPadding: EdgeInsets.symmetric(vertical: 12),
               ),
               hint: Text(hint),
-              value: value,
+              initialValue: value,
               items: [
                 DropdownMenuItem<ActionState?>(
                   value: null,

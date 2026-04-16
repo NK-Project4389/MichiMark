@@ -119,3 +119,28 @@ class EventDetailChildSaved extends EventDetailEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// PaymentDetailが保存完了したとき（markLinkID付き保存を含む）
+/// cachedEvent更新 + isSavedAtLeastOnce を true にするために発火する
+class EventDetailPaymentSaved extends EventDetailEvent {
+  const EventDetailPaymentSaved();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 「メンバーを招待」ボタンがタップされたとき（owner用）
+class EventDetailInviteLinkButtonPressed extends EventDetailEvent {
+  const EventDetailInviteLinkButtonPressed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// 「招待コードを入力」ボタンがタップされたとき（非owner用）
+class EventDetailInviteCodeButtonPressed extends EventDetailEvent {
+  const EventDetailInviteCodeButtonPressed();
+
+  @override
+  List<Object?> get props => [];
+}

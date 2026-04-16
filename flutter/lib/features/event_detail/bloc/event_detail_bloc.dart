@@ -31,6 +31,9 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     on<EventDetailDeleteDialogDismissed>(_onDeleteDialogDismissed);
     on<EventDetailDelegateConsumed>(_onDelegateConsumed);
     on<EventDetailChildSaved>(_onChildSaved);
+    on<EventDetailPaymentSaved>(_onPaymentSaved);
+    on<EventDetailInviteLinkButtonPressed>(_onInviteLinkButtonPressed);
+    on<EventDetailInviteCodeButtonPressed>(_onInviteCodeButtonPressed);
   }
 
   final EventRepository _eventRepository;
@@ -240,6 +243,17 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     }
   }
 
+  Future<void> _onPaymentSaved(
+    EventDetailPaymentSaved event,
+    Emitter<EventDetailState> emit,
+  ) async {
+    if (state case final EventDetailLoaded current) {
+      emit(current.copyWith(isSavedAtLeastOnce: true));
+    }
+    // cachedEventを最新状態に更新する
+    add(const EventDetailCachedEventUpdateRequested());
+  }
+
   Future<void> _onCachedEventUpdateRequested(
     EventDetailCachedEventUpdateRequested event,
     Emitter<EventDetailState> emit,
@@ -261,9 +275,32 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
         topicDisplayName: updatedDisplayName,
         isNewEvent: current.isNewEvent,
         isSavedAtLeastOnce: current.isSavedAtLeastOnce,
+        userRole: current.userRole,
       ));
     } on Exception {
       // キャッシュ更新失敗は無視（現在の表示を維持）
+    }
+  }
+
+  Future<void> _onInviteLinkButtonPressed(
+    EventDetailInviteLinkButtonPressed event,
+    Emitter<EventDetailState> emit,
+  ) async {
+    if (state case final EventDetailLoaded current) {
+      emit(current.copyWith(
+        delegate: const EventDetailOpenInviteLinkDelegate(),
+      ));
+    }
+  }
+
+  Future<void> _onInviteCodeButtonPressed(
+    EventDetailInviteCodeButtonPressed event,
+    Emitter<EventDetailState> emit,
+  ) async {
+    if (state case final EventDetailLoaded current) {
+      emit(current.copyWith(
+        delegate: const EventDetailOpenInviteCodeInputDelegate(),
+      ));
     }
   }
 

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/di.dart';
+import '../../../domain/invitation/invitation_role.dart';
 import '../../../domain/topic/topic_domain.dart';
 import '../../../domain/topic/topic_theme_color.dart';
 import '../../../repository/action_repository.dart';
+import '../../../repository/auth_repository.dart';
 import '../../../repository/event_repository.dart';
 import '../../../repository/member_repository.dart';
 import '../../../repository/tag_repository.dart';
@@ -14,6 +16,10 @@ import '../../basic_info/bloc/basic_info_bloc.dart';
 import '../../basic_info/bloc/basic_info_event.dart';
 import '../../basic_info/bloc/basic_info_state.dart';
 import '../../basic_info/view/basic_info_view.dart';
+import '../../invite_code_input/repository/invitation_repository.dart';
+import '../../invite_link_share/bloc/invite_link_share_bloc.dart';
+import '../../invite_link_share/bloc/invite_link_share_event.dart';
+import '../../invite_link_share/view/invite_link_share_sheet.dart';
 import '../../michi_info/bloc/michi_info_bloc.dart';
 import '../../michi_info/bloc/michi_info_event.dart';
 import '../../michi_info/bloc/michi_info_state.dart';
@@ -91,12 +97,37 @@ class EventDetailPage extends StatelessWidget {
         context.go('/event/payment/$paymentId');
       case EventDetailAddMarkLinkDelegate():
         context.go('/event/mark-link/add');
+      case EventDetailOpenInviteLinkDelegate():
+        _showInviteLinkShareSheet(context, state);
+      case EventDetailOpenInviteCodeInputDelegate():
+        context.push('/invite-code');
       case EventDetailTopicConfigPropagateDelegate():
         // 子BlocへTopicConfigを伝播する。
         // 子BlocはEventDetailScaffoldのMultiBlocProvider内にある。
         // EventDetailScaffoldのBlocListenerで処理する。
         break;
     }
+  }
+
+  void _showInviteLinkShareSheet(
+    BuildContext context,
+    EventDetailLoaded state,
+  ) {
+    final eventId = state.projection.eventId;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return BlocProvider(
+          create: (_) => InviteLinkShareBloc(
+            invitationRepository: getIt<InvitationRepository>(),
+            authRepository: getIt<AuthRepository>(),
+            eventId: eventId,
+          )..add(const InviteLinkShareStarted()),
+          child: const InviteLinkShareSheet(),
+        );
+      },
+    );
   }
 }
 
@@ -406,6 +437,8 @@ class _EventDetailScaffoldInnerState extends State<_EventDetailScaffoldInner> {
               case EventDetailOpenLinkDelegate():
               case EventDetailOpenPaymentDelegate():
               case EventDetailAddMarkLinkDelegate():
+              case EventDetailOpenInviteLinkDelegate():
+              case EventDetailOpenInviteCodeInputDelegate():
                 // これらのDelegateはEventDetailPageの_handleDelegateで処理する
                 break;
             }
@@ -598,8 +631,55 @@ class _OverviewTabContent extends StatelessWidget {
           const Divider(height: 1),
           _SectionLabel(key: const Key('overview_sectionLabel_overview'), label: '集計'),
           const EventDetailOverviewPage(),
+          const Divider(height: 1),
+          const _InvitationSection(),
         ],
       ),
+    );
+  }
+}
+
+/// 招待ボタンセクション。userRoleに応じてボタンを切り替える。
+class _InvitationSection extends StatelessWidget {
+  const _InvitationSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<EventDetailBloc, EventDetailState>(
+      buildWhen: (prev, curr) {
+        if (prev is! EventDetailLoaded || curr is! EventDetailLoaded) {
+          return true;
+        }
+        return prev.userRole != curr.userRole;
+      },
+      builder: (context, state) {
+        if (state is! EventDetailLoaded) {
+          return const SizedBox.shrink();
+        }
+        final userRole = state.userRole;
+        final isOwner = userRole == InvitationRole.owner;
+        return Padding(
+          key: const Key('overview_section_invitation'),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: isOwner
+              ? OutlinedButton.icon(
+                  key: const Key('overview_button_inviteLink'),
+                  onPressed: () => context
+                      .read<EventDetailBloc>()
+                      .add(const EventDetailInviteLinkButtonPressed()),
+                  icon: const Icon(Icons.person_add),
+                  label: const Text('メンバーを招待'),
+                )
+              : OutlinedButton.icon(
+                  key: const Key('overview_button_inviteCodeInput'),
+                  onPressed: () => context
+                      .read<EventDetailBloc>()
+                      .add(const EventDetailInviteCodeButtonPressed()),
+                  icon: const Icon(Icons.qr_code),
+                  label: const Text('招待コードを入力'),
+                ),
+        );
+      },
     );
   }
 }

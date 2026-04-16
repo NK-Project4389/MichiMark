@@ -7,10 +7,14 @@ import '../../repository_error.dart';
 /// EventRepository の InMemory 実装（drift 実装前の仮実装）
 class InMemoryEventRepository implements EventRepository {
   final List<EventDomain> _items;
-  final List<ActionTimeLog> _actionTimeLogs = [];
+  final List<ActionTimeLog> _actionTimeLogs;
 
   InMemoryEventRepository({List<EventDomain> initialItems = const []})
-      : _items = List.of(initialItems);
+      : _items = List.of(initialItems),
+        // B-20: EventDomain.actionTimeLogs からシードデータを読み込む
+        _actionTimeLogs = initialItems
+            .expand((e) => e.actionTimeLogs)
+            .toList();
 
   @override
   Future<List<EventDomain>> fetchAll() async =>

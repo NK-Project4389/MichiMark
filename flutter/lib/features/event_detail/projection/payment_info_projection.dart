@@ -48,18 +48,23 @@ class PaymentInfoProjection extends Equatable {
   /// 合計金額の表示文字列（例: "3,500 円"）
   final String displayTotalAmount;
 
+  /// メンバー別精算セクションを表示するか（visitWork の場合は false）
+  final bool showMemberSection;
+
   const PaymentInfoProjection({
     required this.dateGroups,
     required this.directItems,
     required this.displayTotalAmount,
+    this.showMemberSection = true,
   });
 
   static const empty = PaymentInfoProjection(
     dateGroups: [],
     directItems: [],
     displayTotalAmount: '0 円',
+    showMemberSection: true,
   );
 
   @override
-  List<Object?> get props => [dateGroups, directItems, displayTotalAmount];
+  List<Object?> get props => [dateGroups, directItems, displayTotalAmount, showMemberSection];
 }

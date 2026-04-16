@@ -69,11 +69,18 @@ class MarkDetailBloc extends Bloc<MarkDetailEvent, MarkDetailState> {
           meterValueInput: event.initialMeterValueInput,
           selectedMembers: event.initialSelectedMembers,
         );
+        // 新規作成時は対応するpaymentが存在しないためemptyと同値だが、
+        // 既存編集モードと処理を統一し、後からPaymentが追加された場合も正しく表示できるよう初期化する
+        final paymentSection = PaymentSectionProjectionAdapter.toProjection(
+          allPayments: domain.payments,
+          markLinkId: _markLinkId,
+        );
         emit(MarkDetailLoaded(
           draft: draft,
           initialDraft: draft,
           topicConfig: event.topicConfig,
           availableMembers: event.eventMembers,
+          paymentSection: paymentSection,
           eventId: _eventId,
         ));
         return;
