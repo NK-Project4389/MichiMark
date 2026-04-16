@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../../../domain/action_time/action_state.dart';
 import '../../../domain/master/action/action_domain.dart';
 import '../../../domain/master/member/member_domain.dart';
@@ -10,11 +12,25 @@ import '../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../domain/transaction/payment/payment_domain.dart';
 
 // ---------------------------------------------------------------------------
-// Helper
+// Helper（テスト用・固定日付）
 // ---------------------------------------------------------------------------
 
 DateTime _d(int year, int month, int day, [int hour = 0, int minute = 0]) =>
     DateTime(year, month, day, hour, minute);
+
+// ---------------------------------------------------------------------------
+// Helper（本番用・相対日付）
+// ---------------------------------------------------------------------------
+
+final _base = DateTime.now();
+
+/// _base から dayOffset 日ずらした DateTime を返す
+DateTime _rel(int dayOffset, [int hour = 0, int minute = 0]) =>
+    DateTime(_base.year, _base.month, _base.day + dayOffset, hour, minute);
+
+/// _base の年・月の dayOfMonth 日を返す（シナリオB用）
+DateTime _monthStart(int dayOfMonth, [int hour = 0, int minute = 0]) =>
+    DateTime(_base.year, _base.month, dayOfMonth, hour, minute);
 
 // --- Topics ---
 final seedTopics = [
@@ -189,14 +205,14 @@ final seedMembers = [
   ),
   MemberDomain(
     id: 'member-002',
-    memberName: '花子',
+    memberName: '田中',
     mailAddress: 'hanako@example.com',
     createdAt: _d(2026, 1, 1),
     updatedAt: _d(2026, 1, 1),
   ),
   MemberDomain(
     id: 'member-003',
-    memberName: '健太',
+    memberName: '鈴木',
     createdAt: _d(2026, 1, 1),
     updatedAt: _d(2026, 1, 1),
   ),
@@ -282,7 +298,8 @@ final seedTrans = [
 ];
 
 // ---------------------------------------------------------------------------
-// Transaction Data
+// テスト用シードデータ（現行 event-001〜008 をそのまま維持）
+// ※ Integration Test が依存しているため一字一句変えない
 // ---------------------------------------------------------------------------
 
 /// イベント1: 箱根日帰りドライブ（マーク3つ、リンク2つ、支払い2つ）
@@ -291,7 +308,7 @@ final _event1 = EventDomain(
   eventName: '箱根日帰りドライブ',
   topic: seedTopics[0], // 移動コスト可視化
   trans: seedTrans[0], // マイカー
-  members: [seedMembers[0], seedMembers[1]], // 太郎, 花子
+  members: [seedMembers[0], seedMembers[1]], // 太郎, 田中
   tags: [seedTags[1], seedTags[2]], // 日帰り, 温泉
   kmPerGas: 155,
   pricePerGas: 170,
@@ -378,7 +395,7 @@ final _event1 = EventDomain(
       id: 'pay-002',
       paymentSeq: 2,
       paymentAmount: 2400,
-      paymentMember: seedMembers[1], // 花子
+      paymentMember: seedMembers[1], // 田中
       splitMembers: [seedMembers[0], seedMembers[1]],
       paymentMemo: '昼食代',
       createdAt: _d(2026, 3, 15, 13, 30),
@@ -395,7 +412,7 @@ final _event2 = EventDomain(
   eventName: '富士五湖キャンプ',
   topic: seedTopics[1], // 旅費可視化
   trans: seedTrans[0], // マイカー
-  members: seedMembers, // 太郎, 花子, 健太
+  members: seedMembers, // 太郎, 田中, 鈴木
   tags: [seedTags[0]], // 家族旅行
   kmPerGas: 155,
   pricePerGas: 168,
@@ -462,7 +479,7 @@ final _event2 = EventDomain(
       id: 'pay-005',
       paymentSeq: 3,
       paymentAmount: 3600,
-      paymentMember: seedMembers[2], // 健太
+      paymentMember: seedMembers[2], // 鈴木
       splitMembers: seedMembers,
       paymentMemo: 'BBQ食材',
       createdAt: _d(2026, 3, 22, 11, 0),
@@ -491,7 +508,7 @@ final _event4 = EventDomain(
   eventName: '週末ドライブ（燃費推定）',
   topic: seedTopics[2], // 移動コスト（燃費で推定）
   trans: seedTrans[0], // マイカー
-  members: [seedMembers[0], seedMembers[1]], // 太郎, 花子
+  members: [seedMembers[0], seedMembers[1]], // 太郎, 田中
   tags: [seedTags[1]], // 日帰り
   kmPerGas: 155,
   pricePerGas: 175,
@@ -543,7 +560,7 @@ final _event5 = EventDomain(
   eventName: '旅行計画',
   topic: seedTopics[1], // 旅費可視化（travelExpense）
   trans: seedTrans[0], // マイカー
-  members: seedMembers, // 太郎, 花子, 健太
+  members: seedMembers, // 太郎, 田中, 鈴木
   tags: [],
   markLinks: [],
   payments: [],
@@ -742,7 +759,7 @@ final _event8 = EventDomain(
   eventName: '京都一泊旅行',
   topic: seedTopics[1], // 旅費可視化
   trans: seedTrans[0], // マイカー
-  members: seedMembers, // 太郎, 花子, 健太
+  members: seedMembers, // 太郎, 田中, 鈴木
   tags: [seedTags[0], seedTags[5]], // 家族旅行, グルメ
   kmPerGas: 155,
   pricePerGas: 171,
@@ -863,7 +880,7 @@ final _event8 = EventDomain(
       id: 'pay-009',
       paymentSeq: 2,
       paymentAmount: 18000,
-      paymentMember: seedMembers[1], // 花子
+      paymentMember: seedMembers[1], // 田中
       splitMembers: seedMembers,
       paymentMemo: 'ホテル代',
       createdAt: _d(2026, 4, 12, 17, 0),
@@ -873,7 +890,7 @@ final _event8 = EventDomain(
       id: 'pay-010',
       paymentSeq: 3,
       paymentAmount: 7200,
-      paymentMember: seedMembers[2], // 健太
+      paymentMember: seedMembers[2], // 鈴木
       splitMembers: seedMembers,
       paymentMemo: '夕食代（懐石）',
       createdAt: _d(2026, 4, 12, 19, 0),
@@ -894,4 +911,535 @@ final _event8 = EventDomain(
   updatedAt: _d(2026, 4, 13, 18, 0),
 );
 
-final seedEvents = [_event1, _event2, _event3, _event4, _event5, _event6, _event7, _event8];
+/// テスト用シードイベント（現行 event-001〜008 をそのまま維持）
+final _testSeedEvents = [
+  _event1,
+  _event2,
+  _event3,
+  _event4,
+  _event5,
+  _event6,
+  _event7,
+  _event8,
+];
+
+// ---------------------------------------------------------------------------
+// 本番用シードデータ（シナリオA・B・C）
+// ---------------------------------------------------------------------------
+
+/// シナリオA: 箱根日帰りドライブ
+/// movingCost トピック・3名・11 MarkLink・4 Payment・給油1回
+final _eventSeedA = EventDomain(
+  id: 'event-seed-a',
+  eventName: '箱根日帰りドライブ',
+  topic: seedTopics[0], // 移動コスト（給油から計算）
+  trans: seedTrans[0], // マイカー
+  members: [seedMembers[0], seedMembers[1], seedMembers[2]], // 太郎・田中・鈴木
+  tags: [seedTags[1]], // 日帰り
+  kmPerGas: 155,
+  pricePerGas: 175,
+  payMember: seedMembers[0], // 太郎
+  markLinks: [
+    // seq 1: 自宅出発（mark）
+    MarkLinkDomain(
+      id: 'ml-sa-001',
+      markLinkSeq: 1,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _rel(-7, 8, 0),
+      markLinkName: '自宅出発',
+      members: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      meterValue: 45000,
+      createdAt: _rel(-7, 8, 0),
+      updatedAt: _rel(-7, 8, 0),
+    ),
+    // seq 2: 足柄SA方面（link）
+    MarkLinkDomain(
+      id: 'ml-sa-002',
+      markLinkSeq: 2,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _rel(-7, 8, 30),
+      members: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      distanceValue: 65,
+      createdAt: _rel(-7, 8, 30),
+      updatedAt: _rel(-7, 8, 30),
+    ),
+    // seq 3: 足柄SA（mark・給油）
+    MarkLinkDomain(
+      id: 'ml-sa-003',
+      markLinkSeq: 3,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _rel(-7, 9, 30),
+      markLinkName: '足柄SA',
+      members: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      meterValue: 45065,
+      isFuel: true,
+      pricePerGas: 175,
+      gasQuantity: 350, // 35.0L
+      gasPrice: 6125,
+      gasPayer: seedMembers[0],
+      createdAt: _rel(-7, 9, 30),
+      updatedAt: _rel(-7, 9, 30),
+    ),
+    // seq 4: 箱根神社方面（link）
+    MarkLinkDomain(
+      id: 'ml-sa-004',
+      markLinkSeq: 4,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _rel(-7, 10, 0),
+      members: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      distanceValue: 20,
+      createdAt: _rel(-7, 10, 0),
+      updatedAt: _rel(-7, 10, 0),
+    ),
+    // seq 5: 箱根神社（mark・観光）
+    MarkLinkDomain(
+      id: 'ml-sa-005',
+      markLinkSeq: 5,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _rel(-7, 11, 0),
+      markLinkName: '箱根神社',
+      members: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      meterValue: 45085,
+      actions: [seedActions[2]], // 観光（action-001）
+      createdAt: _rel(-7, 11, 0),
+      updatedAt: _rel(-7, 11, 0),
+    ),
+    // seq 6: 大涌谷方面（link）
+    MarkLinkDomain(
+      id: 'ml-sa-006',
+      markLinkSeq: 6,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _rel(-7, 11, 30),
+      members: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      distanceValue: 8,
+      createdAt: _rel(-7, 11, 30),
+      updatedAt: _rel(-7, 11, 30),
+    ),
+    // seq 7: 大涌谷（mark・観光）
+    MarkLinkDomain(
+      id: 'ml-sa-007',
+      markLinkSeq: 7,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _rel(-7, 12, 0),
+      markLinkName: '大涌谷',
+      members: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      meterValue: 45093,
+      actions: [seedActions[2]], // 観光（action-001）
+      createdAt: _rel(-7, 12, 0),
+      updatedAt: _rel(-7, 12, 0),
+    ),
+    // seq 8: 箱根湯本方面（link）
+    MarkLinkDomain(
+      id: 'ml-sa-008',
+      markLinkSeq: 8,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _rel(-7, 12, 30),
+      members: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      distanceValue: 12,
+      createdAt: _rel(-7, 12, 30),
+      updatedAt: _rel(-7, 12, 30),
+    ),
+    // seq 9: 箱根湯本（昼食）（mark・食事）
+    MarkLinkDomain(
+      id: 'ml-sa-009',
+      markLinkSeq: 9,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _rel(-7, 13, 0),
+      markLinkName: '箱根湯本（昼食）',
+      members: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      meterValue: 45105,
+      actions: [seedActions[3]], // 食事（action-002）
+      createdAt: _rel(-7, 13, 0),
+      updatedAt: _rel(-7, 13, 0),
+    ),
+    // seq 10: 帰路（link）
+    MarkLinkDomain(
+      id: 'ml-sa-010',
+      markLinkSeq: 10,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _rel(-7, 14, 30),
+      members: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      distanceValue: 85,
+      createdAt: _rel(-7, 14, 30),
+      updatedAt: _rel(-7, 14, 30),
+    ),
+    // seq 11: 帰宅（mark）
+    MarkLinkDomain(
+      id: 'ml-sa-011',
+      markLinkSeq: 11,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _rel(-7, 17, 0),
+      markLinkName: '帰宅',
+      members: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      meterValue: 45190,
+      createdAt: _rel(-7, 17, 0),
+      updatedAt: _rel(-7, 17, 0),
+    ),
+  ],
+  payments: [
+    PaymentDomain(
+      id: 'pay-seed-a1',
+      paymentSeq: 1,
+      paymentAmount: 3200,
+      paymentMember: seedMembers[0], // 太郎
+      splitMembers: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      paymentMemo: '高速代（往復）',
+      createdAt: _rel(-7, 8, 30),
+      updatedAt: _rel(-7, 8, 30),
+    ),
+    PaymentDomain(
+      id: 'pay-seed-a2',
+      paymentSeq: 2,
+      paymentAmount: 4500,
+      paymentMember: seedMembers[0], // 太郎
+      splitMembers: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      paymentMemo: 'ガソリン代',
+      createdAt: _rel(-7, 9, 30),
+      updatedAt: _rel(-7, 9, 30),
+    ),
+    PaymentDomain(
+      id: 'pay-seed-a3',
+      paymentSeq: 3,
+      paymentAmount: 8700,
+      paymentMember: seedMembers[1], // 田中
+      splitMembers: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      paymentMemo: '昼食',
+      createdAt: _rel(-7, 13, 30),
+      updatedAt: _rel(-7, 13, 30),
+    ),
+    PaymentDomain(
+      id: 'pay-seed-a4',
+      paymentSeq: 4,
+      paymentAmount: 1000,
+      paymentMember: seedMembers[2], // 鈴木
+      splitMembers: [seedMembers[0], seedMembers[1], seedMembers[2]],
+      paymentMemo: '駐車場',
+      createdAt: _rel(-7, 11, 0),
+      updatedAt: _rel(-7, 11, 0),
+    ),
+  ],
+  createdAt: _rel(-7, 8, 0),
+  updatedAt: _rel(-7, 17, 0),
+);
+
+/// シナリオB: 4月 業務走行記録
+/// movingCost トピック・1名・9 MarkLink・2 Payment・給油2回
+final _eventSeedB = EventDomain(
+  id: 'event-seed-b',
+  eventName: '4月 業務走行記録',
+  topic: seedTopics[0], // 移動コスト（給油から計算）
+  trans: seedTrans[0], // マイカー
+  members: [seedMembers[0]], // 太郎のみ
+  tags: [],
+  kmPerGas: 155,
+  pricePerGas: 173,
+  payMember: seedMembers[0],
+  markLinks: [
+    // seq 1: 当月1日（link・42km）
+    MarkLinkDomain(
+      id: 'ml-sb-001',
+      markLinkSeq: 1,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _monthStart(1, 8, 0),
+      members: [seedMembers[0]],
+      distanceValue: 42,
+      createdAt: _monthStart(1, 8, 0),
+      updatedAt: _monthStart(1, 8, 0),
+    ),
+    // seq 2: 当月3日（mark・給油: 40L, 172円/L, 6880円）
+    MarkLinkDomain(
+      id: 'ml-sb-002',
+      markLinkSeq: 2,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _monthStart(3, 9, 0),
+      members: [seedMembers[0]],
+      isFuel: true,
+      pricePerGas: 172,
+      gasQuantity: 400, // 40.0L
+      gasPrice: 6880,
+      gasPayer: seedMembers[0],
+      createdAt: _monthStart(3, 9, 0),
+      updatedAt: _monthStart(3, 9, 0),
+    ),
+    // seq 3: 当月3日（link・87km）
+    MarkLinkDomain(
+      id: 'ml-sb-003',
+      markLinkSeq: 3,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _monthStart(3, 10, 0),
+      members: [seedMembers[0]],
+      distanceValue: 87,
+      createdAt: _monthStart(3, 10, 0),
+      updatedAt: _monthStart(3, 10, 0),
+    ),
+    // seq 4: 当月7日（mark）
+    MarkLinkDomain(
+      id: 'ml-sb-004',
+      markLinkSeq: 4,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _monthStart(7, 9, 0),
+      members: [seedMembers[0]],
+      createdAt: _monthStart(7, 9, 0),
+      updatedAt: _monthStart(7, 9, 0),
+    ),
+    // seq 5: 当月7日（link・38km）
+    MarkLinkDomain(
+      id: 'ml-sb-005',
+      markLinkSeq: 5,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _monthStart(7, 10, 0),
+      members: [seedMembers[0]],
+      distanceValue: 38,
+      createdAt: _monthStart(7, 10, 0),
+      updatedAt: _monthStart(7, 10, 0),
+    ),
+    // seq 6: 当月10日（mark・給油: 45L, 174円/L, 7830円）
+    MarkLinkDomain(
+      id: 'ml-sb-006',
+      markLinkSeq: 6,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _monthStart(10, 9, 0),
+      members: [seedMembers[0]],
+      isFuel: true,
+      pricePerGas: 174,
+      gasQuantity: 450, // 45.0L
+      gasPrice: 7830,
+      gasPayer: seedMembers[0],
+      createdAt: _monthStart(10, 9, 0),
+      updatedAt: _monthStart(10, 9, 0),
+    ),
+    // seq 7: 当月10日（link・112km）
+    MarkLinkDomain(
+      id: 'ml-sb-007',
+      markLinkSeq: 7,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _monthStart(10, 10, 0),
+      members: [seedMembers[0]],
+      distanceValue: 112,
+      createdAt: _monthStart(10, 10, 0),
+      updatedAt: _monthStart(10, 10, 0),
+    ),
+    // seq 8: 当月14日（mark）
+    MarkLinkDomain(
+      id: 'ml-sb-008',
+      markLinkSeq: 8,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _monthStart(14, 9, 0),
+      members: [seedMembers[0]],
+      createdAt: _monthStart(14, 9, 0),
+      updatedAt: _monthStart(14, 9, 0),
+    ),
+    // seq 9: 当月14日（link・55km）
+    MarkLinkDomain(
+      id: 'ml-sb-009',
+      markLinkSeq: 9,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _monthStart(14, 10, 0),
+      members: [seedMembers[0]],
+      distanceValue: 55,
+      createdAt: _monthStart(14, 10, 0),
+      updatedAt: _monthStart(14, 10, 0),
+    ),
+  ],
+  payments: [
+    PaymentDomain(
+      id: 'pay-seed-b1',
+      paymentSeq: 1,
+      paymentAmount: 6880,
+      paymentMember: seedMembers[0],
+      splitMembers: [seedMembers[0]],
+      paymentMemo: 'ガソリン代（当月3日）',
+      createdAt: _monthStart(3, 9, 0),
+      updatedAt: _monthStart(3, 9, 0),
+    ),
+    PaymentDomain(
+      id: 'pay-seed-b2',
+      paymentSeq: 2,
+      paymentAmount: 7830,
+      paymentMember: seedMembers[0],
+      splitMembers: [seedMembers[0]],
+      paymentMemo: 'ガソリン代（当月10日）',
+      createdAt: _monthStart(10, 9, 0),
+      updatedAt: _monthStart(10, 9, 0),
+    ),
+  ],
+  createdAt: _monthStart(1, 8, 0),
+  updatedAt: _monthStart(14, 17, 0),
+);
+
+/// シナリオC: 横浜エリア訪問ルート
+/// visitWork トピック・1名・9 MarkLink・3 Payment
+final _eventSeedC = EventDomain(
+  id: 'event-seed-c',
+  eventName: '横浜エリア訪問ルート',
+  topic: seedTopics[5], // 訪問作業（topic_visit_work）
+  trans: seedTrans[0], // マイカー
+  members: [seedMembers[0]], // 太郎のみ
+  tags: [],
+  payMember: seedMembers[0],
+  markLinks: [
+    // seq 1: 事務所出発（mark・visit_work_depart）
+    MarkLinkDomain(
+      id: 'ml-sc-001',
+      markLinkSeq: 1,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _rel(-3, 9, 0),
+      markLinkName: '事務所出発',
+      members: [seedMembers[0]],
+      actions: [seedActions[8]], // visit_work_depart
+      createdAt: _rel(-3, 9, 0),
+      updatedAt: _rel(-3, 9, 0),
+    ),
+    // seq 2: 事務所→A社（link・28km）
+    MarkLinkDomain(
+      id: 'ml-sc-002',
+      markLinkSeq: 2,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _rel(-3, 9, 5),
+      members: [seedMembers[0]],
+      distanceValue: 28,
+      createdAt: _rel(-3, 9, 5),
+      updatedAt: _rel(-3, 9, 5),
+    ),
+    // seq 3: A社（横浜駅前）（mark・到着・作業開始・作業終了）
+    MarkLinkDomain(
+      id: 'ml-sc-003',
+      markLinkSeq: 3,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _rel(-3, 10, 0),
+      markLinkName: 'A社（横浜駅前）',
+      members: [seedMembers[0]],
+      actions: [
+        seedActions[7],  // visit_work_arrive
+        seedActions[9],  // visit_work_start
+        seedActions[10], // visit_work_end
+      ],
+      createdAt: _rel(-3, 10, 0),
+      updatedAt: _rel(-3, 10, 0),
+    ),
+    // seq 4: A社→B社（link・5km）
+    MarkLinkDomain(
+      id: 'ml-sc-004',
+      markLinkSeq: 4,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _rel(-3, 12, 0),
+      members: [seedMembers[0]],
+      distanceValue: 5,
+      createdAt: _rel(-3, 12, 0),
+      updatedAt: _rel(-3, 12, 0),
+    ),
+    // seq 5: B社（みなとみらい）（mark・到着・作業開始・休憩・作業終了）
+    MarkLinkDomain(
+      id: 'ml-sc-005',
+      markLinkSeq: 5,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _rel(-3, 12, 30),
+      markLinkName: 'B社（みなとみらい）',
+      members: [seedMembers[0]],
+      actions: [
+        seedActions[7],  // visit_work_arrive
+        seedActions[9],  // visit_work_start
+        seedActions[11], // visit_work_break
+        seedActions[10], // visit_work_end
+      ],
+      createdAt: _rel(-3, 12, 30),
+      updatedAt: _rel(-3, 12, 30),
+    ),
+    // seq 6: B社→C社（link・12km）
+    MarkLinkDomain(
+      id: 'ml-sc-006',
+      markLinkSeq: 6,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _rel(-3, 15, 0),
+      members: [seedMembers[0]],
+      distanceValue: 12,
+      createdAt: _rel(-3, 15, 0),
+      updatedAt: _rel(-3, 15, 0),
+    ),
+    // seq 7: C社（磯子）（mark・到着・作業開始・作業終了）
+    MarkLinkDomain(
+      id: 'ml-sc-007',
+      markLinkSeq: 7,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _rel(-3, 15, 30),
+      markLinkName: 'C社（磯子）',
+      members: [seedMembers[0]],
+      actions: [
+        seedActions[7],  // visit_work_arrive
+        seedActions[9],  // visit_work_start
+        seedActions[10], // visit_work_end
+      ],
+      createdAt: _rel(-3, 15, 30),
+      updatedAt: _rel(-3, 15, 30),
+    ),
+    // seq 8: C社→事務所（link・25km）
+    MarkLinkDomain(
+      id: 'ml-sc-008',
+      markLinkSeq: 8,
+      markLinkType: MarkOrLink.link,
+      markLinkDate: _rel(-3, 17, 0),
+      members: [seedMembers[0]],
+      distanceValue: 25,
+      createdAt: _rel(-3, 17, 0),
+      updatedAt: _rel(-3, 17, 0),
+    ),
+    // seq 9: 事務所帰着（mark・visit_work_arrive）
+    MarkLinkDomain(
+      id: 'ml-sc-009',
+      markLinkSeq: 9,
+      markLinkType: MarkOrLink.mark,
+      markLinkDate: _rel(-3, 17, 30),
+      markLinkName: '事務所帰着',
+      members: [seedMembers[0]],
+      actions: [seedActions[7]], // visit_work_arrive
+      createdAt: _rel(-3, 17, 30),
+      updatedAt: _rel(-3, 17, 30),
+    ),
+  ],
+  payments: [
+    PaymentDomain(
+      id: 'pay-seed-c1',
+      paymentSeq: 1,
+      paymentAmount: 500,
+      paymentMember: seedMembers[0],
+      splitMembers: [seedMembers[0]],
+      paymentMemo: '駐車場（A社）',
+      createdAt: _rel(-3, 10, 0),
+      updatedAt: _rel(-3, 10, 0),
+    ),
+    PaymentDomain(
+      id: 'pay-seed-c2',
+      paymentSeq: 2,
+      paymentAmount: 800,
+      paymentMember: seedMembers[0],
+      splitMembers: [seedMembers[0]],
+      paymentMemo: '駐車場（B社）',
+      createdAt: _rel(-3, 12, 30),
+      updatedAt: _rel(-3, 12, 30),
+    ),
+    PaymentDomain(
+      id: 'pay-seed-c3',
+      paymentSeq: 3,
+      paymentAmount: 950,
+      paymentMember: seedMembers[0],
+      splitMembers: [seedMembers[0]],
+      paymentMemo: '昼食',
+      createdAt: _rel(-3, 13, 0),
+      updatedAt: _rel(-3, 13, 0),
+    ),
+  ],
+  createdAt: _rel(-3, 8, 0),
+  updatedAt: _rel(-3, 17, 30),
+);
+
+/// 本番用シードイベント（シナリオA・B・C の3件）
+final _prodSeedEvents = [_eventSeedA, _eventSeedB, _eventSeedC];
+
+// ---------------------------------------------------------------------------
+// 公開変数（di.dart から参照）
+// FLUTTER_TEST 環境変数でテスト用/本番用を自動切替
+// ---------------------------------------------------------------------------
+
+final seedEvents = Platform.environment.containsKey('FLUTTER_TEST')
+    ? _testSeedEvents
+    : _prodSeedEvents;
