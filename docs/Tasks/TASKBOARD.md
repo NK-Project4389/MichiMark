@@ -44,7 +44,7 @@
 | T-344 | Firebase基盤整備 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-firebase_infra.md |
 | T-345 | Firebase基盤整備 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-firebase_infra.md |
 | T-346a | Firebase基盤整備 実装 | flutter-dev | `DONE` | | AuthRepository・Firebase初期化・DI登録実装完了 |
-| T-346b | Firebase基盤整備 テストコード実装 | tester | `BLOCKED` | | Firebase実機接続が必要なためUnit Test（fake_cloud_firestore）で対応 |
+| T-346b | Firebase基盤整備 テストコード実装 | tester | `TODO` | | Firestore Repository実装完了・fake_cloud_firestoreでUnit Test実装可能 |
 | T-347 | Firebase基盤整備 レビュー | reviewer | `DONE` | | 承認（firebase_options gitignore追加） |
 | T-348 | Firebase基盤整備 テスト実行 | tester | `BLOCKED` | | |
 
@@ -85,9 +85,9 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-339 | 招待リンク生成・共有 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_link_share.md |
-| T-340 | 招待リンク生成・共有 Spec作成 | architect | `BLOCKED` | | INV-1/2完了後に着手 |
-| T-341a | 招待リンク生成・共有 実装 | flutter-dev | `BLOCKED` | | |
-| T-341b | 招待リンク生成・共有 テストコード実装 | tester | `BLOCKED` | | |
+| T-340 | 招待リンク生成・共有 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_link_share.md |
+| T-341a | 招待リンク生成・共有 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-16_F7-INV4-Firebase | FS-invitation_link_share.md 参照 |
+| T-341b | 招待リンク生成・共有 テストコード実装 | tester | `TODO` | | |
 | T-342 | 招待リンク生成・共有 レビュー | reviewer | `BLOCKED` | | |
 | T-343 | 招待リンク生成・共有 テスト実行 | tester | `BLOCKED` | | |
 
@@ -240,7 +240,7 @@
 |---|---|---|---|---|---|
 | T-437 | F-7: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_ui_placement.md |
 | T-438 | F-7: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_ui_placement.md |
-| T-439a | F-7: 実装 | flutter-dev | `TODO` | | FS-invitation_ui_placement.md 参照 |
+| T-439a | F-7: 実装 | flutter-dev | `DONE` | | InvitationRole enum・Event/Delegate追加・_InvitationSection実装・dart analyze 0件 |
 | T-439b | F-7: テストコード実装 | tester | `TODO` | | TC-IUP-001〜007 |
 | T-440 | F-7: レビュー | reviewer | `BLOCKED` | | |
 | T-441 | F-7: テスト実行 | tester | `BLOCKED` | | |
@@ -301,8 +301,8 @@
 |---|---|---|---|---|---|
 | T-458 | B-19: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_seed_data_fix.md |
 | T-459 | B-19: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_seed_data_fix.md |
-| T-460a | B-19: 実装 | flutter-dev | `BLOCKED` | | |
-| T-460b | B-19: テストコード実装 | tester | `BLOCKED` | | |
+| T-460a | B-19: 実装 | flutter-dev | `DONE` | | シナリオCからLink4件削除済み |
+| T-460b | B-19: テストコード実装 | tester | `TODO` | | |
 | T-461 | B-19: レビュー | reviewer | `BLOCKED` | | |
 | T-462 | B-19: テスト実行 | tester | `BLOCKED` | | |
 
@@ -316,8 +316,8 @@
 |---|---|---|---|---|---|
 | T-463 | F-6: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_no_member.md |
 | T-464 | F-6: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_no_member.md |
-| T-465a | F-6: 実装 | flutter-dev | `BLOCKED` | | |
-| T-465b | F-6: テストコード実装 | tester | `BLOCKED` | | |
+| T-465a | F-6: 実装 | flutter-dev | `DONE` | | TopicConfig.showMarkMembersで条件分岐済み |
+| T-465b | F-6: テストコード実装 | tester | `TODO` | | |
 | T-466 | F-6: レビュー | reviewer | `BLOCKED` | | |
 | T-467 | F-6: テスト実行 | tester | `BLOCKED` | | |
 
@@ -329,7 +329,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-468a | B-18: バグ修正 | flutter-dev | `TODO` | | |
+| T-468a | B-18: バグ修正 | flutter-dev | `DONE` | | EventDetailPaymentSaved Event追加・MarkDetailBloc新規作成モードpaymentSection初期化 |
 | T-468b | B-18: テストコード実装 | tester | `TODO` | | |
 | T-469 | B-18: レビュー | reviewer | `BLOCKED` | | |
 | T-470 | B-18: テスト実行 | tester | `BLOCKED` | | |
@@ -389,7 +389,20 @@
 |---|---|---|---|---|---|
 | T-486 | B-20: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_seed_data_actiontime.md |
 | T-487 | B-20: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_seed_data_actiontime.md |
-| T-488a | B-20: 実装 | flutter-dev | `BLOCKED` | | |
-| T-488b | B-20: テストコード実装 | tester | `BLOCKED` | | |
+| T-488a | B-20: 実装 | flutter-dev | `DONE` | | ActionTimeLog11件追加（A社3件・B社5件・C社3件） |
+| T-488b | B-20: テストコード実装 | tester | `TODO` | | |
 | T-489 | B-20: レビュー | reviewer | `BLOCKED` | | |
 | T-490 | B-20: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## REL-3: Ver1.1 App Store ページ更新（メタデータ・スクリーンショット）
+
+> INV-4（招待リンク生成・共有）実装完了後に着手。Dashboard・招待・訪問作業を目玉としたページ刷新。
+> 草案: docs/AppStore/metadata_ja_v1.1_draft.md
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-491 | REL-3: スクリーンショット用オーバーレイデザイン作成 | designer | `BLOCKED` | | INV-4完了後。6枚構成・キャッチコピー重畳。T-427のv1.0デザインをベースに更新 |
+| T-492 | REL-3: スクリーンショット撮影・組み立て | designer | `BLOCKED` | | T-491完了後。実機スクショ＋オーバーレイ合成 |
+| T-493 | REL-3: メタデータ確定・App Store Connect 更新 | marketer | `BLOCKED` | | T-492完了後。説明文・キーワード・プロモーションテキスト・スクショ一括反映 |
