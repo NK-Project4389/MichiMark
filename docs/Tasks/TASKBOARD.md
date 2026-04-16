@@ -135,7 +135,7 @@
 | T-392a | F-2: 実装 | flutter-dev | `DONE` | | FS-dashboard.md 参照 |
 | T-392b | F-2: テストコード実装 | tester | `DONE` | | TC-DB-001〜008 |
 | T-393 | F-2: レビュー | reviewer | `DONE` | | 承認 |
-| T-394 | F-2: テスト実行 | tester | `IN_PROGRESS` | 2026-04-16_F2-UI14テスト実行 | T-393完了後 |
+| T-394 | F-2: テスト実行 | tester | `DONE` | | 20PASS/0FAIL/10SKIP(シードデータなし) |
 
 ---
 
@@ -149,7 +149,7 @@
 | T-398a | UI-14: 実装 | flutter-dev | `DONE` | | FS-michi_info_road_timeline.md 参照 |
 | T-398b | UI-14: テストコード実装 | tester | `DONE` | | TC-RDT-001〜005 |
 | T-399 | UI-14: レビュー | reviewer | `DONE` | | 承認 |
-| T-400 | UI-14: テスト実行 | tester | `IN_PROGRESS` | 2026-04-16_F2-UI14テスト実行 | T-399完了後 |
+| T-400 | UI-14: テスト実行 | tester | `DONE` | | 9PASS/0FAIL/2SKIP(MarkDetail遷移) |
 
 ---
 

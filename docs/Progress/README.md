@@ -154,3 +154,5 @@
 | [2026-04-16_feat__F3-visit-work-topic.md](./2026-04-16_feat__F3-visit-work-topic.md) | F-3 訪問作業トピック実装・17件全件PASS |
 - [2026-04-16](./2026-04-16_chore__TAKBOARDアーカイブ分離_F_3をTOD.md)
 | [2026-04-16_test__F-3-visitWork-IntegrationTest.md](./2026-04-16_test__F-3-visitWork-IntegrationTest.md) | F-3 visitWork Integration Test 16件中15件PASS・TC-VW-I004 FAIL（cachedEvent未更新の問題）|
+| [2026-04-16_milestone__AppStore配信達成.md](./2026-04-16_milestone__AppStore配信達成.md) | 🎉 MichiMark App Store 配信達成（2026-04-16） |
+| [2026-04-16_test__F-2-UI14-IntegrationTest全件PASS.md](./2026-04-16_test__F-2-UI14-IntegrationTest全件PASS.md) | F-2 ダッシュボード + UI-14 道路タイムライン Integration Test 全件PASS（20PASS+9PASS） |
