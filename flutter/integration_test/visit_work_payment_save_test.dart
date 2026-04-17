@@ -121,20 +121,12 @@ void main() {
       }
     }
 
-    // 支払い追加ボタン（テキストまたはアイコンで検索）
-    final addPaymentButton = find.byKey(const Key('markDetail_button_addPayment'));
-    if (addPaymentButton.evaluate().isEmpty) {
-      // フォールバック: テキストベースで検索
-      final paymentText = find.textContaining('支払いを追加');
-      if (paymentText.evaluate().isEmpty) return false;
-      await tester.ensureVisible(paymentText.first);
-      await tester.pump(const Duration(milliseconds: 300));
-      await tester.tap(paymentText.first);
-    } else {
-      await tester.ensureVisible(addPaymentButton.first);
-      await tester.pump(const Duration(milliseconds: 300));
-      await tester.tap(addPaymentButton.first);
-    }
+    // 支払い追加ボタン（+ アイコンボタン）
+    final addPaymentButton = find.byKey(const Key('payment_plus_button'));
+    if (addPaymentButton.evaluate().isEmpty) return false;
+    await tester.ensureVisible(addPaymentButton.first);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(addPaymentButton.first);
 
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 300));
@@ -153,6 +145,33 @@ void main() {
     if (!opened) return '「横浜エリア訪問ルート」が見つかりません（シードデータ未投入の可能性）';
     await openMichiTab(tester);
     return null;
+  }
+
+  /// CustomNumericKeypad で金額を入力して確定する。
+  /// digits: 入力する文字列（例: '1500' → '1','5','0','0' を順にタップ）
+  Future<void> enterAmountViaKeypad(WidgetTester tester, String digits) async {
+    // 金額フィールドをタップしてキーパッドを開く
+    final tapTarget = find.byKey(Key('numeric_input_tap_支払金額'));
+    if (tapTarget.evaluate().isEmpty) return;
+    await tester.tap(tapTarget.first);
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.byKey(const Key('keypad_confirm')).evaluate().isNotEmpty) break;
+    }
+    // 各桁をタップ
+    for (final ch in digits.split('')) {
+      final key = Key('keypad_digit_$ch');
+      if (find.byKey(key).evaluate().isNotEmpty) {
+        await tester.tap(find.byKey(key).first);
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+    // 確定ボタンをタップ
+    final confirm = find.byKey(const Key('keypad_confirm'));
+    if (confirm.evaluate().isNotEmpty) {
+      await tester.tap(confirm.first);
+      await tester.pump(const Duration(milliseconds: 500));
+    }
   }
 
   // ────────────────────────────────────────────────────────
@@ -211,15 +230,8 @@ void main() {
         return;
       }
 
-      // 金額を入力
-      final amountField = find.byKey(const Key('paymentDetail_field_amount'));
-      if (amountField.evaluate().isNotEmpty) {
-        await tester.tap(amountField.first);
-        await tester.pump(const Duration(milliseconds: 300));
-        // NumericInputRow のテキスト入力方法: フィールドをタップして数値を入力
-        await tester.enterText(amountField.first, '1500');
-        await tester.pump(const Duration(milliseconds: 300));
-      }
+      // 金額を入力（CustomNumericKeypad 経由）
+      await enterAmountViaKeypad(tester, '1500');
 
       // 保存ボタンをタップ
       final saveButton = find.byKey(const Key('paymentDetail_button_save'));
@@ -272,13 +284,8 @@ void main() {
         return;
       }
 
-      final amountField = find.byKey(const Key('paymentDetail_field_amount'));
-      if (amountField.evaluate().isNotEmpty) {
-        await tester.tap(amountField.first);
-        await tester.pump(const Duration(milliseconds: 300));
-        await tester.enterText(amountField.first, '2000');
-        await tester.pump(const Duration(milliseconds: 300));
-      }
+      // 金額を入力（CustomNumericKeypad 経由）
+      await enterAmountViaKeypad(tester, '2000');
 
       final saveButton = find.byKey(const Key('paymentDetail_button_save'));
       if (saveButton.evaluate().isNotEmpty) {

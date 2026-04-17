@@ -54,10 +54,13 @@ class PaymentDetailBloc
 
       if (event.paymentId == null) {
         // 新規作成: 初期Draftを生成
+        // F-6: visitWork（メンバーUI非表示）の場合は先頭メンバーを自動アサイン
+        final autoMember = _showMemberSection ? null : availableMembers.firstOrNull;
         final draft = PaymentDetailDraft(
           id: const Uuid().v4(),
           paymentSeq: 0,
           markLinkID: event.markLinkID,
+          paymentMember: autoMember,
         );
         emit(PaymentDetailLoaded(draft: draft, initialDraft: draft, availableMembers: availableMembers, showMemberSection: _showMemberSection));
         return;
