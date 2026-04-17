@@ -15,6 +15,9 @@ class MarkLinkItemProjection extends Equatable {
   /// 日付の表示文字列（例: "2026/03/26"）
   final String displayDate;
 
+  /// 日付比較用キー。`yyyy/MM/dd` 固定フォーマット（例: `"2024/08/11"`）。Adapterが算出してセットする
+  final String dateKey;
+
   /// 名称
   final String markLinkName;
 
@@ -51,6 +54,7 @@ class MarkLinkItemProjection extends Equatable {
     required this.markLinkSeq,
     required this.markLinkType,
     required this.displayDate,
+    required this.dateKey,
     required this.markLinkName,
     required this.members,
     this.displayMeterValue,
@@ -70,6 +74,7 @@ class MarkLinkItemProjection extends Equatable {
       markLinkSeq: markLinkSeq,
       markLinkType: markLinkType,
       displayDate: displayDate,
+      dateKey: dateKey,
       markLinkName: markLinkName,
       members: members,
       displayMeterValue: displayMeterValue,
@@ -90,6 +95,7 @@ class MarkLinkItemProjection extends Equatable {
         markLinkSeq,
         markLinkType,
         displayDate,
+        dateKey,
         markLinkName,
         members,
         displayMeterValue,

@@ -44,6 +44,9 @@ const double _itemGap = 8.0;
 /// Mark-Mark 直接隣接時のギャップ（スパン矢印表示スペース確保）
 const double _markMarkGap = 50.0;
 
+/// 日付区切りウィジェットの高さ
+const double _dateSeparatorHeight = 48.0;
+
 // ────────────────────────────────────────────────────────
 // C-2 カラーパレット
 // ────────────────────────────────────────────────────────
@@ -87,6 +90,25 @@ const double _dashOn = 6.0;
 
 /// 破線の空白部分の長さ（px）
 const double _dashOff = 4.0;
+
+// ────────────────────────────────────────────────────────
+// TimelineListItem（表示用アイテム識別）
+// ────────────────────────────────────────────────────────
+
+/// SliverList構築時に使用する sealed class
+sealed class TimelineListItem {}
+
+/// 既存のMarkまたはLinkカード
+class CardItem extends TimelineListItem {
+  final MarkLinkItemProjection projection;
+  CardItem(this.projection);
+}
+
+/// 日付区切り行（`yyyy/MM/dd`形式）
+class DateSeparatorItem extends TimelineListItem {
+  final String dateLabel;
+  DateSeparatorItem(this.dateLabel);
+}
 
 // ────────────────────────────────────────────────────────
 // データクラス
@@ -508,6 +530,32 @@ class _MichiInfoListState extends State<_MichiInfoList> {
     setState(() {});
   }
 
+  /// MarkLinkItemProjection リストから DateSeparatorItem を差し込んだ表示用リストを生成する。
+  /// isInsertMode == true のときは区切りを挿入しない。
+  List<TimelineListItem> _buildTimelineListItems(
+    List<MarkLinkItemProjection> items,
+    bool isInsertMode,
+  ) {
+    if (isInsertMode) {
+      return items.map<TimelineListItem>((item) => CardItem(item)).toList();
+    }
+
+    final result = <TimelineListItem>[];
+    for (var i = 0; i < items.length; i++) {
+      if (i == 0) {
+        // 先頭アイテムの直前に必ず区切りを挿入
+        result.add(DateSeparatorItem(items[0].dateKey));
+      } else {
+        // 直前カードと dateKey が異なる場合のみ挿入
+        if (items[i].dateKey != items[i - 1].dateKey) {
+          result.add(DateSeparatorItem(items[i].dateKey));
+        }
+      }
+      result.add(CardItem(items[i]));
+    }
+    return result;
+  }
+
   /// この Mark から次の Mark まで連続する Link の件数を数える
   int _buildSpanLinkCount(List<MarkLinkItemProjection> items, int index) {
     if (items[index].markLinkType != MarkOrLink.mark) return 0;
@@ -527,10 +575,17 @@ class _MichiInfoListState extends State<_MichiInfoList> {
   /// - Y座標はリスト先頭からの相対値（topPadding・scrollOffset は含まない）
   /// - Mark-Mark 直接隣接時は _markMarkGap を使用
   /// - startY = 上側 Mark 底辺、endY = 下側 Mark 上辺
+  /// - DateSeparatorItem の高さ（_dateSeparatorHeight）をY座標計算に加算する
   _TimelineData _buildTimelineData(
-    List<MarkLinkItemProjection> items,
+    List<TimelineListItem> timelineItems,
     List<ActionItemProjection> markActionItems,
   ) {
+    // CardItem のみ抽出（スパン計算・MarkLink処理用）
+    final items = timelineItems
+        .whereType<CardItem>()
+        .map((c) => c.projection)
+        .toList();
+
     if (items.isEmpty) {
       return const _TimelineData(
         spans: [],
@@ -544,33 +599,44 @@ class _MichiInfoListState extends State<_MichiInfoList> {
     }
 
     final hasActions = markActionItems.isNotEmpty;
-    final yOffsets = <double>[];
+
+    // TimelineListItem リスト全体を走査して各 CardItem の Y オフセットを計算
+    // DateSeparatorItem は _dateSeparatorHeight 分を累積に加算する
+    final cardYOffsets = <double>[];
     final cardHeightList = <double>[];
     final gapAfterItem = <double>[];
     var cumulative = 0.0;
 
-    for (var k = 0; k < items.length; k++) {
-      yOffsets.add(cumulative);
-      final isMark = items[k].markLinkType == MarkOrLink.mark;
-      final cardH = isMark
-          ? (hasActions ? _cardHeight + _actionButtonsHeight : _cardHeight)
-          : _linkCardHeight;
-      cardHeightList.add(cardH);
+    // CardItem のインデックスを追跡しながら TimelineListItem を走査
+    var cardIndex = 0;
+    for (var k = 0; k < timelineItems.length; k++) {
+      final tlItem = timelineItems[k];
+      switch (tlItem) {
+        case DateSeparatorItem():
+          cumulative += _dateSeparatorHeight;
+        case CardItem(:final projection):
+          cardYOffsets.add(cumulative);
+          final isMark = projection.markLinkType == MarkOrLink.mark;
+          final cardH = isMark
+              ? (hasActions ? _cardHeight + _actionButtonsHeight : _cardHeight)
+              : _linkCardHeight;
+          cardHeightList.add(cardH);
 
-      // Mark-Mark 直接隣接 → 大きめギャップ
-      final currentIsMark = isMark;
-      final nextIsMark = k + 1 < items.length &&
-          items[k + 1].markLinkType == MarkOrLink.mark;
-      final gap = (currentIsMark && nextIsMark) ? _markMarkGap : _itemGap;
-      gapAfterItem.add(gap);
-      cumulative += cardH + gap;
+          // Mark-Mark 直接隣接 → 大きめギャップ
+          final nextCardIsMark = cardIndex + 1 < items.length &&
+              items[cardIndex + 1].markLinkType == MarkOrLink.mark;
+          final gap = (isMark && nextCardIsMark) ? _markMarkGap : _itemGap;
+          gapAfterItem.add(gap);
+          cumulative += cardH + gap;
+          cardIndex++;
+      }
     }
 
     // 縦線は始点・終点アイテムのドット中心 Y を始終端とする
     // ドット中心 = カード部分の中心（アクションボタン高は含まない）
     double dotCenterRelY(int k) {
       final isMark = items[k].markLinkType == MarkOrLink.mark;
-      return yOffsets[k] + (isMark ? _cardHeight : _linkCardHeight) / 2;
+      return cardYOffsets[k] + (isMark ? _cardHeight : _linkCardHeight) / 2;
     }
 
     final verticalLineStartRelY = dotCenterRelY(0);
@@ -593,8 +659,8 @@ class _MichiInfoListState extends State<_MichiInfoList> {
           final meterDiffText = items[j].displayMeterDiff;
           if (meterDiffText != null) {
             spans.add(SpanArrowData(
-              startY: yOffsets[i] + cardHeightList[i],
-              endY: yOffsets[j],
+              startY: cardYOffsets[i] + cardHeightList[i],
+              endY: cardYOffsets[j],
               meterDiffText: meterDiffText,
             ));
           }
@@ -612,16 +678,16 @@ class _MichiInfoListState extends State<_MichiInfoList> {
               if (items[k].markLinkType == MarkOrLink.link) {
                 coveredLinkIndices.add(k);
                 linkSegments.add(LinkSegmentData(
-                  startY: yOffsets[k],
-                  endY: yOffsets[k] + _linkCardHeight,
+                  startY: cardYOffsets[k],
+                  endY: cardYOffsets[k] + _linkCardHeight,
                 ));
                 final dist = items[k].displayDistanceValue;
                 if (dist != null) linkDistTexts.add(dist);
               }
             }
             spans.add(SpanArrowData(
-              startY: yOffsets[i] + cardHeightList[i],
-              endY: yOffsets[endMarkIndex],
+              startY: cardYOffsets[i] + cardHeightList[i],
+              endY: cardYOffsets[endMarkIndex],
               meterDiffText: meterDiffText,
               linkDistanceTexts: linkDistTexts,
             ));
@@ -638,14 +704,14 @@ class _MichiInfoListState extends State<_MichiInfoList> {
       if (coveredLinkIndices.contains(k)) continue;
       // Emerald グラデーション縦線（スパン内 Link と同じ描画）
       linkSegments.add(LinkSegmentData(
-        startY: yOffsets[k],
-        endY: yOffsets[k] + _linkCardHeight,
+        startY: cardYOffsets[k],
+        endY: cardYOffsets[k] + _linkCardHeight,
       ));
       // スパン列縦線（矢印なし・区間の存在を示す）
-      standaloneLinkLines.add((yOffsets[k], yOffsets[k] + _linkCardHeight));
+      standaloneLinkLines.add((cardYOffsets[k], cardYOffsets[k] + _linkCardHeight));
       final dist = items[k].displayDistanceValue;
       if (dist != null) {
-        standaloneLinkDistances.add((yOffsets[k] + _linkCardHeight / 2, dist));
+        standaloneLinkDistances.add((cardYOffsets[k] + _linkCardHeight / 2, dist));
       }
     }
 
@@ -688,7 +754,8 @@ class _MichiInfoListState extends State<_MichiInfoList> {
     final scrollOffset = _scrollController.hasClients
         ? _scrollController.offset
         : 0.0;
-    final timelineData = _buildTimelineData(items, markActionItems);
+    final timelineListItems = _buildTimelineListItems(items, widget.isInsertMode);
+    final timelineData = _buildTimelineData(timelineListItems, markActionItems);
 
     return Scaffold(
       body: Stack(
@@ -768,28 +835,11 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                           childCount: items.length * 2 + 1,
                         ),
                       )
-                    : SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            final item = items[index];
-                            return _TimelineItem(
-                              item: item,
-                              gapAfter: timelineData.gapAfterItem[index],
-                              onTap: () => context.read<MichiInfoBloc>().add(
-                                    MichiInfoItemTapped(
-                                      markLinkId: item.id,
-                                      type: item.markLinkType,
-                                    ),
-                                  ),
-                              markActionItems: markActionItems,
-                              markActionStateLabels:
-                                  widget.markActionStateLabels,
-                              topicConfig: widget.topicConfig,
-                              eventId: widget.eventId,
-                            );
-                          },
-                          childCount: items.length,
-                        ),
+                    : _buildNormalSliverList(
+                        context: context,
+                        timelineListItems: timelineListItems,
+                        timelineData: timelineData,
+                        markActionItems: markActionItems,
                       ),
               ),
             ],
@@ -815,6 +865,67 @@ class _MichiInfoListState extends State<_MichiInfoList> {
                 widget.isInsertMode ? Icons.close : Icons.add,
               ),
             ),
+    );
+  }
+
+  /// 通常モード（isInsertMode == false）の SliverList を構築する。
+  /// DateSeparatorItem と CardItem を混在したリストを描画する。
+  Widget _buildNormalSliverList({
+    required BuildContext context,
+    required List<TimelineListItem> timelineListItems,
+    required _TimelineData timelineData,
+    required List<ActionItemProjection> markActionItems,
+  }) {
+    // DateSeparatorItem のインデックス（出現順）を採番するためにカウンターを事前計算
+    // SliverChildBuilderDelegate は index ごとに呼ばれるため、
+    // 各 index が DateSeparatorItem かどうかと、その出現番号を知る必要がある。
+    // 事前に DateSeparatorItem の出現番号リストを作成しておく。
+    var separatorCount = 0;
+    final separatorIndexAt = <int, int>{};
+    var cardCount = 0;
+    final cardIndexAt = <int, int>{};
+    for (var i = 0; i < timelineListItems.length; i++) {
+      switch (timelineListItems[i]) {
+        case DateSeparatorItem():
+          separatorIndexAt[i] = separatorCount;
+          separatorCount++;
+        case CardItem():
+          cardIndexAt[i] = cardCount;
+          cardCount++;
+      }
+    }
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          final tlItem = timelineListItems[index];
+          switch (tlItem) {
+            case DateSeparatorItem(:final dateLabel):
+              final separatorIndex = separatorIndexAt[index]!;
+              return DateSeparatorWidget(
+                key: Key('michiInfo_dateSeparator_$separatorIndex'),
+                dateLabel: dateLabel,
+              );
+            case CardItem(:final projection):
+              final cardItemIndex = cardIndexAt[index]!;
+              return _TimelineItem(
+                item: projection,
+                gapAfter: timelineData.gapAfterItem[cardItemIndex],
+                onTap: () => context.read<MichiInfoBloc>().add(
+                      MichiInfoItemTapped(
+                        markLinkId: projection.id,
+                        type: projection.markLinkType,
+                      ),
+                    ),
+                markActionItems: markActionItems,
+                markActionStateLabels: widget.markActionStateLabels,
+                topicConfig: widget.topicConfig,
+                eventId: widget.eventId,
+              );
+          }
+        },
+        childCount: timelineListItems.length,
+      ),
     );
   }
 }
@@ -1908,6 +2019,73 @@ class _InsertIndicator extends StatelessWidget {
               child: Divider(
                 color: const Color(0x66F59E0B),
                 thickness: 1.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ────────────────────────────────────────────────────────
+// DateSeparatorWidget（日付区切りウィジェット）
+// ────────────────────────────────────────────────────────
+
+class DateSeparatorWidget extends StatelessWidget {
+  /// 表示する日付テキスト（`yyyy/MM/dd`形式）
+  final String dateLabel;
+
+  const DateSeparatorWidget({
+    super.key,
+    required this.dateLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: _dateSeparatorHeight,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          children: [
+            // 左横線
+            const Expanded(
+              child: Divider(
+                color: Color(0xFFCBD5E1),
+                thickness: 1.0,
+              ),
+            ),
+            const SizedBox(width: 8),
+            // 日付バッジ
+            Container(
+              height: 32,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: const Color(0xFFCBD5E1),
+                  width: 1.0,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                dateLabel,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF64748B),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(width: 8),
+            // 右横線
+            const Expanded(
+              child: Divider(
+                color: Color(0xFFCBD5E1),
+                thickness: 1.0,
               ),
             ),
           ],

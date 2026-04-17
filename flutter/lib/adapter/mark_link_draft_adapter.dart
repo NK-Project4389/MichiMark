@@ -28,6 +28,7 @@ class MarkLinkDraftAdapter {
       markLinkSeq: markLinkSeq,
       markLinkType: MarkOrLink.mark,
       displayDate: _dateFormat.format(draft.markLinkDate),
+      dateKey: _dateFormat.format(draft.markLinkDate),
       markLinkName: draft.markLinkName,
       members: draft.selectedMembers
           .map((m) => MemberItemProjection(
@@ -70,6 +71,7 @@ class MarkLinkDraftAdapter {
       markLinkSeq: markLinkSeq,
       markLinkType: MarkOrLink.link,
       displayDate: _dateFormat.format(draft.markLinkDate),
+      dateKey: _dateFormat.format(draft.markLinkDate),
       markLinkName: draft.markLinkName,
       members: draft.selectedMembers
           .map((m) => MemberItemProjection(

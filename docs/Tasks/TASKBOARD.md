@@ -109,10 +109,10 @@
 | T-509 | UI-23: デザイン提案 | designer | `DONE` | | docs/Design/draft/michi_info_date_separator_design.html |
 | T-510 | UI-23: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_date_separator.md |
 | T-511 | UI-23: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_date_separator.md |
-| T-512a | UI-23: 実装 | flutter-dev | `TODO` | | |
-| T-512b | UI-23: テストコード実装 | tester | `TODO` | | |
-| T-513 | UI-23: レビュー | reviewer | `BLOCKED` | | |
-| T-514 | UI-23: テスト実行 | tester | `BLOCKED` | | |
+| T-512a | UI-23: 実装 | flutter-dev | `DONE` | | MarkLinkItemProjection.dateKey追加・DateSeparatorWidget実装・区切り挿入ロジック実装 |
+| T-512b | UI-23: テストコード実装 | tester | `DONE` | | TC-DS-001〜007実装。TC-DS-003はテストデータ設計問題のため要見直し |
+| T-513 | UI-23: レビュー | reviewer | `DONE` | | |
+| T-514 | UI-23: テスト実行 | tester | `TODO` | | [autotest 2026-04-18] 6PASS/1FAIL(TC-DS-003) - 手動確認が必要: TC-DS-002とTC-DS-003が同一イベントを開くが前提が矛盾（TC-DS-002=単一日付前提,TC-DS-003=複数日付前提）。テストコードのTC-DS-003向けセットアップ修正が必要 |
 
 ---
 

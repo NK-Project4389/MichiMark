@@ -109,6 +109,7 @@ class EventDetailAdapter {
         markLinkSeq: item.markLinkSeq,
         markLinkType: item.markLinkType,
         displayDate: item.displayDate,
+        dateKey: item.dateKey,
         markLinkName: item.markLinkName,
         members: item.members,
         displayMeterValue: item.displayMeterValue,
@@ -230,6 +231,7 @@ class EventDetailAdapter {
       markLinkSeq: d.markLinkSeq,
       markLinkType: d.markLinkType,
       displayDate: _dateFormat.format(d.markLinkDate),
+      dateKey: _dateFormat.format(d.markLinkDate),
       markLinkName: d.markLinkName ?? '',
       members: d.members
           .where((m) => !m.isDeleted)

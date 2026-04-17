@@ -171,3 +171,4 @@
 | [2026-04-17_fix__TEST-FIX-2-IntegrationTest修正進捗.md](./2026-04-17_fix__TEST-FIX-2-IntegrationTest修正進捗.md) | TEST-FIX-2: seed切替修正・ルール整備・fab_dialog 8PASS・dashboard_popup 5PASS（TC-GP-003/005修正完了） |
 | [2026-04-17_test-infra006-修正.md](./2026-04-17_test-infra006-修正.md) | TC-INFRA-006 軽微修正：isMigrationNeeded()検証追加・firebase_infra_test全件PASS |
 | [2026-04-17_BUG-5テスト実行_全件PASS.md](./2026-04-17_BUG-5テスト実行_全件PASS.md) | BUG-5修正後 Integration Test実行：invite_link_share 16PASS / invitation_ui_placement 5PASS+3SKIP（T-534b DONE） |
+| [2026-04-18_autotest_fail_T-514_UI-23.md](./2026-04-18_autotest_fail_T-514_UI-23.md) | UI-23 MichiInfo日付区切り 実装+テストコード完了・6PASS/1FAIL(TC-DS-003テストコード設計問題) |
