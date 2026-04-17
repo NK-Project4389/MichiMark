@@ -7,17 +7,32 @@
 
 macOS の **launchd + `claude -p`（ヘッドレスモード）** を組み合わせた自動テストループ。
 
+TAKSBOARDの内容に応じて **実装サイクル** と **テスト実行サイクル** の2種類のフローを自動判定して実行する。
+
 ```
 launchd（指定時刻）
   └─ run-autotest.sh
        └─ claude -p autotest-prompt.md --dangerously-skip-permissions
             └─ orchestrator として自律実行:
-                 tester（haiku）: テスト実行
-                   └─ FAIL 時:
-                        flutter-dev（sonnet）: 実装修正
-                          └─ reviewer（sonnet）: レビュー
-                               ├─ APPROVED → tester 再実行
-                               └─ REJECTED → flutter-dev 再修正（最大3サイクル）
+
+                 ┌─ flutter-dev TODO タスクがある場合（実装サイクル）─────────────────┐
+                 │  flutter-dev（sonnet）: 実装                                        │
+                 │    └─ tester（haiku）: テストコード実装                             │
+                 │         └─ reviewer（sonnet）: 実装+テストコード整合レビュー        │
+                 │              ├─ APPROVED → テスト実行フローへ                       │
+                 │              └─ REJECTED → flutter-dev/tester 修正（最大2サイクル） │
+                 └──────────────────────────────────────────────────────────────────────┘
+
+                 ┌─ tester TODO（テスト実行）タスクがある場合（テスト実行サイクル）──┐
+                 │  tester（haiku）: テスト実行                                        │
+                 └──────────────────────────────────────────────────────────────────────┘
+
+                 ─── 共通: テスト実行後 ───────────────────────────────────────────────
+                 PASS → TASKBOARD更新 → 進捗ファイル作成 → git push
+                 FAIL → flutter-dev（sonnet）: 実装修正
+                           └─ reviewer（sonnet）: レビュー
+                                ├─ APPROVED → tester 再実行
+                                └─ REJECTED → flutter-dev 再修正（最大3サイクル）
 ```
 
 ## 設定ファイルの場所
@@ -47,6 +62,7 @@ launchd（指定時刻）
 ## 動作の制約
 
 - TASKBOARD に `IN_PROGRESS` タスクがあれば実行をスキップする（手動セッションとの競合防止）
-- `tester TODO` タスクを先頭から1件だけ処理する
-- テストコード（`integration_test/`）の変更は禁止
+- タスクの優先順位: `flutter-dev TODO`（実装サイクル）> `tester TODO（テスト実行）`
+- 1回の実行で処理するのは先頭1タスク（1フィーチャーグループ）のみ
+- テストコード（`integration_test/`）の変更は修正サイクル中は禁止（初期実装時のみ可）
 - `git push --force` 禁止・`Co-Authored-By` トレーラーなし
