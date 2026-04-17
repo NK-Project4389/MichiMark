@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import '../../../domain/action_time/action_state.dart';
 import '../../../domain/action_time/action_time_log.dart';
 import '../../../domain/master/action/action_domain.dart';
@@ -1489,9 +1487,10 @@ final _prodSeedEvents = [_eventSeedA, _eventSeedB, _eventSeedC];
 
 // ---------------------------------------------------------------------------
 // 公開変数（di.dart から参照）
-// FLUTTER_TEST 環境変数でテスト用/本番用を自動切替
+// FLAVOR dart-define でテスト用/本番用を自動切替
+// FLAVOR=prod（本番ビルド）→ 本番用シードデータ（シナリオA・B・C）
+// FLAVOR=dev / 未指定（開発・Integration Test）→ テスト用シードデータ（event-001〜008）
 // ---------------------------------------------------------------------------
 
-final seedEvents = Platform.environment.containsKey('FLUTTER_TEST')
-    ? _testSeedEvents
-    : _prodSeedEvents;
+const _seedFlavor = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
+final seedEvents = _seedFlavor == 'prod' ? _prodSeedEvents : _testSeedEvents;

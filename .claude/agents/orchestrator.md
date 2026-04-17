@@ -81,6 +81,30 @@ PM（要望/バグ判断）
 
 ---
 
+## ⚠️ Agent 起動時のモデル指定（必須確認）
+
+Agent を起動する際は **必ず** 以下のモデル配分を確認・指定すること。
+デフォルトのまま起動するとモデルが違う場合がある。
+
+| 役割 | model パラメータ |
+|---|---|
+| product-manager | `opus` |
+| architect | `sonnet` |
+| flutter-dev | `sonnet` |
+| reviewer | `sonnet` |
+| **tester** | **`haiku`**（← 間違えやすい！必ず明示すること） |
+| test-analyzer | `sonnet` |
+| orchestrator | `sonnet` |
+| designer | `sonnet` |
+| marketer | `sonnet` |
+| charter-reviewer | `haiku` |
+
+> ℹ️ `.claude/agents/<role>.md` の frontmatter に `model:` が定義されているが、
+> Agent ツールの `model` パラメータを明示指定しないと親セッションのモデルが継承される場合がある。
+> **毎回 `model` パラメータを明示すること。**
+
+---
+
 ## 参照ドキュメント
 
 - `docs/Architecture/MichiMark_Design_Constitution.md`
