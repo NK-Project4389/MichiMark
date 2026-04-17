@@ -94,6 +94,32 @@ void main() {
     return null;
   }
 
+  /// 複数日付のMarkを持つイベント（'京都一泊旅行'）を開いて MichiInfo タブを表示する。
+  /// TC-DS-003 など複数日付区切りの検証に使用する。
+  Future<String?> setupMichiInfoTabWithMultiDates(WidgetTester tester) async {
+    await startApp(tester);
+    if (find.text('イベントがありません').evaluate().isNotEmpty) {
+      return 'イベントデータが存在しないためスキップします';
+    }
+    // '京都一泊旅行'（event-008）を探してタップ
+    const targetName = '京都一泊旅行';
+    for (var i = 0; i < 10; i++) {
+      if (find.text(targetName).evaluate().isNotEmpty) break;
+      await tester.drag(find.byType(ListView).first, const Offset(0, -400));
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+    if (find.text(targetName).evaluate().isEmpty) {
+      return '$targetName が見つかりませんでした';
+    }
+    await tester.tap(find.text(targetName).first);
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+      if (find.text('ミチ').evaluate().isNotEmpty) break;
+    }
+    await ensureMichiInfoTab(tester);
+    return null;
+  }
+
   // ────────────────────────────────────────────────────────
   // TC-DS-001〜007
   // ────────────────────────────────────────────────────────
@@ -137,17 +163,29 @@ void main() {
 
   testWidgets('TC-DS-003: 日付が変わるMarkの直前に区切りが挿入される（2日分のMarkがある場合）',
       (tester) async {
-    final skipReason = await setupMichiInfoTab(tester);
+    final skipReason = await setupMichiInfoTabWithMultiDates(tester);
     if (skipReason != null) {
       print('[SKIP] $skipReason');
       return;
     }
 
-    // 日付A の区切りが表示される
+    // 日付A の区切りが表示される（先頭 = 画面内）
     expect(
       find.byKey(const Key('michiInfo_dateSeparator_0')),
       findsOneWidget,
     );
+
+    // 日付B の区切りをスクロールして探す（4/13 のMarkが画面外にある場合に対応）
+    for (var i = 0; i < 15; i++) {
+      if (find.byKey(const Key('michiInfo_dateSeparator_1')).evaluate().isNotEmpty) {
+        break;
+      }
+      await tester.drag(
+        find.byType(CustomScrollView).first,
+        const Offset(0, -400),
+      );
+      await tester.pump(const Duration(milliseconds: 300));
+    }
 
     // 日付B の区切りが表示される
     expect(
