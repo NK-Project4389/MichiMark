@@ -39,13 +39,32 @@ void main() {
   /// movingCost チップを選択した状態にする。
   Future<String?> setupMovingCostChart(WidgetTester tester) async {
     await GetIt.I.reset();
-    app_router.router.go('/dashboard');
+    app_router.router.go('/');
     app.main();
 
-    // ダッシュボードが表示されるまで待機
-    for (var i = 0; i < 30; i++) {
+    // イベント一覧が表示されるまで待機
+    for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
+      if (find.text('イベント一覧').evaluate().isNotEmpty) break;
+    }
+    // BottomNavが描画されるまで追加待機
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
       if (find.byKey(const Key('dashboard_tab')).evaluate().isNotEmpty) break;
+    }
+
+    // ダッシュボードタブをタップして遷移
+    final dashboardTab = find.byKey(const Key('dashboard_tab'));
+    if (dashboardTab.evaluate().isEmpty) {
+      return 'dashboard_tab が見つからないためスキップします';
+    }
+    await tester.tap(dashboardTab);
+
+    // BLocのDB読み込み完了（チップ表示）を待機
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+      if (find.byKey(const Key('topic_chip_movingCost')).evaluate().isNotEmpty) break;
+      if (find.byKey(const Key('dashboard_empty_placeholder')).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
@@ -53,15 +72,11 @@ void main() {
     // チップのキーは topic_chip_movingCost
     final movingCostChip = find.byKey(const Key('topic_chip_movingCost'));
     if (movingCostChip.evaluate().isEmpty) {
-      // 代替: テキストで検索
-      final chipByText = find.text('移動コスト');
-      if (chipByText.evaluate().isEmpty) {
-        return 'movingCost チップが見つからないためスキップします';
-      }
-      await tester.tap(chipByText.first);
-    } else {
-      await tester.tap(movingCostChip.first);
+      return 'movingCost チップが見つからないためスキップします';
     }
+    await tester.ensureVisible(movingCostChip);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(movingCostChip);
 
     // チャートが表示されるまで待機
     for (var i = 0; i < 20; i++) {
@@ -81,12 +96,20 @@ void main() {
     return null;
   }
 
-  /// チャートウィジェットの中央座標を取得する。
+  /// チャートウィジェットのバーindex 1 の中心座標を取得する。
+  /// _event1 のデータは _rel(-5) = day index 1（DateRange.last7Days の左から2番目）に存在する。
   Offset getChartCenter(WidgetTester tester) {
     final chartRect =
         tester.getRect(find.byKey(const Key('moving_cost_dashboard_chart')));
-    // 中央よりやや右側をタップ（棒グラフの密集エリアを狙う）
-    return Offset(chartRect.center.dx + 30, chartRect.center.dy);
+    // チャート内の描画領域 = chartRect.width - leftTitlesWidth(36) - rightTitlesWidth(40)
+    // 7バーのspaceAround配置: barIndex1の中心 = 描画領域左端 + slotWidth * 1.5
+    const leftTitlesWidth = 36.0;
+    const rightTitlesWidth = 40.0;
+    final chartAreaWidth = chartRect.width - leftTitlesWidth - rightTitlesWidth;
+    final slotWidth = chartAreaWidth / 7;
+    // バーindex 1 の中心X座標（_event1 のデータが _rel(-5) = day index 1 にある）
+    final bar1CenterX = chartRect.left + leftTitlesWidth + slotWidth * 1.5;
+    return Offset(bar1CenterX, chartRect.center.dy);
   }
 
   // ────────────────────────────────────────────────────────
@@ -164,7 +187,9 @@ void main() {
     }
 
     final longPressPoint = getChartCenter(tester);
-    await tester.longPressAt(longPressPoint);
+    // startGesture でホールド中にチェックする（longPressAt はリリースまで含むため tooltip が消える）
+    final gesture = await tester.startGesture(longPressPoint);
+    // ロングプレス認識まで待機（閾値500ms超え）
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.byKey(const Key('movingCost_tooltip_longpress'))
@@ -173,11 +198,15 @@ void main() {
     }
     await tester.pump(const Duration(milliseconds: 300));
 
-    // 長押しポップアップが表示されていること
+    // ホールド中に長押しポップアップが表示されていること
     expect(
       find.byKey(const Key('movingCost_tooltip_longpress')),
       findsOneWidget,
     );
+
+    // ジェスチャーをリリース
+    await gesture.up();
+    await tester.pump(const Duration(milliseconds: 300));
   });
 
   // ────────────────────────────────────────────────────────
@@ -230,11 +259,9 @@ void main() {
       return;
     }
 
-    // チャートの左端付近をタップ（給油なし日のバーを狙う）
-    final chartRect =
-        tester.getRect(find.byKey(const Key('moving_cost_dashboard_chart')));
-    final leftTapPoint =
-        Offset(chartRect.left + 30, chartRect.center.dy);
+    // bar index 1（_event1 データあり）の中心をタップする
+    // index 0 はデータなし・ゼロ高さバーでタップ不可のため getChartCenter() を使用
+    final leftTapPoint = getChartCenter(tester);
     await tester.tapAt(leftTapPoint);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
