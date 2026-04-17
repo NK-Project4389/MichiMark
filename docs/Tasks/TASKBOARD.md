@@ -377,7 +377,7 @@
 | T-483a | UI-22: 実装 | flutter-dev | `DONE` | | FS-dashboard_graph_popup.md 参照 |
 | T-483b | UI-22: テストコード実装 | tester | `DONE` | | TC-GP-001〜005（5件） |
 | T-484 | UI-22: レビュー | reviewer | `DONE` | | 承認 |
-| T-485 | UI-22: テスト実行 | tester | `BLOCKED` | | |
+| T-485 | UI-22: テスト実行 | tester | `DONE` | | 5PASS/0FAIL ✅（di.dart/seed_data/_event1日付/_tap座標修正後） |
 
 ---
 
@@ -438,6 +438,6 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-498 | dashboard_graph_popup FAIL修正（tooltip Widgetキー） | flutter-dev | `IN_PROGRESS` | 2026-04-17_TEST-FIX-2 | FlPanDownEvent対応追加（tester.tapAt()がPanGestureとして認識される場合の対処）。reviewer確認中 |
+| T-498 | dashboard_graph_popup FAIL修正（tooltip Widgetキー） | flutter-dev | `DONE` | | FlPanDownEvent対応・di.dart FLAVOR=test修正・seed_data _event1日付→_rel(-5)・tap座標計算修正で全5件PASS ✅ |
 | T-499 | fab_and_unsaved_dialog FAIL修正（近所のドライブ画面外） | tester | `DONE` | | ListViewスクロールループ追加でTC-BACK-001等 8PASS/0FAIL ✅ |
-| T-500 | 修正後テスト実行 | tester | `BLOCKED` | | T-498完了後（T-499分は完了済み） |
+| T-500 | 修正後テスト実行 | tester | `DONE` | | T-498・T-499分ともに完了。全件PASS ✅ |

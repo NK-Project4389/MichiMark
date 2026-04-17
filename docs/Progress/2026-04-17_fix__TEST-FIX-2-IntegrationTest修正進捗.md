@@ -1,6 +1,7 @@
 # TEST-FIX-2: Integration Test 残存FAIL修正 進捗
 
 ## 完了した作業
+- fix: TC-GP-003/005 dashboard_graph_popup テスト修正・全5件PASS (f7af9f0)
 - fix: TEST-FIX-2 Integration Test 修正（fab_dialog全PASS・dashboard_popup調査中） (3478cae)
 
 ### 1. TEST-FIX-1: シードデータ切り替えバグ修正（完了）
@@ -53,7 +54,46 @@
 | TC-GP-004 | 長押しを離したときポップアップが非表示になること | PASS |
 | TC-GP-005 | 給油なし日のバーのポップアップに「---」が表示されること | PASS |
 
+### 7. di.dart FLAVOR=test バグ修正（完了）
+
+- **原因**: `--dart-define=FLAVOR=test` 時、`di.dart` の条件 `isTest || _flavor == 'dev'` が両方 false になり `_registerFirestoreRepositories()` が呼ばれていた
+  - iOSシミュレーターでは `Platform.environment.containsKey('FLUTTER_TEST')` = false
+  - FLAVOR=test では `_flavor == 'dev'` = false
+  - → Firestore に接続・テストアカウントにデータなし → fetchAll() 空 → イベント一覧もダッシュボードチップも表示されない
+- **修正**: `di.dart:57` に `|| _flavor == 'test'` を追加
+- **reviewer**: 承認
+
+### 8. seed_data.dart _event1 日付修正（完了）
+
+- **原因**: `_event1` の markLinkDate が `_d(2026, 3, 15, ...)` 固定日付のため `DateRange.last7Days()` の範囲外 → グラフのバーが0本 → tapAt がヒットしない
+- **修正**: `_event1` markLinks・payments の日付を `_rel(-5, ...)` に変更（常に直近7日内）
+- **reviewer**: 承認
+
+### 9. テスト座標修正（完了）
+
+- **原因**: `getChartCenter()` が `chartRect.center.dx + 30` → bar index 4（ゼロ高さ）に当たっていた
+  - `_event1` データは `_rel(-5)` = day index 1（チャート左から2番目）
+  - center + 30 は bar index 4 に相当する座標
+- **修正**: bar index 1 の実際の x 座標を計算する方式に変更
+  - `chartRect.left + leftTitlesWidth(36) + (chartAreaWidth/7) * 1.5`
+
+## 未完了
+
+なし（TC-GP-001〜005 全件 PASS 達成）
+
+## テスト結果（2026-04-17）
+
+ログ: `docs/TestLogs/2026-04-17_13-49_dashboard_graph_popup.log`
+
+| シナリオID | テスト名 | 結果 |
+|---|---|---|
+| TC-GP-001 | 移動コストグラフの棒をタップしたとき暗色背景のポップアップが表示されること | PASS |
+| TC-GP-002 | タップ時のポップアップに日付と金額が表示されること | PASS |
+| TC-GP-003 | 移動コストグラフの棒を長押ししたとき走行距離と金額が表示されること | PASS |
+| TC-GP-004 | 長押しを離したときポップアップが非表示になること | PASS |
+| TC-GP-005 | 給油なし日のバーのポップアップに「---」が表示されること | PASS |
+
 ## 次回セッションで最初にやること
 
-1. **B-20 visitWork ActionTimeLogs**: `_testSeedEvents` へ追加（スルーテスト防止）
+1. **visit_work テスト (T-467/T-470/T-490)**: `_testSeedEvents` に visitWork（横浜エリア）イベントを追加してSKIPを解消
 2. **全件テスト（3シャード）**: 本番リリース前フルスイート実施の検討

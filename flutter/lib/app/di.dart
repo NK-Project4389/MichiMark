@@ -54,7 +54,7 @@ void setupDi() {
   //
   // 移行フェーズ（schemaVersion確認）での動的切替は
   // setupDiFirestore() を呼び出して実現する。
-  if (isTest || _flavor == 'dev') {
+  if (isTest || _flavor == 'dev' || _flavor == 'test') {
     _registerInMemoryRepositories();
   } else {
     _registerFirestoreRepositories();

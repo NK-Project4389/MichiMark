@@ -298,7 +298,8 @@ final seedTrans = [
 
 // ---------------------------------------------------------------------------
 // テスト用シードデータ（現行 event-001〜008 をそのまま維持）
-// ※ Integration Test が依存しているため一字一句変えない
+// ※ Integration Test が依存しているため基本は変えない
+// ※ _event1 の markLinks・payments の日付のみ相対日付（_rel）に変更済み（2026-04-17）
 // ---------------------------------------------------------------------------
 
 /// イベント1: 箱根日帰りドライブ（マーク3つ、リンク2つ、支払い2つ）
@@ -317,54 +318,54 @@ final _event1 = EventDomain(
       id: 'ml-001',
       markLinkSeq: 1,
       markLinkType: MarkOrLink.mark,
-      markLinkDate: _d(2026, 3, 15, 8, 0),
+      markLinkDate: _rel(-5, 8, 0),
       markLinkName: '自宅出発',
       members: [seedMembers[0], seedMembers[1]],
       meterValue: 45230,
       actions: [seedActions[4]], // 写真撮影
-      createdAt: _d(2026, 3, 15, 8, 0),
-      updatedAt: _d(2026, 3, 15, 8, 0),
+      createdAt: _rel(-5, 8, 0),
+      updatedAt: _rel(-5, 8, 0),
     ),
     MarkLinkDomain(
       id: 'ml-002',
       markLinkSeq: 2,
       markLinkType: MarkOrLink.link,
-      markLinkDate: _d(2026, 3, 15, 8, 30),
+      markLinkDate: _rel(-5, 8, 30),
       markLinkName: '東名高速',
       members: [seedMembers[0], seedMembers[1]],
       distanceValue: 85,
-      createdAt: _d(2026, 3, 15, 8, 30),
-      updatedAt: _d(2026, 3, 15, 8, 30),
+      createdAt: _rel(-5, 8, 30),
+      updatedAt: _rel(-5, 8, 30),
     ),
     MarkLinkDomain(
       id: 'ml-003',
       markLinkSeq: 3,
       markLinkType: MarkOrLink.mark,
-      markLinkDate: _d(2026, 3, 15, 10, 0),
+      markLinkDate: _rel(-5, 10, 0),
       markLinkName: '箱根湯本駅前',
       members: [seedMembers[0], seedMembers[1]],
       meterValue: 45315,
       actions: [seedActions[0], seedActions[4]], // 観光, 写真撮影
       memo: '駅前の足湯に入った',
-      createdAt: _d(2026, 3, 15, 10, 0),
-      updatedAt: _d(2026, 3, 15, 10, 0),
+      createdAt: _rel(-5, 10, 0),
+      updatedAt: _rel(-5, 10, 0),
     ),
     MarkLinkDomain(
       id: 'ml-004',
       markLinkSeq: 4,
       markLinkType: MarkOrLink.link,
-      markLinkDate: _d(2026, 3, 15, 12, 0),
+      markLinkDate: _rel(-5, 12, 0),
       markLinkName: '芦ノ湖スカイライン',
       members: [seedMembers[0], seedMembers[1]],
       distanceValue: 25,
-      createdAt: _d(2026, 3, 15, 12, 0),
-      updatedAt: _d(2026, 3, 15, 12, 0),
+      createdAt: _rel(-5, 12, 0),
+      updatedAt: _rel(-5, 12, 0),
     ),
     MarkLinkDomain(
       id: 'ml-005',
       markLinkSeq: 5,
       markLinkType: MarkOrLink.mark,
-      markLinkDate: _d(2026, 3, 15, 13, 0),
+      markLinkDate: _rel(-5, 13, 0),
       markLinkName: '大涌谷',
       members: [seedMembers[0], seedMembers[1]],
       meterValue: 45340,
@@ -375,8 +376,8 @@ final _event1 = EventDomain(
       gasQuantity: 305, // 30.5L
       gasPrice: 5185,
       gasPayer: seedMembers[0],
-      createdAt: _d(2026, 3, 15, 13, 0),
-      updatedAt: _d(2026, 3, 15, 13, 0),
+      createdAt: _rel(-5, 13, 0),
+      updatedAt: _rel(-5, 13, 0),
     ),
   ],
   payments: [
@@ -387,8 +388,8 @@ final _event1 = EventDomain(
       paymentMember: seedMembers[0], // 太郎
       splitMembers: [seedMembers[0], seedMembers[1]],
       paymentMemo: '高速道路代',
-      createdAt: _d(2026, 3, 15, 8, 30),
-      updatedAt: _d(2026, 3, 15, 8, 30),
+      createdAt: _rel(-5, 8, 30),
+      updatedAt: _rel(-5, 8, 30),
     ),
     PaymentDomain(
       id: 'pay-002',
@@ -397,12 +398,12 @@ final _event1 = EventDomain(
       paymentMember: seedMembers[1], // 田中
       splitMembers: [seedMembers[0], seedMembers[1]],
       paymentMemo: '昼食代',
-      createdAt: _d(2026, 3, 15, 13, 30),
-      updatedAt: _d(2026, 3, 15, 13, 30),
+      createdAt: _rel(-5, 13, 30),
+      updatedAt: _rel(-5, 13, 30),
     ),
   ],
-  createdAt: _d(2026, 3, 15, 8, 0),
-  updatedAt: _d(2026, 3, 15, 18, 0),
+  createdAt: _rel(-6),
+  updatedAt: _rel(-5, 18, 0),
 );
 
 /// イベント2: 富士五湖キャンプ（マーク2つ、リンク1つ、支払い3つ）
