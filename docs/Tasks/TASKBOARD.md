@@ -44,7 +44,7 @@
 | T-344 | Firebase基盤整備 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-firebase_infra.md |
 | T-345 | Firebase基盤整備 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-firebase_infra.md |
 | T-346a | Firebase基盤整備 実装 | flutter-dev | `DONE` | | AuthRepository・Firebase初期化・DI登録実装完了 |
-| T-346b | Firebase基盤整備 テストコード実装 | tester | `TODO` | | Firestore Repository実装完了・fake_cloud_firestoreでUnit Test実装可能 |
+| T-346b | Firebase基盤整備 テストコード実装 | tester | `IN_PROGRESS` | 2026-04-17_INFRA-1 | Firestore Repository実装完了・fake_cloud_firestoreでUnit Test実装可能 |
 | T-347 | Firebase基盤整備 レビュー | reviewer | `DONE` | | 承認（firebase_options gitignore追加） |
 | T-348 | Firebase基盤整備 テスト実行 | tester | `BLOCKED` | | |
 

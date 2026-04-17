@@ -1,6 +1,8 @@
 # TEST-FIX-2: Integration Test 残存FAIL修正 進捗
 
 ## 完了した作業
+- docs: 進捗README更新（TEST-FIX-2 visit_work全PASS） (d53d3f0)
+- chore: タスクボードT-467/T-470/T-490 DONE・進捗ファイル更新 (5a4d6c8)
 - fix: di.dart FLAVOR=test→InMemory修正・seed_data _event1日付_rel(-5)修正・タスクボードT-485/498/500 DONE (efa165f)
 - fix: TC-GP-003/005 dashboard_graph_popup テスト修正・全5件PASS (f7af9f0)
 - fix: TEST-FIX-2 Integration Test 修正（fab_dialog全PASS・dashboard_popup調査中） (3478cae)
