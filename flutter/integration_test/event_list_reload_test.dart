@@ -28,7 +28,7 @@ void main() {
     // EventListPage の AppBar title「イベント」が表示されるまで待つ
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.text('イベント').evaluate().isNotEmpty) break;
+      if (find.text('イベント一覧').evaluate().isNotEmpty) break;
     }
     // データロード完了を待つ（ListView表示まで）
     for (var i = 0; i < 10; i++) {
@@ -116,7 +116,7 @@ void main() {
     // EventListが再ロードされるまで待つ
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.text('イベント').evaluate().isNotEmpty) break;
+      if (find.text('イベント一覧').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 500));
 
@@ -240,12 +240,12 @@ void main() {
     // EventListが再ロードされるまで待つ
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.text('イベント').evaluate().isNotEmpty) break;
+      if (find.text('イベント一覧').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 500));
 
-    // EventListに戻っていることを確認
-    expect(find.text('イベント'), findsOneWidget, reason: 'EventListに戻れること');
+    // EventListに戻っていることを確認（BottomNavラベルとAppBarタイトルで2つ表示される）
+    expect(find.text('イベント一覧'), findsAtLeastNWidgets(1), reason: 'EventListに戻れること');
 
     // 保存したイベント名をスクロールしながら探す（ListView.builder lazyレンダリング対策）
     bool newEventFound = false;

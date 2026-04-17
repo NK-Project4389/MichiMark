@@ -460,9 +460,25 @@ void main() {
       (tester) async {
     await goToTransSettingDetail(tester);
 
-    // 名称フィールドに入力
+    // TransSettingDetail には3つの必須TextField がある（名前・燃費・メーター）
     final textFields = find.byType(TextField);
-    if (textFields.evaluate().isNotEmpty) {
+    if (textFields.evaluate().length >= 3) {
+      // 1. 交通手段名
+      await tester.tap(textFields.at(0));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(textFields.at(0), 'テスト交通手段');
+      await tester.pump(const Duration(milliseconds: 300));
+      // 2. 燃費 (km/L)
+      await tester.tap(textFields.at(1));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(textFields.at(1), '15.5');
+      await tester.pump(const Duration(milliseconds: 300));
+      // 3. メーター (km)
+      await tester.tap(textFields.at(2));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(textFields.at(2), '10000');
+      await tester.pump(const Duration(milliseconds: 300));
+    } else if (textFields.evaluate().isNotEmpty) {
       await tester.tap(textFields.first);
       await tester.pump(const Duration(milliseconds: 300));
       await tester.enterText(textFields.first, 'テスト交通手段');

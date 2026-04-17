@@ -16,9 +16,9 @@ class MemberSettingDetailPage extends StatelessWidget {
         if (state is MemberSettingDetailLoaded && state.delegate != null) {
           switch (state.delegate!) {
             case MemberSettingDetailDidSaveDelegate():
-              context.pop(true);
+              if (context.canPop()) { context.pop(true); } else { context.go('/'); }
             case MemberSettingDetailDismissDelegate():
-              context.pop();
+              if (context.canPop()) { context.pop(); } else { context.go('/'); }
           }
         }
       },

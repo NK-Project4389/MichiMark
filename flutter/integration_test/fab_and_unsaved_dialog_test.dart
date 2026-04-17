@@ -19,7 +19,7 @@ void main() {
     app.main();
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.text('イベント').evaluate().isNotEmpty) break;
+      if (find.text('イベント一覧').evaluate().isNotEmpty) break;
     }
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
@@ -389,7 +389,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       // EventList が表示されていること（概要タブが消えてイベント一覧が見える）
       if (find.text('概要').evaluate().isEmpty &&
-          find.text('イベント').evaluate().isNotEmpty) break;
+          find.text('イベント一覧').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 500));
 

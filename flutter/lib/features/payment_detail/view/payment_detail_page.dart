@@ -38,10 +38,11 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
             :final isSaving,
             :final availableMembers,
             :final showCancelConfirmDialog,
+            :final showMemberSection,
           ) =>
             Stack(
               children: [
-                _PaymentDetailScaffold(draft: draft, isSaving: isSaving, availableMembers: availableMembers),
+                _PaymentDetailScaffold(draft: draft, isSaving: isSaving, availableMembers: availableMembers, showMemberSection: showMemberSection),
                 if (showCancelConfirmDialog)
                   _PaymentDetailCancelConfirmDialog(),
               ],
@@ -81,8 +82,9 @@ class _PaymentDetailScaffold extends StatelessWidget {
   final PaymentDetailDraft draft;
   final bool isSaving;
   final List<MemberDomain> availableMembers;
+  final bool showMemberSection;
 
-  const _PaymentDetailScaffold({required this.draft, required this.isSaving, required this.availableMembers});
+  const _PaymentDetailScaffold({required this.draft, required this.isSaving, required this.availableMembers, required this.showMemberSection});
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +101,7 @@ class _PaymentDetailScaffold extends StatelessWidget {
         draft: draft,
         availableMembers: availableMembers,
         isSaving: isSaving,
+        showMemberSection: showMemberSection,
       ),
     );
   }
@@ -110,11 +113,13 @@ class _PaymentDetailForm extends StatelessWidget {
   final PaymentDetailDraft draft;
   final List<MemberDomain> availableMembers;
   final bool isSaving;
+  final bool showMemberSection;
 
   const _PaymentDetailForm({
     required this.draft,
     required this.availableMembers,
     required this.isSaving,
+    required this.showMemberSection,
   });
 
   @override
@@ -131,17 +136,19 @@ class _PaymentDetailForm extends StatelessWidget {
               .read<PaymentDetailBloc>()
               .add(PaymentDetailAmountChanged(v)),
         ),
-        const Divider(height: 1),
-        _PayMemberChipSection(
-          availableMembers: availableMembers,
-          selectedPayMember: draft.paymentMember,
-        ),
-        const Divider(height: 1),
-        _SplitMemberChipSection(
-          availableMembers: availableMembers,
-          splitMembers: draft.splitMembers,
-          paymentMember: draft.paymentMember,
-        ),
+        if (showMemberSection) ...[
+          const Divider(height: 1),
+          _PayMemberChipSection(
+            availableMembers: availableMembers,
+            selectedPayMember: draft.paymentMember,
+          ),
+          const Divider(height: 1),
+          _SplitMemberChipSection(
+            availableMembers: availableMembers,
+            splitMembers: draft.splitMembers,
+            paymentMember: draft.paymentMember,
+          ),
+        ],
         const Divider(height: 1),
         _MemoField(value: draft.paymentMemo),
         const SizedBox(height: 24),

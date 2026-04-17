@@ -45,7 +45,7 @@ void main() {
     // EventListPage の AppBar title「イベント」が表示されるまで待つ
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.text('イベント').evaluate().isNotEmpty) break;
+      if (find.text('イベント一覧').evaluate().isNotEmpty) break;
     }
     // データロード完了を待つ（ListView 表示まで）
     for (var i = 0; i < 10; i++) {
@@ -370,7 +370,7 @@ void main() {
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
       // EventList ページに戻ったことを「イベント」AppBar title で確認
-      if (find.text('イベント').evaluate().isNotEmpty &&
+      if (find.text('イベント一覧').evaluate().isNotEmpty &&
           find.byKey(const Key('eventDetail_button_delete')).evaluate().isEmpty) {
         break;
       }
@@ -379,8 +379,8 @@ void main() {
 
     // イベント一覧画面に戻っていること（AppBar title「イベント」が表示されている）
     expect(
-      find.text('イベント'),
-      findsOneWidget,
+      find.text('イベント一覧'),
+      findsAtLeastNWidgets(1),
       reason: '削除後にイベント一覧画面（AppBar title「イベント」）に戻っていること',
     );
 

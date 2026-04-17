@@ -58,6 +58,9 @@ class PaymentDetailLoaded extends PaymentDetailState {
   /// 概要（BasicInfo）の参加メンバー。支払者・割り勘の選択肢を絞り込むために使用する。
   final List<MemberDomain> availableMembers;
 
+  /// メンバーセクション（支払者・割り勘）を表示するか（F-6: visitWork以外はtrue）
+  final bool showMemberSection;
+
   const PaymentDetailLoaded({
     required this.draft,
     required this.initialDraft,
@@ -65,6 +68,7 @@ class PaymentDetailLoaded extends PaymentDetailState {
     this.isSaving = false,
     this.showCancelConfirmDialog = false,
     this.availableMembers = const [],
+    this.showMemberSection = true,
   });
 
   PaymentDetailLoaded copyWith({
@@ -74,6 +78,7 @@ class PaymentDetailLoaded extends PaymentDetailState {
     bool? isSaving,
     bool? showCancelConfirmDialog,
     List<MemberDomain>? availableMembers,
+    bool? showMemberSection,
   }) {
     return PaymentDetailLoaded(
       draft: draft ?? this.draft,
@@ -82,11 +87,12 @@ class PaymentDetailLoaded extends PaymentDetailState {
       isSaving: isSaving ?? this.isSaving,
       showCancelConfirmDialog: showCancelConfirmDialog ?? this.showCancelConfirmDialog,
       availableMembers: availableMembers ?? this.availableMembers,
+      showMemberSection: showMemberSection ?? this.showMemberSection,
     );
   }
 
   @override
-  List<Object?> get props => [draft, initialDraft, delegate, isSaving, showCancelConfirmDialog, availableMembers];
+  List<Object?> get props => [draft, initialDraft, delegate, isSaving, showCancelConfirmDialog, availableMembers, showMemberSection];
 }
 
 class PaymentDetailError extends PaymentDetailState {

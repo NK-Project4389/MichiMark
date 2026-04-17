@@ -16,9 +16,9 @@ class TransSettingDetailPage extends StatelessWidget {
         if (state is TransSettingDetailLoaded && state.delegate != null) {
           switch (state.delegate!) {
             case TransSettingDetailDidSaveDelegate():
-              context.pop(true);
+              if (context.canPop()) { context.pop(true); } else { context.go('/'); }
             case TransSettingDetailDismissDelegate():
-              context.pop();
+              if (context.canPop()) { context.pop(); } else { context.go('/'); }
           }
         }
       },

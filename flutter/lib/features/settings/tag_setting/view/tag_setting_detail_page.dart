@@ -16,9 +16,9 @@ class TagSettingDetailPage extends StatelessWidget {
         if (state is TagSettingDetailLoaded && state.delegate != null) {
           switch (state.delegate!) {
             case TagSettingDetailDidSaveDelegate():
-              context.pop(true);
+              if (context.canPop()) { context.pop(true); } else { context.go('/'); }
             case TagSettingDetailDismissDelegate():
-              context.pop();
+              if (context.canPop()) { context.pop(); } else { context.go('/'); }
           }
         }
       },

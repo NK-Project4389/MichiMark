@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import '../domain/topic/topic_domain.dart';
 import '../domain/transaction/event/event_domain.dart';
 import '../domain/transaction/mark_link/mark_or_link.dart';
 import '../domain/master/member/member_domain.dart';
@@ -183,6 +184,7 @@ class EventDetailAdapter {
       dateGroups: dateGroups,
       directItems: direct.map(_toPaymentItem).toList(),
       displayTotalAmount: '${_numberFormat.format(total)} 円',
+      showMemberSection: event.topic?.topicType != TopicType.visitWork,
     );
   }
 

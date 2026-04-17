@@ -46,7 +46,7 @@ void main() {
     app.main();
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.text('イベント').evaluate().isNotEmpty) break;
+      if (find.text('イベント一覧').evaluate().isNotEmpty) break;
     }
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
@@ -189,7 +189,7 @@ void main() {
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('ミチ').evaluate().isNotEmpty ||
-          find.text('イベント').evaluate().isNotEmpty) break;
+          find.text('イベント一覧').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
   }

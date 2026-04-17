@@ -80,7 +80,7 @@ class _BasicInfoReadView extends StatelessWidget {
               label: '交通手段',
               value: draft.selectedTrans?.transName ?? '未選択',
             ),
-            if (topicConfig.showMarkMembers) ...[
+            if (topicConfig.showMemberSection) ...[
               const SizedBox(height: 12),
               _ReadRow(
                 key: const Key('basicInfo_memberSection'),
@@ -199,7 +199,7 @@ class _BasicInfoForm extends StatelessWidget {
           allTrans: allTrans,
           selectedTrans: draft.selectedTrans,
         ),
-        if (topicConfig.showMarkMembers) ...[
+        if (topicConfig.showMemberSection) ...[
           const Divider(height: 1),
           _MemberInputSection(
             key: const Key('basicInfo_memberSection'),

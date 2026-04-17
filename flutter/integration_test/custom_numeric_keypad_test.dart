@@ -32,7 +32,7 @@ void main() {
     app.main();
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.text('イベント').evaluate().isNotEmpty) {
+      if (find.text('イベント一覧').evaluate().isNotEmpty) {
         break;
       }
     }

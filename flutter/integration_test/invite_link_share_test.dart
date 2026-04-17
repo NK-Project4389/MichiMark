@@ -38,7 +38,7 @@ void main() {
     app.main();
     for (var i = 0; i < 30; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.text('イベント').evaluate().isNotEmpty) break;
+      if (find.text('イベント一覧').evaluate().isNotEmpty) break;
     }
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));

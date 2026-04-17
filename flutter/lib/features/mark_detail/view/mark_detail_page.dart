@@ -215,7 +215,7 @@ class _MarkDetailForm extends StatelessWidget {
           const Divider(height: 1),
         ],
         _DateRow(date: draft.markLinkDate, dateFormat: dateFormat),
-        if (topicConfig.showMarkMembers) ...[
+        if (topicConfig.showMemberSection) ...[
           const Divider(height: 1),
           _MemberChipSection(
             key: const Key('markDetail_memberSection'),

@@ -62,6 +62,9 @@ class TopicConfig extends Equatable {
   /// Markカードに参加メンバー名を表示するか（F-4 MichiInfoカードトピック別表示切り替え）
   final bool showMarkMembers;
 
+  /// BasicInfo/MarkDetail/PaymentDetailのメンバーセクションを表示するか（F-6 visitWork以外はtrue）
+  final bool showMemberSection;
+
   /// Linkカードに日付を表示するか（F-4 MichiInfoカードトピック別表示切り替え）
   final bool showLinkDate;
 
@@ -83,6 +86,7 @@ class TopicConfig extends Equatable {
     this.showMarkDate = false,
     this.showMarkMembers = false,
     this.showLinkDate = false,
+    this.showMemberSection = true,
   });
 
   /// TopicTypeからTopicConfigを生成するファクトリ（エイリアス）。
@@ -174,6 +178,7 @@ class TopicConfig extends Equatable {
           showMarkDate: true,
           showMarkMembers: false,
           showLinkDate: false,
+          showMemberSection: false,
         ),
     };
   }
@@ -197,5 +202,6 @@ class TopicConfig extends Equatable {
         showMarkDate,
         showMarkMembers,
         showLinkDate,
+        showMemberSection,
       ];
 }

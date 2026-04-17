@@ -17,9 +17,9 @@ class ActionSettingDetailPage extends StatelessWidget {
         if (state is ActionSettingDetailLoaded && state.delegate != null) {
           switch (state.delegate!) {
             case ActionSettingDetailDidSaveDelegate():
-              context.pop(true);
+              if (context.canPop()) { context.pop(true); } else { context.go('/'); }
             case ActionSettingDetailDismissDelegate():
-              context.pop();
+              if (context.canPop()) { context.pop(); } else { context.go('/'); }
           }
         }
       },

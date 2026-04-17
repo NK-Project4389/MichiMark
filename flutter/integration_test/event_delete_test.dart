@@ -31,7 +31,7 @@ void main() {
     // EventListPage の AppBar title「イベント」が表示されるまで待つ
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.text('イベント').evaluate().isNotEmpty) break;
+      if (find.text('イベント一覧').evaluate().isNotEmpty) break;
     }
     // データロード完了を待つ（ListView 表示まで）
     for (var i = 0; i < 10; i++) {

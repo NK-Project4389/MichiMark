@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 import '../../../domain/master/member/member_domain.dart';
+import '../../../domain/topic/topic_domain.dart';
 import '../../../domain/transaction/payment/payment_domain.dart';
 import '../../../repository/event_repository.dart';
 import '../../../repository/member_repository.dart';
@@ -32,6 +33,7 @@ class PaymentDetailBloc
   final EventRepository _eventRepository;
   final MemberRepository _memberRepository;
   String _eventId = '';
+  bool _showMemberSection = true;
 
   Future<void> _onStarted(
     PaymentDetailStarted event,
@@ -41,6 +43,8 @@ class PaymentDetailBloc
     emit(const PaymentDetailLoading());
     try {
       final domain = await _eventRepository.fetch(event.eventId);
+      // F-6: visitWork以外はメンバーセクション表示
+      _showMemberSection = domain.topic?.topicType != TopicType.visitWork;
       // マスタMemberRepositoryから最新のisVisible状態を取得してフィルタ（B-10修正）
       final masterMembers = await _memberRepository.fetchAll();
       final visibleMasterIds = masterMembers.where((m) => m.isVisible).map((m) => m.id).toSet();
@@ -55,7 +59,7 @@ class PaymentDetailBloc
           paymentSeq: 0,
           markLinkID: event.markLinkID,
         );
-        emit(PaymentDetailLoaded(draft: draft, initialDraft: draft, availableMembers: availableMembers));
+        emit(PaymentDetailLoaded(draft: draft, initialDraft: draft, availableMembers: availableMembers, showMemberSection: _showMemberSection));
         return;
       }
       // 既存編集: Repositoryからデータ取得
@@ -84,7 +88,7 @@ class PaymentDetailBloc
         paymentMemo: payment.paymentMemo ?? '',
         markLinkID: payment.markLinkID,
       );
-      emit(PaymentDetailLoaded(draft: draft, initialDraft: draft, availableMembers: availableMembers));
+      emit(PaymentDetailLoaded(draft: draft, initialDraft: draft, availableMembers: availableMembers, showMemberSection: _showMemberSection));
     } on Exception catch (e) {
       emit(PaymentDetailError(message: e.toString()));
     }

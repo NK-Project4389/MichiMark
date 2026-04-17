@@ -101,7 +101,7 @@ class _PaymentInfoList extends StatelessWidget {
           totalAmount: nameGroup.displayGroupTotal,
         ));
         for (final item in nameGroup.items) {
-          rows.add(_PaymentListTile(item: item));
+          rows.add(_PaymentListTile(item: item, showMemberSection: projection.showMemberSection));
           rows.add(const Divider(height: 1, indent: 56));
         }
         if (rows.isNotEmpty && rows.last is Divider) {
@@ -211,8 +211,9 @@ class _SubSectionHeader extends StatelessWidget {
 
 class _PaymentListTile extends StatefulWidget {
   final PaymentItemProjection item;
+  final bool showMemberSection;
 
-  const _PaymentListTile({required this.item});
+  const _PaymentListTile({required this.item, this.showMemberSection = true});
 
   @override
   State<_PaymentListTile> createState() => _PaymentListTileState();
@@ -301,19 +302,21 @@ class _PaymentListTileState extends State<_PaymentListTile> {
                             ),
                           ],
                           const SizedBox(height: 4),
-                          // 行3: 支払者チップ
-                          Row(
-                            children: [
-                              Text('支払', style: textTheme.bodySmall),
-                              const SizedBox(width: 6),
-                              _MemberChip(
-                                name: item.payer.memberName,
-                                backgroundColor: _payerChipColor,
-                              ),
-                            ],
-                          ),
-                          // 行4: 割り勘メンバー（存在する場合のみ）
-                          if (item.splitMembers.isNotEmpty) ...[
+                          // 行3: 支払者チップ（F-6: visitWorkでは非表示）
+                          if (widget.showMemberSection) ...[
+                            Row(
+                              children: [
+                                Text('支払', style: textTheme.bodySmall),
+                                const SizedBox(width: 6),
+                                _MemberChip(
+                                  name: item.payer.memberName,
+                                  backgroundColor: _payerChipColor,
+                                ),
+                              ],
+                            ),
+                          ],
+                          // 行4: 割り勘メンバー（存在する場合のみ、F-6: visitWorkでは非表示）
+                          if (widget.showMemberSection && item.splitMembers.isNotEmpty) ...[
                             const SizedBox(height: 4),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
