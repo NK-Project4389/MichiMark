@@ -164,3 +164,5 @@
 | [2026-04-16_marketer__Ver1.1-AppStoreページ見直し草案確定.md](./2026-04-16_marketer__Ver1.1-AppStoreページ見直し草案確定.md) | Ver1.1 App Storeページ見直し草案確定（訴求方針・メタデータ・スクショ構成・REL-3タスク追加） |
 | [2026-04-16_batch-impl-F7-INV4-Firebase-UI17-22-B18-20-F6.md](./2026-04-16_batch-impl-F7-INV4-Firebase-UI17-22-B18-20-F6.md) | 一括実装12タスク＋INV-4 Spec＋テストコード107件＋Firebase Firestore Repository |
 | [2026-04-16_agent-model-rebalance.md](./2026-04-16_agent-model-rebalance.md) | エージェントモデル配分見直し・PM/test-analyzer新設・役割連携フロー更新 |
+- [2026-04-17](./2026-04-17_chore__OPS_1_エージェントモデルを通常運用配分に.md)
+| [2026-04-17_fix__IntegrationTest修正_F6-canPop-UI18対応.md](./2026-04-17_fix__IntegrationTest修正_F6-canPop-UI18対応.md) | F-6 showMemberSection分離・canPop()ガード・UI-18テスト対応・テスト修正 |
