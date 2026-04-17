@@ -446,7 +446,7 @@ void main() {
   // F-6 Spec ではデータモデル変更なしの方針。保存フロー改修後に有効化する。
   testWidgets(
     'TC-NM-I009: visitWorkトピックで支払いを金額入力のみで保存できること（メンバー選択不要）',
-    skip: 'PaymentDomain.paymentMember が non-null 必須のため、データモデル改修後に有効化',
+    skip: true, // PaymentDomain.paymentMember が non-null 必須のため、データモデル改修後に有効化
     (tester) async {
       await startApp(tester);
       final opened = await openEventByName(tester, '横浜エリア訪問ルート');

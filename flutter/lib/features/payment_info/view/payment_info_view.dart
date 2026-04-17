@@ -113,7 +113,7 @@ class _PaymentInfoList extends StatelessWidget {
     if (projection.directItems.isNotEmpty) {
       rows.add(const _SectionHeader(title: '直接登録'));
       for (final item in projection.directItems) {
-        rows.add(_PaymentListTile(item: item));
+        rows.add(_PaymentListTile(item: item, showMemberSection: projection.showMemberSection));
         rows.add(const Divider(height: 1, indent: 56));
       }
       if (rows.isNotEmpty && rows.last is Divider) {
