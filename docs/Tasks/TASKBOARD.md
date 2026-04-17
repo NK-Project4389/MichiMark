@@ -319,7 +319,7 @@
 | T-465a | F-6: 実装 | flutter-dev | `DONE` | | TopicConfig.showMarkMembersで条件分岐済み |
 | T-465b | F-6: テストコード実装 | tester | `DONE` | | TC-NM-I001〜I009（8件） |
 | T-466 | F-6: レビュー | reviewer | `DONE` | | 承認 |
-| T-467 | F-6: テスト実行 | tester | `BLOCKED` | | |
+| T-467 | F-6: テスト実行 | tester | `DONE` | | 6PASS/2SKIP/0FAIL（TC-NM-I001〜I009・I005/I006はSkip） |
 
 ---
 
@@ -332,7 +332,7 @@
 | T-468a | B-18: バグ修正 | flutter-dev | `DONE` | | EventDetailPaymentSaved Event追加・MarkDetailBloc新規作成モードpaymentSection初期化 |
 | T-468b | B-18: テストコード実装 | tester | `DONE` | | TC-B18-I001〜I003（3件） |
 | T-469 | B-18: レビュー | reviewer | `DONE` | | 承認 |
-| T-470 | B-18: テスト実行 | tester | `BLOCKED` | | |
+| T-470 | B-18: テスト実行 | tester | `DONE` | | 3PASS/0FAIL/0SKIP（TC-B18-I001〜I003全PASS） |
 
 ---
 
@@ -392,7 +392,7 @@
 | T-488a | B-20: 実装 | flutter-dev | `DONE` | | ActionTimeLog11件追加（A社3件・B社5件・C社3件） |
 | T-488b | B-20: テストコード実装 | tester | `DONE` | | TC-B20-I001〜I004（8件） |
 | T-489 | B-20: レビュー | reviewer | `DONE` | | 承認 |
-| T-490 | B-20: テスト実行 | tester | `BLOCKED` | | |
+| T-490 | B-20: テスト実行 | tester | `DONE` | | 8PASS/0FAIL/0SKIP（TC-B20-I001〜I004全PASS） |
 
 ---
 

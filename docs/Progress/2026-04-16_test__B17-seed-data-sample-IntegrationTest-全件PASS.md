@@ -6,6 +6,8 @@
 ---
 
 ## 完了した作業
+- docs: 進捗記録 エージェントモデル配分見直し・役割連携フロー更新 (b2a4ca3)
+- docs: 進捗ファイル更新（エージェント見直し・一括実装コミット追記） (d2e7fa5)
 - chore: エージェントモデル配分見直し・PM/test-analyzer新設・役割連携フロー更新 (0dda88a)
 - feat: F-7/INV-4/UI-17〜22/B-18〜20/F-6 一括実装・Firebase Firestore Repository・テストコード107件 (e824a69)
 - docs: Ver1.1 App Storeページ見直し草案・REL-3タスク追加 (ba205d1)

@@ -1,6 +1,7 @@
 # TEST-FIX-2: Integration Test 残存FAIL修正 進捗
 
 ## 完了した作業
+- fix: di.dart FLAVOR=test→InMemory修正・seed_data _event1日付_rel(-5)修正・タスクボードT-485/498/500 DONE (efa165f)
 - fix: TC-GP-003/005 dashboard_graph_popup テスト修正・全5件PASS (f7af9f0)
 - fix: TEST-FIX-2 Integration Test 修正（fab_dialog全PASS・dashboard_popup調査中） (3478cae)
 
@@ -93,7 +94,22 @@
 | TC-GP-004 | 長押しを離したときポップアップが非表示になること | PASS |
 | TC-GP-005 | 給油なし日のバーのポップアップに「---」が表示されること | PASS |
 
+### 10. visit_work テスト全件PASS（完了）
+
+**T-467 F-6テスト（visit_work_no_member_test）**: 6PASS/2SKIP/0FAIL ✅
+- fix: payment_info_view.dart directItemsのshowMemberSection未渡しバグ修正（TC-NM-I007 PASS）
+- fix: seed_data.dart _testSeedEventsに_eventSeedC追加
+
+**T-470 B-18テスト（visit_work_payment_save_test）**: 3PASS/0FAIL/0SKIP ✅
+- fix: テストのボタンキー修正（payment_plus_button）
+- fix: enterTextをCustomNumericKeypadボタン操作に変更
+- fix: payment_detail_bloc.dart visitWork新規支払い時にpaymentMember自動アサイン
+
+**T-490 B-20テスト（visit_work_seed_data_actiontime_test）**: 8PASS/0FAIL/0SKIP ✅
+- fix: テストをMarkDetail確認→ActionTimeView（⚡ボタン→ボトムシート）パスに変更（Option B）
+- ActionTimeViewはイベント全体のActionTimeLogを一覧表示
+
 ## 次回セッションで最初にやること
 
-1. **visit_work テスト (T-467/T-470/T-490)**: `_testSeedEvents` に visitWork（横浜エリア）イベントを追加してSKIPを解消
+1. **次の未着手タスクを確認**: TASKBOARD.md でTODOタスクを確認
 2. **全件テスト（3シャード）**: 本番リリース前フルスイート実施の検討

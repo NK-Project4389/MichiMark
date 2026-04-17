@@ -1,6 +1,10 @@
 # 2026-04-17 Integration Test修正（F-6 showMemberSection・canPop()・UI-18テスト対応）
 
 ## 完了した作業
+- fix: integration-testルール見直し（スコープ最上部・pumpAndSettle禁止例修正・スリム化） (853cd8f)
+- fix: seedDataをFLAVOR dart-defineで切り替え・orchestratorモデル配分表追加 (669ca0d)
+- chore: タスクボードにTEST-FIX-1追加・UI-20テスト実行DONE更新 (a606e68)
+- docs: 進捗ファイル更新（シードデータFAIL詳細・次回やること明記） (76bf7b7)
 
 ### 実装修正（commit: 04ace8c）
 - **F-6 showMemberSection分離**: `showMarkMembers`（F-4 MichiInfoカード用）と`showMemberSection`（F-6 メンバーセクション用）を分離
