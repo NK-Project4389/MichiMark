@@ -31,23 +31,122 @@
 | T-341a | 招待リンク生成・共有 実装 | flutter-dev | `DONE` | | BottomSheet・InviteLinkShareBloc・スタブ実装・dart analyze 0件 |
 | T-341b | 招待リンク生成・共有 テストコード実装 | tester | `DONE` | | TC-INV4-001〜011（13件） |
 | T-342 | 招待リンク生成・共有 レビュー | reviewer | `DONE` | | 承認（テスト整合性は後続） |
-| T-343 | 招待リンク生成・共有 テスト実行 | tester | `BLOCKED` | | |
+| T-343 | 招待リンク生成・共有 テスト実行 | tester | `TODO` | | |
 
 ---
 
-## UI-19: 訪問作業 道タブ マークアクションバッジ・削除ボタン改善
+## UI-19: 訪問作業 アクション操作UI改善
 
 > 訪問作業トピックの道タブでマークのアクションバッジが小さく、削除ボタンが隣接して誤タップしやすい問題をデザインから見直す。
+> 合わせて以下のバグ修正も本セクションで対応する：
+> - アクションボタンの配置・サイズ未反映（中央寄り・横幅縦幅大きく）
+> - 訪問作業の「休憩」アクションを削除（トグル休憩と重複）
+> - アクション表示順変更（到着→作業開始→作業終了→出発）
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-452 | UI-19: デザイン提案 | designer | `DONE` | | docs/Design/draft/visit_work_action_badge_redesign.html |
-| T-453 | UI-19: 要件書作成 | product-manager | `BLOCKED` | | T-452完了後 |
+| T-452 | UI-19: デザイン提案（バッジ・削除ボタン） | designer | `DONE` | | docs/Design/draft/visit_work_action_badge_redesign.html |
+| T-453 | UI-19: 要件書作成 | product-manager | `TODO` | | バグ修正3件含む |
 | T-454 | UI-19: Spec作成 | architect | `BLOCKED` | | T-453完了後 |
 | T-455a | UI-19: 実装 | flutter-dev | `BLOCKED` | | |
 | T-455b | UI-19: テストコード実装 | tester | `BLOCKED` | | |
 | T-456 | UI-19: レビュー | reviewer | `BLOCKED` | | |
 | T-457 | UI-19: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## BUG-4: 招待ボタン遷移先修正（招待コード入力→招待リンク作成画面）
+
+> イベント詳細の招待ボタンが招待コード入力画面に遷移しているが、正しくは招待リンク作成・共有画面（INV-4）へ遷移させる。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-501a | BUG-4: 修正 | flutter-dev | `BLOCKED` | | INV-4 T-343完了後 |
+| T-501b | BUG-4: テストコード実装 | tester | `BLOCKED` | | |
+| T-502 | BUG-4: レビュー | reviewer | `BLOCKED` | | |
+| T-503 | BUG-4: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## F-8: PaymentDetail売上追加 + OverView収支集計
+
+> PaymentDetailに売上項目を追加。訪問作業のイベント概要OverViewセクションに支払項目・収支合計（売上-支払）を表示する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-504 | F-8: 要件書作成 | product-manager | `TODO` | | |
+| T-505 | F-8: Spec作成 | architect | `BLOCKED` | | T-504完了後 |
+| T-506a | F-8: 実装 | flutter-dev | `BLOCKED` | | |
+| T-506b | F-8: テストコード実装 | tester | `BLOCKED` | | |
+| T-507 | F-8: レビュー | reviewer | `BLOCKED` | | |
+| T-508 | F-8: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## UI-23: MichiInfo 日付区切り表示（全トピック共通）
+
+> MarkiLinkカードの上に日付区切りを表示する（「──── yyyy/mm/dd ────」形式）。
+> 前後で同じ日付の場合は表示しない。デザイン先行。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-509 | UI-23: デザイン提案 | designer | `TODO` | | |
+| T-510 | UI-23: 要件書作成 | product-manager | `BLOCKED` | | T-509完了後 |
+| T-511 | UI-23: Spec作成 | architect | `BLOCKED` | | T-510完了後 |
+| T-512a | UI-23: 実装 | flutter-dev | `BLOCKED` | | |
+| T-512b | UI-23: テストコード実装 | tester | `BLOCKED` | | |
+| T-513 | UI-23: レビュー | reviewer | `BLOCKED` | | |
+| T-514 | UI-23: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## UI-24: ActionTime画面改善（ボタン大型化 + ボトムアップ閉じない）
+
+> ActionTimeのアクションボタンをスクエア角丸大型化し、ボタン内に直近押下時刻を表示する。
+> またアクションボタン押下時にボトムアップ画面を閉じない動作に変更。デザイン先行。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-515 | UI-24: デザイン提案 | designer | `TODO` | | スクエア角丸・4ボタン横幅ギリギリ・直近時刻表示 |
+| T-516 | UI-24: 要件書作成 | product-manager | `BLOCKED` | | T-515完了後 |
+| T-517 | UI-24: Spec作成 | architect | `BLOCKED` | | T-516完了後 |
+| T-518a | UI-24: 実装 | flutter-dev | `BLOCKED` | | |
+| T-518b | UI-24: テストコード実装 | tester | `BLOCKED` | | |
+| T-519 | UI-24: レビュー | reviewer | `BLOCKED` | | |
+| T-520 | UI-24: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## F-9: ActionLog 時間変更機能
+
+> 登録時間とは別に「変更後の時間」をDomainに追加。ActionTime画面では変更後の時間を優先してソート。
+> UI上で時間をタップすると変更できる。変更後=登録時間になった場合はNULLに戻す。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-521 | F-9: 要件書作成 | product-manager | `TODO` | | |
+| T-522 | F-9: Spec作成 | architect | `BLOCKED` | | T-521完了後 |
+| T-523a | F-9: 実装 | flutter-dev | `BLOCKED` | | Domain変更あり |
+| T-523b | F-9: テストコード実装 | tester | `BLOCKED` | | |
+| T-524 | F-9: レビュー | reviewer | `BLOCKED` | | |
+| T-525 | F-9: テスト実行 | tester | `BLOCKED` | | |
+
+---
+
+## F-10: EndFlag機能
+
+> アクションボタンにEndFlagを追加。EndFlag=TrueのボタンをタップしたときにMichiInfoのMarkiLinkカードを「完了」を表現する色に変更。
+> Domain変更あり。デザイン先行。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-526 | F-10: デザイン提案 | designer | `TODO` | | 完了カードの色表現・MichiInfoへの反映 |
+| T-527 | F-10: 要件書作成 | product-manager | `BLOCKED` | | T-526完了後 |
+| T-528 | F-10: Spec作成 | architect | `BLOCKED` | | T-527完了後 |
+| T-529a | F-10: 実装 | flutter-dev | `BLOCKED` | | Domain変更あり |
+| T-529b | F-10: テストコード実装 | tester | `BLOCKED` | | |
+| T-530 | F-10: レビュー | reviewer | `BLOCKED` | | |
+| T-531 | F-10: テスト実行 | tester | `BLOCKED` | | |
 
 ---
 
