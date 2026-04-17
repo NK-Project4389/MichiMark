@@ -347,7 +347,7 @@
 | T-473a | UI-20: 実装 | flutter-dev | `DONE` | | FS-master_detail_button_layout.md 参照 |
 | T-473b | UI-20: テストコード実装 | tester | `DONE` | | TC-MDB-001〜020（28件） |
 | T-474 | UI-20: レビュー | reviewer | `DONE` | | 承認 |
-| T-475 | UI-20: テスト実行 | tester | `BLOCKED` | | |
+| T-475 | UI-20: テスト実行 | tester | `DONE` | | 28/28 ALL PASS（2026-04-17 3シャード実行） |
 
 ---
 
@@ -416,3 +416,16 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-494 | OPS-1: 全エージェントのモデルを通常運用配分に切り替え | orchestrator | `DONE` | | PM:Opus / Architect:Sonnet / flutter-dev:Sonnet / reviewer:Sonnet / tester:Haiku / test-analyzer:Sonnet / orchestrator:Sonnet / designer:Sonnet / marketer:Sonnet / charter-reviewer:Haiku |
+
+---
+
+## TEST-FIX-1: Integration Test 残存FAIL修正（シードデータ依存）
+
+> 2026-04-17の3シャード全件実行で残存したFAIL約39件（シードデータ不一致が原因）。
+> 我々の変更とは無関係の既存問題だが、正確な原因調査と修正が必要。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-495 | 残存FAILの原因調査（シードデータvs Widgetキー） | test-analyzer | `TODO` | | 主対象: michi_info_card_topic_view, visit_work_seed_data_actiontime, michi_info_layout, mark_addition_defaults, fuel_detail_design, road_timeline, seed_fix, payment_info_redesign, dashboard_graph_popup |
+| T-496 | シードデータ修正またはテスト修正（T-495の調査結果に基づく） | flutter-dev | `BLOCKED` | | T-495完了後 |
+| T-497 | 修正後テスト実行 | tester | `BLOCKED` | | T-496完了後 |
