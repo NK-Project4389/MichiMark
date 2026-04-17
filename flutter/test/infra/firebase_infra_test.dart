@@ -15,6 +15,10 @@ import 'package:michi_mark/repository/impl/firestore/firestore_migration_reposit
 import 'package:michi_mark/repository/impl/fake/fake_auth_repository.dart';
 import 'package:michi_mark/repository/impl/in_memory/in_memory_member_repository.dart';
 import 'package:michi_mark/repository/impl/in_memory/in_memory_event_repository.dart';
+import 'package:michi_mark/repository/impl/in_memory/in_memory_trans_repository.dart';
+import 'package:michi_mark/repository/impl/in_memory/in_memory_tag_repository.dart';
+import 'package:michi_mark/repository/impl/in_memory/in_memory_action_repository.dart';
+import 'package:michi_mark/repository/impl/in_memory/in_memory_topic_repository.dart';
 
 void main() {
   group('Firebase基盤 Unit Test', () {
@@ -36,22 +40,20 @@ void main() {
 
     // TC-INFRA-002: 既存UIDがある場合は再発行しない
     test('TC-INFRA-002: 既存UIDがある場合は再発行しない', () async {
-      // FakeAuthRepositoryを使用して既存UIDをシミュレート
-      final authRepository = FakeAuthRepository();
+      // MockFirebaseAuthに既存ユーザーをセットして初期化
+      final mockUser = MockUser(uid: 'existing-uid', isAnonymous: true);
+      final mockAuth = MockFirebaseAuth(mockUser: mockUser, signedIn: true);
+      final authRepository = FirebaseAuthRepository(auth: mockAuth);
 
-      // 既に _currentUid が設定されていない状態
-      expect(authRepository.currentUid, isNull);
+      // 既にサインイン済みであることを確認
+      expect(authRepository.currentUid, equals('existing-uid'));
 
-      // signInAnonymously() を1回目に呼び出す
-      final uid1 = await authRepository.signInAnonymously();
-      expect(uid1, isNotEmpty);
+      // signInAnonymously() を呼び出す
+      final uid = await authRepository.signInAnonymously();
 
-      // 2回目に signInAnonymously() を呼び出す（既にサインイン済み）
-      final uid2 = await authRepository.signInAnonymously();
-
-      // 同じUIDが返されること（再発行されていない）
-      expect(uid2, equals(uid1));
-      expect(authRepository.currentUid, equals(uid1));
+      // 既存のUIDが返されること（再発行されていない）
+      expect(uid, equals('existing-uid'));
+      expect(authRepository.currentUid, equals('existing-uid'));
     });
 
     // TC-INFRA-003: Apple Sign InでAnonymousアカウントにリンクできる
@@ -152,10 +154,14 @@ void main() {
       final now = DateTime.now();
 
       // InMemoryリポジトリ（移行元）を初期化
-      final inMemoryMemberRepository = InMemoryMemberRepository();
-      final inMemoryEventRepository = InMemoryEventRepository();
+      final sourceMemberRepository = InMemoryMemberRepository();
+      final sourceEventRepository = InMemoryEventRepository();
+      final sourceTransRepository = InMemoryTransRepository();
+      final sourceTagRepository = InMemoryTagRepository();
+      final sourceActionRepository = InMemoryActionRepository();
+      final sourceTopicRepository = InMemoryTopicRepository();
 
-      // 移行元データを作成
+      // 移行元データを準備
       final member1 = MemberDomain(
         id: 'member-001',
         memberName: 'メンバー1',
@@ -175,108 +181,6 @@ void main() {
       final event = EventDomain(
         id: 'event-001',
         eventName: 'テストイベント',
-        members: [member1, member2],
-        tags: [],
-        markLinks: [],
-        payments: [],
-        actionTimeLogs: [],
-        isDeleted: false,
-        createdAt: now,
-        updatedAt: now,
-      );
-
-      // InMemoryに保存
-      await inMemoryMemberRepository.save(member1);
-      await inMemoryMemberRepository.save(member2);
-      await inMemoryEventRepository.save(event);
-
-      // FakeAuthRepositoryを初期化してサインイン
-      final authRepository = FakeAuthRepository();
-      await authRepository.signInAnonymously();
-
-      // FirestoreRepositoryを初期化
-      final firestoreEventRepository = FirestoreEventRepository(
-        authRepository: authRepository,
-        firestore: fakeFirestore,
-      );
-      final firestoreMemberRepository = FirestoreMemberRepository(
-        authRepository: authRepository,
-        firestore: fakeFirestore,
-      );
-
-      // 移行元からデータを読み込んで移行先に書き込み
-      final allEvents = await inMemoryEventRepository.fetchAll();
-      final allMembers = await inMemoryMemberRepository.fetchAll();
-
-      for (final member in allMembers) {
-        await firestoreMemberRepository.save(member);
-      }
-      for (final evt in allEvents) {
-        await firestoreEventRepository.save(evt);
-      }
-
-      // 移行先でデータが存在することを確認
-      final migratedEvents = await firestoreEventRepository.fetchAll();
-      final migratedMembers = await firestoreMemberRepository.fetchAll();
-
-      expect(migratedEvents, hasLength(1));
-      expect(migratedMembers, hasLength(2));
-      expect(migratedEvents.first.id, equals('event-001'));
-      expect(
-        migratedMembers.map((m) => m.id).toList(),
-        containsAll(['member-001', 'member-002']),
-      );
-    });
-
-    // TC-INFRA-007: 移行完了後にschemaVersionが更新される
-    test('TC-INFRA-007: 移行完了後にschemaVersionが更新される', () async {
-      final fakeFirestore = FakeFirebaseFirestore();
-
-      // FakeAuthRepositoryを初期化してサインイン
-      final authRepository = FakeAuthRepository();
-      await authRepository.signInAnonymously();
-
-      // スキーマバージョンが初期状態で未設定・0であることを確認
-      // （MigrationRepositoryの初期化時に確認）
-
-      // スキーマバージョンを更新（1に設定）
-      await fakeFirestore
-          .collection('users')
-          .doc(authRepository.currentUid!)
-          .set({
-        'schemaVersion': 1,
-        'updatedAt': Timestamp.now(),
-      });
-
-      // Firestoreから直接読み込んで確認
-      final profileDoc = await fakeFirestore
-          .collection('users')
-          .doc(authRepository.currentUid!)
-          .get();
-
-      // schemaVersionが1に更新されたことを確認
-      expect(profileDoc.data()?['schemaVersion'], equals(1));
-    });
-
-    // TC-INFRA-008: 移行済み状態ではFirestoreから読み込む
-    test('TC-INFRA-008: 移行済み状態ではFirestoreから読み込む', () async {
-      final fakeFirestore = FakeFirebaseFirestore();
-      final now = DateTime.now();
-
-      // FakeAuthRepositoryを初期化してサインイン
-      final authRepository = FakeAuthRepository();
-      await authRepository.signInAnonymously();
-
-      // FirestoreEventRepositoryを初期化
-      final firestoreEventRepository = FirestoreEventRepository(
-        authRepository: authRepository,
-        firestore: fakeFirestore,
-      );
-
-      // Firestoreにイベントを保存
-      final firestoreEvent = EventDomain(
-        id: 'fs-event-001',
-        eventName: 'Firestore側のイベント',
         members: [],
         tags: [],
         markLinks: [],
@@ -286,15 +190,124 @@ void main() {
         createdAt: now,
         updatedAt: now,
       );
-      await firestoreEventRepository.save(firestoreEvent);
+      await sourceMemberRepository.save(member1);
+      await sourceMemberRepository.save(member2);
+      await sourceEventRepository.save(event);
 
-      // Firestoreから読み込み
-      final allEvents = await firestoreEventRepository.fetchAll();
+      // FakeAuthRepositoryでサインイン
+      final authRepository = FakeAuthRepository();
+      await authRepository.signInAnonymously();
 
-      // Firestoreから読み込めていることを確認
-      expect(allEvents, hasLength(1));
-      expect(allEvents.first.id, equals('fs-event-001'));
-      expect(allEvents.first.eventName, equals('Firestore側のイベント'));
+      // FirestoreMigrationRepositoryを構築してmigrate()を呼ぶ
+      final migrationRepository = FirestoreMigrationRepository(
+        authRepository: authRepository,
+        sourceEventRepository: sourceEventRepository,
+        sourceMemberRepository: sourceMemberRepository,
+        sourceTransRepository: sourceTransRepository,
+        sourceTagRepository: sourceTagRepository,
+        sourceActionRepository: sourceActionRepository,
+        sourceTopicRepository: sourceTopicRepository,
+        firestore: fakeFirestore,
+      );
+
+      // 移行前はisMigrationNeededがtrue
+      expect(await migrationRepository.isMigrationNeeded(), isTrue);
+
+      await migrationRepository.migrate();
+
+      // Firestore側でデータが移行されていることを確認
+      final firestoreMemberRepo = FirestoreMemberRepository(
+        authRepository: authRepository,
+        firestore: fakeFirestore,
+      );
+      final firestoreEventRepo = FirestoreEventRepository(
+        authRepository: authRepository,
+        firestore: fakeFirestore,
+      );
+      final migratedMembers = await firestoreMemberRepo.fetchAll();
+      final migratedEvents = await firestoreEventRepo.fetchAll();
+
+      expect(migratedMembers, hasLength(2));
+      expect(migratedEvents, hasLength(1));
+      expect(migratedEvents.first.id, equals('event-001'));
+    });
+
+    // TC-INFRA-007: 移行完了後にschemaVersionが更新される
+    test('TC-INFRA-007: 移行完了後にschemaVersionが更新される', () async {
+      final fakeFirestore = FakeFirebaseFirestore();
+
+      final sourceMemberRepository = InMemoryMemberRepository();
+      final sourceEventRepository = InMemoryEventRepository();
+      final sourceTransRepository = InMemoryTransRepository();
+      final sourceTagRepository = InMemoryTagRepository();
+      final sourceActionRepository = InMemoryActionRepository();
+      final sourceTopicRepository = InMemoryTopicRepository();
+
+      final authRepository = FakeAuthRepository();
+      await authRepository.signInAnonymously();
+
+      final migrationRepository = FirestoreMigrationRepository(
+        authRepository: authRepository,
+        sourceEventRepository: sourceEventRepository,
+        sourceMemberRepository: sourceMemberRepository,
+        sourceTransRepository: sourceTransRepository,
+        sourceTagRepository: sourceTagRepository,
+        sourceActionRepository: sourceActionRepository,
+        sourceTopicRepository: sourceTopicRepository,
+        firestore: fakeFirestore,
+      );
+
+      // 移行前はschemaVersion=0（移行未実施）
+      expect(await migrationRepository.getMigrationVersion(), equals(0));
+      expect(await migrationRepository.isMigrationNeeded(), isTrue);
+
+      // 移行を実行
+      await migrationRepository.migrate();
+
+      // 移行後はschemaVersion=1
+      expect(await migrationRepository.getMigrationVersion(), equals(1));
+      expect(await migrationRepository.isMigrationNeeded(), isFalse);
+    });
+
+    // TC-INFRA-008: 移行済み状態ではFirestoreから読み込む
+    test('TC-INFRA-008: 移行済み状態ではFirestoreから読み込む', () async {
+      final fakeFirestore = FakeFirebaseFirestore();
+      final now = DateTime.now();
+
+      final authRepository = FakeAuthRepository();
+      await authRepository.signInAnonymously();
+
+      // InMemory（移行元・drift相当）にはデータなし
+      final sourceEventRepository = InMemoryEventRepository();
+      // → fetchAll() は空リストを返す
+
+      // Firestoreにデータを保存（migrate()完了後の状態を想定）
+      final firestoreEventRepo = FirestoreEventRepository(
+        authRepository: authRepository,
+        firestore: fakeFirestore,
+      );
+      final firestoreEvent = EventDomain(
+        id: 'fs-event-001',
+        eventName: 'Firestore移行済みイベント',
+        members: [],
+        tags: [],
+        markLinks: [],
+        payments: [],
+        actionTimeLogs: [],
+        isDeleted: false,
+        createdAt: now,
+        updatedAt: now,
+      );
+      await firestoreEventRepo.save(firestoreEvent);
+
+      // Firestoreリポジトリから読み込む（移行後の動作）
+      final fsEvents = await firestoreEventRepo.fetchAll();
+
+      // InMemoryには存在しないがFirestoreから取得できる
+      final inMemoryEvents = await sourceEventRepository.fetchAll();
+      expect(inMemoryEvents, isEmpty);
+      expect(fsEvents, hasLength(1));
+      expect(fsEvents.first.id, equals('fs-event-001'));
     });
 
     tearDown(() async {

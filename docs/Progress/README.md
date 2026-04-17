@@ -168,3 +168,4 @@
 | [2026-04-17_fix__IntegrationTest修正_F6-canPop-UI18対応.md](./2026-04-17_fix__IntegrationTest修正_F6-canPop-UI18対応.md) | F-6 showMemberSection分離・canPop()ガード・UI-18テスト対応・テスト修正 |
 | [2026-04-17_fix__TEST-FIX-2-IntegrationTest修正進捗.md](./2026-04-17_fix__TEST-FIX-2-IntegrationTest修正進捗.md) | TEST-FIX-2 visit_work 3テスト全PASS（T-467/T-470/T-490）・F-6 directItems修正・B-18 paymentMember自動アサイン・B-20 ActionTimeViewパス対応 |
 | [2026-04-17_fix__TEST-FIX-2-IntegrationTest修正進捗.md](./2026-04-17_fix__TEST-FIX-2-IntegrationTest修正進捗.md) | TEST-FIX-2: seed切替修正・ルール整備・fab_dialog 8PASS・dashboard_popup 5PASS（TC-GP-003/005修正完了） |
+| [2026-04-17_test-infra006-修正.md](./2026-04-17_test-infra006-修正.md) | TC-INFRA-006 軽微修正：isMigrationNeeded()検証追加・firebase_infra_test全件PASS |
