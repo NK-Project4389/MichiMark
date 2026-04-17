@@ -1,3 +1,4 @@
+import '../../../../domain/invitation/invitation_role.dart';
 import '../../invite_link_share/domain/create_invitation_request.dart';
 import '../../invite_link_share/domain/create_invitation_response.dart';
 import '../domain/invite_code_member_item.dart';
@@ -45,4 +46,8 @@ abstract class InvitationRepository {
   Future<CreateInvitationResponse> createInvitation(
     CreateInvitationRequest request,
   );
+
+  /// GET /api/invitations/events/[eventId]/role
+  /// 現在のユーザーのイベント内権限を取得する
+  Future<InvitationRole> fetchUserRole(String eventId);
 }

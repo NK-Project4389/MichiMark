@@ -1,3 +1,4 @@
+import '../../../../domain/invitation/invitation_role.dart';
 import '../../../invite_link_share/domain/create_invitation_request.dart';
 import '../../../invite_link_share/domain/create_invitation_response.dart';
 import '../../bloc/invite_code_input_bloc.dart';
@@ -65,5 +66,10 @@ class StubInvitationRepository implements InvitationRepository {
       expiresAt: DateTime.now().add(Duration(hours: request.expiresHours)),
       inviteUrl: 'https://michimark.example.com/invite/stub-token-inv4',
     );
+  }
+
+  @override
+  Future<InvitationRole> fetchUserRole(String eventId) async {
+    return InvitationRole.owner;
   }
 }

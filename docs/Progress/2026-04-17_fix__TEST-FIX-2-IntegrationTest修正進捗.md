@@ -1,6 +1,7 @@
 # TEST-FIX-2: Integration Test 残存FAIL修正 進捗
 
 ## 完了した作業
+- test: BUG-5テスト実行・全件PASS (c9b65e7)
 - chore: 自動テストスキームを実装サイクル対応に拡張 (b7d9cbc)
 - chore: UI-23/UI-24/F-10 要件書・Spec作成完了・タスクボード更新・INV-4テスト完了 (216b576)
 - chore: 自動テストスキームをrules/autotest-schedule.mdに切り出し (23b0551)

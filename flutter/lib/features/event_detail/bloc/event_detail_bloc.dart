@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../adapter/event_detail_adapter.dart';
+import '../../../domain/invitation/invitation_role.dart';
 import '../../../domain/topic/topic_config.dart';
 import '../../../domain/topic/topic_domain.dart';
 import '../../../domain/topic/topic_theme_color.dart';
@@ -7,6 +8,7 @@ import '../../../domain/transaction/event/event_domain.dart';
 import '../../../repository/event_repository.dart';
 import '../../../repository/repository_error.dart';
 import '../../../repository/topic_repository.dart';
+import '../../invite_code_input/repository/invitation_repository.dart';
 import '../draft/event_detail_draft.dart';
 import 'event_detail_event.dart';
 import 'event_detail_state.dart';
@@ -15,8 +17,10 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
   EventDetailBloc({
     required EventRepository eventRepository,
     required TopicRepository topicRepository,
+    required InvitationRepository invitationRepository,
   })  : _eventRepository = eventRepository,
         _topicRepository = topicRepository,
+        _invitationRepository = invitationRepository,
         super(const EventDetailLoading()) {
     on<EventDetailStarted>(_onStarted);
     on<EventDetailTabSelected>(_onTabSelected);
@@ -38,6 +42,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
 
   final EventRepository _eventRepository;
   final TopicRepository _topicRepository;
+  final InvitationRepository _invitationRepository;
 
   Future<void> _onStarted(
     EventDetailStarted event,
@@ -74,6 +79,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
         final topicDisplayName = initialTopicType != null
             ? TopicConfig.forType(initialTopicType).displayName
             : null;
+        final newUserRole = await _fetchUserRoleSafe(event.eventId);
         emit(EventDetailLoaded(
           projection: projection,
           draft: const EventDetailDraft(),
@@ -84,6 +90,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
           delegate: EventDetailTopicConfigPropagateDelegate(topicConfig),
           isNewEvent: true,
           isSavedAtLeastOnce: false,
+          userRole: newUserRole,
         ));
         return;
       }
@@ -91,6 +98,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
       final topicConfig = TopicConfig.fromTopicType(domain.topic?.topicType);
       final resolvedThemeColor = _resolveThemeColor(domain.topic);
       final resolvedDisplayName = _resolveDisplayName(domain.topic);
+      final userRole = await _fetchUserRoleSafe(event.eventId);
       emit(EventDetailLoaded(
         projection: projection,
         draft: const EventDetailDraft(),
@@ -99,6 +107,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
         topicThemeColor: resolvedThemeColor,
         topicDisplayName: resolvedDisplayName,
         delegate: EventDetailTopicConfigPropagateDelegate(topicConfig),
+        userRole: userRole,
       ));
     } on Exception catch (e) {
       emit(EventDetailError(message: e.toString()));
@@ -301,6 +310,15 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
       emit(current.copyWith(
         delegate: const EventDetailOpenInviteCodeInputDelegate(),
       ));
+    }
+  }
+
+  /// userRole を取得する。取得失敗時は null を返す（画面表示を壊さないため）。
+  Future<InvitationRole?> _fetchUserRoleSafe(String eventId) async {
+    try {
+      return await _invitationRepository.fetchUserRole(eventId);
+    } on Exception {
+      return null;
     }
   }
 

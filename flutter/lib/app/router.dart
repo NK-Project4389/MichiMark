@@ -182,6 +182,7 @@ final router = GoRouter(
           create: (_) => EventDetailBloc(
             eventRepository: getIt<EventRepository>(),
             topicRepository: getIt<TopicRepository>(),
+            invitationRepository: getIt<InvitationRepository>(),
           )..add(EventDetailStarted(eventId, initialTopicType: args?.initialTopicType)),
           child: EventDetailPage(initialTopicType: args?.initialTopicType),
         );

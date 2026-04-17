@@ -65,8 +65,8 @@
 |---|---|---|---|---|---|
 | T-534a | BUG-5: 修正 | flutter-dev | `DONE` | | InvitationRepository.fetchUserRole追加・StubはInvitationRole.owner返す・Bloc起動時にセット |
 | T-534b | BUG-5: テストコード修正 | tester | `DONE` | | 16PASS (invite_link_share_test) / 5PASS+3SKIP (invitation_ui_placement_test) |
-| T-535 | BUG-5: レビュー | reviewer | `TODO` | | |
-| T-536 | BUG-5: テスト実行 | tester | `TODO` | | |
+| T-535 | BUG-5: レビュー | reviewer | `DONE` | | 承認 |
+| T-536 | BUG-5: テスト実行 | tester | `DONE` | | 16PASS/0FAIL（INV-4）・5PASS/3SKIP/0FAIL（F-7・非ownerSKIPは設計通り） |
 
 ---
 
