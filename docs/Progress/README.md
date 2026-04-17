@@ -161,6 +161,7 @@
 | [2026-04-16_test__B17-seed-data-sample-IntegrationTest-全件PASS.md](./2026-04-16_test__B17-seed-data-sample-IntegrationTest-全件PASS.md) | B-17 本番シードデータ見直し Integration Test 3PASS/0FAIL（TC-SD-001〜001c） |
 | [2026-04-16_feat__INV-2-INV-3-実装完了.md](./2026-04-16_feat__INV-2-INV-3-実装完了.md) | TC-VW-I004修正・F-2/UI-14テスト・INV-2（73PASS）・INV-3（12PASS）全完了 |
 | [2026-04-16_session__AppStore公開_改善サイクル_B17シードデータ.md](./2026-04-16_session__AppStore公開_改善サイクル_B17シードデータ.md) | App Store公開・改善サイクルPhase1・B-17シードデータ見直し完了 |
+| [2026-04-17_test__INFRA-1_Firebase基盤UnitTest完了.md](./2026-04-17_test__INFRA-1_Firebase基盤UnitTest完了.md) | INFRA-1 Firebase基盤 Unit Test 7PASS/0FAIL/1SKIP（T-346b・T-348 DONE） |
 | [2026-04-16_marketer__Ver1.1-AppStoreページ見直し草案確定.md](./2026-04-16_marketer__Ver1.1-AppStoreページ見直し草案確定.md) | Ver1.1 App Storeページ見直し草案確定（訴求方針・メタデータ・スクショ構成・REL-3タスク追加） |
 | [2026-04-16_batch-impl-F7-INV4-Firebase-UI17-22-B18-20-F6.md](./2026-04-16_batch-impl-F7-INV4-Firebase-UI17-22-B18-20-F6.md) | 一括実装12タスク＋INV-4 Spec＋テストコード107件＋Firebase Firestore Repository |
 | [2026-04-16_agent-model-rebalance.md](./2026-04-16_agent-model-rebalance.md) | エージェントモデル配分見直し・PM/test-analyzer新設・役割連携フロー更新 |
