@@ -50,11 +50,23 @@ void main() {
     return find.text('概要').evaluate().isNotEmpty;
   }
 
-  /// EventList → 近所のドライブ（topicなし）の順で遷移しEventDetailPageに留まる。
-  /// topicなしのイベントは_onBackPressedが呼ばれるため未保存ダイアログが表示される。
+  /// EventList → 近所のドライブ の順で遷移しEventDetailPageに留まる。
+  /// 近所のドライブはtopic設定済みだが、_onBackPressedはtopic有無に関わらず呼ばれる。
   Future<bool> goToEventDetailNoTopic(WidgetTester tester) async {
     await startApp(tester);
     if (find.text('イベントがありません').evaluate().isNotEmpty) return false;
+
+    // 近所のドライブがListView内で画面外の場合にスクロールして探す
+    for (var i = 0; i < 10; i++) {
+      if (find.text('近所のドライブ').evaluate().isNotEmpty) break;
+      final listView = find.byType(ListView);
+      if (listView.evaluate().isNotEmpty) {
+        await tester.drag(listView.first, const Offset(0, -300));
+        await tester.pump(const Duration(milliseconds: 300));
+      } else {
+        break;
+      }
+    }
 
     final eventCards = find.ancestor(
       of: find.text('近所のドライブ'),

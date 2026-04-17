@@ -166,3 +166,4 @@
 | [2026-04-16_agent-model-rebalance.md](./2026-04-16_agent-model-rebalance.md) | エージェントモデル配分見直し・PM/test-analyzer新設・役割連携フロー更新 |
 - [2026-04-17](./2026-04-17_chore__OPS_1_エージェントモデルを通常運用配分に.md)
 | [2026-04-17_fix__IntegrationTest修正_F6-canPop-UI18対応.md](./2026-04-17_fix__IntegrationTest修正_F6-canPop-UI18対応.md) | F-6 showMemberSection分離・canPop()ガード・UI-18テスト対応・テスト修正 |
+| [2026-04-17_fix__TEST-FIX-2-IntegrationTest修正進捗.md](./2026-04-17_fix__TEST-FIX-2-IntegrationTest修正進捗.md) | TEST-FIX-2: seed切替修正・ルール整備・fab_dialog 8PASS・dashboard_popup 4FAIL残存 |

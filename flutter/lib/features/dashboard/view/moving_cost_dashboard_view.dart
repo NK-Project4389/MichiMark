@@ -17,6 +17,10 @@ class _MovingCostDashboardViewState extends State<MovingCostDashboardView> {
   bool _isLongPressing = false;
   int? _longPressedBarIndex;
   int? _tappedBarIndex;
+  // FlTapDownEvent で取得したバーインデックスを FlTapUpEvent まで保持する。
+  // fl_chart は FlTapUpEvent 時点で response?.spot が null になるため、
+  // FlTapDownEvent の値を引き継いで使う。
+  int? _pendingTapIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -122,28 +126,50 @@ class _MovingCostDashboardViewState extends State<MovingCostDashboardView> {
                   final touchedIndex =
                       response?.spot?.touchedBarGroupIndex;
 
-                  if (event is FlLongPressStart) {
+                  if (event is FlTapDownEvent) {
+                    // fl_chart は FlTapUpEvent 時点で spot が null になることがある。
+                    // DownEvent で取得したインデックスを UpEvent まで保持する。
+                    if (touchedIndex != null) {
+                      _pendingTapIndex = touchedIndex;
+                    }
+                  } else if (event is FlLongPressStart) {
                     setState(() {
                       _isLongPressing = true;
-                      _longPressedBarIndex = touchedIndex;
+                      // touchedIndex が null の場合は直前のタップ位置を引き継ぐ
+                      _longPressedBarIndex =
+                          touchedIndex ?? _pendingTapIndex ?? _tappedBarIndex ?? _longPressedBarIndex;
                       _tappedBarIndex = null;
+                      _pendingTapIndex = null;
                     });
                   } else if (event is FlLongPressMoveUpdate) {
-                    if (touchedIndex != null &&
-                        touchedIndex != _longPressedBarIndex) {
+                    final newIndex = touchedIndex ?? _longPressedBarIndex;
+                    if (newIndex != null && newIndex != _longPressedBarIndex) {
                       setState(() {
-                        _longPressedBarIndex = touchedIndex;
+                        _longPressedBarIndex = newIndex;
+                      });
+                    } else if (_longPressedBarIndex == null &&
+                        newIndex != null) {
+                      setState(() {
+                        _longPressedBarIndex = newIndex;
                       });
                     }
                   } else if (event is FlLongPressEnd) {
                     setState(() {
                       _isLongPressing = false;
                       _longPressedBarIndex = null;
+                      _pendingTapIndex = null;
                     });
-                  } else if (event is FlTapUpEvent) {
-                    setState(() {
-                      _tappedBarIndex = touchedIndex;
-                    });
+                  } else if (event is FlTapUpEvent ||
+                      event is FlPanEndEvent) {
+                    // touchedIndex が null のときは FlTapDownEvent で保存した値を使う。
+                    final resolvedIndex =
+                        touchedIndex ?? _pendingTapIndex;
+                    _pendingTapIndex = null;
+                    if (resolvedIndex != null && !_isLongPressing) {
+                      setState(() {
+                        _tappedBarIndex = resolvedIndex;
+                      });
+                    }
                   }
                 },
                 touchTooltipData: BarTouchTooltipData(

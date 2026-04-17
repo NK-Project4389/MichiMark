@@ -193,7 +193,7 @@ void main() {
     // memberName → memberId マッピング（シードデータ準拠）
     final memberIdMap = {
       '太郎': 'member-001',
-      '花子': 'member-002',
+      '田中': 'member-002',
       '健太': 'member-003',
     };
     final memberId = memberIdMap[memberName];
@@ -361,13 +361,13 @@ void main() {
     expect(find.text('ガソリン支払者'), findsOneWidget,
         reason: '給油ON後にガソリン支払者行が表示されること');
 
-    // 3-4. ガソリン支払者を選択する（花子を選択）
-    final selected = await selectGasPayer(tester, '花子');
-    expect(selected, isTrue, reason: 'ガソリン支払者「花子」が選択できること');
+    // 3-4. ガソリン支払者を選択する（田中を選択）
+    final selected = await selectGasPayer(tester, '田中');
+    expect(selected, isTrue, reason: 'ガソリン支払者「田中」が選択できること');
 
-    // ガソリン支払者に「花子」が表示されること
-    expect(find.text('花子'), findsWidgets,
-        reason: '選択後にガソリン支払者として「花子」が表示されること');
+    // ガソリン支払者に「田中」が表示されること
+    expect(find.text('田中'), findsWidgets,
+        reason: '選択後にガソリン支払者として「田中」が表示されること');
 
     // 5. 保存ボタンをタップする
     await tapSaveButton(tester);
@@ -378,9 +378,9 @@ void main() {
     // 給油ON状態でロードされたか確認
     await turnFuelSwitchOn(tester);
 
-    // 期待結果: 手順4で選択したメンバー名「花子」がガソリン支払者に表示される
-    expect(find.text('花子'), findsWidgets,
-        reason: '再表示後もガソリン支払者として「花子」が保存されていること');
+    // 期待結果: 手順4で選択したメンバー名「田中」がガソリン支払者に表示される
+    expect(find.text('田中'), findsWidgets,
+        reason: '再表示後もガソリン支払者として「田中」が保存されていること');
   });
 
   // ────────────────────────────────────────────────────────

@@ -422,10 +422,22 @@
 ## TEST-FIX-1: Integration Test 残存FAIL修正（シードデータ依存）
 
 > 2026-04-17の3シャード全件実行で残存したFAIL約39件（シードデータ不一致が原因）。
-> 我々の変更とは無関係の既存問題だが、正確な原因調査と修正が必要。
+> seed_data.dartのFLAVOR dart-define切り替えで解消済み。
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-495 | 残存FAILの原因調査（シードデータvs Widgetキー） | test-analyzer | `TODO` | | 主対象: michi_info_card_topic_view, visit_work_seed_data_actiontime, michi_info_layout, mark_addition_defaults, fuel_detail_design, road_timeline, seed_fix, payment_info_redesign, dashboard_graph_popup |
-| T-496 | シードデータ修正またはテスト修正（T-495の調査結果に基づく） | flutter-dev | `BLOCKED` | | T-495完了後 |
-| T-497 | 修正後テスト実行 | tester | `BLOCKED` | | T-496完了後 |
+| T-495 | 残存FAILの原因調査 | test-analyzer | `DONE` | | FLUTTER_TEST env var不動作が原因と判明 |
+| T-496 | seed_data.dart修正（FLAVOR dart-defineへ変更） | flutter-dev | `DONE` | | commit 669ca0d |
+| T-497 | 修正後テスト実行（8ファイル） | tester | `DONE` | | 38PASS/3SKIP/0FAIL（シードデータ起因分は全解消） |
+
+---
+
+## TEST-FIX-2: Integration Test 残存FAIL修正（実装・テストコード問題）
+
+> TEST-FIX-1修正後の対象ファイル実行で残存した5件のFAIL。シードデータとは無関係。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-498 | dashboard_graph_popup FAIL修正（tooltip Widgetキー） | flutter-dev | `IN_PROGRESS` | 2026-04-17_TEST-FIX-2 | _pendingTapIndexフォールバック方式をreviewerが承認済み。再テストで4FAIL残存。要再調査 |
+| T-499 | fab_and_unsaved_dialog FAIL修正（近所のドライブ画面外） | tester | `DONE` | | ListViewスクロールループ追加でTC-BACK-001等 8PASS/0FAIL ✅ |
+| T-500 | 修正後テスト実行 | tester | `BLOCKED` | | T-498完了後（T-499分は完了済み） |
