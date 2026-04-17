@@ -55,13 +55,29 @@
 
 ---
 
-## BUG-4: 招待ボタン遷移先修正（招待コード入力→招待リンク作成画面）
+## BUG-5: INV-4テスト userRole未セット（「メンバーを招待」ボタン未表示）
 
-> イベント詳細の招待ボタンが招待コード入力画面に遷移しているが、正しくは招待リンク作成・共有画面（INV-4）へ遷移させる。
+> EventDetailBloc._onStarted で userRole を取得・セットするロジックが未実装。
+> userRole が常に null → isOwner=false → 「メンバーを招待」ボタンが表示されない。
+> InvitationRepository に fetchUserRole(eventId) を追加し、Bloc起動時にセットする。
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-501a | BUG-4: 修正 | flutter-dev | `BLOCKED` | | INV-4 T-343完了後 |
+| T-534a | BUG-5: 修正 | flutter-dev | `DONE` | | InvitationRepository.fetchUserRole追加・StubはInvitationRole.owner返す・Bloc起動時にセット |
+| T-534b | BUG-5: テストコード修正 | tester | `DONE` | | 16PASS (invite_link_share_test) / 5PASS+3SKIP (invitation_ui_placement_test) |
+| T-535 | BUG-5: レビュー | reviewer | `TODO` | | |
+| T-536 | BUG-5: テスト実行 | tester | `TODO` | | |
+
+---
+
+## BUG-4: 招待ボタン遷移先修正（招待コード入力→招待リンク作成画面）
+
+> イベント詳細の招待ボタンが招待コード入力画面に遷移しているが、正しくは招待リンク作成・共有画面（INV-4）へ遷移させる。
+> BUG-5修正後に対応する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-501a | BUG-4: 修正 | flutter-dev | `BLOCKED` | | BUG-5完了後 |
 | T-501b | BUG-4: テストコード実装 | tester | `BLOCKED` | | |
 | T-502 | BUG-4: レビュー | reviewer | `BLOCKED` | | |
 | T-503 | BUG-4: テスト実行 | tester | `BLOCKED` | | |
@@ -143,7 +159,7 @@
 | T-526 | F-10: デザイン提案 | designer | `DONE` | | docs/Design/draft/end_flag_card_design.html |
 | T-527 | F-10: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-end_flag.md |
 | T-528 | F-10: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-end_flag.md |
-| T-529a | F-10: 実装 | flutter-dev | `TODO` | | DBスキーマv5→v6マイグレーションあり |
+| T-529a | F-10: 実装 | flutter-dev | `TODO` | | DBスキーマv5→v6マイグレーションあり。先行バグ2件を一括対処：①DriftEventRepository.saveActionTimeLog/fetchActionTimeLogs がUnimplementedError ②Drift DB _insertSeedActions()にvisitWork専用アクション未登録 |
 | T-529b | F-10: テストコード実装 | tester | `TODO` | | |
 | T-530 | F-10: レビュー | reviewer | `BLOCKED` | | |
 | T-531 | F-10: テスト実行 | tester | `BLOCKED` | | |
