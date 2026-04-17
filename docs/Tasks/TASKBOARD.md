@@ -31,7 +31,7 @@
 | T-341a | 招待リンク生成・共有 実装 | flutter-dev | `DONE` | | BottomSheet・InviteLinkShareBloc・スタブ実装・dart analyze 0件 |
 | T-341b | 招待リンク生成・共有 テストコード実装 | tester | `DONE` | | TC-INV4-001〜011（13件） |
 | T-342 | 招待リンク生成・共有 レビュー | reviewer | `DONE` | | 承認（テスト整合性は後続） |
-| T-343 | 招待リンク生成・共有 テスト実行 | tester | `TODO` | | |
+| T-343 | 招待リンク生成・共有 テスト実行 | tester | `DONE` | | 3PASS/13SKIP/0FAIL（SKIP原因：ownerロールスタブ未設定・既知問題） |
 
 ---
 
@@ -90,11 +90,11 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-509 | UI-23: デザイン提案 | designer | `TODO` | | |
-| T-510 | UI-23: 要件書作成 | product-manager | `BLOCKED` | | T-509完了後 |
-| T-511 | UI-23: Spec作成 | architect | `BLOCKED` | | T-510完了後 |
-| T-512a | UI-23: 実装 | flutter-dev | `BLOCKED` | | |
-| T-512b | UI-23: テストコード実装 | tester | `BLOCKED` | | |
+| T-509 | UI-23: デザイン提案 | designer | `DONE` | | docs/Design/draft/michi_info_date_separator_design.html |
+| T-510 | UI-23: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_date_separator.md |
+| T-511 | UI-23: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_date_separator.md |
+| T-512a | UI-23: 実装 | flutter-dev | `TODO` | | |
+| T-512b | UI-23: テストコード実装 | tester | `TODO` | | |
 | T-513 | UI-23: レビュー | reviewer | `BLOCKED` | | |
 | T-514 | UI-23: テスト実行 | tester | `BLOCKED` | | |
 
@@ -107,11 +107,11 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-515 | UI-24: デザイン提案 | designer | `TODO` | | スクエア角丸・4ボタン横幅ギリギリ・直近時刻表示 |
-| T-516 | UI-24: 要件書作成 | product-manager | `BLOCKED` | | T-515完了後 |
-| T-517 | UI-24: Spec作成 | architect | `BLOCKED` | | T-516完了後 |
-| T-518a | UI-24: 実装 | flutter-dev | `BLOCKED` | | |
-| T-518b | UI-24: テストコード実装 | tester | `BLOCKED` | | |
+| T-515 | UI-24: デザイン提案 | designer | `DONE` | | docs/Design/draft/action_time_button_redesign.html |
+| T-516 | UI-24: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-action_time_button_redesign.md |
+| T-517 | UI-24: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-action_time_button_redesign.md |
+| T-518a | UI-24: 実装 | flutter-dev | `TODO` | | |
+| T-518b | UI-24: テストコード実装 | tester | `TODO` | | |
 | T-519 | UI-24: レビュー | reviewer | `BLOCKED` | | |
 | T-520 | UI-24: テスト実行 | tester | `BLOCKED` | | |
 
@@ -140,11 +140,11 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-526 | F-10: デザイン提案 | designer | `TODO` | | 完了カードの色表現・MichiInfoへの反映 |
-| T-527 | F-10: 要件書作成 | product-manager | `BLOCKED` | | T-526完了後 |
-| T-528 | F-10: Spec作成 | architect | `BLOCKED` | | T-527完了後 |
-| T-529a | F-10: 実装 | flutter-dev | `BLOCKED` | | Domain変更あり |
-| T-529b | F-10: テストコード実装 | tester | `BLOCKED` | | |
+| T-526 | F-10: デザイン提案 | designer | `DONE` | | docs/Design/draft/end_flag_card_design.html |
+| T-527 | F-10: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-end_flag.md |
+| T-528 | F-10: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-end_flag.md |
+| T-529a | F-10: 実装 | flutter-dev | `TODO` | | DBスキーマv5→v6マイグレーションあり |
+| T-529b | F-10: テストコード実装 | tester | `TODO` | | |
 | T-530 | F-10: レビュー | reviewer | `BLOCKED` | | |
 | T-531 | F-10: テスト実行 | tester | `BLOCKED` | | |
 

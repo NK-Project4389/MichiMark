@@ -1,6 +1,14 @@
 # TEST-FIX-2: Integration Test 残存FAIL修正 進捗
 
 ## 完了した作業
+- chore: 自動テストスキームをrules/autotest-schedule.mdに切り出し (23b0551)
+- chore: orchestrator.md に自動テストスキーム記載追加・testerモデルをhaikiに修正 (220049d)
+- chore: autotest-prompt 全面改訂（正規ワークフロー準拠・tester/flutter-dev/reviewer サブエージェント対応） (a3db52b)
+- chore: launchd自動テストループ一式追加（scripts/automation/） (0dae180)
+- chore: タスクボードクリーンアップ（完了20セクションをアーカイブへ移動） (8258a51)
+- chore: INFRA-1 T-346b/T-348 DONE・進捗ファイル更新 (b4fb9ce)
+- test: TC-INFRA-006軽微修正 - isMigrationNeeded()検証追加 (ba32767)
+- test: INFRA-1 Firebase基盤 Unit Test実装（TC-INFRA-001〜008：7PASS/1SKIP） (9f205e8)
 - docs: 進捗README更新（TEST-FIX-2 visit_work全PASS） (d53d3f0)
 - chore: タスクボードT-467/T-470/T-490 DONE・進捗ファイル更新 (5a4d6c8)
 - fix: di.dart FLAVOR=test→InMemory修正・seed_data _event1日付_rel(-5)修正・タスクボードT-485/498/500 DONE (efa165f)
