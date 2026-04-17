@@ -243,7 +243,7 @@
 | T-439a | F-7: 実装 | flutter-dev | `DONE` | | InvitationRole enum・Event/Delegate追加・_InvitationSection実装・dart analyze 0件 |
 | T-439b | F-7: テストコード実装 | tester | `DONE` | | TC-IUP-001〜007（9件） |
 | T-440 | F-7: レビュー | reviewer | `DONE` | | 承認 |
-| T-441 | F-7: テスト実行 | tester | `BLOCKED` | | |
+| T-441 | F-7: テスト実行 | tester | `DONE` | | 6PASS/2SKIP/0FAIL（TC-IUP-001b・TC-IUP-002はowner権限スタブ設定依存SKIP） |
 
 ---
 
@@ -258,7 +258,7 @@
 | T-444a | UI-17: 実装 | flutter-dev | `DONE` | | router.dart: initialLocation変更・タブ順序変更・Key付与 |
 | T-444b | UI-17: テストコード実装 | tester | `DONE` | | TC-TAB-001〜004（4件） |
 | T-445 | UI-17: レビュー | reviewer | `DONE` | | 承認 |
-| T-446 | UI-17: テスト実行 | tester | `BLOCKED` | | |
+| T-446 | UI-17: テスト実行 | tester | `DONE` | | 4PASS/0FAIL ✅ |
 
 ---
 
@@ -273,7 +273,7 @@
 | T-449a | UI-18: 実装 | flutter-dev | `DONE` | | タブラベル・AppBarタイトル「イベント一覧」に変更 |
 | T-449b | UI-18: テストコード実装 | tester | `DONE` | | TC-RNM-001〜004（4件） |
 | T-450 | UI-18: レビュー | reviewer | `DONE` | | 承認 |
-| T-451 | UI-18: テスト実行 | tester | `BLOCKED` | | |
+| T-451 | UI-18: テスト実行 | tester | `DONE` | | 4PASS/0FAIL ✅ |
 
 ---
 
@@ -304,7 +304,7 @@
 | T-460a | B-19: 実装 | flutter-dev | `DONE` | | シナリオCからLink4件削除済み |
 | T-460b | B-19: テストコード実装 | tester | `DONE` | | TC-B19-I001〜I004（9件） |
 | T-461 | B-19: レビュー | reviewer | `DONE` | | 承認 |
-| T-462 | B-19: テスト実行 | tester | `BLOCKED` | | |
+| T-462 | B-19: テスト実行 | tester | `DONE` | | 16PASS/0FAIL ✅ |
 
 ---
 
@@ -362,7 +362,7 @@
 | T-478a | UI-21: 実装 | flutter-dev | `DONE` | | FS-master_list_fab_button.md 参照 |
 | T-478b | UI-21: テストコード実装 | tester | `DONE` | | TC-FAB-001〜012（16件） |
 | T-479 | UI-21: レビュー | reviewer | `DONE` | | 承認 |
-| T-480 | UI-21: テスト実行 | tester | `BLOCKED` | | |
+| T-480 | UI-21: テスト実行 | tester | `DONE` | | 16PASS/0FAIL ✅ |
 
 ---
 
@@ -438,6 +438,6 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-498 | dashboard_graph_popup FAIL修正（tooltip Widgetキー） | flutter-dev | `IN_PROGRESS` | 2026-04-17_TEST-FIX-2 | _pendingTapIndexフォールバック方式をreviewerが承認済み。再テストで4FAIL残存。要再調査 |
+| T-498 | dashboard_graph_popup FAIL修正（tooltip Widgetキー） | flutter-dev | `IN_PROGRESS` | 2026-04-17_TEST-FIX-2 | FlPanDownEvent対応追加（tester.tapAt()がPanGestureとして認識される場合の対処）。reviewer確認中 |
 | T-499 | fab_and_unsaved_dialog FAIL修正（近所のドライブ画面外） | tester | `DONE` | | ListViewスクロールループ追加でTC-BACK-001等 8PASS/0FAIL ✅ |
 | T-500 | 修正後テスト実行 | tester | `BLOCKED` | | T-498完了後（T-499分は完了済み） |

@@ -132,6 +132,16 @@ class _MovingCostDashboardViewState extends State<MovingCostDashboardView> {
                     if (touchedIndex != null) {
                       _pendingTapIndex = touchedIndex;
                     }
+                  } else if (event is FlPanDownEvent) {
+                    // integration test 環境で tester.tapAt() が PanGesture として
+                    // 解釈される場合の対処。FlPanDownEvent でも保持する。
+                    if (touchedIndex != null) {
+                      _pendingTapIndex = touchedIndex;
+                    }
+                  } else if (event is FlPanUpdateEvent) {
+                    // 実際のドラッグ操作では _pendingTapIndex をクリアして
+                    // タップとドラッグを区別する。
+                    _pendingTapIndex = null;
                   } else if (event is FlLongPressStart) {
                     setState(() {
                       _isLongPressing = true;
