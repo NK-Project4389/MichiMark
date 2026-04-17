@@ -45,7 +45,7 @@
 
 ## STEP 4: テスト実行（tester サブエージェント）
 
-以下の内容で **tester サブエージェント（model: sonnet）** を起動する:
+以下の内容で **tester サブエージェント（model: haiku）** を起動する（モデル指定: `haiku`）:
 
 > あなたは tester です。`.claude/agents/tester.md` と `.claude/rules/integration-test.md` を必ず読んでから作業してください。
 >
