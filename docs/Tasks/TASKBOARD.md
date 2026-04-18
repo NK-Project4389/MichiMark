@@ -45,9 +45,9 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-452 | UI-19: デザイン提案（バッジ・削除ボタン） | designer | `DONE` | | docs/Design/draft/visit_work_action_badge_redesign.html |
-| T-453 | UI-19: 要件書作成 | product-manager | `TODO` | | バグ修正3件含む |
-| T-454 | UI-19: Spec作成 | architect | `BLOCKED` | | T-453完了後 |
+| T-452 | UI-19: デザイン提案（バッジ・削除ボタン） | designer | `DONE` | | 最新: docs/Design/draft/visit_work_action_button_center_design.html（旧: visit_work_action_badge_redesign.html） |
+| T-453 | UI-19: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_action_ui.md |
+| T-454 | UI-19: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_action_ui.md |
 | T-455a | UI-19: 実装 | flutter-dev | `BLOCKED` | | |
 | T-455b | UI-19: テストコード実装 | tester | `BLOCKED` | | |
 | T-456 | UI-19: レビュー | reviewer | `BLOCKED` | | |
@@ -90,7 +90,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-504 | F-8: 要件書作成 | product-manager | `TODO` | | |
+| T-504 | F-8: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_detail_sales.md（未決定事項2件あり・ユーザー確認待ち） |
 | T-505 | F-8: Spec作成 | architect | `BLOCKED` | | T-504完了後 |
 | T-506a | F-8: 実装 | flutter-dev | `BLOCKED` | | |
 | T-506b | F-8: テストコード実装 | tester | `BLOCKED` | | |
@@ -126,10 +126,10 @@
 | T-515 | UI-24: デザイン提案 | designer | `DONE` | | docs/Design/draft/action_time_button_redesign.html |
 | T-516 | UI-24: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-action_time_button_redesign.md |
 | T-517 | UI-24: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-action_time_button_redesign.md |
-| T-518a | UI-24: 実装 | flutter-dev | `TODO` | | |
-| T-518b | UI-24: テストコード実装 | tester | `TODO` | | |
-| T-519 | UI-24: レビュー | reviewer | `BLOCKED` | | |
-| T-520 | UI-24: テスト実行 | tester | `BLOCKED` | | |
+| T-518a | UI-24: 実装 | flutter-dev | `DONE` | | _ActionButtonGrid（Row+Expanded）・_ActionButton（height:96）実装 |
+| T-518b | UI-24: テストコード実装 | tester | `DONE` | | TC-ATB-001〜007実装 |
+| T-519 | UI-24: レビュー | reviewer | `DONE` | | |
+| T-520 | UI-24: テスト実行 | tester | `DONE` | | 7PASS/0FAIL/0SKIP |
 
 ---
 
@@ -140,7 +140,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-521 | F-9: 要件書作成 | product-manager | `TODO` | | |
+| T-521 | F-9: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-action_log_time_edit.md |
 | T-522 | F-9: Spec作成 | architect | `BLOCKED` | | T-521完了後 |
 | T-523a | F-9: 実装 | flutter-dev | `BLOCKED` | | Domain変更あり |
 | T-523b | F-9: テストコード実装 | tester | `BLOCKED` | | |

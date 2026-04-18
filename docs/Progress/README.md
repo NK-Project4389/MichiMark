@@ -176,3 +176,4 @@
 | [2026-04-18_test__BUG-4-TC-001-002-IMPL.md](./2026-04-18_test__BUG-4-TC-001-002-IMPL.md) | BUG-4 テストコード実装：TC-BUG4-001〜002（招待ボタン遷移先確認）e8daf96でコミット |
 | [2026-04-18_test__BUG-4-招待ボタン遷移先修正-テスト実行完了.md](./2026-04-18_test__BUG-4-招待ボタン遷移先修正-テスト実行完了.md) | BUG-4 BottomSheet閉じテスト修正（ModalBarrier→座標タップに変更）3PASS/0FAIL・T-502/503 DONE |
 | [2026-04-18_session__launchd調査-BUG-4完了.md](./2026-04-18_session__launchd調査-BUG-4完了.md) | launchd調査（正常確認・自動起動実機確認は次回）・BUG-4全完了 |
+| [2026-04-18_feat__UI-24-ActionTimeボタン大型化完了.md](./2026-04-18_feat__UI-24-ActionTimeボタン大型化完了.md) | UI-24 ActionTimeアクションボタン大型化完了（7PASS/0FAIL/0SKIP） |

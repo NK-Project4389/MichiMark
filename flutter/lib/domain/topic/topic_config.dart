@@ -168,7 +168,6 @@ class TopicConfig extends Equatable {
             'visit_work_depart',
             'visit_work_start',
             'visit_work_end',
-            'visit_work_break',
           ],
           linkActions: [],
           showActionTimeButton: true,

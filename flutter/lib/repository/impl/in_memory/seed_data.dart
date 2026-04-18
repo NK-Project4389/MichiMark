@@ -947,7 +947,10 @@ final _event8 = EventDomain(
 );
 
 /// テスト用シードイベント（現行 event-001〜008 をそのまま維持）
+/// _eventSeedC を先頭に移動: visitWork トピックの actionTime Integration Test（UI-24）のため
+/// GestureDetector.first でタップされる最初のイベントが visitWork トピックであることが必要
 final _testSeedEvents = [
+  _eventSeedC, // 訪問作業テスト用（横浜エリア訪問ルート）← 先頭: UI-24 actionTime テスト用
   _event1,
   _event2,
   _event3,
@@ -956,7 +959,6 @@ final _testSeedEvents = [
   _event6,
   _event7,
   _event8,
-  _eventSeedC, // 訪問作業テスト用（横浜エリア訪問ルート）
 ];
 
 // ---------------------------------------------------------------------------

@@ -94,10 +94,36 @@ class ActionTimeAdapter {
 
     final isBreakActive = currentState == ActionState.break_;
 
+    // buttonItems: availableActionsの順に各アクションの最新タイムスタンプを逆引きして生成
+    // logs全体のうち最大timestampのlogのactionIdをlastPressedActionIdとする
+    final lastPressedActionId = sortedLogs.isNotEmpty ? sortedLogs.last.actionId : null;
+
+    // アクションIDごとに最新タイムスタンプを算出
+    final Map<String, DateTime> lastLoggedAtMap = {};
+    for (final log in sortedLogs) {
+      final existing = lastLoggedAtMap[log.actionId];
+      if (existing == null || log.timestamp.isAfter(existing)) {
+        lastLoggedAtMap[log.actionId] = log.timestamp;
+      }
+    }
+
+    final buttonItems = availableActions.map((action) {
+      final lastLoggedAt = lastLoggedAtMap[action.id];
+      final lastLoggedTimeLabel =
+          lastLoggedAt != null ? _timeFormat.format(lastLoggedAt) : null;
+      return ActionButtonProjection(
+        actionId: action.id,
+        actionName: action.actionName,
+        lastLoggedTimeLabel: lastLoggedTimeLabel,
+        isLastPressed: action.id == lastPressedActionId,
+      );
+    }).toList();
+
     final projection = ActionTimeProjection(
       currentStateLabel: currentState.label,
       logItems: logItems,
       isBreakActive: isBreakActive,
+      buttonItems: buttonItems,
     );
 
     return (draft, projection);
