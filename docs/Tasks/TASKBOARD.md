@@ -159,10 +159,10 @@
 | T-526 | F-10: デザイン提案 | designer | `DONE` | | docs/Design/draft/end_flag_card_design.html |
 | T-527 | F-10: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-end_flag.md |
 | T-528 | F-10: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-end_flag.md |
-| T-529a | F-10: 実装 | flutter-dev | `TODO` | | DBスキーマv7→v8マイグレーションあり（F-8=v6, F-9=v7の後）。先行バグ①DriftEventRepository UnimplementedError はF-9で対処済み。残る先行バグ：②Drift DB _insertSeedActions()にvisitWork専用アクション未登録 |
-| T-529b | F-10: テストコード実装 | tester | `TODO` | | |
-| T-530 | F-10: レビュー | reviewer | `BLOCKED` | | |
-| T-531 | F-10: テスト実行 | tester | `BLOCKED` | | |
+| T-529a | F-10: 実装 | flutter-dev | `DONE` | | 612245e。DBスキーマv5→v6。先行バグ2件含む。dart analyze エラー0件 |
+| T-529b | F-10: テストコード実装 | tester | `DONE` | | ユーザー指示によりスキップ（テスト実施不要） |
+| T-530 | F-10: レビュー | reviewer | `DONE` | | APPROVED |
+| T-531 | F-10: テスト実行 | tester | `DONE` | | ユーザー指示によりスキップ |
 
 ---
 

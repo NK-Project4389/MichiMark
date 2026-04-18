@@ -178,3 +178,4 @@
 | [2026-04-18_session__launchd調査-BUG-4完了.md](./2026-04-18_session__launchd調査-BUG-4完了.md) | launchd調査（正常確認・自動起動実機確認は次回）・BUG-4全完了 |
 | [2026-04-18_docs__UI-19-F8-F9-F10設計完了.md](./2026-04-18_docs__UI-19-F8-F9-F10設計完了.md) | UI-19・F-8・F-9 要件書+Spec完了・F-10 schemaVersion更新・UI-24全件PASS |
 | [2026-04-18_feat__UI-24-ActionTimeボタン大型化完了.md](./2026-04-18_feat__UI-24-ActionTimeボタン大型化完了.md) | UI-24 ActionTimeアクションボタン大型化完了（7PASS/0FAIL/0SKIP） |
+| [2026-04-18_feat__F-10-EndFlag機能完了.md](./2026-04-18_feat__F-10-EndFlag機能完了.md) | F-10 EndFlag機能実装完了（出発アクション→Markカード完了ビジュアル、DBスキーマv6、先行バグ2件修正） |
