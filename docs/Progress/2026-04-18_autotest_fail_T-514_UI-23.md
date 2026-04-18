@@ -1,6 +1,8 @@
 # 進捗記録 2026-04-18（自動テスト・部分失敗）
 
 ## 完了した作業
+- test: TC-DS-003修正 - event-008に4/13Markを追加・複数日付セットアップ関数を追加 (14591d5)
+- feat: UI-23 MichiInfo日付区切り実装・テストコード完了（TC-DS-003手動確認が必要） (9db9397)
 
 - T-512a UI-23: MichiInfo 日付区切り表示 実装（flutter-dev）
   - `MarkLinkItemProjection` に `dateKey: String` フィールド追加
