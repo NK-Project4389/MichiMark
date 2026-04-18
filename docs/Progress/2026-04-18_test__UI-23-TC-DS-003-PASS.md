@@ -1,6 +1,7 @@
 # UI-23 TC-DS-003 修正・全件PASS
 
 ## 完了した作業
+- docs: 進捗ファイル追加・README更新（UI-23 TC-DS-003 PASS） (e180709)
 
 - 自動テストスクリプト（run-autotest.sh）手動実行
   - UI-23（MichiInfo 日付区切り表示）が自動実装サイクルで実行済み
