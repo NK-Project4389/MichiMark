@@ -418,6 +418,7 @@ class _MichiInfoViewState extends State<MichiInfoView> {
               eventId,
               topicConfig: topicConfig,
               markOrLink: MarkOrLink.mark,
+              markLinkId: markLinkId,
             )),
           child: BlocListener<ActionTimeBloc, ActionTimeState>(
             listener: (listenerContext, state) {
@@ -445,6 +446,7 @@ class _MichiInfoViewState extends State<MichiInfoView> {
                           ),
                           const Spacer(),
                           IconButton(
+                            key: const Key('actionTime_sheet_close'),
                             icon: const Icon(Icons.close),
                             onPressed: () => Navigator.of(sheetContext).pop(),
                           ),
@@ -1200,9 +1202,7 @@ class _TimelineItem extends StatelessWidget {
     final hasActionButtons = isMark && markActionItems.isNotEmpty;
     final rowHeight = isMark ? _cardHeight : _linkCardHeight;
 
-    final itemKey = isMark
-        ? Key('michiInfo_item_mark_${item.id}')
-        : Key('michiInfo_item_link_${item.id}');
+    final itemKey = Key('michiInfo_item_${item.id}');
 
     return Column(
       key: itemKey,
@@ -1223,6 +1223,7 @@ class _TimelineItem extends StatelessWidget {
                         painter: _MichiTimelinePainter(
                           markLinkType: item.markLinkType,
                           isFuel: item.isFuel,
+                          isDone: item.isDone,
                         ),
                       ),
                     ),
@@ -1291,12 +1292,19 @@ class _MichiTimelinePainter extends CustomPainter {
   static const double _markCornerRadius = 16.0;
   static const double _linkCornerRadius = 8.0;
 
+  // 完了ドット色（Gray 400）
+  static const Color _doneDotColor = Color(0xFF9CA3AF);
+  // 完了接続線色（Gray 300）
+  static const Color _doneConnectorColor = Color(0xFFD1D5DB);
+
   final MarkOrLink markLinkType;
   final bool isFuel;
+  final bool isDone;
 
   const _MichiTimelinePainter({
     required this.markLinkType,
     this.isFuel = false,
+    this.isDone = false,
   });
 
   @override
@@ -1320,6 +1328,11 @@ class _MichiTimelinePainter extends CustomPainter {
       Radius.circular(cardCornerRadius),
     );
 
+    // 完了ビジュアル色定数（F-10）
+    const doneCardBg = Color(0xFFF9FAFB); // Gray 50
+    const doneCardBorder = Color(0xFFD1D5DB); // Gray 300
+    const doneTopLineColor = Color(0xFF9CA3AF); // Gray 400
+
     // Mark カード: ドロップシャドウ
     if (isMark) {
       canvas.drawRRect(
@@ -1337,13 +1350,16 @@ class _MichiTimelinePainter extends CustomPainter {
     canvas.drawRRect(
       rrect,
       Paint()
-        ..color = isMark ? Colors.white : _linkTintLightColor
+        ..color = isMark
+            ? (isDone ? doneCardBg : Colors.white)
+            : _linkTintLightColor
         ..style = PaintingStyle.fill,
     );
 
     // カードボーダー
     if (isMark) {
-      // 上辺 3dp Teal ボーダー（左上・右上を外側に湾曲）
+      // 上辺 3dp カラーライン（isDone: Gray / 通常: Teal）
+      final topLineColor = isDone ? doneTopLineColor : _markPrimaryColor;
       final topPath = Path()
         ..moveTo(cardRect.left, cardRect.top + cardCornerRadius)
         ..arcToPoint(
@@ -1358,11 +1374,21 @@ class _MichiTimelinePainter extends CustomPainter {
       canvas.drawPath(
         topPath,
         Paint()
-          ..color = _markPrimaryColor
+          ..color = topLineColor
           ..style = PaintingStyle.stroke
           ..strokeWidth = 3.0
           ..strokeCap = StrokeCap.round,
       );
+      // isDone: 全辺グレーボーダー追加
+      if (isDone) {
+        canvas.drawRRect(
+          rrect,
+          Paint()
+            ..color = doneCardBorder
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.0,
+        );
+      }
     } else {
       // 全辺 1.5px Emerald ボーダー
       canvas.drawRRect(
@@ -1375,13 +1401,14 @@ class _MichiTimelinePainter extends CustomPainter {
     }
 
     // ── 2. 水平接続線（axisX → cardLeft）────────────────────
+    final connectorColor = isDone
+        ? _doneConnectorColor
+        : (isMark ? _markPrimaryColor : _linkPrimaryColor.withValues(alpha: 0.55));
     canvas.drawLine(
       Offset(_axisX, centerY),
       Offset(_axisX + _connectorLength, centerY),
       Paint()
-        ..color = isMark
-            ? _markPrimaryColor
-            : _linkPrimaryColor.withValues(alpha: 0.55)
+        ..color = connectorColor
         ..strokeWidth = isMark ? 2.0 : 1.5
         ..strokeCap = StrokeCap.round,
     );
@@ -1442,6 +1469,41 @@ class _MichiTimelinePainter extends CustomPainter {
             centerY - iconPainter.height / 2,
           ),
         );
+      } else if (isDone) {
+        // 完了: 白リング + Gray 円ドット + 白チェックマーク
+        canvas.drawCircle(
+          Offset(_axisX, centerY),
+          _markDotRadius + _markDotRingWidth,
+          Paint()
+            ..color = Colors.white
+            ..style = PaintingStyle.fill,
+        );
+        canvas.drawCircle(
+          Offset(_axisX, centerY),
+          _markDotRadius,
+          Paint()
+            ..color = _doneDotColor
+            ..style = PaintingStyle.fill,
+        );
+        // 白色チェックマーク（✓）
+        final checkPainter = TextPainter(
+          text: const TextSpan(
+            text: '✓',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        checkPainter.paint(
+          canvas,
+          Offset(
+            _axisX - checkPainter.width / 2,
+            centerY - checkPainter.height / 2,
+          ),
+        );
       } else {
         // 給油なし（従来通り）: 白リング + Teal 円ドット
         canvas.drawCircle(
@@ -1480,7 +1542,9 @@ class _MichiTimelinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_MichiTimelinePainter old) =>
-      markLinkType != old.markLinkType || isFuel != old.isFuel;
+      markLinkType != old.markLinkType ||
+      isFuel != old.isFuel ||
+      isDone != old.isDone;
 }
 
 // ────────────────────────────────────────────────────────
@@ -1603,11 +1667,37 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
                       topicConfig: topicConfig,
                     ),
             ),
+            // 完了バッジ（F-10: isDone=true かつ Markのみ表示）
+            if (isMark && item.isDone)
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: Container(
+                  key: Key('michiInfo_badge_done_${item.id}'),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF3F4F6), // Gray 100
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(
+                      color: const Color(0xFFD1D5DB), // Gray 300
+                      width: 1.0,
+                    ),
+                  ),
+                  child: const Text(
+                    '✓ 完了',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF6B7280), // Gray 500
+                    ),
+                  ),
+                ),
+              ),
             // ⚡ アイコンボタン（アクションタイム有効トピックのみ表示）
             if (isMark && topicConfig.showActionTimeButton)
               Padding(
                 padding: const EdgeInsets.only(left: 4),
                 child: _ActionTimeButton(
+                  markLinkId: item.id,
                   onPressed: () => context.read<MichiInfoBloc>().add(
                         MichiInfoActionButtonPressed(
                           markLinkId: item.id,
@@ -1662,6 +1752,16 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
         ? _buildMembersText(item.members)
         : null;
 
+    // F-10 完了ビジュアル色
+    final isDone = item.isDone;
+    const doneNameColor = Color(0xFF9CA3AF); // Gray 400
+    const doneSecondaryColor = Color(0xFFADB5BD); // Gray 400 lighter
+    final nameColor = isDone ? doneNameColor : const Color(0xFF1A1A2E);
+    final dateColor = isDone ? doneSecondaryColor : const Color(0xFF6B7280);
+    final membersColor = isDone ? doneSecondaryColor : const Color(0xFF6B7280);
+    final meterColor = isDone ? doneSecondaryColor : _markPrimaryColor;
+    final nameDecoration = isDone ? TextDecoration.lineThrough : TextDecoration.none;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -1675,8 +1775,9 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
               item.displayDate,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 11,
-                    color: const Color(0xFF6B7280),
+                    color: dateColor,
                     fontWeight: FontWeight.w500,
+                    decoration: nameDecoration,
                   ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -1687,9 +1788,11 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
             child: Text(
               name,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF1A1A2E),
+                    color: nameColor,
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
+                    decoration: nameDecoration,
+                    decorationColor: doneNameColor,
                   ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -1702,7 +1805,7 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
               item.displayDate,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 11,
-                    color: const Color(0xFF6B7280),
+                    color: dateColor,
                     fontWeight: FontWeight.w500,
                   ),
               overflow: TextOverflow.ellipsis,
@@ -1717,7 +1820,7 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
                   item.displayMeterValue!,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 11,
-                        color: _markPrimaryColor,
+                        color: meterColor,
                         fontWeight: FontWeight.w600,
                       ),
                 ),
@@ -1730,7 +1833,7 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
                     membersText,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontSize: 11,
-                          color: const Color(0xFF6B7280),
+                          color: membersColor,
                           fontWeight: FontWeight.w500,
                         ),
                     overflow: TextOverflow.ellipsis,
@@ -1820,15 +1923,19 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
 
 class _ActionTimeButton extends StatelessWidget {
   final VoidCallback onPressed;
+  final String markLinkId;
 
-  const _ActionTimeButton({required this.onPressed});
+  const _ActionTimeButton({
+    required this.onPressed,
+    required this.markLinkId,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        key: const Key('mark_action_button'),
+        key: Key('michiInfo_button_actionTime_$markLinkId'),
         width: 28,
         height: 28,
         decoration: BoxDecoration(

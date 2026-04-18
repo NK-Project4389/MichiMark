@@ -12,14 +12,18 @@ class ActionTimeStarted extends ActionTimeEvent {
   final TopicConfig topicConfig;
   final MarkOrLink markOrLink;
 
+  /// 操作対象のMarkLinkID（F-10: visitWorkトピックで使用）
+  final String? markLinkId;
+
   const ActionTimeStarted(
     this.eventId, {
     required this.topicConfig,
     this.markOrLink = MarkOrLink.mark,
+    this.markLinkId,
   });
 
   @override
-  List<Object?> get props => [eventId, topicConfig, markOrLink];
+  List<Object?> get props => [eventId, topicConfig, markOrLink, markLinkId];
 }
 
 /// ActionボタンタップTime: 選択したActionのActionTimeLogを現在時刻で記録する

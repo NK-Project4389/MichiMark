@@ -40,7 +40,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -97,6 +97,20 @@ class AppDatabase extends _$AppDatabase {
             // F-5: payments に mark_link_id カラムを追加（nullable）
             await customStatement(
               'ALTER TABLE payments ADD COLUMN mark_link_id TEXT',
+            );
+          }
+          if (from < 6) {
+            // F-10: actions に end_flag カラムを追加
+            await customStatement(
+              'ALTER TABLE actions ADD COLUMN end_flag INTEGER NOT NULL DEFAULT 0',
+            );
+            // F-10: action_time_logs に mark_link_id カラムを追加（nullable）
+            await customStatement(
+              'ALTER TABLE action_time_logs ADD COLUMN mark_link_id TEXT',
+            );
+            // F-10: 「出発」（visit_work_depart）の end_flag を 1 に設定
+            await customStatement(
+              "UPDATE actions SET end_flag = 1 WHERE id = 'visit_work_depart'",
             );
           }
         },
@@ -175,6 +189,53 @@ class AppDatabase extends _$AppDatabase {
         needsTransition: const Value(false),
         isDeleted: const Value(false),
         isVisible: const Value(true),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+      // visitWork専用アクション（F-10）
+      ActionsCompanion(
+        id: const Value('visit_work_arrive'),
+        actionName: const Value('到着'),
+        toState: const Value('working'),
+        isToggle: const Value(false),
+        needsTransition: const Value(true),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        endFlag: const Value(false),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+      ActionsCompanion(
+        id: const Value('visit_work_depart'),
+        actionName: const Value('出発'),
+        toState: const Value('moving'),
+        isToggle: const Value(false),
+        needsTransition: const Value(true),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        endFlag: const Value(true),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+      ActionsCompanion(
+        id: const Value('visit_work_start'),
+        actionName: const Value('作業開始'),
+        isToggle: const Value(false),
+        needsTransition: const Value(false),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        endFlag: const Value(false),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+      ActionsCompanion(
+        id: const Value('visit_work_end'),
+        actionName: const Value('作業終了'),
+        isToggle: const Value(false),
+        needsTransition: const Value(false),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        endFlag: const Value(false),
         createdAt: Value(now),
         updatedAt: Value(now),
       ),

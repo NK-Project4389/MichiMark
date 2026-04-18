@@ -62,6 +62,7 @@ class ActionTimeAdapter {
     required List<ActionDomain> allActions,
     required TopicConfig topicConfig,
     required MarkOrLink markOrLink,
+    String? markLinkId,
   }) {
     final actionMap = {for (final a in allActions) a.id: a};
     final sortedLogs = List.of(logs)
@@ -77,6 +78,7 @@ class ActionTimeAdapter {
       logs: sortedLogs,
       topicConfig: topicConfig,
       markOrLink: markOrLink,
+      markLinkId: markLinkId,
     );
 
     final logItems = sortedLogs.map((log) {

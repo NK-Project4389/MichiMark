@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import '../domain/action_time/action_time_log.dart';
 import '../domain/topic/topic_domain.dart';
 import '../domain/transaction/event/event_domain.dart';
 import '../domain/transaction/mark_link/mark_or_link.dart';
@@ -35,6 +36,20 @@ class EventDetailAdapter {
     );
   }
 
+  /// ActionTimeLog と ActionDomain を追加で受け取り、isDone 算出を行うバリアント（F-10）
+  static EventDetailProjection toProjectionWithLogs({
+    required EventDomain event,
+    required List<ActionTimeLog> actionTimeLogs,
+    required List<ActionDomain> allActions,
+  }) {
+    return EventDetailProjection(
+      eventId: event.id,
+      basicInfo: _toBasicInfo(event),
+      michiInfo: _toMichiInfoWithLogs(event, actionTimeLogs, allActions),
+      paymentInfo: _toPaymentInfo(event),
+    );
+  }
+
   // ── BasicInfo ──────────────────────────────────────────────
 
   static BasicInfoProjection _toBasicInfo(EventDomain event) {
@@ -67,6 +82,63 @@ class EventDetailAdapter {
       ..sort((a, b) => a.markLinkSeq.compareTo(b.markLinkSeq));
 
     final projections = sorted.map(_toMarkLinkItem).toList();
+    return MichiInfoListProjection(
+      items: _applyMeterDiff(projections),
+    );
+  }
+
+  /// isDone 算出あり版（F-10）
+  static MichiInfoListProjection _toMichiInfoWithLogs(
+    EventDomain event,
+    List<ActionTimeLog> actionTimeLogs,
+    List<ActionDomain> allActions,
+  ) {
+    final sorted = event.markLinks
+        .where((ml) => !ml.isDeleted)
+        .toList()
+      ..sort((a, b) => a.markLinkSeq.compareTo(b.markLinkSeq));
+
+    // endFlag=true のアクションIDセット
+    final endFlagActionIdSet =
+        allActions.where((a) => a.endFlag).map((a) => a.id).toSet();
+
+    // markLinkId でグループ化（null は対象外）
+    final logsByMarkLinkId = <String, List<ActionTimeLog>>{};
+    for (final log in actionTimeLogs) {
+      final mlId = log.markLinkId;
+      if (mlId == null) continue;
+      logsByMarkLinkId.putIfAbsent(mlId, () => []).add(log);
+    }
+
+    final projections = sorted.map((ml) {
+      final item = _toMarkLinkItem(ml);
+      // Linkカードは常に isDone: false
+      if (ml.markLinkType != MarkOrLink.mark) return item;
+      // 当該MarkLinkのログに endFlagアクションが1件以上あれば isDone: true
+      final logs = logsByMarkLinkId[ml.id] ?? [];
+      final isDone = logs.any((log) => endFlagActionIdSet.contains(log.actionId));
+      if (!isDone) return item;
+      return MarkLinkItemProjection(
+        id: item.id,
+        markLinkSeq: item.markLinkSeq,
+        markLinkType: item.markLinkType,
+        displayDate: item.displayDate,
+        dateKey: item.dateKey,
+        markLinkName: item.markLinkName,
+        members: item.members,
+        displayMeterValue: item.displayMeterValue,
+        displayMeterDiff: item.displayMeterDiff,
+        displayDistanceValue: item.displayDistanceValue,
+        actions: item.actions,
+        isFuel: item.isFuel,
+        pricePerGas: item.pricePerGas,
+        gasQuantity: item.gasQuantity,
+        gasPrice: item.gasPrice,
+        memo: item.memo,
+        isDone: true,
+      );
+    }).toList();
+
     return MichiInfoListProjection(
       items: _applyMeterDiff(projections),
     );
@@ -121,6 +193,7 @@ class EventDetailAdapter {
         gasQuantity: item.gasQuantity,
         gasPrice: item.gasPrice,
         memo: item.memo,
+        isDone: item.isDone,
       );
     }).toList();
   }

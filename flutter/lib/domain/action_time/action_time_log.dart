@@ -25,6 +25,9 @@ class ActionTimeLog extends Equatable {
   /// 更新日時
   final DateTime updatedAt;
 
+  /// 操作対象のMarkLinkID。null=既存ログ（完了判定対象外）（F-10）
+  final String? markLinkId;
+
   const ActionTimeLog({
     required this.id,
     required this.eventId,
@@ -33,6 +36,7 @@ class ActionTimeLog extends Equatable {
     this.isDeleted = false,
     required this.createdAt,
     required this.updatedAt,
+    this.markLinkId,
   });
 
   ActionTimeLog copyWith({
@@ -43,6 +47,8 @@ class ActionTimeLog extends Equatable {
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? markLinkId,
+    bool clearMarkLinkId = false,
   }) {
     return ActionTimeLog(
       id: id ?? this.id,
@@ -52,6 +58,7 @@ class ActionTimeLog extends Equatable {
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      markLinkId: clearMarkLinkId ? null : (markLinkId ?? this.markLinkId),
     );
   }
 
@@ -64,5 +71,6 @@ class ActionTimeLog extends Equatable {
         isDeleted,
         createdAt,
         updatedAt,
+        markLinkId,
       ];
 }

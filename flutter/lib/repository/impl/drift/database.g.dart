@@ -143,6 +143,21 @@ class $ActionsTable extends Actions with TableInfo<$ActionsTable, Action> {
     ),
     defaultValue: const Constant(true),
   );
+  static const VerificationMeta _endFlagMeta = const VerificationMeta(
+    'endFlag',
+  );
+  @override
+  late final GeneratedColumn<bool> endFlag = GeneratedColumn<bool>(
+    'end_flag',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("end_flag" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -156,6 +171,7 @@ class $ActionsTable extends Actions with TableInfo<$ActionsTable, Action> {
     isToggle,
     togglePairId,
     needsTransition,
+    endFlag,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -246,6 +262,12 @@ class $ActionsTable extends Actions with TableInfo<$ActionsTable, Action> {
         ),
       );
     }
+    if (data.containsKey('end_flag')) {
+      context.handle(
+        _endFlagMeta,
+        endFlag.isAcceptableOrUnknown(data['end_flag']!, _endFlagMeta),
+      );
+    }
     return context;
   }
 
@@ -299,6 +321,10 @@ class $ActionsTable extends Actions with TableInfo<$ActionsTable, Action> {
         DriftSqlType.bool,
         data['${effectivePrefix}needs_transition'],
       )!,
+      endFlag: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}end_flag'],
+      )!,
     );
   }
 
@@ -330,6 +356,9 @@ class Action extends DataClass implements Insertable<Action> {
 
   /// 状態遷移フラグ（REQ-005）。1=遷移あり、0=ログ記録のみ
   final bool needsTransition;
+
+  /// EndFlagフラグ（F-10）。trueのとき、このアクションが記録されたMarkを「完了」とみなす
+  final bool endFlag;
   const Action({
     required this.id,
     required this.actionName,
@@ -342,6 +371,7 @@ class Action extends DataClass implements Insertable<Action> {
     required this.isToggle,
     this.togglePairId,
     required this.needsTransition,
+    required this.endFlag,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -363,6 +393,7 @@ class Action extends DataClass implements Insertable<Action> {
       map['toggle_pair_id'] = Variable<String>(togglePairId);
     }
     map['needs_transition'] = Variable<bool>(needsTransition);
+    map['end_flag'] = Variable<bool>(endFlag);
     return map;
   }
 
@@ -385,6 +416,7 @@ class Action extends DataClass implements Insertable<Action> {
           ? const Value.absent()
           : Value(togglePairId),
       needsTransition: Value(needsTransition),
+      endFlag: Value(endFlag),
     );
   }
 
@@ -405,6 +437,7 @@ class Action extends DataClass implements Insertable<Action> {
       isToggle: serializer.fromJson<bool>(json['isToggle']),
       togglePairId: serializer.fromJson<String?>(json['togglePairId']),
       needsTransition: serializer.fromJson<bool>(json['needsTransition']),
+      endFlag: serializer.fromJson<bool>(json['endFlag']),
     );
   }
   @override
@@ -422,6 +455,7 @@ class Action extends DataClass implements Insertable<Action> {
       'isToggle': serializer.toJson<bool>(isToggle),
       'togglePairId': serializer.toJson<String?>(togglePairId),
       'needsTransition': serializer.toJson<bool>(needsTransition),
+      'endFlag': serializer.toJson<bool>(endFlag),
     };
   }
 
@@ -437,6 +471,7 @@ class Action extends DataClass implements Insertable<Action> {
     bool? isToggle,
     Value<String?> togglePairId = const Value.absent(),
     bool? needsTransition,
+    bool? endFlag,
   }) => Action(
     id: id ?? this.id,
     actionName: actionName ?? this.actionName,
@@ -449,6 +484,7 @@ class Action extends DataClass implements Insertable<Action> {
     isToggle: isToggle ?? this.isToggle,
     togglePairId: togglePairId.present ? togglePairId.value : this.togglePairId,
     needsTransition: needsTransition ?? this.needsTransition,
+    endFlag: endFlag ?? this.endFlag,
   );
   Action copyWithCompanion(ActionsCompanion data) {
     return Action(
@@ -469,6 +505,7 @@ class Action extends DataClass implements Insertable<Action> {
       needsTransition: data.needsTransition.present
           ? data.needsTransition.value
           : this.needsTransition,
+      endFlag: data.endFlag.present ? data.endFlag.value : this.endFlag,
     );
   }
 
@@ -485,7 +522,8 @@ class Action extends DataClass implements Insertable<Action> {
           ..write('toState: $toState, ')
           ..write('isToggle: $isToggle, ')
           ..write('togglePairId: $togglePairId, ')
-          ..write('needsTransition: $needsTransition')
+          ..write('needsTransition: $needsTransition, ')
+          ..write('endFlag: $endFlag')
           ..write(')'))
         .toString();
   }
@@ -503,6 +541,7 @@ class Action extends DataClass implements Insertable<Action> {
     isToggle,
     togglePairId,
     needsTransition,
+    endFlag,
   );
   @override
   bool operator ==(Object other) =>
@@ -518,7 +557,8 @@ class Action extends DataClass implements Insertable<Action> {
           other.toState == this.toState &&
           other.isToggle == this.isToggle &&
           other.togglePairId == this.togglePairId &&
-          other.needsTransition == this.needsTransition);
+          other.needsTransition == this.needsTransition &&
+          other.endFlag == this.endFlag);
 }
 
 class ActionsCompanion extends UpdateCompanion<Action> {
@@ -533,6 +573,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
   final Value<bool> isToggle;
   final Value<String?> togglePairId;
   final Value<bool> needsTransition;
+  final Value<bool> endFlag;
   final Value<int> rowid;
   const ActionsCompanion({
     this.id = const Value.absent(),
@@ -546,6 +587,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     this.isToggle = const Value.absent(),
     this.togglePairId = const Value.absent(),
     this.needsTransition = const Value.absent(),
+    this.endFlag = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ActionsCompanion.insert({
@@ -560,6 +602,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     this.isToggle = const Value.absent(),
     this.togglePairId = const Value.absent(),
     this.needsTransition = const Value.absent(),
+    this.endFlag = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        actionName = Value(actionName),
@@ -577,6 +620,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     Expression<bool>? isToggle,
     Expression<String>? togglePairId,
     Expression<bool>? needsTransition,
+    Expression<bool>? endFlag,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -591,6 +635,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
       if (isToggle != null) 'is_toggle': isToggle,
       if (togglePairId != null) 'toggle_pair_id': togglePairId,
       if (needsTransition != null) 'needs_transition': needsTransition,
+      if (endFlag != null) 'end_flag': endFlag,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -607,6 +652,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     Value<bool>? isToggle,
     Value<String?>? togglePairId,
     Value<bool>? needsTransition,
+    Value<bool>? endFlag,
     Value<int>? rowid,
   }) {
     return ActionsCompanion(
@@ -621,6 +667,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
       isToggle: isToggle ?? this.isToggle,
       togglePairId: togglePairId ?? this.togglePairId,
       needsTransition: needsTransition ?? this.needsTransition,
+      endFlag: endFlag ?? this.endFlag,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -661,6 +708,9 @@ class ActionsCompanion extends UpdateCompanion<Action> {
     if (needsTransition.present) {
       map['needs_transition'] = Variable<bool>(needsTransition.value);
     }
+    if (endFlag.present) {
+      map['end_flag'] = Variable<bool>(endFlag.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -681,6 +731,7 @@ class ActionsCompanion extends UpdateCompanion<Action> {
           ..write('isToggle: $isToggle, ')
           ..write('togglePairId: $togglePairId, ')
           ..write('needsTransition: $needsTransition, ')
+          ..write('endFlag: $endFlag, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4398,6 +4449,17 @@ class $ActionTimeLogsTable extends ActionTimeLogs
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _markLinkIdMeta = const VerificationMeta(
+    'markLinkId',
+  );
+  @override
+  late final GeneratedColumn<String> markLinkId = GeneratedColumn<String>(
+    'mark_link_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4407,6 +4469,7 @@ class $ActionTimeLogsTable extends ActionTimeLogs
     isDeleted,
     createdAt,
     updatedAt,
+    markLinkId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4471,6 +4534,15 @@ class $ActionTimeLogsTable extends ActionTimeLogs
     } else if (isInserting) {
       context.missing(_updatedAtMeta);
     }
+    if (data.containsKey('mark_link_id')) {
+      context.handle(
+        _markLinkIdMeta,
+        markLinkId.isAcceptableOrUnknown(
+          data['mark_link_id']!,
+          _markLinkIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -4508,6 +4580,10 @@ class $ActionTimeLogsTable extends ActionTimeLogs
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
+      markLinkId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mark_link_id'],
+      ),
     );
   }
 
@@ -4525,6 +4601,9 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
   final bool isDeleted;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  /// 操作対象のMarkLinkID（F-10: nullable。既存ログとの後方互換性確保）
+  final String? markLinkId;
   const ActionTimeLog({
     required this.id,
     required this.eventId,
@@ -4533,6 +4612,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
     required this.isDeleted,
     required this.createdAt,
     required this.updatedAt,
+    this.markLinkId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4544,6 +4624,9 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
     map['is_deleted'] = Variable<bool>(isDeleted);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || markLinkId != null) {
+      map['mark_link_id'] = Variable<String>(markLinkId);
+    }
     return map;
   }
 
@@ -4556,6 +4639,9 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
       isDeleted: Value(isDeleted),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
+      markLinkId: markLinkId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(markLinkId),
     );
   }
 
@@ -4572,6 +4658,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      markLinkId: serializer.fromJson<String?>(json['markLinkId']),
     );
   }
   @override
@@ -4585,6 +4672,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
       'isDeleted': serializer.toJson<bool>(isDeleted),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'markLinkId': serializer.toJson<String?>(markLinkId),
     };
   }
 
@@ -4596,6 +4684,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
+    Value<String?> markLinkId = const Value.absent(),
   }) => ActionTimeLog(
     id: id ?? this.id,
     eventId: eventId ?? this.eventId,
@@ -4604,6 +4693,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
     isDeleted: isDeleted ?? this.isDeleted,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    markLinkId: markLinkId.present ? markLinkId.value : this.markLinkId,
   );
   ActionTimeLog copyWithCompanion(ActionTimeLogsCompanion data) {
     return ActionTimeLog(
@@ -4614,6 +4704,9 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
       isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      markLinkId: data.markLinkId.present
+          ? data.markLinkId.value
+          : this.markLinkId,
     );
   }
 
@@ -4626,7 +4719,8 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
           ..write('timestamp: $timestamp, ')
           ..write('isDeleted: $isDeleted, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('markLinkId: $markLinkId')
           ..write(')'))
         .toString();
   }
@@ -4640,6 +4734,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
     isDeleted,
     createdAt,
     updatedAt,
+    markLinkId,
   );
   @override
   bool operator ==(Object other) =>
@@ -4651,7 +4746,8 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
           other.timestamp == this.timestamp &&
           other.isDeleted == this.isDeleted &&
           other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
+          other.updatedAt == this.updatedAt &&
+          other.markLinkId == this.markLinkId);
 }
 
 class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
@@ -4662,6 +4758,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
   final Value<bool> isDeleted;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
+  final Value<String?> markLinkId;
   final Value<int> rowid;
   const ActionTimeLogsCompanion({
     this.id = const Value.absent(),
@@ -4671,6 +4768,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
     this.isDeleted = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.markLinkId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ActionTimeLogsCompanion.insert({
@@ -4681,6 +4779,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
     this.isDeleted = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
+    this.markLinkId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        eventId = Value(eventId),
@@ -4696,6 +4795,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
     Expression<bool>? isDeleted,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
+    Expression<String>? markLinkId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4706,6 +4806,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
       if (isDeleted != null) 'is_deleted': isDeleted,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
+      if (markLinkId != null) 'mark_link_id': markLinkId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4718,6 +4819,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
     Value<bool>? isDeleted,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
+    Value<String?>? markLinkId,
     Value<int>? rowid,
   }) {
     return ActionTimeLogsCompanion(
@@ -4728,6 +4830,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      markLinkId: markLinkId ?? this.markLinkId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4756,6 +4859,9 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
+    if (markLinkId.present) {
+      map['mark_link_id'] = Variable<String>(markLinkId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4772,6 +4878,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
           ..write('isDeleted: $isDeleted, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write('markLinkId: $markLinkId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6002,6 +6109,7 @@ typedef $$ActionsTableCreateCompanionBuilder =
       Value<bool> isToggle,
       Value<String?> togglePairId,
       Value<bool> needsTransition,
+      Value<bool> endFlag,
       Value<int> rowid,
     });
 typedef $$ActionsTableUpdateCompanionBuilder =
@@ -6017,6 +6125,7 @@ typedef $$ActionsTableUpdateCompanionBuilder =
       Value<bool> isToggle,
       Value<String?> togglePairId,
       Value<bool> needsTransition,
+      Value<bool> endFlag,
       Value<int> rowid,
     });
 
@@ -6124,6 +6233,11 @@ class $$ActionsTableFilterComposer
 
   ColumnFilters<bool> get needsTransition => $composableBuilder(
     column: $table.needsTransition,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get endFlag => $composableBuilder(
+    column: $table.endFlag,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6241,6 +6355,11 @@ class $$ActionsTableOrderingComposer
     column: $table.needsTransition,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get endFlag => $composableBuilder(
+    column: $table.endFlag,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ActionsTableAnnotationComposer
@@ -6290,6 +6409,9 @@ class $$ActionsTableAnnotationComposer
     column: $table.needsTransition,
     builder: (column) => column,
   );
+
+  GeneratedColumn<bool> get endFlag =>
+      $composableBuilder(column: $table.endFlag, builder: (column) => column);
 
   Expression<T> actionTimeLogsRefs<T extends Object>(
     Expression<T> Function($$ActionTimeLogsTableAnnotationComposer a) f,
@@ -6384,6 +6506,7 @@ class $$ActionsTableTableManager
                 Value<bool> isToggle = const Value.absent(),
                 Value<String?> togglePairId = const Value.absent(),
                 Value<bool> needsTransition = const Value.absent(),
+                Value<bool> endFlag = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ActionsCompanion(
                 id: id,
@@ -6397,6 +6520,7 @@ class $$ActionsTableTableManager
                 isToggle: isToggle,
                 togglePairId: togglePairId,
                 needsTransition: needsTransition,
+                endFlag: endFlag,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -6412,6 +6536,7 @@ class $$ActionsTableTableManager
                 Value<bool> isToggle = const Value.absent(),
                 Value<String?> togglePairId = const Value.absent(),
                 Value<bool> needsTransition = const Value.absent(),
+                Value<bool> endFlag = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ActionsCompanion.insert(
                 id: id,
@@ -6425,6 +6550,7 @@ class $$ActionsTableTableManager
                 isToggle: isToggle,
                 togglePairId: togglePairId,
                 needsTransition: needsTransition,
+                endFlag: endFlag,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -10450,6 +10576,7 @@ typedef $$ActionTimeLogsTableCreateCompanionBuilder =
       Value<bool> isDeleted,
       required DateTime createdAt,
       required DateTime updatedAt,
+      Value<String?> markLinkId,
       Value<int> rowid,
     });
 typedef $$ActionTimeLogsTableUpdateCompanionBuilder =
@@ -10461,6 +10588,7 @@ typedef $$ActionTimeLogsTableUpdateCompanionBuilder =
       Value<bool> isDeleted,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<String?> markLinkId,
       Value<int> rowid,
     });
 
@@ -10541,6 +10669,11 @@ class $$ActionTimeLogsTableFilterComposer
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get markLinkId => $composableBuilder(
+    column: $table.markLinkId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10625,6 +10758,11 @@ class $$ActionTimeLogsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get markLinkId => $composableBuilder(
+    column: $table.markLinkId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$EventsTableOrderingComposer get eventId {
     final $$EventsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -10695,6 +10833,11 @@ class $$ActionTimeLogsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get markLinkId => $composableBuilder(
+    column: $table.markLinkId,
+    builder: (column) => column,
+  );
 
   $$EventsTableAnnotationComposer get eventId {
     final $$EventsTableAnnotationComposer composer = $composerBuilder(
@@ -10780,6 +10923,7 @@ class $$ActionTimeLogsTableTableManager
                 Value<bool> isDeleted = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<String?> markLinkId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ActionTimeLogsCompanion(
                 id: id,
@@ -10789,6 +10933,7 @@ class $$ActionTimeLogsTableTableManager
                 isDeleted: isDeleted,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                markLinkId: markLinkId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -10800,6 +10945,7 @@ class $$ActionTimeLogsTableTableManager
                 Value<bool> isDeleted = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
+                Value<String?> markLinkId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ActionTimeLogsCompanion.insert(
                 id: id,
@@ -10809,6 +10955,7 @@ class $$ActionTimeLogsTableTableManager
                 isDeleted: isDeleted,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                markLinkId: markLinkId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

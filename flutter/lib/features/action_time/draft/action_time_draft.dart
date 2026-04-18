@@ -25,6 +25,9 @@ class ActionTimeDraft extends Equatable {
   /// 現在操作対象がMarkかLinkか（REQ-002）
   final MarkOrLink markOrLink;
 
+  /// ボトムシートを開いた対象MarkLinkのID。ログ保存時にActionTimeLogにセットする（F-10）
+  final String? markLinkId;
+
   const ActionTimeDraft({
     required this.eventId,
     this.currentState = ActionState.waiting,
@@ -32,6 +35,7 @@ class ActionTimeDraft extends Equatable {
     this.logs = const [],
     TopicConfig? topicConfig,
     this.markOrLink = MarkOrLink.mark,
+    this.markLinkId,
   }) : topicConfig = topicConfig ??
             const TopicConfig(
               showMeterValue: true,
@@ -51,6 +55,8 @@ class ActionTimeDraft extends Equatable {
     List<ActionTimeLog>? logs,
     TopicConfig? topicConfig,
     MarkOrLink? markOrLink,
+    String? markLinkId,
+    bool clearMarkLinkId = false,
   }) {
     return ActionTimeDraft(
       eventId: eventId ?? this.eventId,
@@ -59,9 +65,10 @@ class ActionTimeDraft extends Equatable {
       logs: logs ?? this.logs,
       topicConfig: topicConfig ?? this.topicConfig,
       markOrLink: markOrLink ?? this.markOrLink,
+      markLinkId: clearMarkLinkId ? null : (markLinkId ?? this.markLinkId),
     );
   }
 
   @override
-  List<Object?> get props => [eventId, currentState, availableActions, logs, topicConfig, markOrLink];
+  List<Object?> get props => [eventId, currentState, availableActions, logs, topicConfig, markOrLink, markLinkId];
 }

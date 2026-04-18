@@ -38,18 +38,17 @@ class DriftEventRepository implements EventRepository {
     }
   }
 
-  // TODO: Implement when Drift schema migration is applied (schemaVersion 2)
   @override
   Future<void> saveActionTimeLog(ActionTimeLog log) async =>
-      throw UnimplementedError('saveActionTimeLog not yet implemented in Drift');
+      _dao.saveActionTimeLog(log);
 
   @override
   Future<void> deleteActionTimeLog(String logId) async =>
-      throw UnimplementedError('deleteActionTimeLog not yet implemented in Drift');
+      _dao.deleteActionTimeLog(logId);
 
   @override
   Future<List<ActionTimeLog>> fetchActionTimeLogs(String eventId) async =>
-      throw UnimplementedError('fetchActionTimeLogs not yet implemented in Drift');
+      _dao.fetchActionTimeLogs(eventId);
 
   @override
   Future<List<EventDomain>> fetchByDateRange(

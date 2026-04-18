@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart';
 
+import '../../../../domain/action_time/action_time_log.dart'
+    as domain_log;
 import '../../../../domain/master/action/action_domain.dart';
 import '../../../../domain/master/member/member_domain.dart';
 import '../../../../domain/master/tag/tag_domain.dart';
@@ -232,6 +234,57 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
           ));
     });
   }
+
+  // ---------------------------------------------------------------------------
+  // ActionTimeLog CRUD (F-10)
+  // ---------------------------------------------------------------------------
+
+  Future<void> saveActionTimeLog(domain_log.ActionTimeLog log) async {
+    await into(actionTimeLogs).insertOnConflictUpdate(
+      ActionTimeLogsCompanion(
+        id: Value(log.id),
+        eventId: Value(log.eventId),
+        actionId: Value(log.actionId),
+        timestamp: Value(log.timestamp),
+        isDeleted: Value(log.isDeleted),
+        createdAt: Value(log.createdAt),
+        updatedAt: Value(log.updatedAt),
+        markLinkId: Value(log.markLinkId),
+      ),
+    );
+  }
+
+  Future<void> deleteActionTimeLog(String logId) async {
+    final now = DateTime.now();
+    await (update(actionTimeLogs)..where((t) => t.id.equals(logId))).write(
+      ActionTimeLogsCompanion(
+        isDeleted: const Value(true),
+        updatedAt: Value(now),
+      ),
+    );
+  }
+
+  Future<List<domain_log.ActionTimeLog>> fetchActionTimeLogs(
+      String eventId) async {
+    final rows = await (select(actionTimeLogs)
+          ..where(
+              (t) => t.eventId.equals(eventId) & t.isDeleted.equals(false))
+          ..orderBy([(t) => OrderingTerm.asc(t.timestamp)]))
+        .get();
+    return rows.map(_toActionTimeLogDomain).toList();
+  }
+
+  domain_log.ActionTimeLog _toActionTimeLogDomain(ActionTimeLog row) =>
+      domain_log.ActionTimeLog(
+        id: row.id,
+        eventId: row.eventId,
+        actionId: row.actionId,
+        timestamp: row.timestamp,
+        isDeleted: row.isDeleted,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+        markLinkId: row.markLinkId,
+      );
 
   // ---------------------------------------------------------------------------
   // Event Domain 組み立て
@@ -501,6 +554,7 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
         isDeleted: row.isDeleted,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,
+        endFlag: row.endFlag,
       );
 
   TransDomain _toTransDomain(Transport row) => TransDomain(

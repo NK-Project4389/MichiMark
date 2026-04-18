@@ -24,6 +24,9 @@ class Actions extends Table {
   /// 状態遷移フラグ（REQ-005）。1=遷移あり、0=ログ記録のみ
   BoolColumn get needsTransition => boolean().withDefault(const Constant(true))();
 
+  /// EndFlagフラグ（F-10）。trueのとき、このアクションが記録されたMarkを「完了」とみなす
+  BoolColumn get endFlag => boolean().withDefault(const Constant(false))();
+
   @override
   Set<Column> get primaryKey => {id};
 }

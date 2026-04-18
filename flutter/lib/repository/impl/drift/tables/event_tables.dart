@@ -75,6 +75,9 @@ class ActionTimeLogs extends Table {
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
+  /// 操作対象のMarkLinkID（F-10: nullable。既存ログとの後方互換性確保）
+  TextColumn get markLinkId => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }

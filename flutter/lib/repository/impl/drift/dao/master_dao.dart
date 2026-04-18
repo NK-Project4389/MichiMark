@@ -87,6 +87,7 @@ class MasterDao extends DatabaseAccessor<AppDatabase> with _$MasterDaoMixin {
         isToggle: Value(d.isToggle),
         togglePairId: Value(d.togglePairId),
         needsTransition: Value(d.needsTransition),
+        endFlag: Value(d.endFlag),
       );
 
   MembersCompanion _toMemberCompanion(MemberDomain d) => MembersCompanion(
@@ -136,6 +137,7 @@ class MasterDao extends DatabaseAccessor<AppDatabase> with _$MasterDaoMixin {
       isToggle: row.isToggle,
       togglePairId: row.togglePairId,
       needsTransition: row.needsTransition,
+      endFlag: row.endFlag,
     );
   }
 

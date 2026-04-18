@@ -67,7 +67,14 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     try {
       final domain = await _eventRepository.fetch(event.eventId);
       _cachedActions = await _actionRepository.fetchAll();
-      final projection = EventDetailAdapter.toProjection(domain).michiInfo;
+      // F-10: ActionTimeLogs を取得して isDone を算出
+      final actionTimeLogs =
+          await _eventRepository.fetchActionTimeLogs(event.eventId);
+      final projection = EventDetailAdapter.toProjectionWithLogs(
+        event: domain,
+        actionTimeLogs: actionTimeLogs,
+        allActions: _cachedActions,
+      ).michiInfo;
       final topicConfig = TopicConfig.fromTopicType(domain.topic?.topicType);
       // マスタMemberRepositoryから最新のisVisible状態を取得してフィルタ（B-10修正）
       final masterMembers = await _memberRepository.fetchAll();
@@ -359,7 +366,14 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
     if (state case MichiInfoLoaded current) {
       try {
         final domain = await _eventRepository.fetch(_eventId);
-        final projection = EventDetailAdapter.toProjection(domain).michiInfo;
+        // F-10: ActionTimeLogs を取得して isDone を算出
+        final actionTimeLogs =
+            await _eventRepository.fetchActionTimeLogs(_eventId);
+        final projection = EventDetailAdapter.toProjectionWithLogs(
+          event: domain,
+          actionTimeLogs: actionTimeLogs,
+          allActions: _cachedActions,
+        ).michiInfo;
         // マスタMemberRepositoryから最新のisVisible状態を取得してフィルタ（B-10修正）
         final masterMembers = await _memberRepository.fetchAll();
         final visibleMasterIds = masterMembers.where((m) => m.isVisible).map((m) => m.id).toSet();
@@ -527,7 +541,14 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
       try {
         await _eventRepository.deleteMarkLink(event.markLinkId);
         final domain = await _eventRepository.fetch(_eventId);
-        final projection = EventDetailAdapter.toProjection(domain).michiInfo;
+        // F-10: ActionTimeLogs を取得して isDone を算出
+        final actionTimeLogs =
+            await _eventRepository.fetchActionTimeLogs(_eventId);
+        final projection = EventDetailAdapter.toProjectionWithLogs(
+          event: domain,
+          actionTimeLogs: actionTimeLogs,
+          allActions: _cachedActions,
+        ).michiInfo;
         emit(current.copyWith(
           projection: projection,
           isInsertMode: false,

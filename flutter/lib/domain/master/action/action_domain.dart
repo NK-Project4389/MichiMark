@@ -32,6 +32,9 @@ class ActionDomain extends Equatable {
   /// falseのときログ記録のみで状態遷移しない（REQ-005）
   final bool needsTransition;
 
+  /// EndFlagフラグ。trueのとき、このアクションが記録されたMarkを「完了」とみなす（F-10）
+  final bool endFlag;
+
   const ActionDomain({
     required this.id,
     required this.actionName,
@@ -43,6 +46,7 @@ class ActionDomain extends Equatable {
     this.isToggle = false,
     this.togglePairId,
     this.needsTransition = true,
+    this.endFlag = false,
   });
 
   ActionDomain copyWith({
@@ -56,6 +60,7 @@ class ActionDomain extends Equatable {
     bool? isToggle,
     String? togglePairId,
     bool? needsTransition,
+    bool? endFlag,
     bool clearToState = false,
     bool clearTogglePairId = false,
   }) {
@@ -70,6 +75,7 @@ class ActionDomain extends Equatable {
       isToggle: isToggle ?? this.isToggle,
       togglePairId: clearTogglePairId ? null : (togglePairId ?? this.togglePairId),
       needsTransition: needsTransition ?? this.needsTransition,
+      endFlag: endFlag ?? this.endFlag,
     );
   }
 
@@ -85,5 +91,6 @@ class ActionDomain extends Equatable {
         isToggle,
         togglePairId,
         needsTransition,
+        endFlag,
       ];
 }

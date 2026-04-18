@@ -49,6 +49,9 @@ class MarkLinkItemProjection extends Equatable {
 
   final String? memo;
 
+  /// trueのとき完了ビジュアルを適用する（F-10）
+  final bool isDone;
+
   const MarkLinkItemProjection({
     required this.id,
     required this.markLinkSeq,
@@ -66,6 +69,7 @@ class MarkLinkItemProjection extends Equatable {
     this.gasQuantity,
     this.gasPrice,
     this.memo,
+    this.isDone = false,
   });
 
   MarkLinkItemProjection copyWithMeterDiff(String? newMeterDiff) {
@@ -86,6 +90,7 @@ class MarkLinkItemProjection extends Equatable {
       gasQuantity: gasQuantity,
       gasPrice: gasPrice,
       memo: memo,
+      isDone: isDone,
     );
   }
 
@@ -107,5 +112,6 @@ class MarkLinkItemProjection extends Equatable {
         gasQuantity,
         gasPrice,
         memo,
+        isDone,
       ];
 }

@@ -47,6 +47,7 @@ class ActionTimeBloc extends Bloc<ActionTimeEvent, ActionTimeState> {
         allActions: allActions,
         topicConfig: event.topicConfig,
         markOrLink: event.markOrLink,
+        markLinkId: event.markLinkId,
       );
       emit(state.copyWith(
         draft: draft,
@@ -74,6 +75,7 @@ class ActionTimeBloc extends Bloc<ActionTimeEvent, ActionTimeState> {
         timestamp: now,
         createdAt: now,
         updatedAt: now,
+        markLinkId: state.draft.markLinkId,
       );
       await _eventRepository.saveActionTimeLog(log);
       await _refreshState(eventId, emit);
@@ -113,6 +115,7 @@ class ActionTimeBloc extends Bloc<ActionTimeEvent, ActionTimeState> {
         timestamp: now,
         createdAt: now,
         updatedAt: now,
+        markLinkId: state.draft.markLinkId,
       );
       await _eventRepository.saveActionTimeLog(log);
       await _refreshState(eventId, emit);
@@ -146,6 +149,7 @@ class ActionTimeBloc extends Bloc<ActionTimeEvent, ActionTimeState> {
       allActions: allActions,
       topicConfig: state.draft.topicConfig,
       markOrLink: state.draft.markOrLink,
+      markLinkId: state.draft.markLinkId,
     );
     emit(state.copyWith(draft: draft, projection: projection));
   }
