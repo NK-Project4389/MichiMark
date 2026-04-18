@@ -77,10 +77,10 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-501a | BUG-4: 修正 | flutter-dev | `BLOCKED` | | BUG-5完了後 |
-| T-501b | BUG-4: テストコード実装 | tester | `BLOCKED` | | |
-| T-502 | BUG-4: レビュー | reviewer | `BLOCKED` | | |
-| T-503 | BUG-4: テスト実行 | tester | `BLOCKED` | | |
+| T-501a | BUG-4: 修正 | flutter-dev | `DONE` | | 調査結果: 既に正しくInviteLinkShareSheetへ遷移済み。修正不要 |
+| T-501b | BUG-4: テストコード実装 | tester | `DONE` | | TC-BUG4-001〜002実装。e8daf96でコミット済み |
+| T-502 | BUG-4: レビュー | reviewer | `TODO` | | |
+| T-503 | BUG-4: テスト実行 | tester | `BLOCKED` | | T-502完了後 |
 
 ---
 
@@ -112,7 +112,7 @@
 | T-512a | UI-23: 実装 | flutter-dev | `DONE` | | MarkLinkItemProjection.dateKey追加・DateSeparatorWidget実装・区切り挿入ロジック実装 |
 | T-512b | UI-23: テストコード実装 | tester | `DONE` | | TC-DS-001〜007実装。TC-DS-003はテストデータ設計問題のため要見直し |
 | T-513 | UI-23: レビュー | reviewer | `DONE` | | |
-| T-514 | UI-23: テスト実行 | tester | `TODO` | | [autotest 2026-04-18] 6PASS/1FAIL(TC-DS-003) - 手動確認が必要: TC-DS-002とTC-DS-003が同一イベントを開くが前提が矛盾（TC-DS-002=単一日付前提,TC-DS-003=複数日付前提）。テストコードのTC-DS-003向けセットアップ修正が必要 |
+| T-514 | UI-23: テスト実行 | tester | `DONE` | | 7PASS/0FAIL（TC-DS-003修正・複数日付セットアップ追加） |
 
 ---
 

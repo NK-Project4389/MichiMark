@@ -173,3 +173,4 @@
 | [2026-04-17_BUG-5テスト実行_全件PASS.md](./2026-04-17_BUG-5テスト実行_全件PASS.md) | BUG-5修正後 Integration Test実行：invite_link_share 16PASS / invitation_ui_placement 5PASS+3SKIP（T-534b DONE） |
 | [2026-04-18_autotest_fail_T-514_UI-23.md](./2026-04-18_autotest_fail_T-514_UI-23.md) | UI-23 MichiInfo日付区切り 実装+テストコード完了・6PASS/1FAIL(TC-DS-003テストコード設計問題) |
 | [2026-04-18_test__UI-23-TC-DS-003-PASS.md](./2026-04-18_test__UI-23-TC-DS-003-PASS.md) | UI-23 TC-DS-003修正（event-008に4/13Mark追加・複数日付セットアップ）7PASS/0FAIL |
+| [2026-04-18_test__BUG-4-TC-001-002-IMPL.md](./2026-04-18_test__BUG-4-TC-001-002-IMPL.md) | BUG-4 テストコード実装：TC-BUG4-001〜002（招待ボタン遷移先確認）e8daf96でコミット |
