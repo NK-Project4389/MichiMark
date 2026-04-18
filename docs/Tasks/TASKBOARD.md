@@ -90,8 +90,8 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-504 | F-8: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_detail_sales.md（未決定事項2件あり・ユーザー確認待ち） |
-| T-505 | F-8: Spec作成 | architect | `BLOCKED` | | T-504完了後 |
+| T-504 | F-8: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_detail_sales.md（v確定・収支タブ追記） |
+| T-505 | F-8: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_detail_sales.md |
 | T-506a | F-8: 実装 | flutter-dev | `BLOCKED` | | |
 | T-506b | F-8: テストコード実装 | tester | `BLOCKED` | | |
 | T-507 | F-8: レビュー | reviewer | `BLOCKED` | | |
@@ -141,7 +141,7 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-521 | F-9: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-action_log_time_edit.md |
-| T-522 | F-9: Spec作成 | architect | `BLOCKED` | | T-521完了後 |
+| T-522 | F-9: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-action_log_time_edit.md |
 | T-523a | F-9: 実装 | flutter-dev | `BLOCKED` | | Domain変更あり |
 | T-523b | F-9: テストコード実装 | tester | `BLOCKED` | | |
 | T-524 | F-9: レビュー | reviewer | `BLOCKED` | | |
@@ -159,7 +159,7 @@
 | T-526 | F-10: デザイン提案 | designer | `DONE` | | docs/Design/draft/end_flag_card_design.html |
 | T-527 | F-10: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-end_flag.md |
 | T-528 | F-10: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-end_flag.md |
-| T-529a | F-10: 実装 | flutter-dev | `TODO` | | DBスキーマv5→v6マイグレーションあり。先行バグ2件を一括対処：①DriftEventRepository.saveActionTimeLog/fetchActionTimeLogs がUnimplementedError ②Drift DB _insertSeedActions()にvisitWork専用アクション未登録 |
+| T-529a | F-10: 実装 | flutter-dev | `TODO` | | DBスキーマv7→v8マイグレーションあり（F-8=v6, F-9=v7の後）。先行バグ①DriftEventRepository UnimplementedError はF-9で対処済み。残る先行バグ：②Drift DB _insertSeedActions()にvisitWork専用アクション未登録 |
 | T-529b | F-10: テストコード実装 | tester | `TODO` | | |
 | T-530 | F-10: レビュー | reviewer | `BLOCKED` | | |
 | T-531 | F-10: テスト実行 | tester | `BLOCKED` | | |
@@ -180,7 +180,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-409 | UTIL-1: 要件書作成 | product-manager | `TODO` | | ユーザーと伴奏して進める |
+| T-409 | UTIL-1: 要件書作成 | product-manager | `BLOCKED` | | サブスク化実装後に着手 |
 | T-410 | UTIL-1: Spec作成 | architect | `BLOCKED` | | T-409完了後 |
 | T-411a | UTIL-1: 実装 | flutter-dev | `BLOCKED` | | |
 | T-411b | UTIL-1: テストコード実装 | tester | `BLOCKED` | | |

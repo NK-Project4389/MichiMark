@@ -1,6 +1,7 @@
 # UI-23 TC-DS-003 修正・全件PASS
 
 ## 完了した作業
+- feat: UI-24 ActionTimeアクションボタン大型化完了（7PASS/0FAIL） (a39c093)
 - docs: セッションサマリー追加・README更新（launchd調査・BUG-4完了） (1a72093)
 - fix: BUG-4完了 - 招待ボタン遷移先テスト全件PASS・タスクボード更新 (d68c9c6)
 - docs: UI-23進捗ファイル更新（未完了・次回セッション指示追記） (c6e5242)
