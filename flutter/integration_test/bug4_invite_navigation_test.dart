@@ -226,8 +226,11 @@ void main() {
       );
 
       // BottomSheetの背景（ダークオーバーレイ）をタップして閉じる
-      // または、上スワイプで閉じる（ユーザー操作でBottomSheetを閉じる）
-      await tester.tap(find.byType(ModalBarrier).first);
+      // ModalBarrier を直接タップする代わりに、BottomSheet外の座標をタップする
+      await tester.tapAt(const Offset(200, 100));
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
+
       for (var i = 0; i < 20; i++) {
         await tester.pump(const Duration(milliseconds: 300));
         if (find.byKey(const Key('inviteLinkShare_sheet_root')).evaluate().isEmpty) break;

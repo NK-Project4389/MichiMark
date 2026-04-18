@@ -174,3 +174,4 @@
 | [2026-04-18_autotest_fail_T-514_UI-23.md](./2026-04-18_autotest_fail_T-514_UI-23.md) | UI-23 MichiInfo日付区切り 実装+テストコード完了・6PASS/1FAIL(TC-DS-003テストコード設計問題) |
 | [2026-04-18_test__UI-23-TC-DS-003-PASS.md](./2026-04-18_test__UI-23-TC-DS-003-PASS.md) | UI-23 TC-DS-003修正（event-008に4/13Mark追加・複数日付セットアップ）7PASS/0FAIL |
 | [2026-04-18_test__BUG-4-TC-001-002-IMPL.md](./2026-04-18_test__BUG-4-TC-001-002-IMPL.md) | BUG-4 テストコード実装：TC-BUG4-001〜002（招待ボタン遷移先確認）e8daf96でコミット |
+| [2026-04-18_test__BUG-4-招待ボタン遷移先修正-テスト実行完了.md](./2026-04-18_test__BUG-4-招待ボタン遷移先修正-テスト実行完了.md) | BUG-4 BottomSheet閉じテスト修正（ModalBarrier→座標タップに変更）3PASS/0FAIL・T-502/503 DONE |

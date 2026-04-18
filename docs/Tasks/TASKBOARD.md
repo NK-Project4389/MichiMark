@@ -79,8 +79,8 @@
 |---|---|---|---|---|---|
 | T-501a | BUG-4: 修正 | flutter-dev | `DONE` | | 調査結果: 既に正しくInviteLinkShareSheetへ遷移済み。修正不要 |
 | T-501b | BUG-4: テストコード実装 | tester | `DONE` | | TC-BUG4-001〜002実装。e8daf96でコミット済み |
-| T-502 | BUG-4: レビュー | reviewer | `TODO` | | |
-| T-503 | BUG-4: テスト実行 | tester | `BLOCKED` | | T-502完了後 |
+| T-502 | BUG-4: レビュー | reviewer | `DONE` | | 実装修正（492dd07）・テスト修正＆実行完了（3PASS） |
+| T-503 | BUG-4: テスト実行 | tester | `DONE` | | 修正後テスト実行：3PASS/0FAIL（TC-BUG4-001/001b/002） |
 
 ---
 
