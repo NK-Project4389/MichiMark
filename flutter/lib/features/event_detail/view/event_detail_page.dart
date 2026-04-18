@@ -117,6 +117,7 @@ class EventDetailPage extends StatelessWidget {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
+      isDismissible: true,
       builder: (sheetContext) {
         return BlocProvider(
           create: (_) => InviteLinkShareBloc(
