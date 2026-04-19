@@ -81,7 +81,7 @@
 |---|---|---|---|---|---|
 | T-601 | ルール整備（seed_dataレビュー・Unit Testサイクル） | orchestrator | `DONE` | | integration-test.md・workflow.mdに追加完了（2026-04-20） |
 | T-602 | 固有データハードコード廃止（IntegrationTest修正） | flutter-dev | `DONE` | | 7ファイル修正・seedMembers/seedTrans参照に統一。moving_cost_balance_test・payment_info_delete_testのイベント名/計算値はprivate定数のためコメント付き維持 |
-| T-603 | Bloc/Domain Unit Test追加（第1弾: PaymentDomain・BasicInfoBloc） | tester | `TODO` | | T-602完了後が望ましい（BLOCKED解除可） |
+| T-603 | Bloc/Domain Unit Test追加（第1弾: PaymentDomain・BasicInfoBloc） | tester | `IN_PROGRESS` | 2026-04-20_T603_unit_test | T-602完了後が望ましい（BLOCKED解除可） |
 | T-604 | Bloc/Domain Unit Test追加（第2弾: EventDetailBloc・OverviewBloc） | tester | `BLOCKED` | | T-603完了後 |
 
 ---
@@ -92,7 +92,7 @@
 |---|---|---|---|---|---|
 | T-406 | Google Workspace MCP 動作確認 | orchestrator | `DONE` | | MCP登録完了・✓ Connected確認済み（~/.claude.json, npx @isaacphi/mcp-gdrive） |
 | T-407 | Domain設計一覧.xlsx → Google Sheets 移行 | orchestrator | `DONE` | | 移行完了・v8に更新済み（ActionTimeLogs追加・各Domain新フィールド追加） |
-| T-408 | 移行後の運用ルール整備 | orchestrator | `TODO` | | T-407完了後 |
+| T-408 | 移行後の運用ルール整備 | orchestrator | `DONE` | | docs/Domain/README.md 作成・operations.md更新 |
 
 ---
 

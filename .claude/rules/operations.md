@@ -37,7 +37,8 @@
 | `docs/Templates/Feature_Spec_Template.md` | Feature仕様テンプレート |
 | `docs/Spec/Features/` | Feature Spec格納ディレクトリ |
 | `docs/Requirements/` | 要件書格納ディレクトリ |
-| `docs/Domain/` | Domain設計MDファイル格納ディレクトリ |
+| `docs/Domain/` | Domain設計MDファイル格納ディレクトリ（運用ルール: `docs/Domain/README.md`） |
+| Google Sheets | Domain設計の正：[MichiMark Domain設計一覧](https://docs.google.com/spreadsheets/d/1hwMQuhej1o-OHm4YhYX-2XiqyLAoN-3w65wlRVNjYCo/edit) |
 | `docs/Design/` | デザインレポート格納ディレクトリ |
 | `docs/Design/draft/` | designer が作成する要件の叩き格納ディレクトリ |
 | `docs/Progress/README.md` | 進捗記録一覧 |
