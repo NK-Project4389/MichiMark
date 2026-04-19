@@ -38,32 +38,30 @@ void main() {
   Future<bool> openActionTimeSheet(WidgetTester tester) async {
     await startApp(tester);
 
-    // イベント一覧がない場合はスキップ
-    if (find.text('イベントがありません').evaluate().isNotEmpty) {
-      return false;
+    // イベントデータは非同期でロードされるため、イベント名が表示されるまで追加待機
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+      if (find.text('横浜エリア訪問ルート').evaluate().isNotEmpty) break;
     }
 
-    // 最初のイベントをタップ
-    final gestureDetectors = find.descendant(
-      of: find.byType(ListView),
-      matching: find.byType(GestureDetector),
-    );
-    if (gestureDetectors.evaluate().isEmpty) return false;
-    await tester.tap(gestureDetectors.first);
+    // visitWork トピックのイベント（横浜エリア訪問ルート）を直接指定
+    final specificEvent = find.text('横浜エリア訪問ルート');
+    if (specificEvent.evaluate().isEmpty) return false;
+    await tester.tap(specificEvent.first);
 
-    // EventDetail が表示されるまで待つ
+    // EventDetail の ミチ タブが表示されるまで待つ
     for (var i = 0; i < 20; i++) {
-      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 500));
       if (find.text('ミチ').evaluate().isNotEmpty) break;
     }
 
     final michiTab = find.text('ミチ');
     if (michiTab.evaluate().isEmpty) return false;
-    await tester.tap(michiTab);
+    await tester.tap(michiTab.first);
 
-    // MichiInfo が表示されるまで待つ
+    // MichiInfo の actionTime ボタンが表示されるまで待つ
     for (var i = 0; i < 20; i++) {
-      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 500));
       if (find.byWidgetPredicate(
         (w) =>
             w.key != null &&
@@ -72,7 +70,7 @@ void main() {
     }
     await tester.pump(const Duration(milliseconds: 500));
 
-    // ⚡ ボタンを探す
+    // actionTime ボタンをタップ
     final actionBtn = find.byWidgetPredicate(
       (w) =>
           w.key != null &&

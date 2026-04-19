@@ -64,10 +64,10 @@
 |---|---|---|---|---|---|
 | T-521 | F-9: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-action_log_time_edit.md |
 | T-522 | F-9: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-action_log_time_edit.md |
-| T-523a | F-9: 実装 | flutter-dev | `BLOCKED` | | Domain変更あり |
-| T-523b | F-9: テストコード実装 | tester | `BLOCKED` | | |
-| T-524 | F-9: レビュー | reviewer | `BLOCKED` | | |
-| T-525 | F-9: テスト実行 | tester | `BLOCKED` | | |
+| T-523a | F-9: 実装 | flutter-dev | `DONE` | | schemaVersion v7・全ファイル実装完了・dart analyze エラー0件 |
+| T-523b | F-9: テストコード実装 | tester | `DONE` | | TC-ALTE-001〜008実装（005・006はSKIP設計） |
+| T-524 | F-9: レビュー | reviewer | `DONE` | | 設計憲章・Spec準拠確認・APPROVED |
+| T-525 | F-9: テスト実行 | tester | `DONE` | | 0PASS/0FAIL/8SKIP（データ依存SKIP）・FAILなし |
 
 ---
 
