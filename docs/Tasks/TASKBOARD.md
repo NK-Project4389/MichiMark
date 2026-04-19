@@ -81,8 +81,8 @@
 |---|---|---|---|---|---|
 | T-601 | ルール整備（seed_dataレビュー・Unit Testサイクル） | orchestrator | `DONE` | | integration-test.md・workflow.mdに追加完了（2026-04-20） |
 | T-602 | 固有データハードコード廃止（IntegrationTest修正） | flutter-dev | `DONE` | | 7ファイル修正・seedMembers/seedTrans参照に統一。moving_cost_balance_test・payment_info_delete_testのイベント名/計算値はprivate定数のためコメント付き維持 |
-| T-603 | Bloc/Domain Unit Test追加（第1弾: PaymentDomain・BasicInfoBloc） | tester | `IN_PROGRESS` | 2026-04-20_T603_unit_test | T-602完了後が望ましい（BLOCKED解除可） |
-| T-604 | Bloc/Domain Unit Test追加（第2弾: EventDetailBloc・OverviewBloc） | tester | `BLOCKED` | | T-603完了後 |
+| T-603 | Bloc/Domain Unit Test追加（第1弾: PaymentDomain・BasicInfoBloc） | tester | `DONE` | | 20PASS/0FAIL（PaymentBalanceSectionAdapter 10件・BasicInfoBloc 10件） |
+| T-604 | Bloc/Domain Unit Test追加（第2弾: EventDetailBloc・OverviewBloc） | tester | `DONE` | | VisitWorkAggregationAdapter 10件 + EventDetailBloc 17件 = 27PASS/0FAIL |
 
 ---
 

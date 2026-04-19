@@ -188,3 +188,4 @@
 | [2026-04-20_infra2_google_sheets_v8更新.md](./2026-04-20_infra2_google_sheets_v8更新.md) | INFRA-2 Google Sheets v8更新完了（ActionTimeLogs追加・全Domain最新フィールド反映） |
 | [2026-04-20_chore__T408_Google_Sheets運用ルール整備.md](./2026-04-20_chore__T408_Google_Sheets運用ルール整備.md) | T-408 Google Sheets運用ルール整備（docs/Domain/README.md作成・operations.md更新） |
 | [2026-04-20_T-603_Bloc_Domain_Unit_Test第1弾.md](./2026-04-20_T-603_Bloc_Domain_Unit_Test第1弾.md) | T-603 PaymentBalanceSectionAdapter + BasicInfoBloc Unit Test 実装（20PASS） |
+| [2026-04-20_T-604_Bloc_Domain_Unit_Test第2弾.md](./2026-04-20_T-604_Bloc_Domain_Unit_Test第2弾.md) | T-604 VisitWorkAggregationAdapter + EventDetailBloc Unit Test 実装（27PASS） |

@@ -1,6 +1,7 @@
 # 2026-04-20 T-408: Google Sheets 運用ルール整備
 
 ## 完了した作業
+- feat: T-603 Bloc/Domain Unit Test追加（第1弾） (86774b7)
 - chore: T-408 Google Sheets 運用ルール整備（docs/Domain/README.md 作成・operations.md 更新） (b8735b0)
 
 ### T-408: INFRA-2 移行後の運用ルール整備
