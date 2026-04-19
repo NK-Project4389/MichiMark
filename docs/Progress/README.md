@@ -185,3 +185,4 @@
 | [2026-04-20_chore__テスト品質改善ルール整備_シードデータレビュー.md](./2026-04-20_chore__テスト品質改善ルール整備_シードデータレビュー.md) | TEST-QUALITY-1ルール整備・Integration Test設計書更新・seed_data.dartレビュー・domain層Unit Test計画 |
 | [2026-04-20_test__F-8_支払詳細売上テスト完了.md](./2026-04-20_test__F-8_支払詳細売上テスト完了.md) | F-8 Payment Detail Sales テスト実行完了（4PASS/6SKIP/0FAIL・T-508 DONE） |
 | [2026-04-20_feat__F-8_PaymentDetail売上追加_OverView収支集計.md](./2026-04-20_feat__F-8_PaymentDetail売上追加_OverView収支集計.md) | F-8 実装完了・INFRA-2 MCP認証設定・oauth .gitignore追加 セッションサマリー |
+| [2026-04-20_infra2_google_sheets_v8更新.md](./2026-04-20_infra2_google_sheets_v8更新.md) | INFRA-2 Google Sheets v8更新完了（ActionTimeLogs追加・全Domain最新フィールド反映） |

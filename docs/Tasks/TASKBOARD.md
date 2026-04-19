@@ -80,7 +80,7 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-601 | ルール整備（seed_dataレビュー・Unit Testサイクル） | orchestrator | `DONE` | | integration-test.md・workflow.mdに追加完了（2026-04-20） |
-| T-602 | 固有データハードコード廃止（IntegrationTest修正） | flutter-dev | `TODO` | | 対象: fuel_detail_design_test・member_required_guard_test・basic_info_trans_fuel_test・seed_fix_test・payment_info_redesign_test・payment_info_delete_test・moving_cost_balance_test |
+| T-602 | 固有データハードコード廃止（IntegrationTest修正） | flutter-dev | `IN_PROGRESS` | 2026-04-20_T-602_固有データハードコード廃止 | 対象: fuel_detail_design_test・member_required_guard_test・basic_info_trans_fuel_test・seed_fix_test・payment_info_redesign_test・payment_info_delete_test・moving_cost_balance_test |
 | T-603 | Bloc/Domain Unit Test追加（第1弾: PaymentDomain・BasicInfoBloc） | tester | `TODO` | | T-602完了後が望ましい（BLOCKED解除可） |
 | T-604 | Bloc/Domain Unit Test追加（第2弾: EventDetailBloc・OverviewBloc） | tester | `BLOCKED` | | T-603完了後 |
 
@@ -91,8 +91,8 @@
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
 | T-406 | Google Workspace MCP 動作確認 | orchestrator | `DONE` | | MCP登録完了・✓ Connected確認済み（~/.claude.json, npx @isaacphi/mcp-gdrive） |
-| T-407 | Domain設計一覧.xlsx → Google Sheets 移行 | orchestrator | `BLOCKED` | | T-406完了後 |
-| T-408 | 移行後の運用ルール整備 | orchestrator | `BLOCKED` | | T-407完了後 |
+| T-407 | Domain設計一覧.xlsx → Google Sheets 移行 | orchestrator | `DONE` | | 移行完了・v8に更新済み（ActionTimeLogs追加・各Domain新フィールド追加） |
+| T-408 | 移行後の運用ルール整備 | orchestrator | `TODO` | | T-407完了後 |
 
 ---
 
