@@ -71,6 +71,41 @@ tester（テスト実行）
 - 修正内容は進捗ファイルの「レビュー指摘・修正内容」セクションにも記載する
 - 修正後は reviewer が再確認し、合格するまで繰り返す
 
+## テスト層設計（Architect担当）
+
+**Specのテストシナリオは必ずテスト層（Unit / Integration）を明記する。**
+
+Architectはテストシナリオを設計する際に、各TCをどの層で検証するかを決定する。
+
+### 層の選択基準
+
+| 検証したい内容 | 使う層 | 実行方法 |
+|---|---|---|
+| Blocのstate変換・ロジック計算・変換処理 | **Unit Test** | `flutter test` |
+| 複数画面をまたぐE2Eフロー | **Integration Test** | `flutter test integration_test/` |
+| drift DB永続化後の再表示確認 | **Integration Test** | `flutter test integration_test/` |
+| UIコンポーネント単体の表示確認 | **Integration Test**（Widget TestはDI再現が困難なため） | `flutter test integration_test/` |
+
+### Spec テストシナリオの記載形式
+
+```
+## テストシナリオ
+
+### Unit Test（flutter/test/）
+- TC-XXX-U001: [Bloc名]_[ケース名] — 前提/手順/期待結果
+
+### Integration Test（flutter/integration_test/）
+- TC-XXX-I001: [画面フロー名] — 前提/手順/期待結果
+  - 必要なWidgetキー: [key一覧]
+```
+
+### ルール
+- **Unit Testで検証できるシナリオをIntegration Testに書かない**（維持コスト削減）
+- シードデータ固有値に依存するシナリオは設計時点でフラグを立てる（後のハードコード防止）
+- テストシナリオなしのSpecはflutter-devが実装を開始できない
+
+---
+
 ## Bloc / Domain 単体テストサイクル
 
 ロジックバグ（計算・状態管理・変換処理）はIntegration Testではなく **Unit Test** で検出する。
@@ -90,14 +125,13 @@ tester（flutter test 実行）
     → FAIL → tester 修正 → reviewer → 再実行
 ```
 
-### Unit Test の対象
+### Unit Test の対象・格納先
 
-| 優先度 | 対象 | 格納先 |
-|---|---|---|
-| 高 | Bloc（onEvent ハンドラ・State変換） | `flutter/test/bloc/` |
-| 高 | Domain計算ロジック（支払計算・燃費変換・集計） | `flutter/test/domain/` |
-| 中 | Adapter（Domain → Projection 変換） | `flutter/test/adapter/` |
-| 中 | Repository（drift DAOのCRUD） | `flutter/test/infra/` |
+| 対象 | 格納先 |
+|---|---|
+| Bloc（onEvent ハンドラ・State変換） | `flutter/test/bloc/` |
+| Domain計算ロジック（支払計算・燃費変換・集計） | `flutter/test/domain/` |
+| Adapter（Domain → Projection 変換） | `flutter/test/adapter/` |
 
 ### Unit Test 実装ルール
 

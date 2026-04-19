@@ -52,7 +52,7 @@ flutter test integration_test/ -d B6008734-29AB-4371-9A20-BED4FE322BF4 --total-s
 | 3 | 交通手段名のハードコード禁止 | `find.text('マイカー')` | `find.text(seedTrans[0].transName)` |
 | 4 | 計算済み金額のハードコード禁止 | `find.text('合計: ¥5,600')` | 計算ロジックから動的に生成 or expect不使用 |
 | 5 | シードデータ固有IDのハードコード禁止 | `Key('event-001')` | seedDataの定数参照 or 動的取得 |
-| 6 | アクション名のハードコード禁止 | `find.text('出発')` | `find.text(seedActions[0].actionName)` |
+| 6 | シードデータ固有の名称のハードコード禁止 | `find.text('大涌谷')` | `find.text(seedEvents[0].markLinks[4].markLinkName)` |
 
 ### インポートパターン
 
@@ -156,3 +156,27 @@ expect(find.byKey(Key('target_item')), findsOneWidget);
 ### GetIt未リセットによるDI競合
 
 各テストの起動ヘルパーで必ず `await GetIt.I.reset()` を呼ぶ。
+
+### iOS通知許可ダイアログがテストをブロックする
+
+**症状**: 起動ヘルパーが全テストでタイムアウト。シミュレーター消去後に顕発する。
+
+**原因**: `main()` で `FlutterLocalNotificationsPlugin().initialize()` を呼ぶと初回起動時にiOS通知許可ダイアログが表示され `runApp` がブロックされる。
+
+**恒久対応**: `main.dart` でテスト時は通知初期化をスキップ。
+
+```dart
+if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+  await notificationAdapter.initialize();
+}
+```
+
+**一時対応（TCC.db直接許可）**: `xcrun simctl privacy booted grant notifications` は通知には効かない。
+
+```bash
+SIMULATOR_ID=$(xcrun simctl list devices booted | grep Booted | head -1 | grep -oE '[A-F0-9-]{36}')
+TCC_DB="$HOME/Library/Developer/CoreSimulator/Devices/$SIMULATOR_ID/data/Library/TCC/TCC.db"
+sqlite3 "$TCC_DB" "INSERT OR REPLACE INTO access \
+  (service, client, client_type, auth_value, auth_reason, auth_version) \
+  VALUES ('kTCCServiceUserNotification', '<BUNDLE_ID>', 0, 2, 4, 1);"
+```

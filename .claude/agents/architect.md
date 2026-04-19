@@ -98,7 +98,7 @@ Event → Bloc → State
 - Delegate Contract（名前・遷移先）
 - Data Flow（箇条書き、コード不要）
 - Router変更方針（必要な場合のみ）
-- **テストシナリオセクション（必須）**: TC-XXX 形式でUnit / Widget / Integration Testのシナリオを記載すること。各シナリオには「前提・手順・期待結果」と「実装ノート（ウィジェットキー一覧）」を含めること。テストシナリオなしのSpecはflutter-devが実装を開始できない
+- **テストシナリオセクション（必須）**: TC-XXX 形式でシナリオを記載し、**各TCに必ずテスト層（Unit Test / Integration Test）を明記すること**。層の選択基準は `.claude/rules/workflow.md` の「テスト層設計」を参照。各シナリオには「前提・手順・期待結果」と「実装ノート（ウィジェットキー一覧・シードデータ依存の有無）」を含めること。テストシナリオなしのSpecはflutter-devが実装を開始できない
 
 記載しないこと:
 - Dart/Flutter実装コード
