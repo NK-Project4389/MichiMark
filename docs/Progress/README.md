@@ -179,3 +179,4 @@
 | [2026-04-18_docs__UI-19-F8-F9-F10設計完了.md](./2026-04-18_docs__UI-19-F8-F9-F10設計完了.md) | UI-19・F-8・F-9 要件書+Spec完了・F-10 schemaVersion更新・UI-24全件PASS |
 | [2026-04-18_feat__UI-24-ActionTimeボタン大型化完了.md](./2026-04-18_feat__UI-24-ActionTimeボタン大型化完了.md) | UI-24 ActionTimeアクションボタン大型化完了（7PASS/0FAIL/0SKIP） |
 | [2026-04-18_feat__F-10-EndFlag機能完了.md](./2026-04-18_feat__F-10-EndFlag機能完了.md) | F-10 EndFlag機能実装完了（出発アクション→Markカード完了ビジュアル、DBスキーマv6、先行バグ2件修正） |
+| [2026-04-19_feat__UI-19-visitWork-MarkCard-UI.md](./2026-04-19_feat__UI-19-visitWork-MarkCard-UI.md) | UI-19 visitWork Mark カード UI 改善 テストコード実装・レビューAPPROVED（環境問題で実行未完了） |
