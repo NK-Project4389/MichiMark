@@ -12,6 +12,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:michi_mark/main.dart' as app;
 import 'package:michi_mark/app/router.dart' as app_router;
+import 'package:michi_mark/repository/impl/in_memory/seed_data.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -362,12 +363,12 @@ void main() {
         reason: '給油ON後にガソリン支払者行が表示されること');
 
     // 3-4. ガソリン支払者を選択する（田中を選択）
-    final selected = await selectGasPayer(tester, '田中');
-    expect(selected, isTrue, reason: 'ガソリン支払者「田中」が選択できること');
+    final selected = await selectGasPayer(tester, seedMembers[1].memberName);
+    expect(selected, isTrue, reason: 'ガソリン支払者「${seedMembers[1].memberName}」が選択できること');
 
     // ガソリン支払者に「田中」が表示されること
-    expect(find.text('田中'), findsWidgets,
-        reason: '選択後にガソリン支払者として「田中」が表示されること');
+    expect(find.text(seedMembers[1].memberName), findsWidgets,
+        reason: '選択後にガソリン支払者として「${seedMembers[1].memberName}」が表示されること');
 
     // 5. 保存ボタンをタップする
     await tapSaveButton(tester);
@@ -378,9 +379,9 @@ void main() {
     // 給油ON状態でロードされたか確認
     await turnFuelSwitchOn(tester);
 
-    // 期待結果: 手順4で選択したメンバー名「田中」がガソリン支払者に表示される
-    expect(find.text('田中'), findsWidgets,
-        reason: '再表示後もガソリン支払者として「田中」が保存されていること');
+    // 期待結果: 手順4で選択したメンバー名がガソリン支払者に表示される
+    expect(find.text(seedMembers[1].memberName), findsWidgets,
+        reason: '再表示後もガソリン支払者として「${seedMembers[1].memberName}」が保存されていること');
   });
 
   // ────────────────────────────────────────────────────────
@@ -418,12 +419,12 @@ void main() {
         reason: 'LinkDetail: 給油ON後にガソリン支払者行が表示されること');
 
     // 3-4. ガソリン支払者を選択する（太郎を選択）
-    final selected = await selectGasPayer(tester, '太郎');
-    expect(selected, isTrue, reason: 'LinkDetail: ガソリン支払者「太郎」が選択できること');
+    final selected = await selectGasPayer(tester, seedMembers[0].memberName);
+    expect(selected, isTrue, reason: 'LinkDetail: ガソリン支払者「${seedMembers[0].memberName}」が選択できること');
 
     // ガソリン支払者に「太郎」が表示されること
-    expect(find.text('太郎'), findsWidgets,
-        reason: 'LinkDetail: 選択後にガソリン支払者として「太郎」が表示されること');
+    expect(find.text(seedMembers[0].memberName), findsWidgets,
+        reason: 'LinkDetail: 選択後にガソリン支払者として「${seedMembers[0].memberName}」が表示されること');
 
     // 5. 保存ボタンをタップする
     await tapSaveButton(tester);
@@ -434,9 +435,9 @@ void main() {
     // 給油ON状態でロードされたか確認
     await turnFuelSwitchOn(tester);
 
-    // 期待結果: 手順4で選択したメンバー名「太郎」がガソリン支払者に表示される
-    expect(find.text('太郎'), findsWidgets,
-        reason: 'LinkDetail: 再表示後もガソリン支払者として「太郎」が保存されていること');
+    // 期待結果: 手順4で選択したメンバー名がガソリン支払者に表示される
+    expect(find.text(seedMembers[0].memberName), findsWidgets,
+        reason: 'LinkDetail: 再表示後もガソリン支払者として「${seedMembers[0].memberName}」が保存されていること');
   });
 
   // ────────────────────────────────────────────────────────

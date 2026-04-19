@@ -110,6 +110,10 @@ void main() {
 
   /// movingCost（給油実績モード）イベントの概要タブを開くまでのセットアップ。
   /// イベントが存在しない・前提条件を満たさない場合はスキップ理由を返す。null の場合は成功。
+  ///
+  /// ※ イベント名 '箱根日帰りドライブ' は seed_data.dart の _event1.eventName と一致する。
+  ///   _event1 はファイルスコープのプライベート定数のため外部から参照できず、
+  ///   文字列リテラルで維持する。
   Future<String?> setupMovingCostOverview(WidgetTester tester) async {
     await startApp(tester);
     final opened =
@@ -123,6 +127,10 @@ void main() {
 
   /// movingCostEstimated（燃費推定モード）イベントの概要タブを開くまでのセットアップ。
   /// イベントが存在しない場合はスキップ理由を返す。null の場合は成功。
+  ///
+  /// ※ イベント名 '週末ドライブ（燃費推定）' は seed_data.dart の _event4.eventName と一致する。
+  ///   _event4 はファイルスコープのプライベート定数のため外部から参照できず、
+  ///   文字列リテラルで維持する。
   Future<String?> setupMovingCostEstimatedOverview(WidgetTester tester) async {
     await startApp(tester);
     final opened =
@@ -136,6 +144,10 @@ void main() {
 
   /// 収支データなし（gasPayer未設定）のイベントの概要タブを開くまでのセットアップ。
   /// イベントが存在しない場合はスキップ理由を返す。null の場合は成功。
+  ///
+  /// ※ イベント名 '近所のドライブ' は seed_data.dart の _event3.eventName と一致する。
+  ///   _event3 はファイルスコープのプライベート定数のため外部から参照できず、
+  ///   文字列リテラルで維持する。
   Future<String?> setupNoBalanceOverview(WidgetTester tester) async {
     await startApp(tester);
     final opened = await openEventDetailByName(tester, '近所のドライブ');

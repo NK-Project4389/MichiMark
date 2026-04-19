@@ -16,6 +16,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:michi_mark/main.dart' as app;
 import 'package:michi_mark/app/router.dart' as app_router;
+import 'package:michi_mark/repository/impl/in_memory/seed_data.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -171,8 +172,8 @@ void main() {
         reason: '支払者選択画面（SelectionPage）が開いていること');
 
     // 参加者「太郎」が表示されること
-    expect(find.text('太郎'), findsWidgets,
-        reason: '参加者「太郎」が支払者選択画面に表示されること');
+    expect(find.text(seedMembers[0].memberName), findsWidgets,
+        reason: '参加者「${seedMembers[0].memberName}」が支払者選択画面に表示されること');
 
     // 参加者「花子」が表示されること
     expect(find.text('花子'), findsWidgets,

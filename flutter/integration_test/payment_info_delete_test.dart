@@ -289,6 +289,8 @@ void main() {
 
     // pay-001(¥3,200)削除後の合計は pay-002(¥2,400) のみ
     // 旧合計 ¥5,600 は表示されないはず（書式依存のため緩い検証）
+    // ※ ¥5,600 は pay-001.paymentAmount(3200) + pay-002.paymentAmount(2400) の計算値。
+    //   seed_data.dart に計算済み金額の公開定数がないため文字列リテラルで維持する。
     expect(
       find.text('合計: ¥5,600'),
       findsNothing,

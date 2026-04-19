@@ -17,6 +17,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:michi_mark/main.dart' as app;
 import 'package:michi_mark/app/router.dart' as app_router;
+import 'package:michi_mark/repository/impl/in_memory/seed_data.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -148,7 +149,7 @@ void main() {
 
     // 3. 「マイカー」が交通手段として表示されていることを確認
     expect(
-      find.text('マイカー'),
+      find.text(seedTrans[0].transName),
       findsOneWidget,
       reason: '編集モードで交通手段「マイカー」が表示されること',
     );
@@ -158,7 +159,7 @@ void main() {
     expect(selectionOpened, isTrue, reason: '交通手段選択画面が開けること');
 
     // 5. 「マイカー」を選択して「確定」をタップして戻る
-    final selected = await selectTransAndConfirm(tester, 'マイカー');
+    final selected = await selectTransAndConfirm(tester, seedTrans[0].transName);
     expect(selected, isTrue, reason: '「マイカー」が選択できること');
 
     // 6. 保存して参照モードに戻る
@@ -215,7 +216,7 @@ void main() {
     final selectionOpened = await openTransSelection(tester);
     expect(selectionOpened, isTrue, reason: '交通手段選択画面が開けること');
 
-    final selected = await selectTransAndConfirm(tester, 'マイカー');
+    final selected = await selectTransAndConfirm(tester, seedTrans[0].transName);
     expect(selected, isTrue, reason: '交通手段が選択できること');
 
     // 4. 保存して参照モードに戻る

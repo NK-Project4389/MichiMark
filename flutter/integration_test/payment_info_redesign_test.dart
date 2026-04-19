@@ -12,6 +12,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:michi_mark/main.dart' as app;
 import 'package:michi_mark/app/router.dart' as app_router;
+import 'package:michi_mark/repository/impl/in_memory/seed_data.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -155,10 +156,11 @@ void main() {
     expect(tealContainers.isNotEmpty, isTrue,
         reason: 'Teal 背景 (0xFF2B7A9B) のチップが表示されること');
 
-    // シードデータの支払者「太郎」または「花子」が表示されること
+    // シードデータの支払者「太郎」または「田中」が表示されること
+    // ※ 「花子」はseedMembersに存在しない（seedMembers[1]は「田中」）
     final hasPayer =
-        find.text('太郎').evaluate().isNotEmpty ||
-        find.text('花子').evaluate().isNotEmpty;
+        find.text(seedMembers[0].memberName).evaluate().isNotEmpty ||
+        find.text(seedMembers[1].memberName).evaluate().isNotEmpty;
     expect(hasPayer, isTrue, reason: '支払者名がチップ内に表示されること');
   });
 

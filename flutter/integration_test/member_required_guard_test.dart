@@ -27,6 +27,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:michi_mark/main.dart' as app;
 import 'package:michi_mark/app/router.dart' as app_router;
+import 'package:michi_mark/repository/impl/in_memory/seed_data.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -216,7 +217,7 @@ void main() {
       // 選択画面のキーワードが表示されれば遷移成功
       if (find.text('メンバー選択').evaluate().isNotEmpty ||
           find.text('支払者選択').evaluate().isNotEmpty ||
-          find.text('太郎').evaluate().isNotEmpty) break;
+          find.text(seedMembers[0].memberName).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
@@ -225,7 +226,7 @@ void main() {
     final isTransitioned =
         find.text('メンバー選択').evaluate().isNotEmpty ||
         find.text('支払者選択').evaluate().isNotEmpty ||
-        find.text('太郎').evaluate().isNotEmpty;
+        find.text(seedMembers[0].memberName).evaluate().isNotEmpty;
 
     print('[TC-MRG-002] タップ後に遷移した: $isTransitioned');
     expect(
@@ -314,14 +315,14 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('メンバー選択').evaluate().isNotEmpty ||
           find.text('参加者選択').evaluate().isNotEmpty ||
-          find.text('太郎').evaluate().isNotEmpty) break;
+          find.text(seedMembers[0].memberName).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     final isTransitioned =
         find.text('メンバー選択').evaluate().isNotEmpty ||
         find.text('参加者選択').evaluate().isNotEmpty ||
-        find.text('太郎').evaluate().isNotEmpty;
+        find.text(seedMembers[0].memberName).evaluate().isNotEmpty;
 
     print('[TC-MRG-004] タップ後に遷移した: $isTransitioned');
     expect(
@@ -412,14 +413,14 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('メンバー選択').evaluate().isNotEmpty ||
           find.text('支払者選択').evaluate().isNotEmpty ||
-          find.text('太郎').evaluate().isNotEmpty) break;
+          find.text(seedMembers[0].memberName).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     final isPayerTransitioned =
         find.text('メンバー選択').evaluate().isNotEmpty ||
         find.text('支払者選択').evaluate().isNotEmpty ||
-        find.text('太郎').evaluate().isNotEmpty;
+        find.text(seedMembers[0].memberName).evaluate().isNotEmpty;
 
     print('[TC-MRG-006] 支払者タップ後に遷移した: $isPayerTransitioned');
     expect(
@@ -480,13 +481,13 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('メンバー選択').evaluate().isNotEmpty ||
           find.text('割り勘').evaluate().isNotEmpty ||
-          find.text('太郎').evaluate().isNotEmpty) break;
+          find.text(seedMembers[0].memberName).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     final isSplitTransitioned =
         find.text('メンバー選択').evaluate().isNotEmpty ||
-        find.text('太郎').evaluate().isNotEmpty;
+        find.text(seedMembers[0].memberName).evaluate().isNotEmpty;
 
     print('[TC-MRG-006] 割り勘メンバータップ後に遷移した: $isSplitTransitioned');
     expect(
