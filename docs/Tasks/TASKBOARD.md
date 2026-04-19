@@ -51,7 +51,7 @@
 | T-506a | F-8: 実装 | flutter-dev | `DONE` | | schemaVersion v7→v8・dart analyze 0件 |
 | T-506b | F-8: テストコード実装 | tester | `DONE` | | TC-PDS-001〜010 全件実装完了 |
 | T-507 | F-8: レビュー | reviewer | `DONE` | | APPROVED（テストコード3点修正・Spec schemaVersion更新後に承認） |
-| T-508 | F-8: テスト実行 | tester | `IN_PROGRESS` | 2026-04-20_F-8_テスト実行 | |
+| T-508 | F-8: テスト実行 | tester | `DONE` | | 4PASS/6SKIP/0FAIL（TC-PDS-001/008/009/010 PASS） |
 
 ---
 

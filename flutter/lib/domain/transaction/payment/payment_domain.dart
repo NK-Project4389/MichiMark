@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../master/member/member_domain.dart';
+import 'payment_type.dart';
 
 class PaymentDomain extends Equatable {
   final String id;
@@ -31,6 +32,9 @@ class PaymentDomain extends Equatable {
   /// 紐づく MarkLink の ID。null = PaymentInfo タブから直接登録
   final String? markLinkID;
 
+  /// 支払種別。デフォルト: expense（支出）
+  final PaymentType paymentType;
+
   const PaymentDomain({
     required this.id,
     required this.paymentSeq,
@@ -42,6 +46,7 @@ class PaymentDomain extends Equatable {
     required this.createdAt,
     required this.updatedAt,
     this.markLinkID,
+    this.paymentType = PaymentType.expense,
   });
 
   PaymentDomain copyWith({
@@ -56,6 +61,7 @@ class PaymentDomain extends Equatable {
     DateTime? updatedAt,
     String? markLinkID,
     bool clearMarkLinkID = false,
+    PaymentType? paymentType,
   }) {
     return PaymentDomain(
       id: id ?? this.id,
@@ -68,6 +74,7 @@ class PaymentDomain extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       markLinkID: clearMarkLinkID ? null : (markLinkID ?? this.markLinkID),
+      paymentType: paymentType ?? this.paymentType,
     );
   }
 
@@ -83,5 +90,6 @@ class PaymentDomain extends Equatable {
         createdAt,
         updatedAt,
         markLinkID,
+        paymentType,
       ];
 }

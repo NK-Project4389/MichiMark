@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../domain/master/member/member_domain.dart';
+import '../../../domain/transaction/payment/payment_type.dart';
 import '../../../widgets/numeric_input_row.dart';
 import '../bloc/payment_detail_bloc.dart';
 import '../bloc/payment_detail_event.dart';
@@ -127,6 +128,7 @@ class _PaymentDetailForm extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
+        _PaymentTypeSegment(selectedType: draft.paymentType),
         NumericInputRow(
           key: const Key('paymentDetail_field_amount'),
           label: '支払金額',
@@ -375,6 +377,44 @@ class _SplitMemberChipSection extends StatelessWidget {
             }).toList(),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── 売上/支出セグメントコントロール ────────────────────────────────────────
+
+class _PaymentTypeSegment extends StatelessWidget {
+  final PaymentType selectedType;
+
+  const _PaymentTypeSegment({required this.selectedType});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: CupertinoSegmentedControl<PaymentType>(
+        key: const Key('paymentDetail_segment_paymentType'),
+        groupValue: selectedType,
+        onValueChanged: (type) => context
+            .read<PaymentDetailBloc>()
+            .add(PaymentDetailTypeChanged(type)),
+        children: const {
+          PaymentType.expense: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: Text(
+              '支出',
+              key: Key('paymentDetail_segment_expense'),
+            ),
+          ),
+          PaymentType.revenue: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: Text(
+              '売上',
+              key: Key('paymentDetail_segment_revenue'),
+            ),
+          ),
+        },
       ),
     );
   }

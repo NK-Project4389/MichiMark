@@ -22,6 +22,7 @@ class PaymentDetailBloc
     on<PaymentDetailPayMemberChipToggled>(_onPayMemberChipToggled);
     on<PaymentDetailSplitMemberChipToggled>(_onSplitMemberChipToggled);
     on<PaymentDetailMemoChanged>(_onMemoChanged);
+    on<PaymentDetailTypeChanged>(_onTypeChanged);
     on<PaymentDetailSaveTapped>(_onSaveTapped);
     on<PaymentDetailCancelTapped>(_onCancelTapped);
     on<PaymentDetailSplitMembersAllSelected>(_onSplitMembersAllSelected);
@@ -90,6 +91,7 @@ class PaymentDetailBloc
         splitMembers: filteredSplitMembers,
         paymentMemo: payment.paymentMemo ?? '',
         markLinkID: payment.markLinkID,
+        paymentType: payment.paymentType,
       );
       emit(PaymentDetailLoaded(draft: draft, initialDraft: draft, availableMembers: availableMembers, showMemberSection: _showMemberSection));
     } on Exception catch (e) {
@@ -178,6 +180,18 @@ class PaymentDetailBloc
     }
   }
 
+  Future<void> _onTypeChanged(
+    PaymentDetailTypeChanged event,
+    Emitter<PaymentDetailState> emit,
+  ) async {
+    if (state is PaymentDetailLoaded) {
+      final current = state as PaymentDetailLoaded;
+      emit(current.copyWith(
+        draft: current.draft.copyWith(paymentType: event.paymentType),
+      ));
+    }
+  }
+
   Future<void> _onSaveTapped(
     PaymentDetailSaveTapped event,
     Emitter<PaymentDetailState> emit,
@@ -211,6 +225,7 @@ class PaymentDetailBloc
           createdAt: existingPayment?.createdAt ?? now,
           updatedAt: now,
           markLinkID: draft.markLinkID,
+          paymentType: draft.paymentType,
         );
 
         final updatedPayments = List<PaymentDomain>.from(

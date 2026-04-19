@@ -61,6 +61,10 @@ class Payments extends Table {
   /// 紐づく MarkLink の ID（nullable: NULL = PaymentInfo タブから直接登録）
   TextColumn get markLinkId => text().nullable()();
 
+  /// 支払種別（'expense' or 'revenue'）。デフォルト: 'expense'
+  TextColumn get paymentType =>
+      text().withDefault(const Constant('expense'))();
+
   @override
   Set<Column> get primaryKey => {id};
 }

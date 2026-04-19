@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../adapter/aggregation_service.dart';
 import '../../../adapter/event_detail_overview_adapter.dart';
+import '../../../adapter/payment_balance_section_adapter.dart';
 import '../../../adapter/travel_expense_overview_adapter.dart';
 import '../../../adapter/visit_work_aggregation_adapter.dart';
 import '../../../domain/topic/topic_config.dart';
@@ -124,14 +125,25 @@ class EventDetailOverviewBloc
       actionMap: actionMap,
     );
 
+    // 論理削除済みを除外した payments
+    final activePayments =
+        eventDomain.payments.where((p) => !p.isDeleted).toList();
+
     final aggregation = VisitWorkAggregationAdapter.fromResults(
       aggregation: result,
       timeline: timeline,
+      payments: activePayments,
     );
+
+    final balanceSectionRaw =
+        PaymentBalanceSectionAdapter.toProjection(activePayments);
+    final balanceSection =
+        balanceSectionRaw.hasItems ? balanceSectionRaw : null;
 
     final projection = VisitWorkProjection(
       timeline: timeline,
       aggregation: aggregation,
+      balanceSection: balanceSection,
     );
 
     emit(state.copyWith(

@@ -26,7 +26,7 @@ PaymentDetailSales
 |---|---|
 | Domain | `PaymentType` enum 新規追加（`expense` / `revenue`） |
 | Domain | `PaymentDomain` に `paymentType: PaymentType` フィールド追加 |
-| Repository（drift） | `payments` テーブルに `payment_type` カラム追加（schemaVersion 6） |
+| Repository（drift） | `payments` テーブルに `payment_type` カラム追加（schemaVersion 8） |
 | Adapter | `VisitWorkAggregationAdapter` の `revenue` 算出を `revenue` 種別のみに変更 |
 | Adapter | `PaymentBalanceSectionAdapter` 新規追加（収支セクション向けデータ算出） |
 | Projection | `PaymentBalanceSectionProjection` 新規追加（売上・支出グループ表示用） |
@@ -60,7 +60,7 @@ PaymentType.revenue  // 売上
 
 ## 2-2. DB マイグレーション方針
 
-- `schemaVersion` を `5 → 6` に変更する
+- `schemaVersion` を `7 → 8` に変更する
 - `payments` テーブルへの `ALTER TABLE` 追加のみ。既存テーブルのスキーマは変更しない
 - デフォルト値は `'expense'` とする（`withDefault(const Constant('expense'))`）
 - drift テーブル定義（`event_tables.dart`）の `Payments` クラスに `payment_type` カラムを追加する
@@ -130,8 +130,8 @@ TextColumn get paymentType =>
 
 **ファイル:** `flutter/lib/repository/impl/drift/database.dart`
 
-- `schemaVersion` を `6` に変更する
-- `onUpgrade` に `from < 6` の分岐を追加する:
+- `schemaVersion` を `8` に変更する
+- `onUpgrade` に `from < 8` の分岐を追加する:
 
 ```sql
 ALTER TABLE payments ADD COLUMN payment_type TEXT NOT NULL DEFAULT 'expense'
@@ -372,7 +372,7 @@ EventDetailTab.paymentInfo => '支払'
 
 | 変更内容 | 詳細 |
 |---|---|
-| `schemaVersion` | `5 → 6` |
+| `schemaVersion` | `7 → 8` |
 | 追加カラム | `payments.payment_type TEXT NOT NULL DEFAULT 'expense'` |
 | 後方互換性 | 既存レコードはすべて `'expense'` として扱われる |
 | マイグレーション SQL | `ALTER TABLE payments ADD COLUMN payment_type TEXT NOT NULL DEFAULT 'expense'` |
@@ -395,7 +395,7 @@ EventDetailTab.paymentInfo => '支払'
 |---|---|
 | `flutter/lib/domain/transaction/payment/payment_domain.dart` | `paymentType` フィールド追加 |
 | `flutter/lib/repository/impl/drift/tables/event_tables.dart` | `Payments` テーブルに `paymentType` カラム追加 |
-| `flutter/lib/repository/impl/drift/database.dart` | `schemaVersion` 更新・`from < 6` マイグレーション追加 |
+| `flutter/lib/repository/impl/drift/database.dart` | `schemaVersion` 更新・`from < 8` マイグレーション追加 |
 | `flutter/lib/repository/impl/drift/repository/drift_event_repository.dart` | `paymentType` のマッピング追加 |
 | `flutter/lib/repository/impl/in_memory/seed_data.dart` | `PaymentDomain` 生成箇所に `paymentType` デフォルト値追加 |
 | `flutter/lib/adapter/visit_work_aggregation_adapter.dart` | `payments` 引数追加・`revenue` 計算を revenue 種別のみに変更 |

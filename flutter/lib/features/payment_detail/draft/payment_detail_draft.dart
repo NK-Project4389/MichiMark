@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/master/member/member_domain.dart';
+import '../../../domain/transaction/payment/payment_type.dart';
 
 class PaymentDetailDraft extends Equatable {
   /// 支払ID（UUID文字列）
@@ -23,6 +24,9 @@ class PaymentDetailDraft extends Equatable {
   /// 紐づく MarkLink の ID（null = 直接登録）
   final String? markLinkID;
 
+  /// 選択中の支払種別（デフォルト: expense）
+  final PaymentType paymentType;
+
   const PaymentDetailDraft({
     required this.id,
     required this.paymentSeq,
@@ -31,6 +35,7 @@ class PaymentDetailDraft extends Equatable {
     this.splitMembers = const [],
     this.paymentMemo = '',
     this.markLinkID,
+    this.paymentType = PaymentType.expense,
   });
 
   PaymentDetailDraft copyWith({
@@ -41,6 +46,7 @@ class PaymentDetailDraft extends Equatable {
     List<MemberDomain>? splitMembers,
     String? paymentMemo,
     String? markLinkID,
+    PaymentType? paymentType,
   }) {
     return PaymentDetailDraft(
       id: id ?? this.id,
@@ -50,6 +56,7 @@ class PaymentDetailDraft extends Equatable {
       splitMembers: splitMembers ?? this.splitMembers,
       paymentMemo: paymentMemo ?? this.paymentMemo,
       markLinkID: markLinkID ?? this.markLinkID,
+      paymentType: paymentType ?? this.paymentType,
     );
   }
 
@@ -62,5 +69,6 @@ class PaymentDetailDraft extends Equatable {
         splitMembers,
         paymentMemo,
         markLinkID,
+        paymentType,
       ];
 }

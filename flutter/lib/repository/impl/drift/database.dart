@@ -40,7 +40,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -117,6 +117,12 @@ class AppDatabase extends _$AppDatabase {
             // F-9: action_time_logs に adjusted_at カラムを追加（nullable）
             await customStatement(
               'ALTER TABLE action_time_logs ADD COLUMN adjusted_at INTEGER',
+            );
+          }
+          if (from < 8) {
+            // F-8: payments に payment_type カラムを追加（NOT NULL DEFAULT 'expense'）
+            await customStatement(
+              "ALTER TABLE payments ADD COLUMN payment_type TEXT NOT NULL DEFAULT 'expense'",
             );
           }
         },

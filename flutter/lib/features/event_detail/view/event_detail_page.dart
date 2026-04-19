@@ -730,38 +730,53 @@ class _TabButton extends StatelessWidget {
 
   const _TabButton({required this.tab, required this.selectedTab});
 
-  String get _label => switch (tab) {
+  String _label(bool isVisitWork) => switch (tab) {
         EventDetailTab.overview => '概要',
         EventDetailTab.michiInfo => 'ミチ',
-        EventDetailTab.paymentInfo => '支払',
+        EventDetailTab.paymentInfo => isVisitWork ? '収支' : '支払',
       };
 
   @override
   Widget build(BuildContext context) {
     final isSelected = tab == selectedTab;
-    // BasicInfoBlocのisEditingを購読してonPressedで参照できるようにする
-    return BlocBuilder<BasicInfoBloc, BasicInfoState>(
+    // EventDetailBlocのtopicConfigとBasicInfoBlocのisEditingを購読する
+    return BlocBuilder<EventDetailBloc, EventDetailState>(
       buildWhen: (prev, curr) {
-        final prevEditing =
-            prev is BasicInfoLoaded ? prev.draft.isEditing : false;
-        final currEditing =
-            curr is BasicInfoLoaded ? curr.draft.isEditing : false;
-        return prevEditing != currEditing;
+        if (prev is! EventDetailLoaded || curr is! EventDetailLoaded) {
+          return true;
+        }
+        return prev.topicConfig != curr.topicConfig;
       },
-      builder: (context, basicInfoState) {
-        final isEditing =
-            basicInfoState is BasicInfoLoaded && basicInfoState.draft.isEditing;
-        return TextButton(
-          onPressed: () => _onTabPressed(context, isEditing),
-          child: Text(
-            _label,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                ),
-          ),
+      builder: (context, eventDetailState) {
+        final isVisitWork = eventDetailState is EventDetailLoaded &&
+            eventDetailState.topicConfig.markActions
+                .contains('visit_work_arrive');
+        return BlocBuilder<BasicInfoBloc, BasicInfoState>(
+          buildWhen: (prev, curr) {
+            final prevEditing =
+                prev is BasicInfoLoaded ? prev.draft.isEditing : false;
+            final currEditing =
+                curr is BasicInfoLoaded ? curr.draft.isEditing : false;
+            return prevEditing != currEditing;
+          },
+          builder: (context, basicInfoState) {
+            final isEditing = basicInfoState is BasicInfoLoaded &&
+                basicInfoState.draft.isEditing;
+            return TextButton(
+              key: Key('eventDetail_tab_${tab.name}'),
+              onPressed: () => _onTabPressed(context, isEditing),
+              child: Text(
+                _label(isVisitWork),
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
+                    ),
+              ),
+            );
+          },
         );
       },
     );

@@ -2,15 +2,20 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import '../../../domain/visit_work/visit_work_aggregation.dart';
 import '../../../domain/visit_work/visit_work_timeline.dart';
+import '../../overview/projection/payment_balance_section_projection.dart';
 
 /// visitWork 向け表示用 Projection
 class VisitWorkProjection extends Equatable {
   final VisitWorkTimeline timeline;
   final VisitWorkAggregation aggregation;
 
+  /// 収支セクション表示データ。PaymentDomain 0件の場合 null
+  final PaymentBalanceSectionProjection? balanceSection;
+
   const VisitWorkProjection({
     required this.timeline,
     required this.aggregation,
+    this.balanceSection,
   });
 
   static final _currencyFormat = NumberFormat('#,###');
@@ -46,5 +51,5 @@ class VisitWorkProjection extends Equatable {
   }
 
   @override
-  List<Object?> get props => [timeline, aggregation];
+  List<Object?> get props => [timeline, aggregation, balanceSection];
 }

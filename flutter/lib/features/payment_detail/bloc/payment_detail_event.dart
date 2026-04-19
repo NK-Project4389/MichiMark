@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../../domain/master/member/member_domain.dart';
+import '../../../domain/transaction/payment/payment_type.dart';
 
 sealed class PaymentDetailEvent extends Equatable {
   const PaymentDetailEvent();
@@ -83,6 +84,15 @@ class PaymentDetailSplitMembersAllCleared extends PaymentDetailEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+/// 売上/支出セグメントが切り替えられたとき
+class PaymentDetailTypeChanged extends PaymentDetailEvent {
+  final PaymentType paymentType;
+  const PaymentDetailTypeChanged(this.paymentType);
+
+  @override
+  List<Object?> get props => [paymentType];
 }
 
 /// キャンセルボタンが押されたとき

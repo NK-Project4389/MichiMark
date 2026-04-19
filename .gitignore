@@ -23,3 +23,6 @@ logs/
 
 # Migration scripts (one-time use, not tracked)
 scripts/migrate_to_gdrive.py
+.claude/gcp-oauth.keys.json
+.claude/google-oauth-token.json
+.claude/.gdrive-server-credentials.json

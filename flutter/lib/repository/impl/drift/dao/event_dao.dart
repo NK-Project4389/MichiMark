@@ -10,6 +10,7 @@ import '../../../../domain/transaction/event/event_domain.dart';
 import '../../../../domain/transaction/mark_link/mark_link_domain.dart';
 import '../../../../domain/transaction/mark_link/mark_or_link.dart';
 import '../../../../domain/transaction/payment/payment_domain.dart';
+import '../../../../domain/transaction/payment/payment_type.dart';
 import '../database.dart';
 import '../tables/event_tables.dart';
 import '../tables/junction_tables.dart';
@@ -472,6 +473,10 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
             updatedAt: row.updatedAt,
           );
 
+    final paymentType = row.paymentType == 'revenue'
+        ? PaymentType.revenue
+        : PaymentType.expense;
+
     return PaymentDomain(
       id: row.id,
       paymentSeq: row.paymentSeq,
@@ -483,6 +488,7 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
       markLinkID: row.markLinkId,
+      paymentType: paymentType,
     );
   }
 
@@ -535,6 +541,7 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
         createdAt: Value(d.createdAt),
         updatedAt: Value(d.updatedAt),
         markLinkId: Value(d.markLinkID),
+        paymentType: Value(d.paymentType.name),
       );
 
   // ---------------------------------------------------------------------------
