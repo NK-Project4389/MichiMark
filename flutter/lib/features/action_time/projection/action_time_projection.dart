@@ -4,18 +4,24 @@ import 'package:equatable/equatable.dart';
 class ActionTimeLogProjection extends Equatable {
   final String id;
   final String actionName;
+
+  /// 有効時間（adjustedAt ?? timestamp）の HH:mm 表示
   final String timestampLabel;
   final String transitionLabel;
+
+  /// adjustedAt != null の場合 true。編集アイコン表示に使用
+  final bool isAdjusted;
 
   const ActionTimeLogProjection({
     required this.id,
     required this.actionName,
     required this.timestampLabel,
     required this.transitionLabel,
+    this.isAdjusted = false,
   });
 
   @override
-  List<Object?> get props => [id, actionName, timestampLabel, transitionLabel];
+  List<Object?> get props => [id, actionName, timestampLabel, transitionLabel, isAdjusted];
 }
 
 /// アクションボタン1件の表示用Projection

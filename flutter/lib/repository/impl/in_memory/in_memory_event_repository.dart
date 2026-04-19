@@ -70,8 +70,25 @@ class InMemoryEventRepository implements EventRepository {
     final logs = _actionTimeLogs
         .where((l) => l.eventId == eventId && !l.isDeleted)
         .toList()
-      ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+      ..sort((a, b) {
+        final aTime = a.adjustedAt ?? a.timestamp;
+        final bTime = b.adjustedAt ?? b.timestamp;
+        return aTime.compareTo(bTime);
+      });
     return logs;
+  }
+
+  @override
+  Future<void> updateActionTimeLogAdjustedAt(
+      String logId, DateTime? adjustedAt) async {
+    final index = _actionTimeLogs.indexWhere((l) => l.id == logId);
+    if (index >= 0) {
+      final log = _actionTimeLogs[index];
+      _actionTimeLogs[index] = log.copyWith(
+        adjustedAt: adjustedAt,
+        clearAdjustedAt: adjustedAt == null,
+      );
+    }
   }
 
   @override

@@ -55,6 +55,16 @@ class ActionTimeAdapter {
         .toList();
   }
 
+  /// adjustedAt と timestamp の時・分が一致する場合は null を返す（NULL 正規化）。
+  /// 一致しない場合は adjustedAt をそのまま返す。
+  static DateTime? normalizeAdjustedAt(DateTime timestamp, DateTime adjustedAt) {
+    if (timestamp.hour == adjustedAt.hour &&
+        timestamp.minute == adjustedAt.minute) {
+      return null;
+    }
+    return adjustedAt;
+  }
+
   /// Draft・Projectionを生成する（REQ-002・004・005対応）。
   static (ActionTimeDraft, ActionTimeProjection) buildDraftAndProjection({
     required String eventId,
@@ -66,7 +76,11 @@ class ActionTimeAdapter {
   }) {
     final actionMap = {for (final a in allActions) a.id: a};
     final sortedLogs = List.of(logs)
-      ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+      ..sort((a, b) {
+        final aTime = a.adjustedAt ?? a.timestamp;
+        final bTime = b.adjustedAt ?? b.timestamp;
+        return aTime.compareTo(bTime);
+      });
 
     final currentState = deriveCurrentState(sortedLogs, actionMap);
     final availableActions = deriveAvailableActions(markOrLink, topicConfig, actionMap);
@@ -86,26 +100,30 @@ class ActionTimeAdapter {
       final toLabel = action?.toState?.label ?? '変化なし';
       // REQ-004: fromState は廃止。状態遷移ラベルは toState のみで表示
       final transitionLabel = '→ $toLabel';
+      // 有効時間（adjustedAt ?? timestamp）を表示に使用
+      final effectiveTime = log.adjustedAt ?? log.timestamp;
       return ActionTimeLogProjection(
         id: log.id,
         actionName: action?.actionName ?? '（不明）',
-        timestampLabel: _timeFormat.format(log.timestamp),
+        timestampLabel: _timeFormat.format(effectiveTime),
         transitionLabel: transitionLabel,
+        isAdjusted: log.adjustedAt != null,
       );
     }).toList();
 
     final isBreakActive = currentState == ActionState.break_;
 
-    // buttonItems: availableActionsの順に各アクションの最新タイムスタンプを逆引きして生成
-    // logs全体のうち最大timestampのlogのactionIdをlastPressedActionIdとする
+    // buttonItems: availableActionsの順に各アクションの最新有効時間を逆引きして生成
+    // logs全体のうち最大有効時間のlogのactionIdをlastPressedActionIdとする
     final lastPressedActionId = sortedLogs.isNotEmpty ? sortedLogs.last.actionId : null;
 
-    // アクションIDごとに最新タイムスタンプを算出
+    // アクションIDごとに有効時間の最大値を算出
     final Map<String, DateTime> lastLoggedAtMap = {};
     for (final log in sortedLogs) {
+      final effectiveTime = log.adjustedAt ?? log.timestamp;
       final existing = lastLoggedAtMap[log.actionId];
-      if (existing == null || log.timestamp.isAfter(existing)) {
-        lastLoggedAtMap[log.actionId] = log.timestamp;
+      if (existing == null || effectiveTime.isAfter(existing)) {
+        lastLoggedAtMap[log.actionId] = effectiveTime;
       }
     }
 

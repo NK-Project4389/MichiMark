@@ -4412,6 +4412,17 @@ class $ActionTimeLogsTable extends ActionTimeLogs
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _adjustedAtMeta = const VerificationMeta(
+    'adjustedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> adjustedAt = GeneratedColumn<DateTime>(
+    'adjusted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _isDeletedMeta = const VerificationMeta(
     'isDeleted',
   );
@@ -4466,6 +4477,7 @@ class $ActionTimeLogsTable extends ActionTimeLogs
     eventId,
     actionId,
     timestamp,
+    adjustedAt,
     isDeleted,
     createdAt,
     updatedAt,
@@ -4511,6 +4523,12 @@ class $ActionTimeLogsTable extends ActionTimeLogs
       );
     } else if (isInserting) {
       context.missing(_timestampMeta);
+    }
+    if (data.containsKey('adjusted_at')) {
+      context.handle(
+        _adjustedAtMeta,
+        adjustedAt.isAcceptableOrUnknown(data['adjusted_at']!, _adjustedAtMeta),
+      );
     }
     if (data.containsKey('is_deleted')) {
       context.handle(
@@ -4568,6 +4586,10 @@ class $ActionTimeLogsTable extends ActionTimeLogs
         DriftSqlType.dateTime,
         data['${effectivePrefix}timestamp'],
       )!,
+      adjustedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}adjusted_at'],
+      ),
       isDeleted: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_deleted'],
@@ -4598,6 +4620,9 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
   final String eventId;
   final String actionId;
   final DateTime timestamp;
+
+  /// ユーザーが変更した時刻（F-9: nullable。null = 未変更）
+  final DateTime? adjustedAt;
   final bool isDeleted;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -4609,6 +4634,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
     required this.eventId,
     required this.actionId,
     required this.timestamp,
+    this.adjustedAt,
     required this.isDeleted,
     required this.createdAt,
     required this.updatedAt,
@@ -4621,6 +4647,9 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
     map['event_id'] = Variable<String>(eventId);
     map['action_id'] = Variable<String>(actionId);
     map['timestamp'] = Variable<DateTime>(timestamp);
+    if (!nullToAbsent || adjustedAt != null) {
+      map['adjusted_at'] = Variable<DateTime>(adjustedAt);
+    }
     map['is_deleted'] = Variable<bool>(isDeleted);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -4636,6 +4665,9 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
       eventId: Value(eventId),
       actionId: Value(actionId),
       timestamp: Value(timestamp),
+      adjustedAt: adjustedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(adjustedAt),
       isDeleted: Value(isDeleted),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -4655,6 +4687,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
       eventId: serializer.fromJson<String>(json['eventId']),
       actionId: serializer.fromJson<String>(json['actionId']),
       timestamp: serializer.fromJson<DateTime>(json['timestamp']),
+      adjustedAt: serializer.fromJson<DateTime?>(json['adjustedAt']),
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -4669,6 +4702,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
       'eventId': serializer.toJson<String>(eventId),
       'actionId': serializer.toJson<String>(actionId),
       'timestamp': serializer.toJson<DateTime>(timestamp),
+      'adjustedAt': serializer.toJson<DateTime?>(adjustedAt),
       'isDeleted': serializer.toJson<bool>(isDeleted),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -4681,6 +4715,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
     String? eventId,
     String? actionId,
     DateTime? timestamp,
+    Value<DateTime?> adjustedAt = const Value.absent(),
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -4690,6 +4725,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
     eventId: eventId ?? this.eventId,
     actionId: actionId ?? this.actionId,
     timestamp: timestamp ?? this.timestamp,
+    adjustedAt: adjustedAt.present ? adjustedAt.value : this.adjustedAt,
     isDeleted: isDeleted ?? this.isDeleted,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -4701,6 +4737,9 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
       eventId: data.eventId.present ? data.eventId.value : this.eventId,
       actionId: data.actionId.present ? data.actionId.value : this.actionId,
       timestamp: data.timestamp.present ? data.timestamp.value : this.timestamp,
+      adjustedAt: data.adjustedAt.present
+          ? data.adjustedAt.value
+          : this.adjustedAt,
       isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -4717,6 +4756,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
           ..write('eventId: $eventId, ')
           ..write('actionId: $actionId, ')
           ..write('timestamp: $timestamp, ')
+          ..write('adjustedAt: $adjustedAt, ')
           ..write('isDeleted: $isDeleted, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -4731,6 +4771,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
     eventId,
     actionId,
     timestamp,
+    adjustedAt,
     isDeleted,
     createdAt,
     updatedAt,
@@ -4744,6 +4785,7 @@ class ActionTimeLog extends DataClass implements Insertable<ActionTimeLog> {
           other.eventId == this.eventId &&
           other.actionId == this.actionId &&
           other.timestamp == this.timestamp &&
+          other.adjustedAt == this.adjustedAt &&
           other.isDeleted == this.isDeleted &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
@@ -4755,6 +4797,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
   final Value<String> eventId;
   final Value<String> actionId;
   final Value<DateTime> timestamp;
+  final Value<DateTime?> adjustedAt;
   final Value<bool> isDeleted;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -4765,6 +4808,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
     this.eventId = const Value.absent(),
     this.actionId = const Value.absent(),
     this.timestamp = const Value.absent(),
+    this.adjustedAt = const Value.absent(),
     this.isDeleted = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -4776,6 +4820,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
     required String eventId,
     required String actionId,
     required DateTime timestamp,
+    this.adjustedAt = const Value.absent(),
     this.isDeleted = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -4792,6 +4837,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
     Expression<String>? eventId,
     Expression<String>? actionId,
     Expression<DateTime>? timestamp,
+    Expression<DateTime>? adjustedAt,
     Expression<bool>? isDeleted,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -4803,6 +4849,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
       if (eventId != null) 'event_id': eventId,
       if (actionId != null) 'action_id': actionId,
       if (timestamp != null) 'timestamp': timestamp,
+      if (adjustedAt != null) 'adjusted_at': adjustedAt,
       if (isDeleted != null) 'is_deleted': isDeleted,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -4816,6 +4863,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
     Value<String>? eventId,
     Value<String>? actionId,
     Value<DateTime>? timestamp,
+    Value<DateTime?>? adjustedAt,
     Value<bool>? isDeleted,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -4827,6 +4875,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
       eventId: eventId ?? this.eventId,
       actionId: actionId ?? this.actionId,
       timestamp: timestamp ?? this.timestamp,
+      adjustedAt: adjustedAt ?? this.adjustedAt,
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -4849,6 +4898,9 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
     }
     if (timestamp.present) {
       map['timestamp'] = Variable<DateTime>(timestamp.value);
+    }
+    if (adjustedAt.present) {
+      map['adjusted_at'] = Variable<DateTime>(adjustedAt.value);
     }
     if (isDeleted.present) {
       map['is_deleted'] = Variable<bool>(isDeleted.value);
@@ -4875,6 +4927,7 @@ class ActionTimeLogsCompanion extends UpdateCompanion<ActionTimeLog> {
           ..write('eventId: $eventId, ')
           ..write('actionId: $actionId, ')
           ..write('timestamp: $timestamp, ')
+          ..write('adjustedAt: $adjustedAt, ')
           ..write('isDeleted: $isDeleted, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -10573,6 +10626,7 @@ typedef $$ActionTimeLogsTableCreateCompanionBuilder =
       required String eventId,
       required String actionId,
       required DateTime timestamp,
+      Value<DateTime?> adjustedAt,
       Value<bool> isDeleted,
       required DateTime createdAt,
       required DateTime updatedAt,
@@ -10585,6 +10639,7 @@ typedef $$ActionTimeLogsTableUpdateCompanionBuilder =
       Value<String> eventId,
       Value<String> actionId,
       Value<DateTime> timestamp,
+      Value<DateTime?> adjustedAt,
       Value<bool> isDeleted,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -10654,6 +10709,11 @@ class $$ActionTimeLogsTableFilterComposer
 
   ColumnFilters<DateTime> get timestamp => $composableBuilder(
     column: $table.timestamp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get adjustedAt => $composableBuilder(
+    column: $table.adjustedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10743,6 +10803,11 @@ class $$ActionTimeLogsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get adjustedAt => $composableBuilder(
+    column: $table.adjustedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isDeleted => $composableBuilder(
     column: $table.isDeleted,
     builder: (column) => ColumnOrderings(column),
@@ -10824,6 +10889,11 @@ class $$ActionTimeLogsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get timestamp =>
       $composableBuilder(column: $table.timestamp, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get adjustedAt => $composableBuilder(
+    column: $table.adjustedAt,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get isDeleted =>
       $composableBuilder(column: $table.isDeleted, builder: (column) => column);
@@ -10920,6 +10990,7 @@ class $$ActionTimeLogsTableTableManager
                 Value<String> eventId = const Value.absent(),
                 Value<String> actionId = const Value.absent(),
                 Value<DateTime> timestamp = const Value.absent(),
+                Value<DateTime?> adjustedAt = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -10930,6 +11001,7 @@ class $$ActionTimeLogsTableTableManager
                 eventId: eventId,
                 actionId: actionId,
                 timestamp: timestamp,
+                adjustedAt: adjustedAt,
                 isDeleted: isDeleted,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -10942,6 +11014,7 @@ class $$ActionTimeLogsTableTableManager
                 required String eventId,
                 required String actionId,
                 required DateTime timestamp,
+                Value<DateTime?> adjustedAt = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
@@ -10952,6 +11025,7 @@ class $$ActionTimeLogsTableTableManager
                 eventId: eventId,
                 actionId: actionId,
                 timestamp: timestamp,
+                adjustedAt: adjustedAt,
                 isDeleted: isDeleted,
                 createdAt: createdAt,
                 updatedAt: updatedAt,

@@ -64,7 +64,7 @@ class StubInvitationRepository implements InvitationRepository {
       token: 'stub-token-inv4',
       code: 'STB-0001',
       expiresAt: DateTime.now().add(Duration(hours: request.expiresHours)),
-      inviteUrl: 'https://michimark.example.com/invite/stub-token-inv4',
+      inviteUrl: 'https://michimark-web.vercel.app/invite/stub-token-inv4',
     );
   }
 

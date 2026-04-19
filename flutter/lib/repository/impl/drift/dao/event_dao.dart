@@ -246,10 +246,22 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
         eventId: Value(log.eventId),
         actionId: Value(log.actionId),
         timestamp: Value(log.timestamp),
+        adjustedAt: Value(log.adjustedAt),
         isDeleted: Value(log.isDeleted),
         createdAt: Value(log.createdAt),
         updatedAt: Value(log.updatedAt),
         markLinkId: Value(log.markLinkId),
+      ),
+    );
+  }
+
+  Future<void> updateActionTimeLogAdjustedAt(
+      String logId, DateTime? adjustedAt) async {
+    final now = DateTime.now();
+    await (update(actionTimeLogs)..where((t) => t.id.equals(logId))).write(
+      ActionTimeLogsCompanion(
+        adjustedAt: Value(adjustedAt),
+        updatedAt: Value(now),
       ),
     );
   }
@@ -280,6 +292,7 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
         eventId: row.eventId,
         actionId: row.actionId,
         timestamp: row.timestamp,
+        adjustedAt: row.adjustedAt,
         isDeleted: row.isDeleted,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,

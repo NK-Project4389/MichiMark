@@ -51,6 +51,11 @@ class DriftEventRepository implements EventRepository {
       _dao.fetchActionTimeLogs(eventId);
 
   @override
+  Future<void> updateActionTimeLogAdjustedAt(
+          String logId, DateTime? adjustedAt) async =>
+      _dao.updateActionTimeLogAdjustedAt(logId, adjustedAt);
+
+  @override
   Future<List<EventDomain>> fetchByDateRange(
     DateTime start,
     DateTime end,

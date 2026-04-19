@@ -34,6 +34,9 @@ abstract interface class EventRepository {
   /// 指定イベントの ActionTimeLog を timestamp ASC で取得
   Future<List<ActionTimeLog>> fetchActionTimeLogs(String eventId);
 
+  /// 指定ログの adjustedAt を更新する（null = 変更なしに戻す）
+  Future<void> updateActionTimeLogAdjustedAt(String logId, DateTime? adjustedAt);
+
   // ---------------------------------------------------------------------------
   // Aggregation用クエリ
   // ---------------------------------------------------------------------------

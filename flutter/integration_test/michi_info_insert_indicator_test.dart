@@ -4,6 +4,7 @@
 ///
 /// Spec: docs/Spec/Features/FS-michi_info_insert_button_size.md §8
 /// テストシナリオ: TC-MIB-001 〜 TC-MIB-005
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -45,8 +46,7 @@ void main() {
       of: find.text('箱根日帰りドライブ'),
       matching: find.byType(GestureDetector),
     );
-    expect(eventCards, findsWidgets,
-        reason: '「箱根日帰りドライブ」のイベントカードが見つかること');
+    expect(eventCards, findsWidgets, reason: '「箱根日帰りドライブ」のイベントカードが見つかること');
 
     await tester.tap(eventCards.first);
     for (var i = 0; i < 15; i++) {
@@ -83,8 +83,7 @@ void main() {
   // ────────────────────────────────────────────────────────
   // TC-MIB-001: InsertMode OFF 時にインジケーターが表示されないこと
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-MIB-001: InsertMode OFF 時にインジケーターが表示されないこと',
-      (tester) async {
+  testWidgets('TC-MIB-001: InsertMode OFF 時にインジケーターが表示されないこと', (tester) async {
     await goToMichiInfoTab(tester);
 
     // InsertMode が OFF の状態（FABタップ前）を確認
@@ -92,7 +91,8 @@ void main() {
     expect(
       find.byKey(const Key('michiInfo_button_insertIndicator_head')),
       findsNothing,
-      reason: 'InsertMode OFF 時は michiInfo_button_insertIndicator_head が存在しないこと',
+      reason:
+          'InsertMode OFF 時は michiInfo_button_insertIndicator_head が存在しないこと',
     );
 
     // add_circle アイコン（インジケーター）が画面上に存在しないこと
@@ -106,8 +106,9 @@ void main() {
   // ────────────────────────────────────────────────────────
   // TC-MIB-002: InsertMode ON 時に先頭カードの前にインジケーターが表示されること
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-MIB-002: InsertMode ON 時に先頭カードの前にインジケーターが表示されること',
-      (tester) async {
+  testWidgets('TC-MIB-002: InsertMode ON 時に先頭カードの前にインジケーターが表示されること', (
+    tester,
+  ) async {
     await goToMichiInfoTab(tester);
 
     // FABをタップして InsertMode を ON にする
@@ -116,7 +117,11 @@ void main() {
     await tester.tap(fab);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byKey(const Key('michiInfo_button_insertIndicator_head')).evaluate().isNotEmpty) break;
+      if (find
+          .byKey(const Key('michiInfo_button_insertIndicator_head'))
+          .evaluate()
+          .isNotEmpty)
+        break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
@@ -124,15 +129,17 @@ void main() {
     expect(
       find.byKey(const Key('michiInfo_button_insertIndicator_head')),
       findsOneWidget,
-      reason: 'InsertMode ON 時は michiInfo_button_insertIndicator_head が先頭に表示されること',
+      reason:
+          'InsertMode ON 時は michiInfo_button_insertIndicator_head が先頭に表示されること',
     );
   });
 
   // ────────────────────────────────────────────────────────
   // TC-MIB-003: InsertMode ON 時にカード間にインジケーターが表示されること
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-MIB-003: InsertMode ON 時にカード間にインジケーターが表示されること',
-      (tester) async {
+  testWidgets('TC-MIB-003: InsertMode ON 時にカード間にインジケーターが表示されること', (
+    tester,
+  ) async {
     await goToMichiInfoTab(tester);
 
     // FABをタップして InsertMode を ON にする
@@ -166,8 +173,7 @@ void main() {
   // ────────────────────────────────────────────────────────
   // TC-MIB-004: 先頭インジケーターをタップすると先頭挿入フローが起動すること
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-MIB-004: 先頭インジケーターをタップすると先頭挿入フローが起動すること',
-      (tester) async {
+  testWidgets('TC-MIB-004: 先頭インジケーターをタップすると先頭挿入フローが起動すること', (tester) async {
     await goToMichiInfoTab(tester);
 
     // FABをタップして InsertMode を ON にする
@@ -176,12 +182,18 @@ void main() {
     await tester.tap(fab);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byKey(const Key('michiInfo_button_insertIndicator_head')).evaluate().isNotEmpty) break;
+      if (find
+          .byKey(const Key('michiInfo_button_insertIndicator_head'))
+          .evaluate()
+          .isNotEmpty)
+        break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     // 先頭インジケーターが表示されていること
-    final topIndicator = find.byKey(const Key('michiInfo_button_insertIndicator_head'));
+    final topIndicator = find.byKey(
+      const Key('michiInfo_button_insertIndicator_head'),
+    );
     expect(topIndicator, findsOneWidget, reason: '先頭インジケーターが表示されること');
 
     // 先頭インジケーターをタップ
@@ -192,15 +204,19 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('地点を追加').evaluate().isNotEmpty ||
           find.text('Markを追加').evaluate().isNotEmpty ||
-          find.text('Mark を追加').evaluate().isNotEmpty) break;
+          find.text('Mark を追加').evaluate().isNotEmpty) {
+        break;
+      }
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     // BottomSheet が表示されること（Mark/Link 選択）
-    final hasAddMark = find.text('地点を追加').evaluate().isNotEmpty ||
+    final hasAddMark =
+        find.text('地点を追加').evaluate().isNotEmpty ||
         find.text('Markを追加').evaluate().isNotEmpty ||
         find.text('Mark を追加').evaluate().isNotEmpty;
-    final hasAddLink = find.text('区間を追加').evaluate().isNotEmpty ||
+    final hasAddLink =
+        find.text('区間を追加').evaluate().isNotEmpty ||
         find.text('Linkを追加').evaluate().isNotEmpty ||
         find.text('Link を追加').evaluate().isNotEmpty ||
         find.text('リンクを追加').evaluate().isNotEmpty;
@@ -226,18 +242,13 @@ void main() {
 
     // MarkDetail 画面に遷移すること
     final reached = await waitForMarkDetailScreen(tester);
-    expect(
-      reached,
-      isTrue,
-      reason: '先頭インジケータータップ後にMarkDetail新規作成画面へ遷移すること',
-    );
+    expect(reached, isTrue, reason: '先頭インジケータータップ後にMarkDetail新規作成画面へ遷移すること');
   });
 
   // ────────────────────────────────────────────────────────
   // TC-MIB-005: カード間インジケーターをタップすると挿入フローが起動すること
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-MIB-005: カード間インジケーターをタップすると挿入フローが起動すること',
-      (tester) async {
+  testWidgets('TC-MIB-005: カード間インジケーターをタップすると挿入フローが起動すること', (tester) async {
     await goToMichiInfoTab(tester);
 
     // FABをタップして InsertMode を ON にする
@@ -274,15 +285,19 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('地点を追加').evaluate().isNotEmpty ||
           find.text('Markを追加').evaluate().isNotEmpty ||
-          find.text('Mark を追加').evaluate().isNotEmpty) break;
+          find.text('Mark を追加').evaluate().isNotEmpty) {
+        break;
+      }
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     // BottomSheet が表示されること
-    final hasAddMark = find.text('地点を追加').evaluate().isNotEmpty ||
+    final hasAddMark =
+        find.text('地点を追加').evaluate().isNotEmpty ||
         find.text('Markを追加').evaluate().isNotEmpty ||
         find.text('Mark を追加').evaluate().isNotEmpty;
-    final hasAddLink = find.text('区間を追加').evaluate().isNotEmpty ||
+    final hasAddLink =
+        find.text('区間を追加').evaluate().isNotEmpty ||
         find.text('Linkを追加').evaluate().isNotEmpty ||
         find.text('Link を追加').evaluate().isNotEmpty ||
         find.text('リンクを追加').evaluate().isNotEmpty;
@@ -308,10 +323,6 @@ void main() {
 
     // MarkDetail 画面に遷移すること
     final reached = await waitForMarkDetailScreen(tester);
-    expect(
-      reached,
-      isTrue,
-      reason: 'カード間インジケータータップ後にMarkDetail新規作成画面へ遷移すること',
-    );
+    expect(reached, isTrue, reason: 'カード間インジケータータップ後にMarkDetail新規作成画面へ遷移すること');
   });
 }

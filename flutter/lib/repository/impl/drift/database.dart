@@ -40,7 +40,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -111,6 +111,12 @@ class AppDatabase extends _$AppDatabase {
             // F-10: 「出発」（visit_work_depart）の end_flag を 1 に設定
             await customStatement(
               "UPDATE actions SET end_flag = 1 WHERE id = 'visit_work_depart'",
+            );
+          }
+          if (from < 7) {
+            // F-9: action_time_logs に adjusted_at カラムを追加（nullable）
+            await customStatement(
+              'ALTER TABLE action_time_logs ADD COLUMN adjusted_at INTEGER',
             );
           }
         },

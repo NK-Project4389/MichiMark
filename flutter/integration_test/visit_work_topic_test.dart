@@ -136,7 +136,7 @@ void main() {
     // Mark が保存されているか確認（mark_action_button が表示されること）
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byKey(const Key('mark_action_button')).evaluate().isNotEmpty) break;
+      if (find.byWidgetPredicate((w) => w.key != null && w.key.toString().contains('michiInfo_button_actionTime_')).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
     return null;
@@ -192,7 +192,7 @@ void main() {
   /// visitWork トピックでは 'mark_action_button' キーのボタンをタップするとアクション選択ボトムシートが表示される。
   Future<bool> tapMarkCardToOpenActionSheet(WidgetTester tester) async {
     // mark_action_button: visitWork トピックで Mark 行に表示される ⚡ ボタン
-    final actionButton = find.byKey(const Key('mark_action_button'));
+    final actionButton = find.byWidgetPredicate((w) => w.key != null && w.key.toString().contains('michiInfo_button_actionTime_'));
 
     if (actionButton.evaluate().isEmpty) {
       return false;
@@ -408,14 +408,14 @@ void main() {
     // ボトムシートが閉じてmark_action_state_badgeが表示されるまで待機する
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byKey(const Key('mark_action_state_badge')).evaluate().isNotEmpty) break;
+      if (find.byWidgetPredicate((w) => w.key != null && w.key.toString().contains('michiInfo_badge_actionState_')).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     // 状態バッジが表示される
     // Key: 'mark_action_state_badge'（実装コードのキー名に合わせる）
     final hasBadge =
-        find.byKey(const Key('mark_action_state_badge')).evaluate().isNotEmpty;
+        find.byWidgetPredicate((w) => w.key != null && w.key.toString().contains('michiInfo_badge_actionState_')).evaluate().isNotEmpty;
 
     expect(hasBadge, isTrue);
   });
@@ -450,7 +450,7 @@ void main() {
       // ボトムシートが閉じてmark_action_buttonが再表示されるまで待つ
       for (var i = 0; i < 20; i++) {
         await tester.pump(const Duration(milliseconds: 300));
-        if (find.byKey(const Key('mark_action_button')).evaluate().isNotEmpty) break;
+        if (find.byWidgetPredicate((w) => w.key != null && w.key.toString().contains('michiInfo_button_actionTime_')).evaluate().isNotEmpty) break;
       }
       await tester.pump(const Duration(milliseconds: 300));
     }

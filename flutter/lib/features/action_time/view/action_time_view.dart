@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/action_time_bloc.dart';
@@ -283,15 +284,46 @@ class _LogItem extends StatelessWidget {
 
   const _LogItem({super.key, required this.item});
 
+  void _showTimePickerBottomSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      isDismissible: true,
+      builder: (sheetContext) {
+        return _TimePickerSheet(
+          logId: item.id,
+          bloc: context.read<ActionTimeBloc>(),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
       dense: true,
-      leading: Text(
-        item.timestampLabel,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+      leading: GestureDetector(
+        key: Key('actionTime_timeLabel_${item.id}'),
+        onTap: () => _showTimePickerBottomSheet(context),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              item.timestampLabel,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
+            if (item.isAdjusted) ...[
+              const SizedBox(width: 2),
+              Icon(
+                key: Key('actionTime_icon_adjusted_${item.id}'),
+                Icons.edit,
+                size: 12,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ],
+          ],
+        ),
       ),
       title: Text(item.actionName),
       subtitle: Text(
@@ -302,6 +334,77 @@ class _LogItem extends StatelessWidget {
         icon: const Icon(Icons.delete_outline, size: 18),
         onPressed: () =>
             context.read<ActionTimeBloc>().add(ActionTimeLogDeleted(item.id)),
+      ),
+    );
+  }
+}
+
+class _TimePickerSheet extends StatefulWidget {
+  final String logId;
+  final ActionTimeBloc bloc;
+
+  const _TimePickerSheet({
+    required this.logId,
+    required this.bloc,
+  });
+
+  @override
+  State<_TimePickerSheet> createState() => _TimePickerSheetState();
+}
+
+class _TimePickerSheetState extends State<_TimePickerSheet> {
+  late DateTime _selectedTime;
+
+  @override
+  void initState() {
+    super.initState();
+    // 初期値: 現在時刻
+    _selectedTime = DateTime.now();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('actionTime_timePicker_sheet'),
+      height: 320,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                key: const Key('actionTime_timePicker_cancel'),
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('キャンセル'),
+              ),
+              TextButton(
+                key: const Key('actionTime_timePicker_confirm'),
+                onPressed: () {
+                  widget.bloc.add(
+                    ActionTimeLogAdjustedAtUpdated(
+                      widget.logId,
+                      _selectedTime,
+                    ),
+                  );
+                  Navigator.of(context).pop();
+                },
+                child: const Text('確定'),
+              ),
+            ],
+          ),
+          Expanded(
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.time,
+              initialDateTime: _selectedTime,
+              onDateTimeChanged: (dt) {
+                setState(() {
+                  _selectedTime = dt;
+                });
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

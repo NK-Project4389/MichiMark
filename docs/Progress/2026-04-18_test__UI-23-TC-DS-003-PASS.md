@@ -1,6 +1,9 @@
 # UI-23 TC-DS-003 修正・全件PASS
 
 ## 完了した作業
+- docs: F-10完了・タスクボード更新・進捗ファイル作成 (28db661)
+- feat: F-10 EndFlag機能実装（出発アクション記録でMarkカードを完了ビジュアルに変更） (612245e)
+- docs: UI-19・F-8・F-9 要件書+Spec完了・F-10 schemaVersion更新 (89ebc3f)
 - feat: UI-24 ActionTimeアクションボタン大型化完了（7PASS/0FAIL） (a39c093)
 - docs: セッションサマリー追加・README更新（launchd調査・BUG-4完了） (1a72093)
 - fix: BUG-4完了 - 招待ボタン遷移先テスト全件PASS・タスクボード更新 (d68c9c6)

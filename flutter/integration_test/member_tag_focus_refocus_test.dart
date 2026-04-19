@@ -58,10 +58,13 @@ void main() {
     await tester.tap(cards.first);
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byKey(const Key('basicInfoRead_container_section'))
+      if (find
+              .byKey(const Key('basicInfoRead_container_section'))
               .evaluate()
               .isNotEmpty ||
-          find.text('タップして編集').evaluate().isNotEmpty) break;
+          find.text('タップして編集').evaluate().isNotEmpty) {
+        break;
+      }
     }
     await tester.pump(const Duration(milliseconds: 300));
     return true;
@@ -83,9 +86,12 @@ void main() {
     await tester.tap(section.first);
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byKey(const Key('basicInfoForm_button_cancel'))
+      if (find
+          .byKey(const Key('basicInfoForm_button_cancel'))
           .evaluate()
-          .isNotEmpty) break;
+          .isNotEmpty) {
+        break;
+      }
     }
     await tester.pump(const Duration(milliseconds: 300));
     return true;
@@ -117,13 +123,15 @@ void main() {
     await tester.tap(memberInput);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      final suggestions = tester.elementList(find.byWidgetPredicate((widget) {
-        final key = widget.key;
-        if (key is ValueKey<String>) {
-          return key.value.startsWith('basicInfo_item_memberSuggestion_');
-        }
-        return false;
-      }));
+      final suggestions = tester.elementList(
+        find.byWidgetPredicate((widget) {
+          final key = widget.key;
+          if (key is ValueKey<String>) {
+            return key.value.startsWith('basicInfo_item_memberSuggestion_');
+          }
+          return false;
+        }),
+      );
       if (suggestions.isNotEmpty) return true;
     }
     return false;
@@ -136,13 +144,15 @@ void main() {
     await tester.tap(tagInput);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      final suggestions = tester.elementList(find.byWidgetPredicate((widget) {
-        final key = widget.key;
-        if (key is ValueKey<String>) {
-          return key.value.startsWith('basicInfo_item_tagSuggestion_');
-        }
-        return false;
-      }));
+      final suggestions = tester.elementList(
+        find.byWidgetPredicate((widget) {
+          final key = widget.key;
+          if (key is ValueKey<String>) {
+            return key.value.startsWith('basicInfo_item_tagSuggestion_');
+          }
+          return false;
+        }),
+      );
       if (suggestions.isNotEmpty) return true;
     }
     return false;
@@ -152,8 +162,9 @@ void main() {
   // TC-MFR-001: メンバーを追加後、入力欄にフォーカスが継続している
   // ────────────────────────────────────────────────────────
 
-  testWidgets('TC-MFR-001: メンバーをサジェストから追加後、入力欄（EditableText）にフォーカスが継続していること',
-      (tester) async {
+  testWidgets('TC-MFR-001: メンバーをサジェストから追加後、入力欄（EditableText）にフォーカスが継続していること', (
+    tester,
+  ) async {
     final skipReason = await setupBasicInfoEditMode(tester);
     if (skipReason != null) {
       print('[SKIP] $skipReason');
@@ -190,9 +201,12 @@ void main() {
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       // 入力欄が引き続き存在するかチェック（フォーカスが戻った証拠）
-      if (find.byKey(const Key('basicInfo_field_memberInput'))
+      if (find
+          .byKey(const Key('basicInfo_field_memberInput'))
           .evaluate()
-          .isNotEmpty) break;
+          .isNotEmpty) {
+        break;
+      }
     }
     await tester.pump(const Duration(milliseconds: 500));
 
@@ -208,8 +222,7 @@ void main() {
   // TC-MFR-002: 空欄でエンターするとメンバー入力欄のフォーカスが外れる
   // ────────────────────────────────────────────────────────
 
-  testWidgets('TC-MFR-002: メンバー入力欄が空欄の状態でエンターするとサジェストが閉じること',
-      (tester) async {
+  testWidgets('TC-MFR-002: メンバー入力欄が空欄の状態でエンターするとサジェストが閉じること', (tester) async {
     final skipReason = await setupBasicInfoEditMode(tester);
     if (skipReason != null) {
       print('[SKIP] $skipReason');
@@ -225,9 +238,12 @@ void main() {
     await tester.tap(memberInput);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byKey(const Key('basicInfo_field_memberInput'))
+      if (find
+          .byKey(const Key('basicInfo_field_memberInput'))
           .evaluate()
-          .isNotEmpty) break;
+          .isNotEmpty) {
+        break;
+      }
     }
     await tester.pump(const Duration(milliseconds: 300));
 
@@ -238,37 +254,39 @@ void main() {
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       // サジェストが閉じるまで待つ
-      final suggestions = tester.elementList(find.byWidgetPredicate((widget) {
-        final key = widget.key;
-        if (key is ValueKey<String>) {
-          return key.value.startsWith('basicInfo_item_memberSuggestion_');
-        }
-        return false;
-      }));
+      final suggestions = tester.elementList(
+        find.byWidgetPredicate((widget) {
+          final key = widget.key;
+          if (key is ValueKey<String>) {
+            return key.value.startsWith('basicInfo_item_memberSuggestion_');
+          }
+          return false;
+        }),
+      );
       if (suggestions.isEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     // 空欄エンター後、メンバーサジェストが閉じていること（フォーカス終了）
-    final suggestionsAfter = tester.elementList(find.byWidgetPredicate((widget) {
-      final key = widget.key;
-      if (key is ValueKey<String>) {
-        return key.value.startsWith('basicInfo_item_memberSuggestion_');
-      }
-      return false;
-    }));
-    expect(
-      suggestionsAfter.isEmpty,
-      isTrue,
+    final suggestionsAfter = tester.elementList(
+      find.byWidgetPredicate((widget) {
+        final key = widget.key;
+        if (key is ValueKey<String>) {
+          return key.value.startsWith('basicInfo_item_memberSuggestion_');
+        }
+        return false;
+      }),
     );
+    expect(suggestionsAfter.isEmpty, isTrue);
   });
 
   // ────────────────────────────────────────────────────────
   // TC-MFR-003: タグを追加後、入力欄にフォーカスが継続している
   // ────────────────────────────────────────────────────────
 
-  testWidgets('TC-MFR-003: タグをサジェストから追加後、入力欄（EditableText）にフォーカスが継続していること',
-      (tester) async {
+  testWidgets('TC-MFR-003: タグをサジェストから追加後、入力欄（EditableText）にフォーカスが継続していること', (
+    tester,
+  ) async {
     final skipReason = await setupBasicInfoEditMode(tester);
     if (skipReason != null) {
       print('[SKIP] $skipReason');
@@ -305,26 +323,25 @@ void main() {
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       // 入力欄が引き続き存在するかチェック
-      if (find.byKey(const Key('basicInfo_field_tagInput'))
+      if (find
+          .byKey(const Key('basicInfo_field_tagInput'))
           .evaluate()
-          .isNotEmpty) break;
+          .isNotEmpty) {
+        break;
+      }
     }
     await tester.pump(const Duration(milliseconds: 500));
 
     // 追加後もタグ入力欄（EditableText）がウィジェットツリーに存在すること
     // フォーカスが継続している場合、入力欄は引き続き描画されアクティブ状態になる
-    expect(
-      find.byKey(const Key('basicInfo_field_tagInput')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('basicInfo_field_tagInput')), findsOneWidget);
   });
 
   // ────────────────────────────────────────────────────────
   // TC-MFR-004: タグを空欄エンターすると入力欄のフォーカスが外れる
   // ────────────────────────────────────────────────────────
 
-  testWidgets('TC-MFR-004: タグ入力欄が空欄の状態でエンターするとサジェストが閉じること',
-      (tester) async {
+  testWidgets('TC-MFR-004: タグ入力欄が空欄の状態でエンターするとサジェストが閉じること', (tester) async {
     final skipReason = await setupBasicInfoEditMode(tester);
     if (skipReason != null) {
       print('[SKIP] $skipReason');
@@ -340,9 +357,12 @@ void main() {
     await tester.tap(tagInput);
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byKey(const Key('basicInfo_field_tagInput'))
+      if (find
+          .byKey(const Key('basicInfo_field_tagInput'))
           .evaluate()
-          .isNotEmpty) break;
+          .isNotEmpty) {
+        break;
+      }
     }
     await tester.pump(const Duration(milliseconds: 300));
 
@@ -353,28 +373,29 @@ void main() {
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       // サジェストが閉じるまで待つ
-      final suggestions = tester.elementList(find.byWidgetPredicate((widget) {
-        final key = widget.key;
-        if (key is ValueKey<String>) {
-          return key.value.startsWith('basicInfo_item_tagSuggestion_');
-        }
-        return false;
-      }));
+      final suggestions = tester.elementList(
+        find.byWidgetPredicate((widget) {
+          final key = widget.key;
+          if (key is ValueKey<String>) {
+            return key.value.startsWith('basicInfo_item_tagSuggestion_');
+          }
+          return false;
+        }),
+      );
       if (suggestions.isEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     // 空欄エンター後、タグサジェストが閉じていること（フォーカス終了）
-    final suggestionsAfter = tester.elementList(find.byWidgetPredicate((widget) {
-      final key = widget.key;
-      if (key is ValueKey<String>) {
-        return key.value.startsWith('basicInfo_item_tagSuggestion_');
-      }
-      return false;
-    }));
-    expect(
-      suggestionsAfter.isEmpty,
-      isTrue,
+    final suggestionsAfter = tester.elementList(
+      find.byWidgetPredicate((widget) {
+        final key = widget.key;
+        if (key is ValueKey<String>) {
+          return key.value.startsWith('basicInfo_item_tagSuggestion_');
+        }
+        return false;
+      }),
     );
+    expect(suggestionsAfter.isEmpty, isTrue);
   });
 }

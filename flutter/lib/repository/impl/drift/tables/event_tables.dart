@@ -71,6 +71,10 @@ class ActionTimeLogs extends Table {
   TextColumn get eventId => text().references(Events, #id)();
   TextColumn get actionId => text().references(Actions, #id)();
   DateTimeColumn get timestamp => dateTime()();
+
+  /// ユーザーが変更した時刻（F-9: nullable。null = 未変更）
+  DateTimeColumn get adjustedAt => dateTime().nullable()();
+
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();

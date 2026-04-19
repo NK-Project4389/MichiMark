@@ -4,6 +4,7 @@
 ///
 /// Spec: docs/Spec/Features/EventDetailOverviewRedesign_Spec.md §12
 /// テストシナリオ: TC-EOD-001 〜 TC-EOD-015
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,16 +33,15 @@ void main() {
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.byType(ListView).evaluate().isNotEmpty ||
-          find.text('イベントがありません').evaluate().isNotEmpty) break;
+          find.text('イベントがありません').evaluate().isNotEmpty) {
+        break;
+      }
     }
     await tester.pump(const Duration(milliseconds: 300));
   }
 
   /// イベント一覧から指定イベントをタップして EventDetail を開く。
-  Future<bool> openEventDetail(
-    WidgetTester tester,
-    String eventName,
-  ) async {
+  Future<bool> openEventDetail(WidgetTester tester, String eventName) async {
     final cards = find.ancestor(
       of: find.text(eventName),
       matching: find.byType(GestureDetector),
@@ -51,7 +51,9 @@ void main() {
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('概要').evaluate().isNotEmpty ||
-          find.text('ミチ').evaluate().isNotEmpty) break;
+          find.text('ミチ').evaluate().isNotEmpty) {
+        break;
+      }
     }
     // BasicInfoSection のロード完了を待つ（「タップして編集」ヒントが表示されるまで）
     for (var i = 0; i < 15; i++) {
@@ -110,7 +112,11 @@ void main() {
     }
 
     // 参照モードで「タップして編集」ヒントが表示されること
-    expect(find.text('タップして編集'), findsOneWidget, reason: '参照モードで「タップして編集」ヒントが表示されること');
+    expect(
+      find.text('タップして編集'),
+      findsOneWidget,
+      reason: '参照モードで「タップして編集」ヒントが表示されること',
+    );
     // 「保存」ボタンが表示されないこと
     expect(find.text('保存'), findsNothing, reason: '参照モードで「保存」ボタンが表示されないこと');
   });
@@ -134,16 +140,26 @@ void main() {
 
     // BasicInfoView の参照モードエリア（GestureDetector）をタップして編集モードに入る
     final readArea = find.byKey(const Key('basicInfoRead_container_section'));
-    expect(readArea, findsOneWidget, reason: '参照モードエリア（basicInfoRead_container_section）が存在すること');
+    expect(
+      readArea,
+      findsOneWidget,
+      reason: '参照モードエリア（basicInfoRead_container_section）が存在すること',
+    );
     await tester.tap(readArea);
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // 「保存」ボタンに切り替わること
     expect(find.text('保存'), findsOneWidget, reason: '「保存」ボタンが表示されること');
     // 「キャンセル」ボタンが表示されること（編集モードに切り替わったことの確認）
     expect(find.text('キャンセル'), findsOneWidget, reason: '「キャンセル」ボタンが表示されること');
     // TextField（入力フォーム）が表示されること
-    expect(find.byType(TextField), findsWidgets, reason: '編集モードで入力フォームが表示されること');
+    expect(
+      find.byType(TextField),
+      findsWidgets,
+      reason: '編集モードで入力フォームが表示されること',
+    );
   });
 
   // ────────────────────────────────────────────────────────
@@ -193,12 +209,15 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     // 参照モードに戻ること
-    expect(find.text('タップして編集'), findsOneWidget, reason: '保存後に参照モード（「タップして編集」ヒント）に戻ること');
+    expect(
+      find.text('タップして編集'),
+      findsOneWidget,
+      reason: '保存後に参照モード（「タップして編集」ヒント）に戻ること',
+    );
     expect(find.text('保存'), findsNothing, reason: '保存後に「保存」ボタンが非表示になること');
 
     // 変更後のイベント名が表示されること
-    expect(find.text(testEventName), findsWidgets,
-        reason: '変更後のイベント名が表示されること');
+    expect(find.text(testEventName), findsWidgets, reason: '変更後のイベント名が表示されること');
 
     // テストデータを元に戻す
     await tester.tap(find.byKey(const Key('basicInfoRead_container_section')));
@@ -247,8 +266,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     // チェックアイコン（保存ボタン）が表示されないこと
-    expect(find.byIcon(Icons.check), findsNothing,
-        reason: 'AppBarにチェックアイコン（保存ボタン）が表示されないこと');
+    expect(
+      find.byIcon(Icons.check),
+      findsNothing,
+      reason: 'AppBarにチェックアイコン（保存ボタン）が表示されないこと',
+    );
   });
 
   // ────────────────────────────────────────────────────────
@@ -270,11 +292,15 @@ void main() {
 
     // BasicInfoView の参照モードエリアをタップして編集モードに入る
     await tester.tap(find.byKey(const Key('basicInfoRead_container_section')));
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // 「ミチ」タブをタップ
     await tester.tap(find.text('ミチ'));
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // アラートダイアログが表示されること
     expect(find.text('保存していません'), findsOneWidget, reason: 'アラートのタイトルが表示されること');
@@ -302,11 +328,15 @@ void main() {
 
     // BasicInfoView の参照モードエリアをタップして編集モードに入る
     await tester.tap(find.byKey(const Key('basicInfoRead_container_section')));
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // 「ミチ」タブをタップしてアラートを出す
     await tester.tap(find.text('ミチ'));
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // 「保存して移動」をタップ
     final saveAndMoveButton = find.text('保存して移動');
@@ -318,7 +348,9 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('保存していません').evaluate().isEmpty) break;
     }
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // 「ミチ」タブが選択された状態（MichiInfo コンテンツが表示される）を確認
     // アラートが消えていること
@@ -344,13 +376,17 @@ void main() {
 
     // BasicInfoView の参照モードエリアをタップして編集モードに入り、イベント名を変更
     await tester.tap(find.byKey(const Key('basicInfoRead_container_section')));
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
     await tester.enterText(find.byType(TextField).first, '変更テスト用イベント名');
     await tester.pump(const Duration(milliseconds: 300));
 
     // 「ミチ」タブをタップしてアラートを出す
     await tester.tap(find.text('ミチ'));
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // 「破棄して移動」をタップ
     final discardAndMoveButton = find.text('破棄して移動');
@@ -361,14 +397,18 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('保存していません').evaluate().isEmpty) break;
     }
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // アラートが閉じていること
     expect(find.text('保存していません'), findsNothing, reason: 'アラートが閉じていること');
 
     // 概要タブに戻って確認（変更が破棄されている）
     await tester.tap(find.text('概要'));
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
     expect(find.text('変更テスト用イベント名'), findsNothing, reason: '変更が破棄されていること');
     expect(find.text('箱根日帰りドライブ'), findsWidgets, reason: '元のイベント名に戻っていること');
   });
@@ -376,8 +416,7 @@ void main() {
   // ────────────────────────────────────────────────────────
   // TC-EOD-009: アラートで「キャンセル」を選ぶと概要タブの編集モードに留まる
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-EOD-009: アラートで「キャンセル」選択後概要タブの編集モードに留まる',
-      (tester) async {
+  testWidgets('TC-EOD-009: アラートで「キャンセル」選択後概要タブの編集モードに留まる', (tester) async {
     await startApp(tester);
 
     if (find.text('イベントがありません').evaluate().isNotEmpty) {
@@ -393,21 +432,31 @@ void main() {
 
     // BasicInfoView の参照モードエリアをタップして編集モードに入る
     await tester.tap(find.byKey(const Key('basicInfoRead_container_section')));
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // 「ミチ」タブをタップしてアラートを出す
     await tester.tap(find.text('ミチ'));
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // 「編集に戻る」をタップ
     final cancelButton = find.text('編集に戻る');
     expect(cancelButton, findsOneWidget, reason: '「編集に戻る」ボタンが表示されること');
     await tester.tap(cancelButton);
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // アラートが閉じて概要タブの編集モードに留まること
     expect(find.text('保存していません'), findsNothing, reason: 'アラートが閉じていること');
-    expect(find.text('保存'), findsOneWidget, reason: '概要タブの編集モード（「保存」ボタン）が表示されていること');
+    expect(
+      find.text('保存'),
+      findsOneWidget,
+      reason: '概要タブの編集モード（「保存」ボタン）が表示されていること',
+    );
   });
 
   // ────────────────────────────────────────────────────────
@@ -429,7 +478,9 @@ void main() {
 
     // 「ミチ」タブをタップ
     await tester.tap(find.text('ミチ'));
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // ミチ一覧にマークアイテムが存在するか確認
     // ListViewが存在しない場合はスキップ
@@ -473,7 +524,9 @@ void main() {
     // 「保存」ボタンをタップ
     final saveButton = find.text('保存');
     await tester.ensureVisible(saveButton);
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
     await tester.tap(saveButton);
 
     // MarkDetail が閉じてミチ一覧に戻るのを待つ
@@ -481,11 +534,16 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('ミチ').evaluate().isNotEmpty) break;
     }
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // 変更後の地点名がミチ一覧に表示されること
-    expect(find.text(testMarkName), findsWidgets,
-        reason: 'MarkDetail保存後にミチ一覧に変更後の地点名が表示されること');
+    expect(
+      find.text(testMarkName),
+      findsWidgets,
+      reason: 'MarkDetail保存後にミチ一覧に変更後の地点名が表示されること',
+    );
   });
 
   // ────────────────────────────────────────────────────────
@@ -507,7 +565,9 @@ void main() {
 
     // 「ミチ」タブをタップ
     await tester.tap(find.text('ミチ'));
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // ミチ一覧のリンクアイテムを探す（リンクはアイコンで識別）
     final listView = find.byType(ListView);
@@ -556,7 +616,9 @@ void main() {
     // 「保存」ボタンをタップ
     final saveButton = find.text('保存');
     await tester.ensureVisible(saveButton);
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
     await tester.tap(saveButton);
 
     // LinkDetail が閉じてミチ一覧に戻るのを待つ
@@ -564,11 +626,16 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('ミチ').evaluate().isNotEmpty) break;
     }
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // 変更後のリンク名がミチ一覧に表示されること
-    expect(find.text(testLinkName), findsWidgets,
-        reason: 'LinkDetail保存後にミチ一覧に変更後のリンク名が表示されること');
+    expect(
+      find.text(testLinkName),
+      findsWidgets,
+      reason: 'LinkDetail保存後にミチ一覧に変更後のリンク名が表示されること',
+    );
   });
 
   // ────────────────────────────────────────────────────────
@@ -590,7 +657,9 @@ void main() {
 
     // 「支払」タブをタップ
     await tester.tap(find.text('支払'));
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // 「+」ボタンをタップして PaymentDetail を開く
     final addButton = find.byIcon(Icons.add);
@@ -623,16 +692,22 @@ void main() {
     // 「反映」ボタンをタップ
     final applyButton = find.text('反映');
     await tester.ensureVisible(applyButton);
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
     await tester.tap(applyButton);
 
     // PaymentDetail が閉じて支払一覧に戻るのを待つ
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('支払').evaluate().isNotEmpty &&
-          find.text('反映').evaluate().isEmpty) break;
+          find.text('反映').evaluate().isEmpty) {
+        break;
+      }
     }
-    for (var i = 0; i < 8; i++) { await tester.pump(const Duration(milliseconds: 250)); }
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 250));
+    }
 
     // 支払一覧に新しい支払が表示されること（金額テキスト確認）
     // 金額表示は "¥1,500" 等の形式の可能性があるため widgetList を確認
@@ -740,7 +815,10 @@ void main() {
       }
     }
 
-    expect(foundOverviewContent, isTrue,
-        reason: '概要タブに集計情報（走行距離・燃費・合計等）が表示されること');
+    expect(
+      foundOverviewContent,
+      isTrue,
+      reason: '概要タブに集計情報（走行距離・燃費・合計等）が表示されること',
+    );
   });
 }

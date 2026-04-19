@@ -1,13 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:michi_mark/domain/master/member/member_domain.dart';
 import 'package:michi_mark/domain/transaction/event/event_domain.dart';
-import 'package:michi_mark/repository/auth_repository.dart';
-import 'package:michi_mark/repository/event_repository.dart';
-import 'package:michi_mark/repository/member_repository.dart';
 import 'package:michi_mark/repository/impl/firebase/firebase_auth_repository.dart';
 import 'package:michi_mark/repository/impl/firestore/firestore_event_repository.dart';
 import 'package:michi_mark/repository/impl/firestore/firestore_member_repository.dart';

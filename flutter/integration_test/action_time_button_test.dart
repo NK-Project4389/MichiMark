@@ -80,7 +80,9 @@ void main() {
     // TopicConfigUpdated によるmarkActionItems設定を待つ（⚡ボタン表示確認）
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
-      if (find.byKey(const Key('mark_action_button')).evaluate().isNotEmpty) break;
+      if (find.byWidgetPredicate(
+        (w) => w.key != null && w.key.toString().contains('michiInfo_button_actionTime_'),
+      ).evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 500));
 
@@ -88,15 +90,19 @@ void main() {
   }
 
   /// MichiInfo タブに表示されている ⚡ ボタンを探す。
-  /// Spec §6.1: Mark カード右上に Violet の bolt アイコンボタン
+  /// UI-19: キーは 'michiInfo_button_actionTime_${markId}' 形式（markId を含む動的キー）
   Finder findActionButton() {
-    return find.byKey(const Key('mark_action_button'));
+    return find.byWidgetPredicate(
+      (w) => w.key != null && w.key.toString().contains('michiInfo_button_actionTime_'),
+    );
   }
 
   /// 状態バッジを探す。
-  /// Spec §6.2: 「滞留中」などの状態ラベル表示バッジ
+  /// UI-19: キーは 'michiInfo_badge_actionState_${markId}' 形式（markId を含む動的キー）
   Finder findStateBadge() {
-    return find.byKey(const Key('mark_action_state_badge'));
+    return find.byWidgetPredicate(
+      (w) => w.key != null && w.key.toString().contains('michiInfo_badge_actionState_'),
+    );
   }
 
   /// ボトムシート内のアクションボタンをグローバルキーで検索する。
@@ -507,7 +513,9 @@ void main() {
     if (linkCard.evaluate().isNotEmpty) {
       final boltInLink = find.descendant(
         of: linkCard.first,
-        matching: find.byKey(const Key('mark_action_button')),
+        matching: find.byWidgetPredicate(
+          (w) => w.key != null && w.key.toString().contains('michiInfo_button_actionTime_'),
+        ),
       );
       expect(
         boltInLink.evaluate().isEmpty,
@@ -517,7 +525,9 @@ void main() {
 
       final badgeInLink = find.descendant(
         of: linkCard.first,
-        matching: find.byKey(const Key('mark_action_state_badge')),
+        matching: find.byWidgetPredicate(
+          (w) => w.key != null && w.key.toString().contains('michiInfo_badge_actionState_'),
+        ),
       );
       expect(
         badgeInLink.evaluate().isEmpty,

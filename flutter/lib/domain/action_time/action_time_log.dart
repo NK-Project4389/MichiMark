@@ -16,6 +16,9 @@ class ActionTimeLog extends Equatable {
   /// Actionが発生した日時
   final DateTime timestamp;
 
+  /// ユーザーが変更した時刻。null = 未変更
+  final DateTime? adjustedAt;
+
   /// 論理削除フラグ
   final bool isDeleted;
 
@@ -33,6 +36,7 @@ class ActionTimeLog extends Equatable {
     required this.eventId,
     required this.actionId,
     required this.timestamp,
+    this.adjustedAt,
     this.isDeleted = false,
     required this.createdAt,
     required this.updatedAt,
@@ -44,6 +48,8 @@ class ActionTimeLog extends Equatable {
     String? eventId,
     String? actionId,
     DateTime? timestamp,
+    DateTime? adjustedAt,
+    bool clearAdjustedAt = false,
     bool? isDeleted,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -55,6 +61,7 @@ class ActionTimeLog extends Equatable {
       eventId: eventId ?? this.eventId,
       actionId: actionId ?? this.actionId,
       timestamp: timestamp ?? this.timestamp,
+      adjustedAt: clearAdjustedAt ? null : (adjustedAt ?? this.adjustedAt),
       isDeleted: isDeleted ?? this.isDeleted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -68,6 +75,7 @@ class ActionTimeLog extends Equatable {
         eventId,
         actionId,
         timestamp,
+        adjustedAt,
         isDeleted,
         createdAt,
         updatedAt,

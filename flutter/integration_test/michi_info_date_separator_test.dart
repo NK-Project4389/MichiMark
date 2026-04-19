@@ -70,10 +70,13 @@ void main() {
       for (var i = 0; i < 15; i++) {
         await tester.pump(const Duration(milliseconds: 300));
         // ミチInfo画面のコンテンツが描画されるまで待つ
-        if (find.byKey(const Key('michiInfo_sliver_list'))
+        if (find
+                .byKey(const Key('michiInfo_sliver_list'))
                 .evaluate()
                 .isNotEmpty ||
-            find.byType(CustomPaint).evaluate().isNotEmpty) break;
+            find.byType(CustomPaint).evaluate().isNotEmpty) {
+          break;
+        }
       }
       await tester.pump(const Duration(milliseconds: 300));
     }
@@ -124,8 +127,7 @@ void main() {
   // TC-DS-001〜007
   // ────────────────────────────────────────────────────────
 
-  testWidgets('TC-DS-001: 単一日付のMarkが1件のみのとき、先頭に区切りが表示される',
-      (tester) async {
+  testWidgets('TC-DS-001: 単一日付のMarkが1件のみのとき、先頭に区切りが表示される', (tester) async {
     final skipReason = await setupMichiInfoTab(tester);
     if (skipReason != null) {
       print('[SKIP] $skipReason');
@@ -133,14 +135,12 @@ void main() {
     }
 
     // 先頭区切りが存在することを確認
-    expect(
-      find.byKey(const Key('michiInfo_dateSeparator_0')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('michiInfo_dateSeparator_0')), findsOneWidget);
   });
 
-  testWidgets('TC-DS-002: 同一日付のMarkが複数あるとき、先頭のみ区切りが表示され中間に区切りは表示されない',
-      (tester) async {
+  testWidgets('TC-DS-002: 同一日付のMarkが複数あるとき、先頭のみ区切りが表示され中間に区切りは表示されない', (
+    tester,
+  ) async {
     final skipReason = await setupMichiInfoTab(tester);
     if (skipReason != null) {
       print('[SKIP] $skipReason');
@@ -148,21 +148,16 @@ void main() {
     }
 
     // 先頭区切りが存在することを確認
-    expect(
-      find.byKey(const Key('michiInfo_dateSeparator_0')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('michiInfo_dateSeparator_0')), findsOneWidget);
 
     // 2番目のMarkカードの前に区切りが表示されていないことを確認
     // （最初の1つだけ区切りが表示されるはず）
-    expect(
-      find.byKey(const Key('michiInfo_dateSeparator_1')),
-      findsNothing,
-    );
+    expect(find.byKey(const Key('michiInfo_dateSeparator_1')), findsNothing);
   });
 
-  testWidgets('TC-DS-003: 日付が変わるMarkの直前に区切りが挿入される（2日分のMarkがある場合）',
-      (tester) async {
+  testWidgets('TC-DS-003: 日付が変わるMarkの直前に区切りが挿入される（2日分のMarkがある場合）', (
+    tester,
+  ) async {
     final skipReason = await setupMichiInfoTabWithMultiDates(tester);
     if (skipReason != null) {
       print('[SKIP] $skipReason');
@@ -170,14 +165,14 @@ void main() {
     }
 
     // 日付A の区切りが表示される（先頭 = 画面内）
-    expect(
-      find.byKey(const Key('michiInfo_dateSeparator_0')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('michiInfo_dateSeparator_0')), findsOneWidget);
 
     // 日付B の区切りをスクロールして探す（4/13 のMarkが画面外にある場合に対応）
     for (var i = 0; i < 15; i++) {
-      if (find.byKey(const Key('michiInfo_dateSeparator_1')).evaluate().isNotEmpty) {
+      if (find
+          .byKey(const Key('michiInfo_dateSeparator_1'))
+          .evaluate()
+          .isNotEmpty) {
         break;
       }
       await tester.drag(
@@ -188,14 +183,10 @@ void main() {
     }
 
     // 日付B の区切りが表示される
-    expect(
-      find.byKey(const Key('michiInfo_dateSeparator_1')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('michiInfo_dateSeparator_1')), findsOneWidget);
   });
 
-  testWidgets('TC-DS-004: 区切りの日付テキストが `yyyy/MM/dd` 形式で表示される',
-      (tester) async {
+  testWidgets('TC-DS-004: 区切りの日付テキストが `yyyy/MM/dd` 形式で表示される', (tester) async {
     final skipReason = await setupMichiInfoTab(tester);
     if (skipReason != null) {
       print('[SKIP] $skipReason');
@@ -224,10 +215,7 @@ void main() {
     }
 
     // 初期状態で区切りが表示されている
-    expect(
-      find.byKey(const Key('michiInfo_dateSeparator_0')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('michiInfo_dateSeparator_0')), findsOneWidget);
 
     // FABボタンをタップして InsertMode を有効にする
     final fab = find.byKey(const Key('michiInfo_fab_add'));
@@ -237,21 +225,20 @@ void main() {
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       // InsertMode が反映されるまで待つ
-      if (find.byKey(const Key('michiInfo_dateSeparator_0')).evaluate().isEmpty) {
+      if (find
+          .byKey(const Key('michiInfo_dateSeparator_0'))
+          .evaluate()
+          .isEmpty) {
         break;
       }
     }
     await tester.pump(const Duration(milliseconds: 300));
 
     // InsertMode 中、区切りが非表示になる
-    expect(
-      find.byKey(const Key('michiInfo_dateSeparator_0')),
-      findsNothing,
-    );
+    expect(find.byKey(const Key('michiInfo_dateSeparator_0')), findsNothing);
   });
 
-  testWidgets('TC-DS-006: Markカード・Linkカードの縦幅が変化しない',
-      (tester) async {
+  testWidgets('TC-DS-006: Markカード・Linkカードの縦幅が変化しない', (tester) async {
     final skipReason = await setupMichiInfoTab(tester);
     if (skipReason != null) {
       print('[SKIP] $skipReason');
@@ -259,10 +246,7 @@ void main() {
     }
 
     // 区切りウィジェットが表示される
-    expect(
-      find.byKey(const Key('michiInfo_dateSeparator_0')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('michiInfo_dateSeparator_0')), findsOneWidget);
 
     // Mark または Link カードが存在して操作可能であることを確認
     // （カード要素が画面上に存在することで、高さが正常であることを暗に検証）
@@ -270,8 +254,7 @@ void main() {
     expect(cards.evaluate().length, greaterThan(0));
   });
 
-  testWidgets('TC-DS-007: 道路帯Canvasが区切り位置で切断されない',
-      (tester) async {
+  testWidgets('TC-DS-007: 道路帯Canvasが区切り位置で切断されない', (tester) async {
     final skipReason = await setupMichiInfoTab(tester);
     if (skipReason != null) {
       print('[SKIP] $skipReason');
@@ -279,23 +262,16 @@ void main() {
     }
 
     // 日付区切りウィジェットが2件以上表示される（複数日分）
-    expect(
-      find.byKey(const Key('michiInfo_dateSeparator_0')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('michiInfo_dateSeparator_0')), findsOneWidget);
 
     // 2番目の区切りが存在する場合、確認
-    final secondSeparator =
-        find.byKey(const Key('michiInfo_dateSeparator_1'));
+    final secondSeparator = find.byKey(const Key('michiInfo_dateSeparator_1'));
     if (secondSeparator.evaluate().isNotEmpty) {
       expect(secondSeparator, findsOneWidget);
     }
 
     // Canvas（道路帯）が存在して描画されていることを確認
     // CustomPaint は Canvasの親ウィジェット
-    expect(
-      find.byType(CustomPaint),
-      findsWidgets,
-    );
+    expect(find.byType(CustomPaint), findsWidgets);
   });
 }

@@ -260,6 +260,24 @@ class FirestoreEventRepository implements EventRepository {
         .toList();
   }
 
+  @override
+  Future<void> updateActionTimeLogAdjustedAt(
+      String logId, DateTime? adjustedAt) async {
+    // logIdのみでコレクショングループから検索して更新する
+    final snapshot = await _firestore
+        .collectionGroup('actionTimeLogs')
+        .where('id', isEqualTo: logId)
+        .limit(1)
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      await snapshot.docs.first.reference.update({
+        'adjustedAt':
+            adjustedAt != null ? Timestamp.fromDate(adjustedAt) : null,
+        'updatedAt': Timestamp.now(),
+      });
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Aggregation用クエリ
   // ---------------------------------------------------------------------------

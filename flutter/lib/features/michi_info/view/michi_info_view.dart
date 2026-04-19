@@ -600,7 +600,8 @@ class _MichiInfoListState extends State<_MichiInfoList> {
       );
     }
 
-    final hasActions = markActionItems.isNotEmpty;
+    // visitWork（showActionTimeButton == true）では _actionButtonsHeight を加算しない
+    final hasActions = markActionItems.isNotEmpty && !widget.topicConfig.showActionTimeButton;
 
     // TimelineListItem リスト全体を走査して各 CardItem の Y オフセットを計算
     // DateSeparatorItem は _dateSeparatorHeight 分を累積に加算する
@@ -1199,7 +1200,9 @@ class _TimelineItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMark = item.markLinkType == MarkOrLink.mark;
-    final hasActionButtons = isMark && markActionItems.isNotEmpty;
+    // visitWork（showActionTimeButton == true）は中央カラムにアクションボタンを埋め込むため
+    // _MarkActionButtons（カード下部のボタン群）は表示しない
+    final hasActionButtons = isMark && markActionItems.isNotEmpty && !topicConfig.showActionTimeButton;
     final rowHeight = isMark ? _cardHeight : _linkCardHeight;
 
     final itemKey = Key('michiInfo_item_${item.id}');
@@ -1649,94 +1652,205 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
           top: verticalPadding,
           bottom: verticalPadding,
         ),
-        child: Row(
-          children: [
-            Expanded(
-              child: isMark
-                  ? _buildMarkCardContent(
-                      context: context,
-                      item: item,
-                      name: name,
-                      topicConfig: topicConfig,
-                      currentStateLabel: currentStateLabel,
-                    )
-                  : _buildLinkCardContent(
-                      context: context,
-                      item: item,
-                      name: name,
-                      topicConfig: topicConfig,
-                    ),
-            ),
-            // 完了バッジ（F-10: isDone=true かつ Markのみ表示）
-            if (isMark && item.isDone)
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: Container(
-                  key: Key('michiInfo_badge_done_${item.id}'),
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF3F4F6), // Gray 100
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
-                      color: const Color(0xFFD1D5DB), // Gray 300
-                      width: 1.0,
-                    ),
+        child: isMark && topicConfig.showActionTimeButton
+            ? _buildVisitWorkCardRow(
+                context: context,
+                item: item,
+                name: name,
+                topicConfig: topicConfig,
+                currentStateLabel: currentStateLabel,
+                eventId: eventId,
+                isInsertMode: isInsertMode,
+              )
+            : Row(
+                children: [
+                  Expanded(
+                    child: isMark
+                        ? _buildMarkCardContent(
+                            context: context,
+                            item: item,
+                            name: name,
+                            topicConfig: topicConfig,
+                            currentStateLabel: currentStateLabel,
+                          )
+                        : _buildLinkCardContent(
+                            context: context,
+                            item: item,
+                            name: name,
+                            topicConfig: topicConfig,
+                          ),
                   ),
-                  child: const Text(
-                    '✓ 完了',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF6B7280), // Gray 500
-                    ),
-                  ),
-                ),
-              ),
-            // ⚡ アイコンボタン（アクションタイム有効トピックのみ表示）
-            if (isMark && topicConfig.showActionTimeButton)
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: _ActionTimeButton(
-                  markLinkId: item.id,
-                  onPressed: () => context.read<MichiInfoBloc>().add(
-                        MichiInfoActionButtonPressed(
-                          markLinkId: item.id,
-                          eventId: eventId,
-                          topicConfig: topicConfig,
-                          markOrLink: MarkOrLink.mark,
+                  // 完了バッジ（F-10: isDone=true かつ Markのみ表示）
+                  if (isMark && item.isDone)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: Container(
+                        key: Key('michiInfo_badge_done_\${item.id}'),
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF3F4F6), // Gray 100
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color: const Color(0xFFD1D5DB), // Gray 300
+                            width: 1.0,
+                          ),
+                        ),
+                        child: const Text(
+                          '✓ 完了',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF6B7280), // Gray 500
+                          ),
                         ),
                       ),
-                ),
-              ),
-            // 削除アイコン（挿入モード中は非表示）
-            if (!isInsertMode)
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: GestureDetector(
-                  onTap: _onDeleteTapped,
-                  child: Container(
-                    key: Key('michiInfo_button_delete_${item.id}'),
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFEE2E2),
-                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(
-                      Icons.delete,
-                      size: 20,
-                      color: Color(0xFFDC2626),
+                  // 削除アイコン（挿入モード中は非表示）
+                  if (!isInsertMode)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: GestureDetector(
+                        onTap: _onDeleteTapped,
+                        child: Container(
+                          key: Key('michiInfo_button_delete_\${item.id}'),
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFEE2E2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.delete,
+                            size: 20,
+                            color: Color(0xFFDC2626),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                ],
               ),
-          ],
-        ),
       ),
     );
   }
 
-  /// Mark（地点）カードのコンテンツColumnを構築する。
+  /// visitWork トピック用の3カラム Row を構築する。
+  ///
+  /// 左カラム（54dp）: 日付テキスト + 状態バッジ
+  /// 中央カラム（Expanded）: 地点名テキスト + アクションボタン
+  /// 右カラム（28dp）: 削除ボタン（Opacity 0.6）
+  Widget _buildVisitWorkCardRow({
+    required BuildContext context,
+    required MarkLinkItemProjection item,
+    required String name,
+    required TopicConfig topicConfig,
+    required String? currentStateLabel,
+    required String eventId,
+    required bool isInsertMode,
+  }) {
+    // F-10 完了ビジュアル色
+    final isDone = item.isDone;
+    const doneNameColor = Color(0xFF9CA3AF); // Gray 400
+    const doneSecondaryColor = Color(0xFFADB5BD);
+    final nameColor = isDone ? doneNameColor : const Color(0xFF1A1A2E);
+    final dateColor = isDone ? doneSecondaryColor : const Color(0xFF6B7280);
+    final nameDecoration = isDone ? TextDecoration.lineThrough : TextDecoration.none;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // 左カラム（54dp固定）: 日付 + 状態バッジ
+        SizedBox(
+          width: 54,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (topicConfig.showMarkDate)
+                Text(
+                  key: Key('michiInfo_text_markDate_\${item.id}'),
+                  item.displayDate,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 11,
+                        color: dateColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              const SizedBox(height: 2),
+              _ActionStateBadge(
+                label: currentStateLabel ?? '滞留中',
+                markId: item.id,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 4),
+        // 中央カラム（Expanded）: 地点名 + アクションボタン
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                name,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: nameColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                      decoration: nameDecoration,
+                      decorationColor: doneNameColor,
+                    ),
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 2),
+              _VisitWorkActionButton(
+                markLinkId: item.id,
+                onPressed: () => context.read<MichiInfoBloc>().add(
+                      MichiInfoActionButtonPressed(
+                        markLinkId: item.id,
+                        eventId: eventId,
+                        topicConfig: topicConfig,
+                        markOrLink: MarkOrLink.mark,
+                      ),
+                    ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 4),
+        // 右カラム（28dp固定）: 削除ボタン（挿入モード中は非表示）
+        if (!isInsertMode)
+          SizedBox(
+            width: 28,
+            child: Opacity(
+              opacity: 0.6,
+              child: GestureDetector(
+                onTap: _onDeleteTapped,
+                child: Container(
+                  key: Key('michiInfo_button_delete_\${item.id}'),
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF3F4F6), // Gray 100
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: const Icon(
+                    Icons.delete,
+                    size: 14,
+                    color: Color(0xFF9CA3AF), // Gray 400
+                  ),
+                ),
+              ),
+            ),
+          ),
+        if (isInsertMode) const SizedBox(width: 28),
+      ],
+    );
+  }
+
+    /// Mark（地点）カードのコンテンツColumnを構築する。
   ///
   /// レイアウト（Specセクション5）:
   /// - showNameField=false（movingCost系）: 日付（最上段）→ 累積メーター・メンバー行
@@ -1841,14 +1955,10 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
                 ),
             ],
           ),
-        // 状態バッジ（アクションタイム有効トピックのみ表示）
-        if (topicConfig.showActionTimeButton)
-          Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: _ActionStateBadge(
-              label: currentStateLabel ?? '滞留中',
-            ),
-          ),
+        // 状態バッジは visitWork（showActionTimeButton == true）の場合は
+        // _buildVisitWorkCardRow の左カラムに配置されるため、ここでは表示しない。
+        // visitWork 以外のトピックで showActionTimeButton == true になることは
+        // 現状ないため、このブロック全体が非表示になることはない。
       ],
     );
   }
@@ -1918,14 +2028,14 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
 }
 
 // ────────────────────────────────────────────────────────
-// _ActionTimeButton（⚡ アイコンボタン）
+// _VisitWorkActionButton（⚡ + テキスト アクションボタン）
 // ────────────────────────────────────────────────────────
 
-class _ActionTimeButton extends StatelessWidget {
+class _VisitWorkActionButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String markLinkId;
 
-  const _ActionTimeButton({
+  const _VisitWorkActionButton({
     required this.onPressed,
     required this.markLinkId,
   });
@@ -1936,16 +2046,31 @@ class _ActionTimeButton extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         key: Key('michiInfo_button_actionTime_$markLinkId'),
-        width: 28,
-        height: 28,
+        height: 36,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           color: _violetColor,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: const Icon(
-          Icons.bolt,
-          color: Colors.white,
-          size: 18,
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.bolt,
+              color: Colors.white,
+              size: 16,
+            ),
+            SizedBox(width: 4),
+            Text(
+              'アクション',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -1958,23 +2083,25 @@ class _ActionTimeButton extends StatelessWidget {
 
 class _ActionStateBadge extends StatelessWidget {
   final String label;
+  final String markId;
 
-  const _ActionStateBadge({required this.label});
+  const _ActionStateBadge({required this.label, required this.markId});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: const Key('mark_action_state_badge'),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      key: Key('michiInfo_badge_actionState_$markId'),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: _violetBadgeBg,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
         label,
         style: const TextStyle(
-          fontSize: 10,
+          fontSize: 11,
           color: _violetColor,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

@@ -94,18 +94,18 @@ void main() {
   Future<bool> openActionTimeView(WidgetTester tester) async {
     // ⚡ボタンを探す（mark_action_button キーはすべてのマークで共通）
     for (var i = 0; i < 10; i++) {
-      if (find.byKey(const Key('mark_action_button')).evaluate().isNotEmpty) break;
+      if (find.byWidgetPredicate((w) => w.key != null && w.key.toString().contains('michiInfo_button_actionTime_')).evaluate().isNotEmpty) break;
       final listViews = find.byType(ListView);
       if (listViews.evaluate().isEmpty) break;
       await tester.drag(listViews.first, const Offset(0, -400));
       await tester.pump(const Duration(milliseconds: 200));
     }
 
-    if (find.byKey(const Key('mark_action_button')).evaluate().isEmpty) {
+    if (find.byWidgetPredicate((w) => w.key != null && w.key.toString().contains('michiInfo_button_actionTime_')).evaluate().isEmpty) {
       return false;
     }
 
-    await tester.tap(find.byKey(const Key('mark_action_button')).first);
+    await tester.tap(find.byWidgetPredicate((w) => w.key != null && w.key.toString().contains('michiInfo_button_actionTime_')).first);
 
     // ボトムシートが開くまで待つ（'ログ' または 'ActionTime' ヘッダーを確認）
     for (var i = 0; i < 20; i++) {

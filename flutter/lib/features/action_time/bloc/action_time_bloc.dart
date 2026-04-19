@@ -28,6 +28,7 @@ class ActionTimeBloc extends Bloc<ActionTimeEvent, ActionTimeState> {
     on<ActionTimeLogRecorded>(_onLogRecorded);
     on<ActionTimeBreakToggled>(_onBreakToggled);
     on<ActionTimeLogDeleted>(_onLogDeleted);
+    on<ActionTimeLogAdjustedAtUpdated>(_onAdjustedAtUpdated);
   }
 
   final EventRepository _eventRepository;
@@ -131,6 +132,34 @@ class ActionTimeBloc extends Bloc<ActionTimeEvent, ActionTimeState> {
     final eventId = state.draft.eventId;
     try {
       await _eventRepository.deleteActionTimeLog(event.logId);
+      await _refreshState(eventId, emit);
+    } on Exception catch (e) {
+      emit(state.copyWith(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _onAdjustedAtUpdated(
+    ActionTimeLogAdjustedAtUpdated event,
+    Emitter<ActionTimeState> emit,
+  ) async {
+    final eventId = state.draft.eventId;
+    if (eventId.isEmpty) return;
+
+    // 対象ログの timestamp を取得してnull正規化を行う
+    final logs = state.draft.logs;
+    final targetLog = logs.where((l) => l.id == event.logId).firstOrNull;
+    if (targetLog == null) return;
+
+    final normalizedAdjustedAt = ActionTimeAdapter.normalizeAdjustedAt(
+      targetLog.timestamp,
+      event.adjustedAt,
+    );
+
+    try {
+      await _eventRepository.updateActionTimeLogAdjustedAt(
+        event.logId,
+        normalizedAdjustedAt,
+      );
       await _refreshState(eventId, emit);
     } on Exception catch (e) {
       emit(state.copyWith(errorMessage: e.toString()));

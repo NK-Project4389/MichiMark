@@ -165,9 +165,9 @@ class TopicConfig extends Equatable {
           showPaymentInfoTab: true,
           markActions: [
             'visit_work_arrive',
-            'visit_work_depart',
             'visit_work_start',
             'visit_work_end',
+            'visit_work_depart',
           ],
           linkActions: [],
           showActionTimeButton: true,

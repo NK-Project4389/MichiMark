@@ -12,3 +12,14 @@ flutter/ios/Runner/prod/GoogleService-Info.plist
 
 # Test execution logs (auto-generated, not tracked)
 docs/TestLogs/
+
+# Google Workspace OAuth credentials and tokens
+.claude/client_secret_*.json
+.claude/gdrive_token.pkl
+.claude/*.pkl
+
+# Auto-generated logs
+logs/
+
+# Migration scripts (one-time use, not tracked)
+scripts/migrate_to_gdrive.py

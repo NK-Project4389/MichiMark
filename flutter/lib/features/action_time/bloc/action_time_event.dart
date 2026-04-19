@@ -51,3 +51,13 @@ class ActionTimeLogDeleted extends ActionTimeEvent {
   @override
   List<Object?> get props => [logId];
 }
+
+/// 時刻変更操作: 指定ActionTimeLogのadjustedAtを更新する
+class ActionTimeLogAdjustedAtUpdated extends ActionTimeEvent {
+  final String logId;
+  final DateTime adjustedAt;
+  const ActionTimeLogAdjustedAtUpdated(this.logId, this.adjustedAt);
+
+  @override
+  List<Object?> get props => [logId, adjustedAt];
+}

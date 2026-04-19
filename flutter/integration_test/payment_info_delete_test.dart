@@ -15,6 +15,7 @@
 ///   pay-001: 高速道路代 ¥3,200（支払者: 太郎）
 ///   pay-002: 昼食代 ¥2,400（支払者: 花子）
 ///   合計: ¥5,600
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -43,17 +44,16 @@ void main() {
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.byType(ListView).evaluate().isNotEmpty ||
-          find.text('イベントがありません').evaluate().isNotEmpty) break;
+          find.text('イベントがありません').evaluate().isNotEmpty) {
+        break;
+      }
     }
     await tester.pump(const Duration(milliseconds: 300));
   }
 
   /// イベント一覧から指定イベントをタップして EventDetail を開く。
   /// 開けた場合は true、見つからない場合は false を返す。
-  Future<bool> openEventDetail(
-    WidgetTester tester,
-    String eventName,
-  ) async {
+  Future<bool> openEventDetail(WidgetTester tester, String eventName) async {
     final cards = find.ancestor(
       of: find.text(eventName),
       matching: find.byType(GestureDetector),
@@ -63,7 +63,9 @@ void main() {
     for (var i = 0; i < 20; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.text('概要').evaluate().isNotEmpty ||
-          find.text('支払').evaluate().isNotEmpty) break;
+          find.text('支払').evaluate().isNotEmpty) {
+        break;
+      }
     }
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
@@ -94,7 +96,9 @@ void main() {
     for (var i = 0; i < 15; i++) {
       await tester.pump(const Duration(milliseconds: 300));
       if (find.byType(FloatingActionButton).evaluate().isNotEmpty ||
-          find.text('支払情報がありません').evaluate().isNotEmpty) break;
+          find.text('支払情報がありません').evaluate().isNotEmpty) {
+        break;
+      }
     }
     await tester.pump(const Duration(milliseconds: 300));
     return true;
@@ -102,7 +106,9 @@ void main() {
 
   /// 指定した paymentId の Slidable を左スワイプして削除ボタンを表示する。
   Future<void> swipeToRevealDeleteButton(
-      WidgetTester tester, String paymentId) async {
+    WidgetTester tester,
+    String paymentId,
+  ) async {
     final slidableKey = Key('payment_info_tile_slidable_$paymentId');
     await tester.drag(find.byKey(slidableKey), const Offset(-300, 0));
     await tester.pump(const Duration(milliseconds: 500));
@@ -111,8 +117,7 @@ void main() {
   // ────────────────────────────────────────────────────────
   // TC-PID-001: 伝票行を左スワイプすると削除ボタンが表示される
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-PID-001: 伝票行を左スワイプすると削除ボタンが表示される',
-      (tester) async {
+  testWidgets('TC-PID-001: 伝票行を左スワイプすると削除ボタンが表示される', (tester) async {
     final navigated = await goToPaymentInfoTab(tester);
     if (!navigated) {
       markTestSkipped('「箱根日帰りドライブ」が見つからないか支払タブに遷移できないため TC-PID-001 をスキップします');
@@ -125,7 +130,8 @@ void main() {
 
     if (find.byKey(slidableKey).evaluate().isEmpty) {
       markTestSkipped(
-          'payment_info_tile_slidable_$paymentId が見つからないため TC-PID-001 をスキップします');
+        'payment_info_tile_slidable_$paymentId が見つからないため TC-PID-001 をスキップします',
+      );
       return;
     }
 
@@ -137,7 +143,8 @@ void main() {
     expect(
       find.byKey(deleteActionKey),
       findsOneWidget,
-      reason: '左スワイプ後に削除ボタン (payment_info_tile_delete_action_$paymentId) が表示されること',
+      reason:
+          '左スワイプ後に削除ボタン (payment_info_tile_delete_action_$paymentId) が表示されること',
     );
 
     // ラベル「削除」も表示されていること
@@ -151,8 +158,7 @@ void main() {
   // ────────────────────────────────────────────────────────
   // TC-PID-002: 削除ボタンをタップすると伝票が一覧から消える
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-PID-002: 削除ボタンをタップすると伝票が一覧から消える',
-      (tester) async {
+  testWidgets('TC-PID-002: 削除ボタンをタップすると伝票が一覧から消える', (tester) async {
     final navigated = await goToPaymentInfoTab(tester);
     if (!navigated) {
       markTestSkipped('「箱根日帰りドライブ」が見つからないか支払タブに遷移できないため TC-PID-002 をスキップします');
@@ -166,13 +172,17 @@ void main() {
 
     if (find.byKey(slidableKey).evaluate().isEmpty) {
       markTestSkipped(
-          'payment_info_tile_slidable_$paymentId が見つからないため TC-PID-002 をスキップします');
+        'payment_info_tile_slidable_$paymentId が見つからないため TC-PID-002 をスキップします',
+      );
       return;
     }
 
     // pay-002 が存在するか事前確認（削除後に他の伝票が残ることを検証するため）
     final otherPaymentKey = const Key('payment_info_tile_slidable_pay-002');
-    final otherPaymentExists = find.byKey(otherPaymentKey).evaluate().isNotEmpty;
+    final otherPaymentExists = find
+        .byKey(otherPaymentKey)
+        .evaluate()
+        .isNotEmpty;
 
     // 左スワイプして削除ボタンを表示
     await swipeToRevealDeleteButton(tester, paymentId);
@@ -230,7 +240,8 @@ void main() {
 
     if (find.byKey(slidableKey).evaluate().isEmpty) {
       markTestSkipped(
-          'payment_info_tile_slidable_$paymentId が見つからないため TC-PID-003 をスキップします');
+        'payment_info_tile_slidable_$paymentId が見つからないため TC-PID-003 をスキップします',
+      );
       return;
     }
 
@@ -264,11 +275,7 @@ void main() {
     // 削除後: 合計金額が更新されていることを確認
     // pay-001(¥3,200) 削除後 → pay-002(¥2,400) のみ → 合計は ¥3,200 未満になっているはず
     final totalTextAfter = find.textContaining('合計:');
-    expect(
-      totalTextAfter,
-      findsOneWidget,
-      reason: '削除後も合計金額テキスト「合計:」が表示されること',
-    );
+    expect(totalTextAfter, findsOneWidget, reason: '削除後も合計金額テキスト「合計:」が表示されること');
 
     // 削除前の合計（¥5,600）が表示されていないことで再計算を確認
     // ※ displayTotalAmount の書式が不明なため、¥3,200（削除した金額）が
@@ -278,11 +285,7 @@ void main() {
     print('[TC-PID-003] 削除後の合計テキスト: $totalText');
 
     // 合計テキストが空でないことを確認（何らかの金額が表示されていること）
-    expect(
-      totalText.isNotEmpty,
-      isTrue,
-      reason: '削除後の合計金額テキストが空でないこと',
-    );
+    expect(totalText.isNotEmpty, isTrue, reason: '削除後の合計金額テキストが空でないこと');
 
     // pay-001(¥3,200)削除後の合計は pay-002(¥2,400) のみ
     // 旧合計 ¥5,600 は表示されないはず（書式依存のため緩い検証）
@@ -296,15 +299,15 @@ void main() {
   // ────────────────────────────────────────────────────────
   // TC-PID-004: 最後の 1 件を削除すると空状態 UI が表示される
   // ────────────────────────────────────────────────────────
-  testWidgets('TC-PID-004: 最後の 1 件を削除すると空状態 UI が表示される',
-      (tester) async {
+  testWidgets('TC-PID-004: 最後の 1 件を削除すると空状態 UI が表示される', (tester) async {
     // シードデータに伝票が 1 件のみのイベントが存在しないためスキップ。
     // event-001 は pay-001・pay-002 の 2 件、event-002 は pay-003〜005 の 3 件、
     // event-003 は支払0件。
     // 1件のみのイベントが存在しないため本テストはスキップとする。
     markTestSkipped(
-        'TC-PID-004: シードデータに伝票が 1 件のみのイベントが存在しないためスキップします。'
-        '手動確認または専用シードデータの追加をお願いします。');
+      'TC-PID-004: シードデータに伝票が 1 件のみのイベントが存在しないためスキップします。'
+      '手動確認または専用シードデータの追加をお願いします。',
+    );
   });
 
   // ────────────────────────────────────────────────────────
@@ -324,7 +327,8 @@ void main() {
 
     if (find.byKey(slidableKey).evaluate().isEmpty) {
       markTestSkipped(
-          'payment_info_tile_slidable_$paymentId が見つからないため TC-PID-005 をスキップします');
+        'payment_info_tile_slidable_$paymentId が見つからないため TC-PID-005 をスキップします',
+      );
       return;
     }
 
