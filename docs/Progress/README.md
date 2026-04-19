@@ -184,3 +184,4 @@
 | [2026-04-19_test__UI-19-F9-全件PASS完了.md](./2026-04-19_test__UI-19-F9-全件PASS完了.md) | UI-19（6PASS/0FAIL）・F-9（5PASS/3SKIP/0FAIL）全件PASS・michiInfo_item_mark_キー修正・NomikaiShareデバイス分離 |
 | [2026-04-20_chore__テスト品質改善ルール整備_シードデータレビュー.md](./2026-04-20_chore__テスト品質改善ルール整備_シードデータレビュー.md) | TEST-QUALITY-1ルール整備・Integration Test設計書更新・seed_data.dartレビュー・domain層Unit Test計画 |
 | [2026-04-20_test__F-8_支払詳細売上テスト完了.md](./2026-04-20_test__F-8_支払詳細売上テスト完了.md) | F-8 Payment Detail Sales テスト実行完了（4PASS/6SKIP/0FAIL・T-508 DONE） |
+| [2026-04-20_feat__F-8_PaymentDetail売上追加_OverView収支集計.md](./2026-04-20_feat__F-8_PaymentDetail売上追加_OverView収支集計.md) | F-8 実装完了・INFRA-2 MCP認証設定・oauth .gitignore追加 セッションサマリー |
