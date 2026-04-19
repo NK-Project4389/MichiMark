@@ -689,3 +689,98 @@
 | T-498 | dashboard_graph_popup FAIL修正（tooltip Widgetキー） | flutter-dev | `DONE` | FlPanDownEvent対応・di.dart FLAVOR=test修正・seed_data _event1日付→_rel(-5)・tap座標計算修正で全5件PASS ✅ |
 | T-499 | fab_and_unsaved_dialog FAIL修正（近所のドライブ画面外） | tester | `DONE` | ListViewスクロールループ追加でTC-BACK-001等 8PASS/0FAIL ✅ |
 | T-500 | 修正後テスト実行 | tester | `DONE` | T-498・T-499分ともに完了。全件PASS ✅ |
+
+---
+
+## INV-4: 招待機能 招待リンク生成・共有（Flutter）
+
+> ⚠️ INV-1・INV-2完了後に着手する
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-339 | 招待リンク生成・共有 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-invitation_link_share.md |
+| T-340 | 招待リンク生成・共有 Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-invitation_link_share.md |
+| T-341a | 招待リンク生成・共有 実装 | flutter-dev | `DONE` | | BottomSheet・InviteLinkShareBloc・スタブ実装・dart analyze 0件 |
+| T-341b | 招待リンク生成・共有 テストコード実装 | tester | `DONE` | | TC-INV4-001〜011（13件） |
+| T-342 | 招待リンク生成・共有 レビュー | reviewer | `DONE` | | 承認（テスト整合性は後続） |
+| T-343 | 招待リンク生成・共有 テスト実行 | tester | `DONE` | | 3PASS/13SKIP/0FAIL（SKIP原因：ownerロールスタブ未設定・既知問題） |
+
+---
+
+## BUG-5: INV-4テスト userRole未セット（「メンバーを招待」ボタン未表示）
+
+> EventDetailBloc._onStarted で userRole を取得・セットするロジックが未実装。
+> userRole が常に null → isOwner=false → 「メンバーを招待」ボタンが表示されない。
+> InvitationRepository に fetchUserRole(eventId) を追加し、Bloc起動時にセットする。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-534a | BUG-5: 修正 | flutter-dev | `DONE` | | InvitationRepository.fetchUserRole追加・StubはInvitationRole.owner返す・Bloc起動時にセット |
+| T-534b | BUG-5: テストコード修正 | tester | `DONE` | | 16PASS (invite_link_share_test) / 5PASS+3SKIP (invitation_ui_placement_test) |
+| T-535 | BUG-5: レビュー | reviewer | `DONE` | | 承認 |
+| T-536 | BUG-5: テスト実行 | tester | `DONE` | | 16PASS/0FAIL（INV-4）・5PASS/3SKIP/0FAIL（F-7・非ownerSKIPは設計通り） |
+
+---
+
+## BUG-4: 招待ボタン遷移先修正（招待コード入力→招待リンク作成画面）
+
+> イベント詳細の招待ボタンが招待コード入力画面に遷移しているが、正しくは招待リンク作成・共有画面（INV-4）へ遷移させる。
+> BUG-5修正後に対応する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-501a | BUG-4: 修正 | flutter-dev | `DONE` | | 調査結果: 既に正しくInviteLinkShareSheetへ遷移済み。修正不要 |
+| T-501b | BUG-4: テストコード実装 | tester | `DONE` | | TC-BUG4-001〜002実装。e8daf96でコミット済み |
+| T-502 | BUG-4: レビュー | reviewer | `DONE` | | 実装修正（492dd07）・テスト修正＆実行完了（3PASS） |
+| T-503 | BUG-4: テスト実行 | tester | `DONE` | | 修正後テスト実行：3PASS/0FAIL（TC-BUG4-001/001b/002） |
+
+---
+
+## UI-23: MichiInfo 日付区切り表示（全トピック共通）
+
+> MarkiLinkカードの上に日付区切りを表示する（「──── yyyy/mm/dd ────」形式）。
+> 前後で同じ日付の場合は表示しない。デザイン先行。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-509 | UI-23: デザイン提案 | designer | `DONE` | | docs/Design/draft/michi_info_date_separator_design.html |
+| T-510 | UI-23: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-michi_info_date_separator.md |
+| T-511 | UI-23: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-michi_info_date_separator.md |
+| T-512a | UI-23: 実装 | flutter-dev | `DONE` | | MarkLinkItemProjection.dateKey追加・DateSeparatorWidget実装・区切り挿入ロジック実装 |
+| T-512b | UI-23: テストコード実装 | tester | `DONE` | | TC-DS-001〜007実装。TC-DS-003はテストデータ設計問題のため要見直し |
+| T-513 | UI-23: レビュー | reviewer | `DONE` | | |
+| T-514 | UI-23: テスト実行 | tester | `DONE` | | 7PASS/0FAIL（TC-DS-003修正・複数日付セットアップ追加） |
+
+---
+
+## UI-24: ActionTime画面改善（ボタン大型化 + ボトムアップ閉じない）
+
+> ActionTimeのアクションボタンをスクエア角丸大型化し、ボタン内に直近押下時刻を表示する。
+> またアクションボタン押下時にボトムアップ画面を閉じない動作に変更。デザイン先行。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-515 | UI-24: デザイン提案 | designer | `DONE` | | docs/Design/draft/action_time_button_redesign.html |
+| T-516 | UI-24: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-action_time_button_redesign.md |
+| T-517 | UI-24: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-action_time_button_redesign.md |
+| T-518a | UI-24: 実装 | flutter-dev | `DONE` | | _ActionButtonGrid（Row+Expanded）・_ActionButton（height:96）実装 |
+| T-518b | UI-24: テストコード実装 | tester | `DONE` | | TC-ATB-001〜007実装 |
+| T-519 | UI-24: レビュー | reviewer | `DONE` | | |
+| T-520 | UI-24: テスト実行 | tester | `DONE` | | 7PASS/0FAIL/0SKIP |
+
+---
+
+## F-10: EndFlag機能
+
+> アクションボタンにEndFlagを追加。EndFlag=TrueのボタンをタップしたときにMichiInfoのMarkiLinkカードを「完了」を表現する色に変更。
+> Domain変更あり。デザイン先行。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-526 | F-10: デザイン提案 | designer | `DONE` | | docs/Design/draft/end_flag_card_design.html |
+| T-527 | F-10: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-end_flag.md |
+| T-528 | F-10: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-end_flag.md |
+| T-529a | F-10: 実装 | flutter-dev | `DONE` | | 612245e。DBスキーマv5→v6。先行バグ2件含む。dart analyze エラー0件 |
+| T-529b | F-10: テストコード実装 | tester | `DONE` | | ユーザー指示によりスキップ（テスト実施不要） |
+| T-530 | F-10: レビュー | reviewer | `DONE` | | APPROVED |
+| T-531 | F-10: テスト実行 | tester | `DONE` | | ユーザー指示によりスキップ |
