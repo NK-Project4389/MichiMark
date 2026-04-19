@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'di.dart';
+import '../features/splash/bloc/splash_bloc.dart';
+import '../features/splash/view/splash_page.dart';
 import '../features/dashboard/bloc/dashboard_bloc.dart';
 import '../features/dashboard/bloc/dashboard_event.dart';
 import '../features/dashboard/view/dashboard_page.dart';
@@ -70,8 +72,16 @@ import '../repository/topic_repository.dart';
 import '../repository/trans_repository.dart';
 
 final router = GoRouter(
-  initialLocation: '/dashboard',
+  initialLocation: '/splash',
   routes: [
+    // スプラッシュ画面（ShellRoute の外に配置: BottomNavなし）
+    GoRoute(
+      path: '/splash',
+      builder: (context, state) => BlocProvider(
+        create: (_) => SplashBloc(),
+        child: const SplashPage(),
+      ),
+    ),
     ShellRoute(
       builder: (context, state, child) => _ScaffoldWithBottomNav(child: child),
       routes: [
