@@ -131,7 +131,7 @@
 | T-421a | UI-16: 実装 | flutter-dev | `DONE` | | SplashBloc・SplashPage・router更新完了・reviewerAPPROVED |
 | T-421b | UI-16: テストコード実装 | tester | `DONE` | | TC-UI16-I001〜I003 全7件実装完了 |
 | T-422 | UI-16: レビュー | reviewer | `DONE` | | 実装↔テスト整合確認APPROVED |
-| T-423 | UI-16: テスト実行 | tester | `IN_PROGRESS` | 2026-04-20_UI16_splash_test_run | T-422完了 |
+| T-423 | UI-16: テスト実行 | tester | `DONE` | | 7PASS/0FAIL（TC-UI16-I001〜I003c全件PASS） |
 
 ---
 

@@ -190,3 +190,4 @@
 | [2026-04-20_T-603_Bloc_Domain_Unit_Test第1弾.md](./2026-04-20_T-603_Bloc_Domain_Unit_Test第1弾.md) | T-603 PaymentBalanceSectionAdapter + BasicInfoBloc Unit Test 実装（20PASS） |
 | [2026-04-20_T-604_Bloc_Domain_Unit_Test第2弾.md](./2026-04-20_T-604_Bloc_Domain_Unit_Test第2弾.md) | T-604 VisitWorkAggregationAdapter + EventDetailBloc Unit Test 実装（27PASS） |
 | [2026-04-20_test__TEST-QUALITY-1全タスク完了_Unit-Test47件追加.md](./2026-04-20_test__TEST-QUALITY-1全タスク完了_Unit-Test47件追加.md) | TEST-QUALITY-1全タスク完了（T-603/T-604 Unit Test 47件追加・全件PASS） |
+| [2026-04-20_feat__UI-16_スプラッシュ画面改善完了.md](./2026-04-20_feat__UI-16_スプラッシュ画面改善完了.md) | UI-16 スプラッシュ画面改善完了（SplashBloc・SplashPage・Integration Test 7PASS/0FAIL） |
