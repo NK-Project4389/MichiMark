@@ -28,7 +28,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       Future<void>.value(),
     ]);
 
-    add(const SplashInitializationCompleted());
+    if (!isClosed) add(const SplashInitializationCompleted());
   }
 
   void _onSplashInitializationCompleted(

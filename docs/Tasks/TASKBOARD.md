@@ -126,12 +126,12 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-419 | UI-16: 要件書作成 | product-manager | `TODO` | | |
-| T-420 | UI-16: Spec作成 | architect | `BLOCKED` | | T-419完了後 |
-| T-421a | UI-16: 実装 | flutter-dev | `BLOCKED` | | |
-| T-421b | UI-16: テストコード実装 | tester | `BLOCKED` | | |
-| T-422 | UI-16: レビュー | reviewer | `BLOCKED` | | |
-| T-423 | UI-16: テスト実行 | tester | `BLOCKED` | | |
+| T-419 | UI-16: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-splash_screen_improvement.md |
+| T-420 | UI-16: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-splash_screen_improvement.md |
+| T-421a | UI-16: 実装 | flutter-dev | `DONE` | | SplashBloc・SplashPage・router更新完了・reviewerAPPROVED |
+| T-421b | UI-16: テストコード実装 | tester | `DONE` | | TC-UI16-I001〜I003 全7件実装完了 |
+| T-422 | UI-16: レビュー | reviewer | `DONE` | | 実装↔テスト整合確認APPROVED |
+| T-423 | UI-16: テスト実行 | tester | `IN_PROGRESS` | 2026-04-20_UI16_splash_test_run | T-422完了 |
 
 ---
 
