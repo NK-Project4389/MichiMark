@@ -20,11 +20,35 @@ void main() {
         break;
       }
     }
+    // イベントデータは非同期でロードされるため、イベント名が表示されるまで追加待機
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+      if (find.text('横浜エリア訪問ルート').evaluate().isNotEmpty) break;
+    }
     // イベント一覧から visitWork トピックのイベント（横浜エリア訪問ルート）を探す
     final eventFinder = find.text('横浜エリア訪問ルート');
     expect(eventFinder, findsOneWidget, reason: 'visitWork トピックのイベントが見つかりません');
     await tester.tap(eventFinder);
-    await tester.pump(const Duration(milliseconds: 500));
+
+    // EventDetail の ミチ タブが表示されるまで待つ
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+      if (find.text('ミチ').evaluate().isNotEmpty) break;
+    }
+
+    // ミチタブをタップして MichiInfo コンテンツを表示
+    final michiTab = find.text('ミチ');
+    if (michiTab.evaluate().isNotEmpty) {
+      await tester.tap(michiTab.first);
+    }
+
+    // MichiInfo（ミチタブ）のコンテンツが表示されるまで待機
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+      if (find.byKey(const Key('michiInfo_button_actionTime_ml-sc-001'))
+          .evaluate()
+          .isNotEmpty) break;
+    }
   }
 
   group('TC-VWA: visitWork Mark カード UI テスト', () {
@@ -32,8 +56,8 @@ void main() {
         (WidgetTester tester) async {
       await startAppAndNavigateToVisitWork(tester);
 
-      // MichiInfo タブが表示されていることを確認
-      expect(find.text('MichiInfo'), findsWidgets);
+      // ミチ タブが表示されていることを確認
+      expect(find.text('ミチ'), findsWidgets);
 
       // visitWork トピックのマークが表示されていることを確認
       // 横浜エリア訪問ルートのマークIDは以下

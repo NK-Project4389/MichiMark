@@ -36,7 +36,7 @@
 | T-455a | UI-19: 実装 | flutter-dev | `DONE` | | 実装完了・reviewerレビュー承認 |
 | T-455b | UI-19: テストコード実装 | tester | `DONE` | | TC-VWA-001〜006全件実装・reviewer承認・テスト実行待ち（環境問題で次回） |
 | T-456 | UI-19: レビュー | reviewer | `DONE` | | 設計憲章・Spec準拠確認完了・APPROVED |
-| T-457 | UI-19: テスト実行 | tester | `BLOCKED` | | Xcode DerivedData破損・次回セッションで環境再構築後実行予定 |
+| T-457 | UI-19: テスト実行 | tester | `DONE` | | 6PASS/0FAIL（TC-VWA-001〜006全件PASS）・michiInfo_item_mark_キー追加で修正 |
 
 ---
 
@@ -67,7 +67,7 @@
 | T-523a | F-9: 実装 | flutter-dev | `DONE` | | schemaVersion v7・全ファイル実装完了・dart analyze エラー0件 |
 | T-523b | F-9: テストコード実装 | tester | `DONE` | | TC-ALTE-001〜008実装（005・006はSKIP設計） |
 | T-524 | F-9: レビュー | reviewer | `DONE` | | 設計憲章・Spec準拠確認・APPROVED |
-| T-525 | F-9: テスト実行 | tester | `DONE` | | 0PASS/0FAIL/8SKIP（データ依存SKIP）・FAILなし |
+| T-525 | F-9: テスト実行 | tester | `DONE` | | 5PASS/0FAIL/3SKIP（005・006・008はSKIP設計）・全件PASS |
 
 ---
 

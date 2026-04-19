@@ -181,3 +181,4 @@
 | [2026-04-18_feat__F-10-EndFlag機能完了.md](./2026-04-18_feat__F-10-EndFlag機能完了.md) | F-10 EndFlag機能実装完了（出発アクション→Markカード完了ビジュアル、DBスキーマv6、先行バグ2件修正） |
 | [2026-04-19_feat__UI-19-visitWork-MarkCard-UI.md](./2026-04-19_feat__UI-19-visitWork-MarkCard-UI.md) | UI-19 visitWork Mark カード UI 改善 テストコード実装・レビューAPPROVED（環境問題で実行未完了） |
 | [2026-04-19_feat__F-9-ActionLogTimeEdit.md](./2026-04-19_feat__F-9-ActionLogTimeEdit.md) | F-9 ActionLogTimeEdit 時間変更機能実装完了（schemaVersion v7・TC-ALTE 0PASS/0FAIL/8SKIP） |
+| [2026-04-19_test__UI-19-F9-全件PASS完了.md](./2026-04-19_test__UI-19-F9-全件PASS完了.md) | UI-19（6PASS/0FAIL）・F-9（5PASS/3SKIP/0FAIL）全件PASS・michiInfo_item_mark_キー修正・NomikaiShareデバイス分離 |

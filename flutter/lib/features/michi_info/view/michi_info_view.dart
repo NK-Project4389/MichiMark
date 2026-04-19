@@ -1205,7 +1205,9 @@ class _TimelineItem extends StatelessWidget {
     final hasActionButtons = isMark && markActionItems.isNotEmpty && !topicConfig.showActionTimeButton;
     final rowHeight = isMark ? _cardHeight : _linkCardHeight;
 
-    final itemKey = Key('michiInfo_item_${item.id}');
+    final itemKey = isMark
+        ? Key('michiInfo_item_mark_${item.id}')
+        : Key('michiInfo_item_link_${item.id}');
 
     return Column(
       key: itemKey,
@@ -1685,7 +1687,7 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
                     Padding(
                       padding: const EdgeInsets.only(left: 4),
                       child: Container(
-                        key: Key('michiInfo_badge_done_\${item.id}'),
+                        key: Key('michiInfo_badge_done_${item.id}'),
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: const Color(0xFFF3F4F6), // Gray 100
@@ -1712,7 +1714,7 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
                       child: GestureDetector(
                         onTap: _onDeleteTapped,
                         child: Container(
-                          key: Key('michiInfo_button_delete_\${item.id}'),
+                          key: Key('michiInfo_button_delete_${item.id}'),
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
@@ -1768,7 +1770,7 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
             children: [
               if (topicConfig.showMarkDate)
                 Text(
-                  key: Key('michiInfo_text_markDate_\${item.id}'),
+                  key: Key('michiInfo_text_markDate_${item.id}'),
                   item.displayDate,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 11,
@@ -1804,7 +1806,6 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
                     ),
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 2),
               _VisitWorkActionButton(
                 markLinkId: item.id,
                 onPressed: () => context.read<MichiInfoBloc>().add(
@@ -1829,7 +1830,7 @@ class _TimelineItemOverlayState extends State<_TimelineItemOverlay> {
               child: GestureDetector(
                 onTap: _onDeleteTapped,
                 child: Container(
-                  key: Key('michiInfo_button_delete_\${item.id}'),
+                  key: Key('michiInfo_button_delete_${item.id}'),
                   width: 28,
                   height: 28,
                   decoration: BoxDecoration(
