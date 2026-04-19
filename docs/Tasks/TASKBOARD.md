@@ -48,10 +48,10 @@
 |---|---|---|---|---|---|
 | T-504 | F-8: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-payment_detail_sales.md（v確定・収支タブ追記） |
 | T-505 | F-8: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-payment_detail_sales.md |
-| T-506a | F-8: 実装 | flutter-dev | `BLOCKED` | | |
-| T-506b | F-8: テストコード実装 | tester | `BLOCKED` | | |
-| T-507 | F-8: レビュー | reviewer | `BLOCKED` | | |
-| T-508 | F-8: テスト実行 | tester | `BLOCKED` | | |
+| T-506a | F-8: 実装 | flutter-dev | `DONE` | | schemaVersion v7→v8・dart analyze 0件 |
+| T-506b | F-8: テストコード実装 | tester | `DONE` | | TC-PDS-001〜010 全件実装完了 |
+| T-507 | F-8: レビュー | reviewer | `DONE` | | APPROVED（テストコード3点修正・Spec schemaVersion更新後に承認） |
+| T-508 | F-8: テスト実行 | tester | `IN_PROGRESS` | 2026-04-20_F-8_テスト実行 | |
 
 ---
 
@@ -68,6 +68,21 @@
 | T-523b | F-9: テストコード実装 | tester | `DONE` | | TC-ALTE-001〜008実装（005・006はSKIP設計） |
 | T-524 | F-9: レビュー | reviewer | `DONE` | | 設計憲章・Spec準拠確認・APPROVED |
 | T-525 | F-9: テスト実行 | tester | `DONE` | | 5PASS/0FAIL/3SKIP（005・006・008はSKIP設計）・全件PASS |
+
+---
+
+## TEST-QUALITY-1: テスト品質改善（固有データハードコード廃止・Unit Test追加）
+
+> IntegrationTestの安定性向上とロジックバグ早期検出のための施策。
+> - シードデータ固有値（メンバー名・イベント名・交通手段名）のハードコードを廃止し `seed_data.dart` 定数参照に統一
+> - Bloc/Domain Unit Test（`flutter test`）を追加してロジックバグをIntegrationTestに頼らず検出
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-601 | ルール整備（seed_dataレビュー・Unit Testサイクル） | orchestrator | `DONE` | | integration-test.md・workflow.mdに追加完了（2026-04-20） |
+| T-602 | 固有データハードコード廃止（IntegrationTest修正） | flutter-dev | `TODO` | | 対象: fuel_detail_design_test・member_required_guard_test・basic_info_trans_fuel_test・seed_fix_test・payment_info_redesign_test・payment_info_delete_test・moving_cost_balance_test |
+| T-603 | Bloc/Domain Unit Test追加（第1弾: PaymentDomain・BasicInfoBloc） | tester | `TODO` | | T-602完了後が望ましい（BLOCKED解除可） |
+| T-604 | Bloc/Domain Unit Test追加（第2弾: EventDetailBloc・OverviewBloc） | tester | `BLOCKED` | | T-603完了後 |
 
 ---
 

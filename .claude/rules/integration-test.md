@@ -39,6 +39,42 @@ flutter test integration_test/ -d B6008734-29AB-4371-9A20-BED4FE322BF4 --total-s
 
 ---
 
+## ⚠️ テストコード実装前のシードデータレビュー（必須）
+
+`tester` がテストコードを実装したら、`reviewer` がテスト実行前に以下を確認すること。
+
+### チェック項目
+
+| # | チェック内容 | NG例 | OK例 |
+|---|---|---|---|
+| 1 | メンバー名のハードコード禁止 | `find.text('太郎')` | `find.text(seedMembers[0].memberName)` |
+| 2 | イベント名のハードコード禁止 | `find.text('箱根日帰りドライブ')` | `find.text(SeedData.event1Name)` または動的選択 |
+| 3 | 交通手段名のハードコード禁止 | `find.text('マイカー')` | `find.text(seedTrans[0].transName)` |
+| 4 | 計算済み金額のハードコード禁止 | `find.text('合計: ¥5,600')` | 計算ロジックから動的に生成 or expect不使用 |
+| 5 | シードデータ固有IDのハードコード禁止 | `Key('event-001')` | seedDataの定数参照 or 動的取得 |
+| 6 | アクション名のハードコード禁止 | `find.text('出発')` | `find.text(seedActions[0].actionName)` |
+
+### インポートパターン
+
+```dart
+// シードデータを参照する場合は必ずimportして定数を使う
+import 'package:michi_mark/repository/impl/in_memory/seed_data.dart';
+
+// ✅ OK: 定数参照
+expect(find.text(seedMembers[0].memberName), findsWidgets); // '太郎'
+expect(find.text(seedTrans[0].transName), findsOneWidget);   // 'マイカー'
+
+// ❌ NG: ハードコード（シードデータ変更で即FAILになる）
+expect(find.text('太郎'), findsWidgets);
+expect(find.text('マイカー'), findsOneWidget);
+```
+
+### 違反が見つかった場合
+
+reviewer は REJECTED として `tester` に修正を依頼する。シードデータ変更による自動FAILを防ぐため、このチェックは省略不可。
+
+---
+
 ## 実装パターン
 
 ### アプリ起動ヘルパー

@@ -71,6 +71,43 @@ tester（テスト実行）
 - 修正内容は進捗ファイルの「レビュー指摘・修正内容」セクションにも記載する
 - 修正後は reviewer が再確認し、合格するまで繰り返す
 
+## Bloc / Domain 単体テストサイクル
+
+ロジックバグ（計算・状態管理・変換処理）はIntegration Testではなく **Unit Test** で検出する。
+
+```
+対象バグ or 新機能のロジック部分
+    │
+    ↓
+tester（Unit Test実装: flutter/test/配下）
+    │
+    ↓
+reviewer（テストコードレビュー・設計憲章確認）
+    │
+    ↓
+tester（flutter test 実行）
+    → PASS → 進捗更新 → push
+    → FAIL → tester 修正 → reviewer → 再実行
+```
+
+### Unit Test の対象
+
+| 優先度 | 対象 | 格納先 |
+|---|---|---|
+| 高 | Bloc（onEvent ハンドラ・State変換） | `flutter/test/bloc/` |
+| 高 | Domain計算ロジック（支払計算・燃費変換・集計） | `flutter/test/domain/` |
+| 中 | Adapter（Domain → Projection 変換） | `flutter/test/adapter/` |
+| 中 | Repository（drift DAOのCRUD） | `flutter/test/infra/` |
+
+### Unit Test 実装ルール
+
+- Integration Test依存禁止（GetIt・drift実DB・GoRouter不使用）
+- `bloc_test` パッケージの `blocTest()` を積極活用する
+- テストデータはシードデータに依存せず **テスト内で完結するfixture** を使う
+- ファイル名: `<対象クラス名>_test.dart`（例: `payment_domain_test.dart`）
+
+---
+
 ## tester 必須ルール（全サイクル共通）
 
 詳細は `.claude/agents/tester.md` を参照。
