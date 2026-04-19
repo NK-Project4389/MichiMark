@@ -33,10 +33,10 @@
 | T-452 | UI-19: デザイン提案（バッジ・削除ボタン） | designer | `DONE` | | 最新: docs/Design/draft/visit_work_action_button_center_design.html（旧: visit_work_action_badge_redesign.html） |
 | T-453 | UI-19: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-visit_work_action_ui.md |
 | T-454 | UI-19: Spec作成 | architect | `DONE` | | docs/Spec/Features/FS-visit_work_action_ui.md |
-| T-455a | UI-19: 実装 | flutter-dev | `IN_PROGRESS` | 2026-04-19_UI-19-visitWork-MarkCard-UI | |
-| T-455b | UI-19: テストコード実装 | tester | `IN_PROGRESS` | 2026-04-19_UI-19-visitWork-MarkCard-UI | |
-| T-456 | UI-19: レビュー | reviewer | `BLOCKED` | | |
-| T-457 | UI-19: テスト実行 | tester | `BLOCKED` | | |
+| T-455a | UI-19: 実装 | flutter-dev | `DONE` | | 実装完了・reviewerレビュー承認 |
+| T-455b | UI-19: テストコード実装 | tester | `DONE` | | TC-VWA-001〜006全件実装・reviewer承認・テスト実行待ち（環境問題で次回） |
+| T-456 | UI-19: レビュー | reviewer | `DONE` | | 設計憲章・Spec準拠確認完了・APPROVED |
+| T-457 | UI-19: テスト実行 | tester | `BLOCKED` | | Xcode DerivedData破損・次回セッションで環境再構築後実行予定 |
 
 ---
 
@@ -75,7 +75,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-406 | Google Workspace MCP 動作確認 | orchestrator | `TODO` | | OAuth設定 → MCP登録 → Sheets読み書き確認 |
+| T-406 | Google Workspace MCP 動作確認 | orchestrator | `DONE` | | MCP登録完了・✓ Connected確認済み（~/.claude.json, npx @isaacphi/mcp-gdrive） |
 | T-407 | Domain設計一覧.xlsx → Google Sheets 移行 | orchestrator | `BLOCKED` | | T-406完了後 |
 | T-408 | 移行後の運用ルール整備 | orchestrator | `BLOCKED` | | T-407完了後 |
 
