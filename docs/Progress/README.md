@@ -187,3 +187,4 @@
 | [2026-04-20_feat__F-8_PaymentDetail売上追加_OverView収支集計.md](./2026-04-20_feat__F-8_PaymentDetail売上追加_OverView収支集計.md) | F-8 実装完了・INFRA-2 MCP認証設定・oauth .gitignore追加 セッションサマリー |
 | [2026-04-20_infra2_google_sheets_v8更新.md](./2026-04-20_infra2_google_sheets_v8更新.md) | INFRA-2 Google Sheets v8更新完了（ActionTimeLogs追加・全Domain最新フィールド反映） |
 | [2026-04-20_chore__T408_Google_Sheets運用ルール整備.md](./2026-04-20_chore__T408_Google_Sheets運用ルール整備.md) | T-408 Google Sheets運用ルール整備（docs/Domain/README.md作成・operations.md更新） |
+| [2026-04-20_T-603_Bloc_Domain_Unit_Test第1弾.md](./2026-04-20_T-603_Bloc_Domain_Unit_Test第1弾.md) | T-603 PaymentBalanceSectionAdapter + BasicInfoBloc Unit Test 実装（20PASS） |
