@@ -123,6 +123,10 @@ class InviteLinkResultView extends StatelessWidget {
   void _share(BuildContext context) {
     final shareText =
         '${result.inviteUrl}\n招待コード: ${result.code}';
-    Share.share(shareText);
+    final box = context.findRenderObject() as RenderBox?;
+    final rect = box != null
+        ? box.localToGlobal(Offset.zero) & box.size
+        : null;
+    Share.share(shareText, sharePositionOrigin: rect);
   }
 }
