@@ -10,8 +10,8 @@ import '../bloc/splash_state.dart';
 /// デザイン確認後に白抜きロゴへ差し替え予定。
 const _kSplashLogoAsset = 'assets/images/splash_logo.png';
 
-/// スプラッシュ画面の背景色（アプリロゴのTealカラー）。
-const _kSplashBackgroundColor = Color(0xFF2B7A9E);
+/// スプラッシュ画面の背景色（アイコンの薄青カラー）。
+const _kSplashBackgroundColor = Color(0xFFA8D4E6);
 
 /// アニメーション時間（フェードイン + スケールアップ）
 const _kAnimationDuration = Duration(milliseconds: 1500);
