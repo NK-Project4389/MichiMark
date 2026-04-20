@@ -200,7 +200,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-611 | BRAND-1: デザイン案確定（Plan A/B/C フィードバック） | designer | `IN_PROGRESS` | 2026-04-20_BRAND-1_デザイン案ブラッシュアップ | ユーザーフィードバック後にブラッシュアップ |
+| T-611 | BRAND-1: デザイン案確定（ユーザー自作中） | designer | `BLOCKED` | | AI生成では意図が伝わらないためユーザーが自作。Figma等で作成後にURLorPNG共有→T-612へ |
 | T-612 | BRAND-1: Figmaファイル作成（アイコン・スプラッシュ） | designer | `BLOCKED` | | T-611確定後 |
 | T-613 | BRAND-1: アイコン書き出し・flutter_launcher_icons適用 | flutter-dev | `BLOCKED` | | T-612完了後 |
 | T-614 | BRAND-1: スプラッシュ画面への反映（UI-16実装更新） | flutter-dev | `BLOCKED` | | T-612完了後 |
