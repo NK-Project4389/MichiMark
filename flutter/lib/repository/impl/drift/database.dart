@@ -40,7 +40,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -125,6 +125,18 @@ class AppDatabase extends _$AppDatabase {
               "ALTER TABLE payments ADD COLUMN payment_type TEXT NOT NULL DEFAULT 'expense'",
             );
           }
+          if (from < 9) {
+            // 休憩開始/作業再開アクション追加（visitWork 休憩トグル対応）
+            final ts = DateTime.now().millisecondsSinceEpoch;
+            await customStatement(
+              "INSERT OR IGNORE INTO actions (id, action_name, to_state, is_toggle, needs_transition, is_deleted, is_visible, end_flag, created_at, updated_at) "
+              "VALUES ('visit_work_break', '休憩開始', 'break_', 1, 1, 0, 1, 0, $ts, $ts)",
+            );
+            await customStatement(
+              "INSERT OR IGNORE INTO actions (id, action_name, to_state, is_toggle, needs_transition, is_deleted, is_visible, end_flag, created_at, updated_at) "
+              "VALUES ('visit_work_resume', '作業再開', 'working', 1, 1, 0, 1, 0, $ts, $ts)",
+            );
+          }
         },
       );
 
@@ -132,6 +144,31 @@ class AppDatabase extends _$AppDatabase {
   Future<void> _insertSeedActions() async {
     final now = DateTime.now();
     final seedRows = [
+      // visitWork 休憩トグル専用アクション
+      ActionsCompanion(
+        id: const Value('visit_work_break'),
+        actionName: const Value('休憩開始'),
+        toState: const Value('break_'),
+        isToggle: const Value(true),
+        needsTransition: const Value(true),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        endFlag: const Value(false),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
+      ActionsCompanion(
+        id: const Value('visit_work_resume'),
+        actionName: const Value('作業再開'),
+        toState: const Value('working'),
+        isToggle: const Value(true),
+        needsTransition: const Value(true),
+        isDeleted: const Value(false),
+        isVisible: const Value(true),
+        endFlag: const Value(false),
+        createdAt: Value(now),
+        updatedAt: Value(now),
+      ),
       ActionsCompanion(
         id: const Value('action-seed-depart'),
         actionName: const Value('出発'),

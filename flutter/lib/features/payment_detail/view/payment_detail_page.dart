@@ -131,7 +131,7 @@ class _PaymentDetailForm extends StatelessWidget {
         _PaymentTypeSegment(selectedType: draft.paymentType),
         NumericInputRow(
           key: const Key('paymentDetail_field_amount'),
-          label: '支払金額',
+          label: draft.paymentType == PaymentType.revenue ? '売上金額' : '支払金額',
           unit: '円',
           value: draft.paymentAmount,
           onChanged: (v) => context

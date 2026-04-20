@@ -56,7 +56,11 @@ class PaymentDetailBloc
       if (event.paymentId == null) {
         // 新規作成: 初期Draftを生成
         // F-6: visitWork（メンバーUI非表示）の場合は先頭メンバーを自動アサイン
-        final autoMember = _showMemberSection ? null : availableMembers.firstOrNull;
+        // イベントメンバーが0件の場合はマスタの先頭可視メンバーにフォールバック
+        final autoMember = _showMemberSection
+            ? null
+            : availableMembers.firstOrNull ??
+              masterMembers.where((m) => m.isVisible).firstOrNull;
         final draft = PaymentDetailDraft(
           id: const Uuid().v4(),
           paymentSeq: 0,

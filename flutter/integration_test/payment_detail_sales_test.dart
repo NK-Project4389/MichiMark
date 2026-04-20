@@ -163,7 +163,7 @@ void main() {
       if (find.byKey(const Key('visitWorkOverview_section_balance'))
               .evaluate()
               .isNotEmpty ||
-          find.text('収支').evaluate().isNotEmpty) break;
+          find.text('伝票').evaluate().isNotEmpty) break;
     }
     await tester.pump(const Duration(milliseconds: 300));
     return true;
@@ -630,7 +630,7 @@ void main() {
   // ────────────────────────────────────────────────────────
 
   testWidgets(
-      'TC-PDS-009: visitWork の EventDetail 支払タブが「収支」と表示される',
+      'TC-PDS-009: visitWork の EventDetail 支払タブが「伝票」と表示される',
       (tester) async {
     await startApp(tester);
     if (find.text('イベントがありません').evaluate().isNotEmpty) {
@@ -650,11 +650,11 @@ void main() {
       findsOneWidget,
     );
 
-    // かつタブ内テキストが「収支」であることを確認
+    // かつタブ内テキストが「伝票」であることを確認
     expect(
       find.descendant(
         of: find.byKey(const Key('eventDetail_tab_paymentInfo')),
-        matching: find.text('収支'),
+        matching: find.text('伝票'),
       ),
       findsOneWidget,
     );
@@ -688,15 +688,15 @@ void main() {
           if (find.text('概要').evaluate().isNotEmpty) break;
         }
 
-        // 「支払」と「収支」の両方が表示されていないかを確認
+        // 「支払」と「伝票」の両方が表示されていないかを確認
         // （travelExpense の場合は「支払」のみが表示される）
         final hasShiharaiTab = find.text('支払').evaluate().isNotEmpty;
-        final hasShuushiTab = find.text('収支').evaluate().isNotEmpty;
+        final hasShuushiTab = find.text('伝票').evaluate().isNotEmpty;
 
-        // travelExpense を見つけた（「支払」のみで「収支」がない）
+        // travelExpense を見つけた（「支払」のみで「伝票」がない）
         if (hasShiharaiTab && !hasShuushiTab) {
           expect(find.text('支払'), findsOneWidget);
-          expect(find.text('収支'), findsNothing);
+          expect(find.text('伝票'), findsNothing);
           return;
         }
 

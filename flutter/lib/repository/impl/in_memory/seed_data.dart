@@ -186,7 +186,17 @@ final seedActions = [
   ),
   ActionDomain(
     id: 'visit_work_break',
-    actionName: '休憩',
+    actionName: '休憩開始',
+    toState: ActionState.break_,
+    isToggle: true,
+    needsTransition: true,
+    createdAt: _d(2026, 1, 1),
+    updatedAt: _d(2026, 1, 1),
+  ),
+  ActionDomain(
+    id: 'visit_work_resume',
+    actionName: '作業再開',
+    toState: ActionState.working,
     isToggle: true,
     needsTransition: true,
     createdAt: _d(2026, 1, 1),

@@ -74,7 +74,10 @@ class _ActionTimeContent extends StatelessWidget {
             style: Theme.of(context).textTheme.titleSmall,
           ),
           const SizedBox(height: 8),
-          _ActionButtonGrid(buttonItems: projection.buttonItems),
+          _ActionButtonGrid(
+            buttonItems: projection.buttonItems,
+            isBreakActive: projection.isBreakActive,
+          ),
           const SizedBox(height: 16),
         ],
 
@@ -108,7 +111,13 @@ class _ActionTimeContent extends StatelessWidget {
 class _ActionButtonGrid extends StatelessWidget {
   final List<ActionButtonProjection> buttonItems;
 
-  const _ActionButtonGrid({required this.buttonItems});
+  /// 休憩中のとき true → 全ボタンを非活性化
+  final bool isBreakActive;
+
+  const _ActionButtonGrid({
+    required this.buttonItems,
+    required this.isBreakActive,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +128,7 @@ class _ActionButtonGrid extends StatelessWidget {
               (item) => Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: _ActionButton(item: item),
+                  child: _ActionButton(item: item, isDisabled: isBreakActive),
                 ),
               ),
             )
@@ -129,7 +138,9 @@ class _ActionButtonGrid extends StatelessWidget {
       return Wrap(
         spacing: 8,
         runSpacing: 8,
-        children: buttonItems.map((item) => _ActionButton(item: item)).toList(),
+        children: buttonItems
+            .map((item) => _ActionButton(item: item, isDisabled: isBreakActive))
+            .toList(),
       );
     }
   }
@@ -140,7 +151,10 @@ class _ActionButtonGrid extends StatelessWidget {
 class _ActionButton extends StatelessWidget {
   final ActionButtonProjection item;
 
-  const _ActionButton({required this.item});
+  /// true のとき タップ無効 + 薄く表示（休憩中）
+  final bool isDisabled;
+
+  const _ActionButton({required this.item, this.isDisabled = false});
 
   static const _activeBackground = Color(0xFFF5F3FF);
   static const _activeBorder = Color(0xFF7C3AED);
@@ -160,7 +174,11 @@ class _ActionButton extends StatelessWidget {
     final dividerColor = isActive ? _dividerColorActive : _dividerColorNormal;
     final lastTime = item.lastLoggedTimeLabel;
 
-    return GestureDetector(
+    return AbsorbPointer(
+      absorbing: isDisabled,
+      child: Opacity(
+        opacity: isDisabled ? 0.4 : 1.0,
+        child: GestureDetector(
       onTap: () => context
           .read<ActionTimeBloc>()
           .add(ActionTimeLogRecorded(item.actionId)),
@@ -224,6 +242,8 @@ class _ActionButton extends StatelessWidget {
               ),
           ],
         ),
+      ),
+    ),
       ),
     );
   }

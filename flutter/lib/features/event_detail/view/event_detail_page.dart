@@ -733,7 +733,7 @@ class _TabButton extends StatelessWidget {
   String _label(bool isVisitWork) => switch (tab) {
         EventDetailTab.overview => '概要',
         EventDetailTab.michiInfo => 'ミチ',
-        EventDetailTab.paymentInfo => isVisitWork ? '収支' : '支払',
+        EventDetailTab.paymentInfo => isVisitWork ? '伝票' : '支払',
       };
 
   @override
