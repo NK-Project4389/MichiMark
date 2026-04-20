@@ -195,3 +195,4 @@
 | [2026-04-20_fix+feat_Bug1-2修正_Feat1-2-3実装_visitWork支払ActionTime休憩.md](./2026-04-20_fix+feat_Bug1-2修正_Feat1-2-3実装_visitWork支払ActionTime休憩.md) | Bug1/2修正・Feat1/2/3実装（visitWork保存不可・休憩ボタン無反応・売上表示名・タブ名変更） |
 | [2026-04-20_design__アイコン刷新デザイン提案.md](./2026-04-20_design__アイコン刷新デザイン提案.md) | アイコン刷新コンセプト確定・Figma採用・デザイン3案+スプラッシュ提案 |
 | [2026-04-20_fix__HOTFIX-2_Share_sharePositionOrigin修正.md](./2026-04-20_fix__HOTFIX-2_Share_sharePositionOrigin修正.md) | HOTFIX-2 result_view.dart の Share.sharePositionOrigin 未指定修正 |
+| [2026-04-20_feat__BRAND-1_アイコン刷新_TF1.1.0-12.md](./2026-04-20_feat__BRAND-1_アイコン刷新_TF1.1.0-12.md) | BRAND-1 アイコン刷新・スプラッシュ背景色更新・TF 1.1.0(12) |

@@ -1,6 +1,8 @@
 # 2026-04-20 Bug1/2修正・Feat1/2/3実装（visitWork支払・ActionTime休憩）
 
 ## 完了した作業
+- chore: T-613/T-614 DONE・TF 1.1.0(12)アップロード完了 (09da926)
+- feat: BRAND-1 アプリアイコン更新（Logo_v2・remove_alpha_ios対応） (d040dba)
 - feat: BRAND-1 アプリアイコン更新（Logo_v2） (c368b8f)
 - chore: T-611 BLOCKED（ユーザー自作に切替） (e5aa9f8)
 - chore: HOTFIX-2 T-620 DONE・進捗記録更新 (530db43)
