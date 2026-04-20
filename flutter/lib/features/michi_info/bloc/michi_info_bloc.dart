@@ -304,17 +304,30 @@ class MichiInfoBloc extends Bloc<MichiInfoEvent, MichiInfoState> {
         id: const Uuid().v4(),
         eventId: _eventId,
         actionId: event.actionId,
+        markLinkId: event.markLinkId, // ← markLinkIdを設定（F-10: isDone判定のため）
         timestamp: now,
         createdAt: now,
         updatedAt: now,
       );
       await _eventRepository.saveActionTimeLog(log);
-      // アクションログ保存後に cachedEvent を更新させるため MichiInfoReloadedDelegate を emit する。
-      // EventDetailScaffoldInner の BlocListener がこれを受けて
-      // EventDetailCachedEventUpdateRequested を発火し、cachedEvent（actionTimeLogs含む）を最新化する。
-      // これにより概要タブに切り替えたときに最新のアクションログで集計が行われる。
+      // isDone 再計算のため projection をリロード
       if (state case MichiInfoLoaded current) {
-        emit(current.copyWith(delegate: const MichiInfoReloadedDelegate()));
+        try {
+          final domain = await _eventRepository.fetch(_eventId);
+          final actionTimeLogs =
+              await _eventRepository.fetchActionTimeLogs(_eventId);
+          final projection = EventDetailAdapter.toProjectionWithLogs(
+            event: domain,
+            actionTimeLogs: actionTimeLogs,
+            allActions: _cachedActions,
+          ).michiInfo;
+          emit(current.copyWith(
+            projection: projection,
+            delegate: const MichiInfoReloadedDelegate(),
+          ));
+        } on Exception {
+          emit(current.copyWith(delegate: const MichiInfoReloadedDelegate()));
+        }
       }
     } on Exception {
       // ログ記録失敗は一覧UIに影響を与えない

@@ -196,3 +196,4 @@
 | [2026-04-20_design__アイコン刷新デザイン提案.md](./2026-04-20_design__アイコン刷新デザイン提案.md) | アイコン刷新コンセプト確定・Figma採用・デザイン3案+スプラッシュ提案 |
 | [2026-04-20_fix__HOTFIX-2_Share_sharePositionOrigin修正.md](./2026-04-20_fix__HOTFIX-2_Share_sharePositionOrigin修正.md) | HOTFIX-2 result_view.dart の Share.sharePositionOrigin 未指定修正 |
 | [2026-04-20_feat__BRAND-1_アイコン刷新_TF1.1.0-12.md](./2026-04-20_feat__BRAND-1_アイコン刷新_TF1.1.0-12.md) | BRAND-1 アイコン刷新・スプラッシュ背景色更新・TF 1.1.0(12) |
+| [2026-04-20_fix+feat_Bug1EndFlag_Bug2Splash_Bug4Dashboard_UI25-26要件書.md](./2026-04-20_fix+feat_Bug1EndFlag_Bug2Splash_Bug4Dashboard_UI25-26要件書.md) | Bug1(EndFlag)・Bug2(Splash)・Bug4(Dashboard凡例) 修正・UI-25/26要件書作成 |

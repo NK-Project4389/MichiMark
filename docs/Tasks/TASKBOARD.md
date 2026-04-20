@@ -208,6 +208,75 @@
 
 ---
 
+## BUG-EndFlag: ActionTime出発記録でカードがグレーにならない（2026-04-20）
+
+> visitWorkトピックのMichiInfoで「出発」ボタン（EndFlag=1）を押してもMarkカードがグレーにならない。
+> 原因1: `MichiInfoBloc._onMarkActionPressed`でActionTimeLogのmarkLinkIdが未設定
+> 原因2: インラインボタン押下後にprojection（isDone）が再計算されない
+> 追加修正: `seed_data.dart`の`visit_work_depart`にendFlag: trueが未設定
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-621a | Bug-EndFlag: 実装修正 | flutter-dev | `DONE` | | michi_info_bloc.dart markLinkId設定・isDone再計算追加 + seed_data.dart endFlag追加 |
+| T-621b | Bug-EndFlag: テストコード実装 | tester | `DONE` | | TC-AEF-001(SKIP)/TC-AEF-002(PASS) |
+| T-622 | Bug-EndFlag+DashboardLegend: レビュー | reviewer | `DONE` | | APPROVED（2回目: ハードコード修正後）|
+| T-623 | Bug-EndFlag+DashboardLegend: テスト実行 | tester | `DONE` | | 1PASS/1SKIP/0FAIL（TC-AEF-002 PASS・TC-AEF-001 SKIP設計上許容）+ Unit Test 2PASS |
+
+---
+
+## BUG-SplashImage: スプラッシュ画像未更新（BRAND-1実装漏れ）（2026-04-20）
+
+> BRAND-1 T-614でsplash_logo.pngを更新せず背景色のみ変更。
+> app_icon.png（Logo_v2）をsplash_logo.pngに反映する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-624 | Bug-SplashImage: splash_logo.png更新 | orchestrator | `DONE` | | app_icon.png（Logo_v2）をsplash_logo.pngにコピー完了 |
+
+---
+
+## BUG-DashboardLegend: ダッシュボード凡例コードID表示（2026-04-20）
+
+> visitWorkダッシュボード円グラフの凡例がactionIdコード（例: visit_work_arrive）になっている。
+> VisitWorkDashboardAdapterでactionNameMapを構築してactionNameを使用する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-625a | Bug-DashboardLegend: 実装修正 | flutter-dev | `DONE` | | visit_work_dashboard_adapter.dart actionNameMap構築・凡例にactionName使用 |
+| T-625b | Bug-DashboardLegend: テストコード実装 | tester | `DONE` | | TC-DA-001〜002 Unit Test 2PASS/0FAIL |
+
+---
+
+## UI-25: スプラッシュ「MICHIMARK」テキスト表示（2026-04-20）
+
+> スプラッシュ画像の下に1文字ごとスペースで「M I C H I M A R K」をヒラギノ角丸フォントで表示。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-626 | UI-25: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-splash_michimark_text.md |
+| T-627 | UI-25: Spec作成 | architect | `BLOCKED` | | T-626完了後 |
+| T-628a | UI-25: 実装 | flutter-dev | `BLOCKED` | | T-627完了後 |
+| T-628b | UI-25: テストコード実装 | tester | `BLOCKED` | | T-627完了後 |
+| T-629 | UI-25: レビュー | reviewer | `BLOCKED` | | T-628a+T-628b完了後 |
+| T-630 | UI-25: テスト実行 | tester | `BLOCKED` | | T-629 APPROVED後 |
+
+---
+
+## UI-26: ダッシュボードタブ上スクロールリロード（2026-04-20）
+
+> ダッシュボードタブで上方向にoverscrollするとリロード（RefreshIndicator）する。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-631 | UI-26: 要件書作成 | product-manager | `DONE` | | docs/Requirements/REQ-dashboard_pull_to_refresh.md |
+| T-632 | UI-26: Spec作成 | architect | `BLOCKED` | | T-631完了後 |
+| T-633a | UI-26: 実装 | flutter-dev | `BLOCKED` | | T-632完了後 |
+| T-633b | UI-26: テストコード実装 | tester | `BLOCKED` | | T-632完了後 |
+| T-634 | UI-26: レビュー | reviewer | `BLOCKED` | | T-633a+T-633b完了後 |
+| T-635 | UI-26: テスト実行 | tester | `BLOCKED` | | T-634 APPROVED後 |
+
+---
+
 ## REL-3: Ver1.1 App Store ページ更新（メタデータ・スクリーンショット）
 
 > INV-4（招待リンク生成・共有）実装完了後に着手。Dashboard・招待・訪問作業を目玉としたページ刷新。

@@ -130,6 +130,18 @@ class VisitWorkDashboardAdapter {
       );
     }).toList();
 
+    // actionId → actionName 対応マップ（markLink.actionsから収集）
+    final actionNameMap = <String, String>{};
+    for (final event in filtered) {
+      for (final ml in event.markLinks) {
+        for (final action in ml.actions) {
+          if (!action.isDeleted && !actionNameMap.containsKey(action.id)) {
+            actionNameMap[action.id] = action.actionName;
+          }
+        }
+      }
+    }
+
     // workBreakdown（ドーナツグラフ用）
     final totalHours = totalHoursByAction.values.fold(0.0, (a, b) => a + b);
     final colors = _generateColors(totalHoursByAction.length);
@@ -138,7 +150,7 @@ class VisitWorkDashboardAdapter {
     for (final entry in totalHoursByAction.entries) {
       final pct = totalHours > 0 ? (entry.value / totalHours * 100) : 0.0;
       workBreakdown.add(WorkBreakdownEntry(
-        actionName: entry.key,
+        actionName: actionNameMap[entry.key] ?? entry.key,
         hours: entry.value,
         percentage: pct,
         color: colors[colorIndex % colors.length],
@@ -176,7 +188,7 @@ class VisitWorkDashboardAdapter {
     for (final entry in totalHoursByAction.entries) {
       final h = entry.value.floor();
       final m = ((entry.value - h) * 60).round();
-      workTimeBreakdownLabels[entry.key] = '$h時間$m分';
+      workTimeBreakdownLabels[actionNameMap[entry.key] ?? entry.key] = '$h時間$m分';
     }
 
     return VisitWorkDashboardProjection(

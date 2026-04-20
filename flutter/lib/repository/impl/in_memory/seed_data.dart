@@ -163,6 +163,7 @@ final seedActions = [
     toState: ActionState.moving,
     isToggle: false,
     needsTransition: true,
+    endFlag: true, // ← F-10: 出発=完了としてMarkカードをグレーアウト
     createdAt: _d(2026, 1, 1),
     updatedAt: _d(2026, 1, 1),
   ),
