@@ -193,3 +193,5 @@
 | [2026-04-20_feat__UI-16_スプラッシュ画面改善完了.md](./2026-04-20_feat__UI-16_スプラッシュ画面改善完了.md) | UI-16 スプラッシュ画面改善完了（SplashBloc・SplashPage・Integration Test 7PASS/0FAIL） |
 | [2026-04-20_chore__Google_Workspace_MCP認証設定完了.md](./2026-04-20_chore__Google_Workspace_MCP認証設定完了.md) | Google Workspace MCP 認証設定完了（@isaacphi/mcp-gdrive OAuth・CLIENT_ID/SECRET設定） |
 | [2026-04-20_fix+feat_Bug1-2修正_Feat1-2-3実装_visitWork支払ActionTime休憩.md](./2026-04-20_fix+feat_Bug1-2修正_Feat1-2-3実装_visitWork支払ActionTime休憩.md) | Bug1/2修正・Feat1/2/3実装（visitWork保存不可・休憩ボタン無反応・売上表示名・タブ名変更） |
+| [2026-04-20_design__アイコン刷新デザイン提案.md](./2026-04-20_design__アイコン刷新デザイン提案.md) | アイコン刷新コンセプト確定・Figma採用・デザイン3案+スプラッシュ提案 |
+| [2026-04-20_fix__HOTFIX-2_Share_sharePositionOrigin修正.md](./2026-04-20_fix__HOTFIX-2_Share_sharePositionOrigin修正.md) | HOTFIX-2 result_view.dart の Share.sharePositionOrigin 未指定修正 |

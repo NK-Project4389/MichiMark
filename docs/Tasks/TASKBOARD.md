@@ -28,7 +28,7 @@
 
 | ID | タスク | 役割 | status | locked_by | notes |
 |---|---|---|---|---|---|
-| T-620 | Share.share() 呼び出し箇所を調査・sharePositionOrigin 修正 | flutter-dev | `TODO` | | NomikaiShare fix参照: invite_member_sheet.dart の修正パターンを適用する |
+| T-620 | Share.share() 呼び出し箇所を調査・sharePositionOrigin 修正 | flutter-dev | `DONE` | | result_view.dart の _share() に sharePositionOrigin: rect 追加。Navigator.pop前後問題なし・sharePositionOrigin未指定が根本原因 |
 
 ---
 
@@ -189,6 +189,22 @@
 | T-429 | 月次分析レポート作成・改善提案（初回） | marketer | `BLOCKED` | | T-424〜428完了後・公開から1ヶ月後（2026-05-16目安）|
 | T-430 | UX/機能改善要件書作成（分析結果から） | product-manager | `BLOCKED` | | T-429完了後 |
 | T-431 | App Store メタデータ更新草案作成 | marketer | `BLOCKED` | | T-429完了後 |
+
+---
+
+## BRAND-1: アイコン・スプラッシュ刷新（Figma移行）
+
+> PowerPointからFigmaへ移行。ミチ×ピン×メジャーのコンセプトを継承しつつアイコン・スプラッシュを刷新。
+> コンセプトドキュメント: `docs/Design/BRAND-icon-splash-concept.md`
+> デザイン提案v1: `docs/Design/draft/michimark_icon_redesign_v1.html`
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-611 | BRAND-1: デザイン案確定（Plan A/B/C フィードバック） | designer | `IN_PROGRESS` | 2026-04-20_BRAND-1_デザイン案ブラッシュアップ | ユーザーフィードバック後にブラッシュアップ |
+| T-612 | BRAND-1: Figmaファイル作成（アイコン・スプラッシュ） | designer | `BLOCKED` | | T-611確定後 |
+| T-613 | BRAND-1: アイコン書き出し・flutter_launcher_icons適用 | flutter-dev | `BLOCKED` | | T-612完了後 |
+| T-614 | BRAND-1: スプラッシュ画面への反映（UI-16実装更新） | flutter-dev | `BLOCKED` | | T-612完了後 |
+| T-615 | BRAND-1: テスト実行 | tester | `BLOCKED` | | T-613/T-614完了後 |
 
 ---
 
