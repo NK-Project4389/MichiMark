@@ -20,6 +20,21 @@
 
 ---
 
+## HOTFIX-1: visitWork バグ修正・機能追加（2026-04-20）
+
+> PaymentDetail保存不可・ActionTime休憩ボタン無反応のバグ修正、および売上表示名変更・休憩中ボタン非活性・伝票タブ名変更の機能追加。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-605 | Bug1: visitWork PaymentDetail保存不可修正 | flutter-dev | `DONE` | | payment_detail_bloc.dart masterMembersフォールバック追加 |
+| T-606 | Bug2: ActionTime休憩ボタン無反応修正 | flutter-dev | `DONE` | | seed_data/database/bloc 修正・schemaVersion 9 |
+| T-607 | Feat1: 売上金額表示名変更 | flutter-dev | `DONE` | | PaymentType.revenue時「売上金額」表示 |
+| T-608 | Feat2: 休憩中アクションボタン非活性化 | flutter-dev | `DONE` | | AbsorbPointer+Opacityで非活性・半透明 |
+| T-609 | Feat3: visitWorkタブ「伝票」に変更 | flutter-dev | `DONE` | | event_detail_page.dart 「収支」→「伝票」 |
+| T-610 | HOTFIX-1: テスト実行 | tester | `DONE` | | 20PASS/0FAIL（visit_work_payment_save 3/action_time_button_redesign 7/payment_detail_sales 10） |
+
+---
+
 ## UI-19: 訪問作業 アクション操作UI改善
 
 > 訪問作業トピックの道タブでマークのアクションバッジが小さく、削除ボタンが隣接して誤タップしやすい問題をデザインから見直す。

@@ -1,5 +1,24 @@
 # Integration Test ルール
 
+## ⚠️ テスト実行前：ビルド競合チェック（必須）
+
+テスト実行コマンドを叩く**前に必ず**以下を確認すること。
+
+```bash
+# 実行中の xcodebuild プロセスを確認
+ps aux | grep xcodebuild | grep -v grep
+```
+
+- **出力あり** → 別セッションがビルド中。完了するまで待つ（KILLしない）
+- **出力なし** → そのまま実行してOK
+
+### なぜ重要か
+
+複数の `xcodebuild` が同時に走ると `Xcode build failed due to concurrent builds` が連鎖し、ビルドが数十分単位でループする。
+KILLすると `** BUILD INTERRUPTED **` → DerivedData 破損 → 次のビルドも失敗、という連鎖が発生する。
+
+---
+
 ## ⚠️ テスト実行スコープ（最重要）
 
 | タイミング | 実行範囲 |
