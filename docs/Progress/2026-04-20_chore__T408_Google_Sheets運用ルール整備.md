@@ -1,6 +1,7 @@
 # 2026-04-20 T-408: Google Sheets 運用ルール整備
 
 ## 完了した作業
+- fix+feat: Bug1/2修正・Feat1/2/3実装（visitWork支払・ActionTime休憩） (27f51d9)
 - docs: UI-16 進捗ファイル更新（TF 1.1.0(13) アップロード完了） (f22e984)
 - chore: UI-16 タスクボード完了更新・進捗ファイル追加 (faddf59)
 - feat: T-421a UI-16 スプラッシュ画面実装 (05fef21)

@@ -192,3 +192,4 @@
 | [2026-04-20_test__TEST-QUALITY-1全タスク完了_Unit-Test47件追加.md](./2026-04-20_test__TEST-QUALITY-1全タスク完了_Unit-Test47件追加.md) | TEST-QUALITY-1全タスク完了（T-603/T-604 Unit Test 47件追加・全件PASS） |
 | [2026-04-20_feat__UI-16_スプラッシュ画面改善完了.md](./2026-04-20_feat__UI-16_スプラッシュ画面改善完了.md) | UI-16 スプラッシュ画面改善完了（SplashBloc・SplashPage・Integration Test 7PASS/0FAIL） |
 | [2026-04-20_chore__Google_Workspace_MCP認証設定完了.md](./2026-04-20_chore__Google_Workspace_MCP認証設定完了.md) | Google Workspace MCP 認証設定完了（@isaacphi/mcp-gdrive OAuth・CLIENT_ID/SECRET設定） |
+| [2026-04-20_fix+feat_Bug1-2修正_Feat1-2-3実装_visitWork支払ActionTime休憩.md](./2026-04-20_fix+feat_Bug1-2修正_Feat1-2-3実装_visitWork支払ActionTime休憩.md) | Bug1/2修正・Feat1/2/3実装（visitWork保存不可・休憩ボタン無反応・売上表示名・タブ名変更） |
