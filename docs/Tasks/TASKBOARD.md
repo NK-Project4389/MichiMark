@@ -20,6 +20,18 @@
 
 ---
 
+## HOTFIX-2: Share機能 sharePositionOrigin未設定バグ修正（2026-04-20）
+
+> NomikaiShareで発生した Share.share() の iOS PlatformException と同様の事象が MichiMark にも存在する可能性あり。
+> Navigator.pop() 後に Share.share() を呼ぶと context が unmount されて sharePositionOrigin が {0,0,0,0} になり iOS に弾かれる問題。
+> NomikaiShare での修正内容: Navigator.pop() 前に RenderBox の rect を取得し、Share.share(text, sharePositionOrigin: rect) に渡す。
+
+| ID | タスク | 役割 | status | locked_by | notes |
+|---|---|---|---|---|---|
+| T-620 | Share.share() 呼び出し箇所を調査・sharePositionOrigin 修正 | flutter-dev | `TODO` | | NomikaiShare fix参照: invite_member_sheet.dart の修正パターンを適用する |
+
+---
+
 ## HOTFIX-1: visitWork バグ修正・機能追加（2026-04-20）
 
 > PaymentDetail保存不可・ActionTime休憩ボタン無反応のバグ修正、および売上表示名変更・休憩中ボタン非活性・伝票タブ名変更の機能追加。
