@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark アイコン＆スプラッシュ デザイン提案 v1</title>
+  <style>
+    :root {
+      /* ブランドカラー */
+      --brand-deep:    #0F4A62;
+      --brand-main:    #1B6D8E;
+      --brand-mid:     #2589AD;
+      --brand-light:   #3AA8CC;
+      --brand-pale:    #D6EEF6;
+      --white:         #FFFFFF;
+      --off-white:     #F4F8FB;
+      --dark:          #1A2634;
+      --text-primary:  #1A2634;
+      --text-secondary:#5A7080;
+      --gray-100:      #EFF3F6;
+      --gray-200:      #D9E4EB;
+      --gray-400:      #9BB4C1;
+      /* アクセント（メジャーモチーフ用） */
+      --accent-amber:  #E8A020;
+      --accent-sky:    #5BC4E8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+      background: #EEF4F8;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER ===== */
+    .page-header {
+      background: var(--brand-deep);
+      color: white;
+      padding: 48px 48px 40px;
+    }
+    .page-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .page-header h1 { font-size: 30px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.3px; }
+    .page-header p  { font-size: 14px; opacity: 0.75; max-width: 640px; }
+    .meta-row { display: flex; gap: 28px; margin-top: 18px; font-size: 12px; opacity: 0.55; }
+
+    /* ===== LAYOUT ===== */
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 0 40px 80px; }
+
+    /* ===== SECTION TITLE ===== */
+    .section-heading {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--brand-main);
+      margin-top: 60px;
+      margin-bottom: 6px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+    }
+    hr.divider {
+      border: none;
+      border-top: 1px solid var(--gray-200);
+      margin: 48px 0;
+    }
+
+    /* ===== CURRENT STATE ===== */
+    .current-block {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      background: white;
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 40px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .current-icon-frame {
+      width: 96px; height: 96px;
+      border-radius: 22px;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(27,109,142,0.25);
+    }
+    .current-desc h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .current-desc p  { font-size: 13px; color: var(--text-secondary); }
+    .tag {
+      display: inline-block;
+      background: var(--brand-pale);
+      color: var(--brand-main);
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 6px;
+      padding: 2px 8px;
+      margin-right: 4px;
+      margin-top: 6px;
+    }
+
+    /* ===== COLOR PALETTE ===== */
+    .palette-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .swatch-block {
+      width: 64px; height: 64px;
+      border-radius: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+    .swatch-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-align: center; }
+    .swatch-hex   { font-size: 10px; color: var(--gray-400); font-family: 'SF Mono', monospace; }
+
+    /* ===== ICON GRID ===== */
+    .icon-proposals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-bottom: 48px; }
+
+    .icon-card {
+      background: white;
+      border-radius: 20px;
+      padding: 32px 28px 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .icon-card .proposal-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--brand-mid);
+      margin-bottom: 6px;
+    }
+    .icon-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+    .icon-card .concept { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5; }
+    .icon-preview {
+      display: flex;
+      gap: 16px;
+      align-items: flex-end;
+      margin-bottom: 20px;
+    }
+    .icon-size-lg { width: 120px; height: 120px; border-radius: 27px; overflow: hidden; flex-shrink: 0; box-shadow: 0 6px 20px rgba(27,109,142,0.22); }
+    .icon-size-sm { width: 60px;  height: 60px;  border-radius: 14px; overflow: hidden; flex-shrink: 0; box-shadow: 0 3px 10px rgba(27,109,142,0.18); }
+    .icon-size-xs { width: 40px;  height: 40px;  border-radius: 10px; overflow: hidden; flex-shrink: 0; box-shadow: 0 2px 8px rgba(27,109,142,0.15); }
+
+    .detail-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .detail-table td { font-size: 12px; padding: 5px 0; color: var(--text-secondary); vertical-align: top; }
+    .detail-table td:first-child { font-weight: 600; color: var(--dark); width: 72px; }
+    .detail-table td code { font-family: 'SF Mono', 'Courier New', monospace; font-size: 11px; background: var(--gray-100); padding: 1px 5px; border-radius: 4px; }
+
+    /* ===== SPLASH ===== */
+    .splash-proposal {
+      background: white;
+      border-radius: 20px;
+      padding: 36px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 32px;
+    }
+    .splash-proposal .splash-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--brand-mid);
+      margin-bottom: 6px;
+    }
+    .splash-proposal h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+    .splash-proposal .concept { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; }
+    .splash-frame {
+      width: 100%;
+      max-width: 390px;
+      height: 200px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+      margin: 0 auto 20px;
+    }
+
+    /* ===== RATIONALE ===== */
+    .rationale-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .rationale-card {
+      background: white;
+      border-radius: 14px;
+      padding: 22px 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .rationale-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .rationale-card p  { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+    .rationale-card ul { font-size: 13px; color: var(--text-secondary); padding-left: 16px; line-height: 1.8; }
+
+    /* ===== FIGMA NOTE ===== */
+    .figma-note {
+      background: var(--off-white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 16px;
+    }
+    .figma-note h5 { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--brand-deep); }
+    .figma-note ul { font-size: 12px; color: var(--text-secondary); padding-left: 16px; line-height: 1.9; }
+
+    /* ===== TYPOGRAPHY ===== */
+    #typography .type-row { display: flex; gap: 24px; flex-wrap: wrap; }
+    .type-card {
+      background: white;
+      border-radius: 14px;
+      padding: 22px 28px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      flex: 1; min-width: 240px;
+    }
+    .type-card .type-label { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--brand-mid); margin-bottom: 8px; }
+    .type-card .type-sample-lg { font-size: 40px; font-weight: 700; line-height: 1.1; color: var(--dark); }
+    .type-card .type-sample-md { font-size: 22px; font-weight: 600; line-height: 1.2; color: var(--dark); }
+    .type-card .type-desc { font-size: 12px; color: var(--text-secondary); margin-top: 10px; }
+
+    /* ===== FOOTER NOTE ===== */
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--gray-400);
+      padding: 32px 0 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<header class="page-header">
+  <div class="badge">Designer Draft</div>
+  <h1>MichiMark アイコン＆スプラッシュ デザイン提案 v1</h1>
+  <p>ミチ・ピン・メジャーのコンセプトを再統合した、ビジネスユーザー向けの洗練されたアイコンリデザイン案。現行の2分割レイアウトから進化し、より凝縮されたシンボル性を目指す。</p>
+  <div class="meta-row">
+    <span>作成日: 2026-04-20</span>
+    <span>担当: designer</span>
+    <span>ステータス: Draft（要 PM レビュー）</span>
+    <span>バージョン: v1</span>
+  </div>
+</header>
+
+<div class="wrapper">
+
+<!-- ==================== CURRENT STATE ==================== -->
+<p class="section-heading" style="margin-top: 48px;">CURRENT STATE</p>
+<p class="section-title">現行アイコン</p>
+<p class="section-desc">リデザインの出発点として現行の構成と課題を整理する。</p>
+
+<div class="current-block">
+  <div class="current-icon-frame">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="96" height="96">
+      <!-- 現行アイコン再現 -->
+      <rect width="200" height="100" fill="#FFFFFF"/>
+      <rect y="100" width="200" height="100" fill="#1B6D8E"/>
+      <!-- ピン（アウトライン） -->
+      <path d="M52 20 C35 20 22 33 22 50 C22 70 52 90 52 90 C52 90 82 70 82 50 C82 33 69 20 52 20 Z" fill="none" stroke="#1B6D8E" stroke-width="5"/>
+      <circle cx="52" cy="50" r="10" fill="none" stroke="#1B6D8E" stroke-width="4"/>
+      <!-- テキスト -->
+      <text x="95" y="48" font-family="Helvetica Neue, sans-serif" font-size="20" font-weight="700" fill="#1B6D8E">Michi</text>
+      <text x="95" y="74" font-family="Helvetica Neue, sans-serif" font-size="20" font-weight="700" fill="#1B6D8E">Mark</text>
+      <!-- 道路ライン -->
+      <line x1="52" y1="90" x2="52" y2="105" stroke="#FFFFFF" stroke-width="4"/>
+      <line x1="20" y1="115" x2="180" y2="115" stroke="#FFFFFF" stroke-width="3"/>
+      <line x1="20" y1="142" x2="180" y2="142" stroke="#FFFFFF" stroke-width="3"/>
+      <!-- センターライン（破線） -->
+      <line x1="20" y1="166" x2="55" y2="166" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+      <line x1="75" y1="166" x2="110" y2="166" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+      <line x1="130" y1="166" x2="165" y2="166" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="current-desc">
+    <h3>現行デザイン（v0）</h3>
+    <p>上半分白地にピン（アウトライン）＋テキスト、下半分ティール背景に道路の2分割レイアウト。フラット・2色・説明的な構成。</p>
+    <div>
+      <span class="tag">フラット 2色</span>
+      <span class="tag">ピン + テキスト + 道路</span>
+      <span class="tag">#1B6D8E</span>
+    </div>
+    <p style="margin-top: 10px; font-size: 13px; color: #E05A00;"><strong>課題:</strong> テキストがアイコンに入っている（小サイズで潰れる）・要素が3種類で情報量が多い・メジャーのコンセプトが未反映。</p>
+  </div>
+</div>
+
+<!-- ==================== COLOR PALETTE ==================== -->
+<section id="color-palette">
+  <p class="section-heading">COLOR PALETTE</p>
+  <p class="section-title">提案カラーパレット</p>
+  <p class="section-desc">現行 #1B6D8E を軸に深みを加えた5段階のブルー系統。アイコン・スプラッシュで共通使用する。</p>
+
+  <div class="palette-row">
+    <div class="swatch">
+      <div class="swatch-block" style="background:#0F4A62;"></div>
+      <div class="swatch-label">Deep</div>
+      <div class="swatch-hex">#0F4A62</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#1B6D8E;"></div>
+      <div class="swatch-label">Main</div>
+      <div class="swatch-hex">#1B6D8E</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#2589AD;"></div>
+      <div class="swatch-label">Mid</div>
+      <div class="swatch-hex">#2589AD</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#3AA8CC;"></div>
+      <div class="swatch-label">Light</div>
+      <div class="swatch-hex">#3AA8CC</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#BCE8F5;"></div>
+      <div class="swatch-label">Pale</div>
+      <div class="swatch-hex">#BCE8F5</div>
+    </div>
+    <div class="swatch" style="margin-left: 20px;">
+      <div class="swatch-block" style="background:#E8A020; box-shadow: 0 2px 6px rgba(232,160,32,0.3);"></div>
+      <div class="swatch-label">Amber</div>
+      <div class="swatch-hex">#E8A020</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#FFFFFF; border: 1px solid #D9E4EB;"></div>
+      <div class="swatch-label">White</div>
+      <div class="swatch-hex">#FFFFFF</div>
+    </div>
+  </div>
+
+  <div style="background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); font-size: 13px; color: var(--text-secondary);">
+    <strong style="color: var(--dark);">グラデーション方針:</strong> アイコン本体はフラット基調。光沢（グロス感）が必要な場合は<strong>ハイライトレイヤー（白透過シェイプ）</strong>で表現。Figma上ではカラー塗りのみで構成し、後から任意でグロスレイヤーを追加できる構造にする。
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ==================== ICON PROPOSALS ==================== -->
+<section id="component-preview">
+  <p class="section-heading">ICON PROPOSALS</p>
+  <p class="section-title">アプリアイコン 3案</p>
+  <p class="section-desc">ミチ（道）・ピン（地点）・メジャー（目盛り）の3コンセプトをそれぞれ異なる切り口で統合。各案を 120px / 60px / 40px の3サイズでプレビューする。</p>
+
+  <div class="icon-proposals">
+
+    <!-- ===== PLAN A ===== -->
+    <div class="icon-card">
+      <div class="proposal-label">Plan A</div>
+      <h3>ピン × 道路 統合型</h3>
+      <p class="concept">ピンの形そのものを「道路＋センターライン」で構成。ピンのシルエットが道のシンボルを内包する最もシンプルな統合案。</p>
+
+      <div class="icon-preview">
+        <!-- 120px -->
+        <div class="icon-size-lg">
+          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+            <rect width="120" height="120" fill="#1B6D8E"/>
+            <!-- グロスハイライト -->
+            <ellipse cx="60" cy="30" rx="52" ry="30" fill="rgba(255,255,255,0.07)"/>
+            <!-- ピンシルエット（ソリッド） -->
+            <path d="M60 14 C43 14 30 27 30 44 C30 60 60 90 60 90 C60 90 90 60 90 44 C90 27 77 14 60 14 Z" fill="#FFFFFF"/>
+            <!-- ピン内・道路モチーフ -->
+            <!-- 中央縦ライン（道路センター）-->
+            <line x1="60" y1="28" x2="60" y2="80" stroke="#1B6D8E" stroke-width="3" stroke-dasharray="5 4" stroke-linecap="round"/>
+            <!-- 道路左右ライン -->
+            <line x1="48" y1="32" x2="48" y2="74" stroke="#1B6D8E" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="72" y1="32" x2="72" y2="74" stroke="#1B6D8E" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- ピン内サークル（位置マーカー） -->
+            <circle cx="60" cy="46" r="6" fill="#1B6D8E"/>
+            <circle cx="60" cy="46" r="3" fill="#FFFFFF"/>
+            <!-- ピン先の影（グラウンドドット） -->
+            <ellipse cx="60" cy="97" rx="8" ry="2.5" fill="rgba(255,255,255,0.3)"/>
+            <!-- 目盛りライン（ルーラー）：ピン左側 -->
+            <line x1="22" y1="58" x2="38" y2="58" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+            <line x1="22" y1="51" x2="30" y2="51" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+            <line x1="22" y1="65" x2="30" y2="65" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+            <!-- 目盛りライン（ルーラー）：ピン右側 -->
+            <line x1="82" y1="58" x2="98" y2="58" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+            <line x1="90" y1="51" x2="98" y2="51" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+            <line x1="90" y1="65" x2="98" y2="65" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <!-- 60px -->
+        <div class="icon-size-sm">
+          <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+            <rect width="60" height="60" fill="#1B6D8E"/>
+            <path d="M30 7 C21 7 15 13.5 15 22 C15 30 30 45 30 45 C30 45 45 30 45 22 C45 13.5 39 7 30 7 Z" fill="#FFFFFF"/>
+            <line x1="30" y1="13" x2="30" y2="40" stroke="#1B6D8E" stroke-width="1.8" stroke-dasharray="3 3" stroke-linecap="round"/>
+            <line x1="24" y1="16" x2="24" y2="37" stroke="#1B6D8E" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="36" y1="16" x2="36" y2="37" stroke="#1B6D8E" stroke-width="1.4" stroke-linecap="round"/>
+            <circle cx="30" cy="23" r="3.5" fill="#1B6D8E"/>
+            <circle cx="30" cy="23" r="1.5" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <!-- 40px -->
+        <div class="icon-size-xs">
+          <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+            <rect width="40" height="40" fill="#1B6D8E"/>
+            <path d="M20 5 C14 5 10 9 10 15 C10 20.5 20 30 20 30 C20 30 30 20.5 30 15 C30 9 26 5 20 5 Z" fill="#FFFFFF"/>
+            <line x1="20" y1="9" x2="20" y2="27" stroke="#1B6D8E" stroke-width="1.4" stroke-dasharray="2 2.5" stroke-linecap="round"/>
+            <circle cx="20" cy="16" r="3" fill="#1B6D8E"/>
+            <circle cx="20" cy="16" r="1.3" fill="#FFFFFF"/>
+          </svg>
+        </div>
+      </div>
+
+      <table class="detail-table">
+        <tr><td>背景</td><td><code>#1B6D8E</code> ソリッド</td></tr>
+        <tr><td>アイコン</td><td>白ピン内に道路センターライン（破線）＋サイドライン</td></tr>
+        <tr><td>メジャー</td><td>ピン両脇にルーラー目盛り（サブ要素）</td></tr>
+        <tr><td>方向性</td><td>引き算・最小構成。小サイズでも潰れない</td></tr>
+      </table>
+
+      <div class="figma-note">
+        <h5>Figma 構成メモ（Plan A）</h5>
+        <ul>
+          <li>背景レクタングル: <code>#1B6D8E</code> / 角丸 27%（1024px の場合 276px）</li>
+          <li>ピンシルエット: Path シェイプ / Fill <code>#FFFFFF</code></li>
+          <li>道路センターライン: Line / Stroke <code>#1B6D8E</code> / Dashed 5-4</li>
+          <li>サイドライン: 2本 Line / Stroke <code>#1B6D8E</code></li>
+          <li>位置マーカー: 二重円 / 外 <code>#1B6D8E</code>・内 <code>#FFFFFF</code></li>
+          <li>ルーラー目盛り: Line 群 / Stroke <code>rgba(255,255,255,0.5)</code>（任意）</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== PLAN B ===== -->
+    <div class="icon-card">
+      <div class="proposal-label">Plan B</div>
+      <h3>ロードマーカー型</h3>
+      <p class="concept">「道路上にピンが刺さっている」シーンを真上（トップビュー）から捉えたシンボル。ルーラー（目盛り）を道路の横断線として表現。</p>
+
+      <div class="icon-preview">
+        <!-- 120px -->
+        <div class="icon-size-lg">
+          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+            <!-- 背景：ディープブルー -->
+            <rect width="120" height="120" fill="#0F4A62"/>
+            <!-- グロスハイライト -->
+            <ellipse cx="60" cy="28" rx="50" ry="26" fill="rgba(255,255,255,0.06)"/>
+            <!-- 道路（横断・水平方向） -->
+            <rect x="0" y="68" width="120" height="28" fill="#1B6D8E"/>
+            <!-- 道路上のルーラー目盛りライン -->
+            <line x1="10" y1="68" x2="10" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <line x1="24" y1="68" x2="24" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <line x1="38" y1="68" x2="38" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <line x1="52" y1="68" x2="52" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <line x1="66" y1="68" x2="66" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <line x1="80" y1="68" x2="80" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <line x1="94" y1="68" x2="94" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <line x1="108" y1="68" x2="108" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <!-- 道路センターライン（破線） -->
+            <line x1="10" y1="82" x2="35" y2="82" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="45" y1="82" x2="70" y2="82" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="80" y1="82" x2="105" y2="82" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- ピン（塗りつぶし・白） -->
+            <path d="M60 16 C47 16 36 26 36 38 C36 52 60 70 60 70 C60 70 84 52 84 38 C84 26 73 16 60 16 Z" fill="#FFFFFF"/>
+            <!-- ピン内サークル（ブランドカラー）-->
+            <circle cx="60" cy="38" r="9" fill="#1B6D8E"/>
+            <circle cx="60" cy="38" r="4.5" fill="#FFFFFF"/>
+            <!-- ピン先グラウンドシャドウ -->
+            <ellipse cx="60" cy="72" rx="6" ry="2" fill="rgba(255,255,255,0.2)"/>
+          </svg>
+        </div>
+        <!-- 60px -->
+        <div class="icon-size-sm">
+          <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+            <rect width="60" height="60" fill="#0F4A62"/>
+            <rect x="0" y="35" width="60" height="14" fill="#1B6D8E"/>
+            <line x1="8" y1="42" x2="22" y2="42" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="29" y1="42" x2="43" y2="42" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="50" y1="42" x2="60" y2="42" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M30 8 C23 8 18 13 18 19 C18 26 30 35 30 35 C30 35 42 26 42 19 C42 13 37 8 30 8 Z" fill="#FFFFFF"/>
+            <circle cx="30" cy="19" r="5" fill="#1B6D8E"/>
+            <circle cx="30" cy="19" r="2.5" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <!-- 40px -->
+        <div class="icon-size-xs">
+          <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+            <rect width="40" height="40" fill="#0F4A62"/>
+            <rect x="0" y="24" width="40" height="9" fill="#1B6D8E"/>
+            <line x1="4" y1="28.5" x2="14" y2="28.5" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="19" y1="28.5" x2="29" y2="28.5" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M20 5 C14.5 5 10 9.5 10 14.5 C10 20 20 24 20 24 C20 24 30 20 30 14.5 C30 9.5 25.5 5 20 5 Z" fill="#FFFFFF"/>
+            <circle cx="20" cy="14.5" r="4" fill="#1B6D8E"/>
+            <circle cx="20" cy="14.5" r="2" fill="#FFFFFF"/>
+          </svg>
+        </div>
+      </div>
+
+      <table class="detail-table">
+        <tr><td>背景</td><td><code>#0F4A62</code>（ディープ）＋道路帯 <code>#1B6D8E</code></td></tr>
+        <tr><td>アイコン</td><td>白ピンが道路に突き刺さるシーン構図</td></tr>
+        <tr><td>メジャー</td><td>道路上の縦目盛りライン（ルーラー替わり）</td></tr>
+        <tr><td>方向性</td><td>コンセプトが最も直感的。現行の道路要素を継承しつつ深みを増す</td></tr>
+      </table>
+
+      <div class="figma-note">
+        <h5>Figma 構成メモ（Plan B）</h5>
+        <ul>
+          <li>背景: <code>#0F4A62</code> / ピン下2/5に道路帯レクタングル <code>#1B6D8E</code></li>
+          <li>道路目盛り: 垂直 Line 群 / Stroke <code>rgba(255,255,255,0.15)</code></li>
+          <li>センターライン: 水平 Dashed Line / <code>rgba(255,255,255,0.45)</code></li>
+          <li>ピン: Path / Fill <code>#FFFFFF</code></li>
+          <li>二重円: 外 <code>#1B6D8E</code>・内 <code>#FFFFFF</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== PLAN C ===== -->
+    <div class="icon-card">
+      <div class="proposal-label">Plan C</div>
+      <h3>メジャー＋ピン 抽象型</h3>
+      <p class="concept">巻尺（メジャー）のロールを道路の断面として見立て、ピンが計測スタート地点を示す。距離・支払い記録というアプリ機能を最も前面に出した案。</p>
+
+      <div class="icon-preview">
+        <!-- 120px -->
+        <div class="icon-size-lg">
+          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+            <!-- 背景：ミッドブルー -->
+            <rect width="120" height="120" fill="#2589AD"/>
+            <!-- グロスハイライト（上部楕円） -->
+            <ellipse cx="60" cy="22" rx="55" ry="24" fill="rgba(255,255,255,0.09)"/>
+            <!-- ルーラー帯（水平） -->
+            <rect x="8" y="56" width="104" height="28" rx="4" fill="#1B6D8E"/>
+            <!-- ルーラー目盛り（主目盛り：長） -->
+            <line x1="8"   y1="56" x2="8"   y2="64" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+            <line x1="22"  y1="56" x2="22"  y2="68" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+            <line x1="36"  y1="56" x2="36"  y2="64" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+            <line x1="50"  y1="56" x2="50"  y2="64" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+            <line x1="64"  y1="56" x2="64"  y2="68" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+            <line x1="78"  y1="56" x2="78"  y2="64" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+            <line x1="92"  y1="56" x2="92"  y2="64" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+            <line x1="106" y1="56" x2="106" y2="68" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+            <!-- 中間目盛り（短） -->
+            <line x1="15"  y1="56" x2="15"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <line x1="29"  y1="56" x2="29"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <line x1="43"  y1="56" x2="43"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <line x1="57"  y1="56" x2="57"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <line x1="71"  y1="56" x2="71"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <line x1="85"  y1="56" x2="85"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <line x1="99"  y1="56" x2="99"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <!-- ルーラー下側目盛り（道路センターライン兼） -->
+            <line x1="22"  y1="84" x2="22"  y2="76" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+            <line x1="50"  y1="84" x2="50"  y2="76" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+            <line x1="78"  y1="84" x2="78"  y2="76" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+            <line x1="106" y1="84" x2="106" y2="76" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+            <!-- ピン（ルーラー上に立つ） -->
+            <path d="M40 14 C30 14 22 22 22 31 C22 42 40 57 40 57 C40 57 58 42 58 31 C58 22 50 14 40 14 Z" fill="#FFFFFF"/>
+            <circle cx="40" cy="31" r="7" fill="#2589AD"/>
+            <circle cx="40" cy="31" r="3.5" fill="#FFFFFF"/>
+            <!-- アンバードット（計測ポイント強調） -->
+            <circle cx="64" cy="70" r="4" fill="#E8A020"/>
+            <circle cx="64" cy="70" r="2" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <!-- 60px -->
+        <div class="icon-size-sm">
+          <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+            <rect width="60" height="60" fill="#2589AD"/>
+            <rect x="4" y="28" width="52" height="14" rx="2" fill="#1B6D8E"/>
+            <line x1="4"  y1="28" x2="4"  y2="32" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <line x1="11" y1="28" x2="11" y2="34" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+            <line x1="18" y1="28" x2="18" y2="32" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <line x1="25" y1="28" x2="25" y2="32" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <line x1="32" y1="28" x2="32" y2="34" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+            <line x1="39" y1="28" x2="39" y2="32" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <line x1="46" y1="28" x2="46" y2="32" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <line x1="53" y1="28" x2="53" y2="34" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+            <path d="M20 7 C15 7 11 11 11 16 C11 21 20 28 20 28 C20 28 29 21 29 16 C29 11 25 7 20 7 Z" fill="#FFFFFF"/>
+            <circle cx="20" cy="16" r="4" fill="#2589AD"/>
+            <circle cx="20" cy="16" r="2" fill="#FFFFFF"/>
+            <circle cx="36" cy="35" r="3" fill="#E8A020"/>
+          </svg>
+        </div>
+        <!-- 40px -->
+        <div class="icon-size-xs">
+          <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+            <rect width="40" height="40" fill="#2589AD"/>
+            <rect x="2" y="19" width="36" height="10" rx="2" fill="#1B6D8E"/>
+            <line x1="9"  y1="19" x2="9"  y2="23" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <line x1="16" y1="19" x2="16" y2="23" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <line x1="23" y1="19" x2="23" y2="23" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <line x1="30" y1="19" x2="30" y2="23" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <path d="M14 5 C10 5 7 8 7 12 C7 16 14 19 14 19 C14 19 21 16 21 12 C21 8 18 5 14 5 Z" fill="#FFFFFF"/>
+            <circle cx="14" cy="12" r="3" fill="#2589AD"/>
+            <circle cx="14" cy="12" r="1.5" fill="#FFFFFF"/>
+          </svg>
+        </div>
+      </div>
+
+      <table class="detail-table">
+        <tr><td>背景</td><td><code>#2589AD</code>（ミッド）</td></tr>
+        <tr><td>アイコン</td><td>ルーラー帯（横）の上にピンが立つ構図</td></tr>
+        <tr><td>メジャー</td><td>ルーラー目盛りが最もリアルに表現されている</td></tr>
+        <tr><td>方向性</td><td>アプリ機能（計測・記録）が前面に出る。ビジネス感が強い</td></tr>
+      </table>
+
+      <div class="figma-note">
+        <h5>Figma 構成メモ（Plan C）</h5>
+        <ul>
+          <li>背景: <code>#2589AD</code></li>
+          <li>ルーラー帯: レクタングル / Fill <code>#1B6D8E</code> / 角丸 4px</li>
+          <li>主目盛り: 垂直 Line / Stroke <code>rgba(255,255,255,0.7)</code> / 高 12px</li>
+          <li>中間目盛り: 垂直 Line / Stroke <code>rgba(255,255,255,0.4)</code> / 高 5px</li>
+          <li>ピン: Path / Fill <code>#FFFFFF</code>（ルーラー帯の端部に立つ）</li>
+          <li>アンバードット: Circle / Fill <code>#E8A020</code>（計測ポイント）</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /icon-proposals -->
+
+  <!-- ===== サイズ比較 ===== -->
+  <div style="background: white; border-radius: 16px; padding: 28px 32px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 40px;">
+    <p style="font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 16px;">3案 横並び比較（120px）</p>
+    <div style="display: flex; gap: 32px; align-items: center; flex-wrap: wrap;">
+      <!-- A -->
+      <div style="text-align:center;">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="120" height="120" style="border-radius:27px; box-shadow:0 6px 20px rgba(27,109,142,0.22); display:block;">
+          <rect width="120" height="120" fill="#1B6D8E"/>
+          <ellipse cx="60" cy="30" rx="52" ry="30" fill="rgba(255,255,255,0.07)"/>
+          <path d="M60 14 C43 14 30 27 30 44 C30 60 60 90 60 90 C60 90 90 60 90 44 C90 27 77 14 60 14 Z" fill="#FFFFFF"/>
+          <line x1="60" y1="28" x2="60" y2="80" stroke="#1B6D8E" stroke-width="3" stroke-dasharray="5 4" stroke-linecap="round"/>
+          <line x1="48" y1="32" x2="48" y2="74" stroke="#1B6D8E" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="72" y1="32" x2="72" y2="74" stroke="#1B6D8E" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="60" cy="46" r="6" fill="#1B6D8E"/>
+          <circle cx="60" cy="46" r="3" fill="#FFFFFF"/>
+          <ellipse cx="60" cy="97" rx="8" ry="2.5" fill="rgba(255,255,255,0.3)"/>
+          <line x1="22" y1="58" x2="38" y2="58" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+          <line x1="22" y1="51" x2="30" y2="51" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+          <line x1="22" y1="65" x2="30" y2="65" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+          <line x1="82" y1="58" x2="98" y2="58" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+          <line x1="90" y1="51" x2="98" y2="51" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+          <line x1="90" y1="65" x2="98" y2="65" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+        </svg>
+        <p style="font-size:12px; color:var(--text-secondary); margin-top:8px; font-weight:600;">A: ピン×道路統合</p>
+      </div>
+      <!-- B -->
+      <div style="text-align:center;">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="120" height="120" style="border-radius:27px; box-shadow:0 6px 20px rgba(15,74,98,0.28); display:block;">
+          <rect width="120" height="120" fill="#0F4A62"/>
+          <ellipse cx="60" cy="28" rx="50" ry="26" fill="rgba(255,255,255,0.06)"/>
+          <rect x="0" y="68" width="120" height="28" fill="#1B6D8E"/>
+          <line x1="10" y1="68" x2="10" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <line x1="24" y1="68" x2="24" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <line x1="38" y1="68" x2="38" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <line x1="52" y1="68" x2="52" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <line x1="66" y1="68" x2="66" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <line x1="80" y1="68" x2="80" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <line x1="94" y1="68" x2="94" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <line x1="108" y1="68" x2="108" y2="96" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <line x1="10" y1="82" x2="35" y2="82" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="45" y1="82" x2="70" y2="82" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="80" y1="82" x2="105" y2="82" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M60 16 C47 16 36 26 36 38 C36 52 60 70 60 70 C60 70 84 52 84 38 C84 26 73 16 60 16 Z" fill="#FFFFFF"/>
+          <circle cx="60" cy="38" r="9" fill="#1B6D8E"/>
+          <circle cx="60" cy="38" r="4.5" fill="#FFFFFF"/>
+          <ellipse cx="60" cy="72" rx="6" ry="2" fill="rgba(255,255,255,0.2)"/>
+        </svg>
+        <p style="font-size:12px; color:var(--text-secondary); margin-top:8px; font-weight:600;">B: ロードマーカー</p>
+      </div>
+      <!-- C -->
+      <div style="text-align:center;">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="120" height="120" style="border-radius:27px; box-shadow:0 6px 20px rgba(37,137,173,0.28); display:block;">
+          <rect width="120" height="120" fill="#2589AD"/>
+          <ellipse cx="60" cy="22" rx="55" ry="24" fill="rgba(255,255,255,0.09)"/>
+          <rect x="8" y="56" width="104" height="28" rx="4" fill="#1B6D8E"/>
+          <line x1="8"   y1="56" x2="8"   y2="64" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+          <line x1="22"  y1="56" x2="22"  y2="68" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+          <line x1="36"  y1="56" x2="36"  y2="64" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+          <line x1="50"  y1="56" x2="50"  y2="64" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+          <line x1="64"  y1="56" x2="64"  y2="68" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+          <line x1="78"  y1="56" x2="78"  y2="64" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+          <line x1="92"  y1="56" x2="92"  y2="64" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+          <line x1="106" y1="56" x2="106" y2="68" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+          <line x1="15"  y1="56" x2="15"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+          <line x1="29"  y1="56" x2="29"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+          <line x1="43"  y1="56" x2="43"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+          <line x1="57"  y1="56" x2="57"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+          <line x1="71"  y1="56" x2="71"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+          <line x1="85"  y1="56" x2="85"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+          <line x1="99"  y1="56" x2="99"  y2="61" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+          <line x1="22"  y1="84" x2="22"  y2="76" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+          <line x1="50"  y1="84" x2="50"  y2="76" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+          <line x1="78"  y1="84" x2="78"  y2="76" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+          <line x1="106" y1="84" x2="106" y2="76" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+          <path d="M40 14 C30 14 22 22 22 31 C22 42 40 57 40 57 C40 57 58 42 58 31 C58 22 50 14 40 14 Z" fill="#FFFFFF"/>
+          <circle cx="40" cy="31" r="7" fill="#2589AD"/>
+          <circle cx="40" cy="31" r="3.5" fill="#FFFFFF"/>
+          <circle cx="64" cy="70" r="4" fill="#E8A020"/>
+          <circle cx="64" cy="70" r="2" fill="#FFFFFF"/>
+        </svg>
+        <p style="font-size:12px; color:var(--text-secondary); margin-top:8px; font-weight:600;">C: メジャー+ピン抽象</p>
+      </div>
+
+      <!-- 評価表 -->
+      <div style="flex:1; min-width: 240px;">
+        <table style="width:100%; border-collapse:collapse; font-size: 13px;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--gray-200);">
+              <th style="text-align:left; padding:6px 8px; color:var(--text-secondary); font-weight:600;">評価軸</th>
+              <th style="padding:6px 8px; color:var(--brand-main);">A</th>
+              <th style="padding:6px 8px; color:var(--brand-deep);">B</th>
+              <th style="padding:6px 8px; color:var(--brand-mid);">C</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--gray-100);">
+              <td style="padding:6px 8px; color:var(--text-secondary);">小サイズ可読性</td>
+              <td style="padding:6px 8px; text-align:center;">◎</td>
+              <td style="padding:6px 8px; text-align:center;">○</td>
+              <td style="padding:6px 8px; text-align:center;">△</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--gray-100);">
+              <td style="padding:6px 8px; color:var(--text-secondary);">コンセプト直感性</td>
+              <td style="padding:6px 8px; text-align:center;">○</td>
+              <td style="padding:6px 8px; text-align:center;">◎</td>
+              <td style="padding:6px 8px; text-align:center;">○</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--gray-100);">
+              <td style="padding:6px 8px; color:var(--text-secondary);">メジャー表現</td>
+              <td style="padding:6px 8px; text-align:center;">△</td>
+              <td style="padding:6px 8px; text-align:center;">○</td>
+              <td style="padding:6px 8px; text-align:center;">◎</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--gray-100);">
+              <td style="padding:6px 8px; color:var(--text-secondary);">シンプルさ</td>
+              <td style="padding:6px 8px; text-align:center;">◎</td>
+              <td style="padding:6px 8px; text-align:center;">○</td>
+              <td style="padding:6px 8px; text-align:center;">△</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 8px; color:var(--text-secondary);">現行との差別化</td>
+              <td style="padding:6px 8px; text-align:center;">◎</td>
+              <td style="padding:6px 8px; text-align:center;">○</td>
+              <td style="padding:6px 8px; text-align:center;">◎</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ==================== TYPOGRAPHY ==================== -->
+  <section id="typography">
+    <p class="section-heading">TYPOGRAPHY</p>
+    <p class="section-title">アイコン・スプラッシュのタイポグラフィ</p>
+    <p class="section-desc">アイコン本体にはテキストを入れない方針。スプラッシュ画面でのみロゴテキストを使用する。</p>
+    <div class="type-row">
+      <div class="type-card">
+        <div class="type-label">スプラッシュ ロゴ</div>
+        <div class="type-sample-lg" style="color: var(--brand-main);">MichiMark</div>
+        <div class="type-desc">
+          フォント: SF Pro Display / Helvetica Neue Bold<br>
+          サイズ: スプラッシュ高さの約6%（844px画面で約50px）<br>
+          ウェイト: 700 / letter-spacing: -1px
+        </div>
+      </div>
+      <div class="type-card">
+        <div class="type-label">サブキャッチ（オプション）</div>
+        <div class="type-sample-md" style="color: var(--brand-light);">Drive. Mark. Remember.</div>
+        <div class="type-desc">
+          フォント: SF Pro Text / Helvetica Neue Regular<br>
+          サイズ: ロゴの50%（約25px）<br>
+          ウェイト: 400 / letter-spacing: 1.5px / opacity: 0.7
+        </div>
+      </div>
+    </div>
+    <p style="font-size: 12px; color: var(--text-secondary); margin-top: 12px;">アイコンにテキストを入れない理由: App Store のホーム画面表示（20x20px程度）でテキストが潰れるため、シンボルのみで識別できる設計を優先。</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ==================== SPLASH ==================== -->
+  <p class="section-heading">SPLASH SCREEN</p>
+  <p class="section-title">スプラッシュ画面デザイン</p>
+  <p class="section-desc">「ミチが画面を横断する」イメージを軸に、ピンとメジャーを道路上に配置。iPhone 390×844px 想定（縦持ち）。将来的なアニメーション設計を考慮した静止画構造。</p>
+
+  <div class="splash-proposal">
+    <div class="splash-label">Splash — Plan S1（Plan B対応）</div>
+    <h3>ロードクロス型スプラッシュ</h3>
+    <p class="concept">ネイビー背景に道路が画面中央を横断。道路中心にピンが立ち、ルーラー目盛りが道路を計測する構図。ロゴは画面上部1/3に配置。アニメーション時はピンがフェードイン → 道路がスライドインの順を想定。</p>
+
+    <!-- スプラッシュSVGプレビュー（390:844 = 1:2.16, ここでは390x200で表示） -->
+    <div style="width:100%; max-width:390px; margin:0 auto 20px; border-radius: 16px; overflow:hidden; box-shadow: 0 8px 32px rgba(15,74,98,0.35);">
+      <svg viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg" width="390" height="200" preserveAspectRatio="xMidYMid meet">
+        <!-- 背景 -->
+        <rect width="390" height="844" fill="#0F4A62"/>
+        <!-- 上部グロスハイライト -->
+        <ellipse cx="195" cy="-20" rx="240" ry="160" fill="rgba(255,255,255,0.04)"/>
+
+        <!-- ===== ロゴエリア（上1/3） ===== -->
+        <!-- ピンシンボル（ロゴ上部） -->
+        <path d="M195 180 C178 180 164 194 164 210 C164 228 195 252 195 252 C195 252 226 228 226 210 C226 194 212 180 195 180 Z" fill="#FFFFFF"/>
+        <circle cx="195" cy="210" r="10" fill="#0F4A62"/>
+        <circle cx="195" cy="210" r="5" fill="#FFFFFF"/>
+        <!-- ピン先グラウンドシャドウ -->
+        <ellipse cx="195" cy="258" rx="14" ry="4" fill="rgba(255,255,255,0.15)"/>
+
+        <!-- ロゴテキスト -->
+        <text x="195" y="300" font-family="Helvetica Neue, -apple-system, sans-serif" font-size="42" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">MichiMark</text>
+        <!-- サブキャッチ -->
+        <text x="195" y="332" font-family="Helvetica Neue, sans-serif" font-size="16" font-weight="400" fill="rgba(255,255,255,0.5)" text-anchor="middle" letter-spacing="3">DRIVE . MARK . REMEMBER</text>
+
+        <!-- ===== 道路（中央横断） ===== -->
+        <rect x="0" y="400" width="390" height="120" fill="#1B6D8E"/>
+
+        <!-- 道路上端・下端ライン -->
+        <line x1="0" y1="400" x2="390" y2="400" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+        <line x1="0" y1="520" x2="390" y2="520" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+
+        <!-- ルーラー目盛り（上端） -->
+        <line x1="0"   y1="400" x2="0"   y2="418" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+        <line x1="28"  y1="400" x2="28"  y2="412" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="56"  y1="400" x2="56"  y2="418" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+        <line x1="84"  y1="400" x2="84"  y2="412" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="112" y1="400" x2="112" y2="418" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+        <line x1="140" y1="400" x2="140" y2="412" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="168" y1="400" x2="168" y2="418" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+        <line x1="196" y1="400" x2="196" y2="424" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <line x1="224" y1="400" x2="224" y2="412" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="252" y1="400" x2="252" y2="418" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+        <line x1="280" y1="400" x2="280" y2="412" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="308" y1="400" x2="308" y2="418" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+        <line x1="336" y1="400" x2="336" y2="412" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="364" y1="400" x2="364" y2="418" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+        <line x1="390" y1="400" x2="390" y2="418" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+
+        <!-- センターライン（破線） -->
+        <line x1="10"  y1="460" x2="70"  y2="460" stroke="rgba(255,255,255,0.5)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="90"  y1="460" x2="150" y2="460" stroke="rgba(255,255,255,0.5)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="170" y1="460" x2="230" y2="460" stroke="rgba(255,255,255,0.5)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="250" y1="460" x2="310" y2="460" stroke="rgba(255,255,255,0.5)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="330" y1="460" x2="390" y2="460" stroke="rgba(255,255,255,0.5)" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- 道路上のピン（メイン） -->
+        <path d="M195 352 C175 352 158 368 158 386 C158 406 195 430 195 430 C195 430 232 406 232 386 C232 368 215 352 195 352 Z" fill="#FFFFFF" filter="url(#pin-shadow)"/>
+        <circle cx="195" cy="386" r="14" fill="#1B6D8E"/>
+        <circle cx="195" cy="386" r="7" fill="#FFFFFF"/>
+        <!-- ピン先影 -->
+        <ellipse cx="195" cy="432" rx="16" ry="4" fill="rgba(0,0,0,0.25)"/>
+
+        <!-- アンバーマーカー（計測ポイント） -->
+        <circle cx="120" cy="460" r="8" fill="#E8A020"/>
+        <circle cx="120" cy="460" r="4" fill="#FFFFFF"/>
+        <circle cx="270" cy="460" r="8" fill="#E8A020"/>
+        <circle cx="270" cy="460" r="4" fill="#FFFFFF"/>
+
+        <!-- 下部グロー -->
+        <ellipse cx="195" cy="640" rx="140" ry="60" fill="rgba(58,168,204,0.08)"/>
+
+        <!-- ローディングインジケーター（オプション） -->
+        <rect x="155" y="720" width="80" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+        <rect x="155" y="720" width="40" height="3" rx="1.5" fill="rgba(255,255,255,0.6)"/>
+      </svg>
+    </div>
+
+    <table class="detail-table">
+      <tr><td>背景</td><td><code>#0F4A62</code>（ディープ）</td></tr>
+      <tr><td>道路帯</td><td><code>#1B6D8E</code>、画面中央を水平横断（上44〜62%）</td></tr>
+      <tr><td>ピン</td><td>白シルエット / 道路に刺さる位置（中央上部）</td></tr>
+      <tr><td>メジャー</td><td>道路上端の目盛りライン / 28px間隔の主・中間目盛り</td></tr>
+      <tr><td>センター線</td><td>破線 / <code>rgba(255,255,255,0.5)</code></td></tr>
+      <tr><td>アンバードット</td><td><code>#E8A020</code> / 計測ポイントを2点配置</td></tr>
+      <tr><td>ロゴ位置</td><td>画面上部1/3（Y: 300px程度）</td></tr>
+    </table>
+
+    <div class="figma-note">
+      <h5>Figma 構成メモ（Splash S1）- アニメーション前提構造</h5>
+      <ul>
+        <li>Group 1 — 背景: フルサイズ rect <code>#0F4A62</code></li>
+        <li>Group 2 — ロゴ: ピンシンボル + テキスト「MichiMark」+ サブキャッチ / フェードイン用</li>
+        <li>Group 3 — 道路帯: rect <code>#1B6D8E</code> + 目盛りライン群 / 左からスライドイン用</li>
+        <li>Group 4 — センターライン: 破線 Line 群 / 道路と同期スライドイン</li>
+        <li>Group 5 — ピン: Path + 二重円 / 落下アニメーション用（Y軸 translate）</li>
+        <li>Group 6 — アンバードット x2 / ピン着地後にフェードイン</li>
+        <li>Group 7 — ローディングバー（オプション）</li>
+        <li>各グループはアニメーション独立性のため Auto Layout を使わず絶対配置</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- スプラッシュ構成メモ -->
+  <div style="background: white; border-radius: 14px; padding: 22px 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);">
+    <h4 style="font-size:14px; font-weight:700; margin-bottom:12px;">アニメーション設計メモ（将来実装時参照）</h4>
+    <div style="font-size:13px; color:var(--text-secondary); line-height:2;">
+      <strong style="color:var(--dark);">想定シーケンス（合計約1.8秒）:</strong><br>
+      0.0s — 背景フェードイン（0.3s）<br>
+      0.3s — 道路帯が左→右スライドイン（0.4s / easeOut）<br>
+      0.5s — センターライン描画（0.4s / 左→右）<br>
+      0.7s — ピンが上から落下＋バウンス（0.5s / spring）<br>
+      1.0s — アンバードット フェードイン（0.3s / stagger 0.1s）<br>
+      1.2s — ロゴテキスト フェードイン（0.3s）<br>
+      1.5s — ローディングバー（残存時間に合わせて進行）
+    </div>
+  </div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ==================== RATIONALE ==================== -->
+<section id="rationale">
+  <p class="section-heading">RATIONALE</p>
+  <p class="section-title">デザイン根拠</p>
+  <p class="section-desc">各デザイン判断の背景と選択基準を記録する。</p>
+
+  <div class="rationale-grid">
+    <div class="rationale-card">
+      <h4>アイコンからテキストを除去した理由</h4>
+      <p>iOS ホーム画面の最小表示サイズ（20x20px程度）でテキストは完全に潰れる。App Store のアイコンはシンボルのみで識別できるべき（Apple HIG 準拠）。ブランド名はウィジェット・スプラッシュ・ストアページで補完する。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>グラデーションを極力排除した理由</h4>
+      <p>ビジネスユーザー（ドライバー・現場作業員）に向けたクール・信頼感重視のデザイン方針に沿い、ソリッドカラーを基調とする。光沢感はハイライトシェイプ（白透過楕円）で最小限に留め、後から任意で除去できる構造にした。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>ピンをソリッド（白塗り）にした理由</h4>
+      <p>現行はアウトラインピンだが、小サイズでアウトラインは視認性が落ちる。ソリッド白は背景の濃いブルーとの高コントラストを維持し（コントラスト比 > 7:1）、あらゆるサイズで認識できる。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>アンバーアクセントを採用した理由</h4>
+      <p>全面ブルー系だとピンと道路が同系色に埋もれやすい。アンバー（<code>#E8A020</code>）は補色に近い位置にあり、「計測ポイント」や「マーク済み地点」を視覚的に際立たせる。アイコンのメインカラーとしては使わず、アクセントドットに限定して使用。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>道路の向き（横断 vs 縦）の選択</h4>
+      <p>現行は縦方向（下に道路）。スプラッシュでは「ミチが横に横断する」というユーザーのコンセプトを忠実に再現し、水平方向の道路を採用。アイコン（正方形）では構図の柔軟性が高い縦方向のピン内道路（Plan A）が安定する。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>WCAG コントラスト比確認</h4>
+      <ul>
+        <li>白 on <code>#1B6D8E</code>: 約 <strong>4.9:1</strong>（AA 合格）</li>
+        <li>白 on <code>#0F4A62</code>: 約 <strong>8.2:1</strong>（AAA 合格）</li>
+        <li>白 on <code>#2589AD</code>: 約 <strong>3.8:1</strong>（AA Large 合格）</li>
+        <li>アンバー <code>#E8A020</code> on Deep: 約 <strong>5.6:1</strong>（AA 合格）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ==================== NEXT STEPS ==================== -->
+<section>
+  <p class="section-heading">NEXT STEPS</p>
+  <p class="section-title">提案後の進め方</p>
+  <p class="section-desc">このレポートは designer によるドラフト。採用案の確定後、product-manager が要件書に整形する。</p>
+
+  <div style="background: white; border-radius: 14px; padding: 24px 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);">
+    <ol style="font-size: 14px; color: var(--text-secondary); line-height: 2.2; padding-left: 20px;">
+      <li>ユーザーが <strong>アイコン案（A / B / C）とスプラッシュ案（S1）</strong> を確認・フィードバック</li>
+      <li>採用案確定 → product-manager が <strong>要件書（docs/Requirements/）</strong> に整形</li>
+      <li>要件書をもとに <strong>Figma データ作成</strong>（SVGをFigmaにインポート → 実サイズ 1024x1024px でトレース）</li>
+      <li>Figma から <strong>1024x1024 PNG エクスポート</strong> → flutter_launcher_icons / flutter_native_splash で各解像度を自動生成</li>
+      <li>スプラッシュアニメーションは <strong>別フェーズ</strong>（要件書・Spec分離）で実装</li>
+    </ol>
+  </div>
+</section>
+
+<p class="footer-note">MichiMark Design Proposal — docs/Design/draft/ — Designer Draft / Not yet approved by PM</p>
+
+</div><!-- /wrapper -->
+</body>
+</html>

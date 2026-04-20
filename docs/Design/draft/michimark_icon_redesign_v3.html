@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark アイコン デザイン提案 v3 — 3要素統合案</title>
+  <style>
+    :root {
+      --brand:        #2B7A9B;
+      --white:        #FFFFFF;
+      --bg:           #EEF4F8;
+      --dark:         #1A2634;
+      --text-sub:     #5A7080;
+      --gray-100:     #EFF3F6;
+      --gray-200:     #D9E4EB;
+      --gray-400:     #9BB4C1;
+      --pass-green:   #2D9D6A;
+      --fail-red:     #C04040;
+      --warn-amber:   #C87E00;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER ===== */
+    .page-header {
+      background: var(--brand);
+      color: white;
+      padding: 48px 48px 40px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .page-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.3px; }
+    .page-header p  { font-size: 14px; opacity: 0.8; max-width: 640px; }
+    .meta-row { display: flex; gap: 28px; margin-top: 16px; font-size: 12px; opacity: 0.55; }
+
+    /* ===== LAYOUT ===== */
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 0 40px 80px; }
+
+    /* ===== SECTION ===== */
+    .section-heading {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin-top: 60px;
+      margin-bottom: 6px;
+    }
+    .section-title  { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .section-desc   { font-size: 14px; color: var(--text-sub); margin-bottom: 28px; }
+    hr.divider      { border: none; border-top: 1px solid var(--gray-200); margin: 48px 0; }
+
+    /* ===== COLOR PALETTE ===== */
+    .palette-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+    .swatch { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .swatch-block {
+      width: 72px; height: 72px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .swatch-label { font-size: 11px; font-weight: 600; color: var(--text-sub); text-align: center; }
+    .swatch-hex   { font-size: 10px; color: var(--gray-400); font-family: monospace; }
+
+    /* ===== CONSTRAINT BOX ===== */
+    .constraint-box {
+      background: white;
+      border: 2px solid var(--brand);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 32px;
+    }
+    .constraint-box h4 { font-size: 14px; font-weight: 700; color: var(--brand); margin-bottom: 10px; }
+    .constraint-box ul { font-size: 13px; color: var(--text-sub); padding-left: 18px; line-height: 2; }
+    .constraint-box li strong { color: var(--dark); }
+
+    /* ===== PROPOSAL GRID ===== */
+    .proposals { display: flex; flex-direction: column; gap: 48px; margin-bottom: 48px; }
+
+    .proposal-card {
+      background: white;
+      border-radius: 20px;
+      padding: 36px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    }
+    .proposal-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin-bottom: 6px;
+    }
+    .proposal-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .concept-text {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin-bottom: 28px;
+      line-height: 1.65;
+      max-width: 640px;
+    }
+
+    /* ===== ICON PREVIEW ROW ===== */
+    .preview-row {
+      display: flex;
+      gap: 24px;
+      align-items: flex-end;
+      margin-bottom: 28px;
+    }
+    .size-label {
+      font-size: 11px;
+      color: var(--text-sub);
+      text-align: center;
+      margin-top: 8px;
+    }
+    .icon-wrap { display: flex; flex-direction: column; align-items: center; }
+
+    /* シャドウはブランドカラーに合わせる */
+    .sz-1024 { width: 160px; height: 160px; border-radius: 36px; overflow: hidden; box-shadow: 0 8px 28px rgba(43,122,155,0.25); }
+    .sz-60   { width: 60px;  height: 60px;  border-radius: 14px; overflow: hidden; box-shadow: 0 4px 12px rgba(43,122,155,0.22); }
+    .sz-29   { width: 29px;  height: 29px;  border-radius: 7px;  overflow: hidden; box-shadow: 0 2px 8px rgba(43,122,155,0.18); }
+
+    /* 29pt 視認性評価バッジ */
+    .visibility-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 4px 10px;
+      margin-top: 6px;
+    }
+    .vis-good { background: #E7F7EF; color: var(--pass-green); }
+    .vis-warn { background: #FEF3E0; color: var(--warn-amber); }
+
+    /* ===== DETAIL TABLE ===== */
+    .detail-table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 13px; }
+    .detail-table tr { border-bottom: 1px solid var(--gray-100); }
+    .detail-table tr:last-child { border-bottom: none; }
+    .detail-table td { padding: 7px 4px; color: var(--text-sub); vertical-align: top; }
+    .detail-table td:first-child { font-weight: 600; color: var(--dark); width: 120px; white-space: nowrap; }
+    code { font-family: 'SF Mono', 'Courier New', monospace; font-size: 11px; background: var(--gray-100); padding: 1px 5px; border-radius: 4px; }
+
+    /* ===== 3要素達成チェック ===== */
+    .element-check {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .el-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 4px 12px;
+      background: #E7F7EF;
+      color: var(--pass-green);
+    }
+
+    /* ===== COMPARISON TABLE ===== */
+    .comparison-wrap {
+      background: white;
+      border-radius: 20px;
+      padding: 32px 36px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 40px;
+    }
+    .comparison-wrap h3 { font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+    .compare-icons { display: flex; gap: 40px; margin-bottom: 28px; align-items: flex-end; flex-wrap: wrap; }
+    .compare-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .compare-col .plan-name { font-size: 12px; font-weight: 700; color: var(--brand); }
+    .compare-col .plan-sub  { font-size: 11px; color: var(--text-sub); text-align: center; max-width: 100px; }
+
+    .eval-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .eval-table th { text-align: left; padding: 8px 10px; background: var(--gray-100); font-size: 12px; color: var(--text-sub); }
+    .eval-table th:not(:first-child) { text-align: center; color: var(--brand); }
+    .eval-table td { padding: 8px 10px; border-bottom: 1px solid var(--gray-100); color: var(--text-sub); }
+    .eval-table td:not(:first-child) { text-align: center; font-weight: 600; font-size: 15px; }
+    .eval-table tr:last-child td { border-bottom: none; }
+
+    /* ===== RATIONALE ===== */
+    .rationale-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .rationale-card {
+      background: white;
+      border-radius: 14px;
+      padding: 22px 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .rationale-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .rationale-card p  { font-size: 13px; color: var(--text-sub); line-height: 1.65; }
+    .rationale-card ul { font-size: 13px; color: var(--text-sub); padding-left: 16px; line-height: 1.9; }
+
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--gray-400);
+      padding: 32px 0 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="page-header">
+  <div class="badge">Designer Draft — v3</div>
+  <h1>MichiMark アイコン デザイン提案 v3</h1>
+  <p>「ピン・ミチ（道）・メジャー（巻尺）」3要素を1アイコンに統合する3案。白 + #2B7A9B の2色固定・装飾なし・App Store 最小サイズ（29pt）での視認性を第一に設計。</p>
+  <div class="meta-row">
+    <span>作成日: 2026-04-20</span>
+    <span>担当: designer</span>
+    <span>ステータス: Draft（要 PM レビュー）</span>
+    <span>バージョン: v3</span>
+  </div>
+</header>
+
+<div class="wrapper">
+
+<!-- ===== COLOR PALETTE ===== -->
+<section id="color-palette">
+  <p class="section-heading" style="margin-top: 48px;">COLOR PALETTE</p>
+  <p class="section-title">採用カラー（2色固定）</p>
+  <p class="section-desc">今バージョンは白と #2B7A9B の厳密な2色制約。中間色・グラデーション・透過は使用しない。</p>
+
+  <div class="palette-row">
+    <div class="swatch">
+      <div class="swatch-block" style="background:#2B7A9B;"></div>
+      <div class="swatch-label">Brand Blue</div>
+      <div class="swatch-hex">#2B7A9B</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#FFFFFF; border: 1px solid var(--gray-200);"></div>
+      <div class="swatch-label">White</div>
+      <div class="swatch-hex">#FFFFFF</div>
+    </div>
+  </div>
+
+  <div style="background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); font-size: 13px; color: var(--text-sub);">
+    <strong style="color: var(--dark);">コントラスト比:</strong>
+    白 on #2B7A9B = <strong>約 5.6:1</strong>（WCAG AA 合格 / 4.5:1 以上）。
+    アイコン全体で2色のみを使用し、いかなる中間値・透過値も使わない。
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== CONSTRAINTS ===== -->
+<div class="constraint-box">
+  <h4>設計制約（全案共通）</h4>
+  <ul>
+    <li><strong>3要素必須:</strong> ピン（地点マーク）・ミチ（道/曲線）・メジャー（目盛り/巻尺）が全案に含まれること</li>
+    <li><strong>2色のみ:</strong> 背景 #2B7A9B・前景 #FFFFFF のみ使用。中間色・グラデーション・光沢・影は禁止</li>
+    <li><strong>Google マップ差別化:</strong> 孤立したドロップピン形状を主役にしない</li>
+    <li><strong>29pt 視認性:</strong> 最小サイズ（29 x 29pt）で3要素の形状が崩れないシンプルさ</li>
+    <li><strong>App Store アイコン準拠:</strong> 1:1 正方形・丸角はOSが自動適用するため考慮不要</li>
+  </ul>
+</div>
+
+<!-- ===== PROPOSALS ===== -->
+<section id="component-preview">
+  <p class="section-heading">ICON PROPOSALS</p>
+  <p class="section-title">3要素統合案 3パターン</p>
+  <p class="section-desc">各案は 160px / 60px / 29px の3サイズでプレビュー。29px は App Store 最小表示（29pt）相当の厳しい条件。</p>
+
+  <div class="proposals">
+
+    <!-- ====================================================
+         PLAN A: メジャーテープ + ピン統合型
+         道路を水平のメジャーテープとして表現し、
+         テープの端からピンが立ち上がる構成
+    ===================================================== -->
+    <div class="proposal-card">
+      <div class="proposal-label">Plan A</div>
+      <h3>メジャーテープ刺しピン</h3>
+
+      <div class="element-check">
+        <span class="el-tag">ピン: テープから立ち上がる</span>
+        <span class="el-tag">ミチ: テープ本体が道路を表す</span>
+        <span class="el-tag">メジャー: 目盛り刻み + 巻尺ケース形状</span>
+      </div>
+
+      <p class="concept-text">
+        横長の巻尺テープを画面下部に水平に配置し、テープ自体が「道路（ミチ）」を象徴する。
+        テープの左端（スタート地点）にピンが垂直に刺さり、「この地点をマーク」という行為を表現する。
+        テープ上面には等間隔の目盛り刻みを入れ、メジャーであることを明示。
+        ピンはドロップピン形状ではなく「アップライトピン（頭が球の画鋲型）」にして Google マップとの差別化を図る。
+      </p>
+
+      <div class="preview-row">
+        <!-- 160px -->
+        <div class="icon-wrap">
+          <div class="sz-1024">
+            <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" width="160" height="160">
+              <!-- 背景 -->
+              <rect width="160" height="160" fill="#2B7A9B"/>
+
+              <!-- メジャーテープ本体（道路を兼ねる） -->
+              <rect x="12" y="95" width="136" height="36" rx="7" fill="#FFFFFF"/>
+
+              <!-- テープ上端目盛り刻み（メジャー） -->
+              <line x1="12"  y1="95" x2="12"  y2="106" stroke="#2B7A9B" stroke-width="2"/>
+              <line x1="26"  y1="95" x2="26"  y2="103" stroke="#2B7A9B" stroke-width="1.5"/>
+              <line x1="40"  y1="95" x2="40"  y2="106" stroke="#2B7A9B" stroke-width="2"/>
+              <line x1="54"  y1="95" x2="54"  y2="103" stroke="#2B7A9B" stroke-width="1.5"/>
+              <line x1="68"  y1="95" x2="68"  y2="106" stroke="#2B7A9B" stroke-width="2"/>
+              <line x1="82"  y1="95" x2="82"  y2="103" stroke="#2B7A9B" stroke-width="1.5"/>
+              <line x1="96"  y1="95" x2="96"  y2="106" stroke="#2B7A9B" stroke-width="2"/>
+              <line x1="110" y1="95" x2="110" y2="103" stroke="#2B7A9B" stroke-width="1.5"/>
+              <line x1="124" y1="95" x2="124" y2="106" stroke="#2B7A9B" stroke-width="2"/>
+              <line x1="138" y1="95" x2="138" y2="103" stroke="#2B7A9B" stroke-width="1.5"/>
+              <line x1="148" y1="95" x2="148" y2="106" stroke="#2B7A9B" stroke-width="2"/>
+
+              <!-- 道路センターライン（破線） -->
+              <line x1="20"  y1="113" x2="36"  y2="113" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="44"  y1="113" x2="60"  y2="113" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="68"  y1="113" x2="84"  y2="113" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="92"  y1="113" x2="108" y2="113" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="116" y1="113" x2="132" y2="113" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="140" y1="113" x2="148" y2="113" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+
+              <!-- アップライトピン（画鋲型）左端 -->
+              <!-- ピンのスティック -->
+              <line x1="40" y1="40" x2="40" y2="95" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+              <!-- ピン頭（丸） -->
+              <circle cx="40" cy="30" r="18" fill="#FFFFFF"/>
+              <!-- ピン頭内の穴（アイ） -->
+              <circle cx="40" cy="30" r="8" fill="#2B7A9B"/>
+            </svg>
+          </div>
+          <div class="size-label">160px</div>
+        </div>
+
+        <!-- 60px -->
+        <div class="icon-wrap">
+          <div class="sz-60">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+              <rect width="60" height="60" fill="#2B7A9B"/>
+              <!-- テープ -->
+              <rect x="5" y="36" width="50" height="13" rx="3" fill="#FFFFFF"/>
+              <!-- 目盛り -->
+              <line x1="5"  y1="36" x2="5"  y2="41" stroke="#2B7A9B" stroke-width="1.2"/>
+              <line x1="14" y1="36" x2="14" y2="40" stroke="#2B7A9B" stroke-width="1"/>
+              <line x1="23" y1="36" x2="23" y2="41" stroke="#2B7A9B" stroke-width="1.2"/>
+              <line x1="32" y1="36" x2="32" y2="40" stroke="#2B7A9B" stroke-width="1"/>
+              <line x1="41" y1="36" x2="41" y2="41" stroke="#2B7A9B" stroke-width="1.2"/>
+              <line x1="50" y1="36" x2="50" y2="40" stroke="#2B7A9B" stroke-width="1"/>
+              <!-- センターライン -->
+              <line x1="8"  y1="42.5" x2="16" y2="42.5" stroke="#2B7A9B" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="22" y1="42.5" x2="30" y2="42.5" stroke="#2B7A9B" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="36" y1="42.5" x2="44" y2="42.5" stroke="#2B7A9B" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- ピン -->
+              <line x1="15" y1="16" x2="15" y2="36" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="15" cy="10" r="7" fill="#FFFFFF"/>
+              <circle cx="15" cy="10" r="3" fill="#2B7A9B"/>
+            </svg>
+          </div>
+          <div class="size-label">60px</div>
+        </div>
+
+        <!-- 29px -->
+        <div class="icon-wrap">
+          <div class="sz-29">
+            <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg" width="29" height="29">
+              <rect width="29" height="29" fill="#2B7A9B"/>
+              <!-- テープ -->
+              <rect x="2" y="17" width="25" height="7" rx="2" fill="#FFFFFF"/>
+              <!-- 目盛り（最小限） -->
+              <line x1="2"  y1="17" x2="2"  y2="20" stroke="#2B7A9B" stroke-width="1"/>
+              <line x1="9"  y1="17" x2="9"  y2="19" stroke="#2B7A9B" stroke-width="0.8"/>
+              <line x1="16" y1="17" x2="16" y2="20" stroke="#2B7A9B" stroke-width="1"/>
+              <line x1="23" y1="17" x2="23" y2="19" stroke="#2B7A9B" stroke-width="0.8"/>
+              <!-- ピン -->
+              <line x1="8" y1="6" x2="8" y2="17" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="8" cy="4" r="3.5" fill="#FFFFFF"/>
+              <circle cx="8" cy="4" r="1.5" fill="#2B7A9B"/>
+            </svg>
+          </div>
+          <div class="size-label">29pt</div>
+        </div>
+
+        <!-- 視認性評価 -->
+        <div style="flex: 1; min-width: 200px; align-self: center;">
+          <div class="visibility-badge vis-good">29pt 視認性: 良好</div>
+          <p style="font-size: 12px; color: var(--text-sub); margin-top: 8px; line-height: 1.6;">
+            アップライトピン（球状頭）は小サイズで最も潰れにくい形状。テープの白い横帯と組み合わさって輪郭が明確。目盛り刻みは3本程度に絞れば視認可能。
+          </p>
+        </div>
+      </div>
+
+      <table class="detail-table">
+        <tr>
+          <td>ピン表現</td>
+          <td>アップライトピン（画鋲型）— ドロップピンとの差別化。縦スティック + 球頭</td>
+        </tr>
+        <tr>
+          <td>ミチ表現</td>
+          <td>メジャーテープ本体が道路を兼用。中央の破線（センターライン）で道路感を強調</td>
+        </tr>
+        <tr>
+          <td>メジャー表現</td>
+          <td>テープ上端の等間隔目盛り刻み。巻尺の形状（横長矩形 + 角丸）も一目でわかる</td>
+        </tr>
+        <tr>
+          <td>差別化ポイント</td>
+          <td>Google マップはドロップピン（水滴型）。本案は画鋲型で全く異なるシルエット</td>
+        </tr>
+        <tr>
+          <td>カラー</td>
+          <td>背景 <code>#2B7A9B</code> / 前景 <code>#FFFFFF</code> — 2色のみ</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- ====================================================
+         PLAN B: カーブ道路 + ピン + メジャー目盛り
+         S字カーブの道路を中央に配置し、ピンを道路上に、
+         道路の片端にメジャー目盛り尺を併置する構成
+    ===================================================== -->
+    <div class="proposal-card">
+      <div class="proposal-label">Plan B</div>
+      <h3>カーブ道路メジャー型</h3>
+
+      <div class="element-check">
+        <span class="el-tag">ピン: 道路の曲がり角に刺さる</span>
+        <span class="el-tag">ミチ: S字カーブ路</span>
+        <span class="el-tag">メジャー: 道路脇の縦尺</span>
+      </div>
+
+      <p class="concept-text">
+        左下から右上へ向かうカーブ道路（2本の白い平行線）が画面を斜めに横断し、「ドライブ・移動」を表現する。
+        道路の曲がり角にアップライトピンが立ち、「地点をマーク」を示す。
+        道路の左側に縦向きのメジャー尺（目盛り付き垂直帯）を配置し、「距離を測る」概念を補完する。
+        曲線によって Google マップのシンプルなピンアイコンとは全く異なるシルエットになる。
+      </p>
+
+      <div class="preview-row">
+        <!-- 160px -->
+        <div class="icon-wrap">
+          <div class="sz-1024">
+            <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" width="160" height="160">
+              <rect width="160" height="160" fill="#2B7A9B"/>
+
+              <!-- メジャー縦尺（左側） -->
+              <rect x="14" y="20" width="14" height="120" rx="4" fill="#FFFFFF"/>
+              <!-- 縦尺目盛り -->
+              <line x1="28" y1="30"  x2="34"  y2="30"  stroke="#FFFFFF" stroke-width="2"/>
+              <line x1="28" y1="40"  x2="31"  y2="40"  stroke="#FFFFFF" stroke-width="1.5"/>
+              <line x1="28" y1="50"  x2="34"  y2="50"  stroke="#FFFFFF" stroke-width="2"/>
+              <line x1="28" y1="60"  x2="31"  y2="60"  stroke="#FFFFFF" stroke-width="1.5"/>
+              <line x1="28" y1="70"  x2="34"  y2="70"  stroke="#FFFFFF" stroke-width="2"/>
+              <line x1="28" y1="80"  x2="31"  y2="80"  stroke="#FFFFFF" stroke-width="1.5"/>
+              <line x1="28" y1="90"  x2="34"  y2="90"  stroke="#FFFFFF" stroke-width="2"/>
+              <line x1="28" y1="100" x2="31"  y2="100" stroke="#FFFFFF" stroke-width="1.5"/>
+              <line x1="28" y1="110" x2="34"  y2="110" stroke="#FFFFFF" stroke-width="2"/>
+              <line x1="28" y1="120" x2="31"  y2="120" stroke="#FFFFFF" stroke-width="1.5"/>
+              <line x1="28" y1="130" x2="34"  y2="130" stroke="#FFFFFF" stroke-width="2"/>
+
+              <!-- カーブ道路（2本の平行曲線） -->
+              <!-- 外側ライン -->
+              <path d="M 50 145 Q 70 145 90 100 Q 110 55 145 30"
+                    fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+              <!-- 内側ライン（道路幅） -->
+              <path d="M 68 145 Q 84 145 100 108 Q 118 70 148 50"
+                    fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+
+              <!-- ピン（道路カーブ頂点付近） -->
+              <!-- スティック -->
+              <line x1="94" y1="70" x2="94" y2="100" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+              <!-- 球頭 -->
+              <circle cx="94" cy="58" r="16" fill="#FFFFFF"/>
+              <!-- アイ（穴） -->
+              <circle cx="94" cy="58" r="7" fill="#2B7A9B"/>
+            </svg>
+          </div>
+          <div class="size-label">160px</div>
+        </div>
+
+        <!-- 60px -->
+        <div class="icon-wrap">
+          <div class="sz-60">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+              <rect width="60" height="60" fill="#2B7A9B"/>
+              <!-- メジャー縦尺 -->
+              <rect x="5" y="8" width="6" height="44" rx="2" fill="#FFFFFF"/>
+              <line x1="11" y1="13" x2="14" y2="13" stroke="#FFFFFF" stroke-width="1.2"/>
+              <line x1="11" y1="20" x2="13" y2="20" stroke="#FFFFFF" stroke-width="1"/>
+              <line x1="11" y1="27" x2="14" y2="27" stroke="#FFFFFF" stroke-width="1.2"/>
+              <line x1="11" y1="34" x2="13" y2="34" stroke="#FFFFFF" stroke-width="1"/>
+              <line x1="11" y1="41" x2="14" y2="41" stroke="#FFFFFF" stroke-width="1.2"/>
+              <line x1="11" y1="48" x2="13" y2="48" stroke="#FFFFFF" stroke-width="1"/>
+              <!-- カーブ道路 -->
+              <path d="M 20 54 Q 28 54 36 36 Q 44 18 56 10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M 28 54 Q 34 54 40 40 Q 47 26 57 19" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round"/>
+              <!-- ピン -->
+              <line x1="36" y1="26" x2="36" y2="38" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="36" cy="21" r="7" fill="#FFFFFF"/>
+              <circle cx="36" cy="21" r="3" fill="#2B7A9B"/>
+            </svg>
+          </div>
+          <div class="size-label">60px</div>
+        </div>
+
+        <!-- 29px -->
+        <div class="icon-wrap">
+          <div class="sz-29">
+            <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg" width="29" height="29">
+              <rect width="29" height="29" fill="#2B7A9B"/>
+              <!-- メジャー縦尺（幅細め） -->
+              <rect x="2" y="4" width="4" height="21" rx="1.5" fill="#FFFFFF"/>
+              <line x1="6" y1="7"  x2="8"  y2="7"  stroke="#FFFFFF" stroke-width="0.8"/>
+              <line x1="6" y1="12" x2="9"  y2="12" stroke="#FFFFFF" stroke-width="0.8"/>
+              <line x1="6" y1="17" x2="8"  y2="17" stroke="#FFFFFF" stroke-width="0.8"/>
+              <line x1="6" y1="22" x2="9"  y2="22" stroke="#FFFFFF" stroke-width="0.8"/>
+              <!-- カーブ道路（2線） -->
+              <path d="M 10 27 Q 14 27 18 16 Q 21 8 27 4" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+              <path d="M 14 27 Q 17 27 20 19 Q 23 11 27 8" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+              <!-- ピン -->
+              <line x1="18" y1="12" x2="18" y2="18" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="18" cy="9.5" r="3.5" fill="#FFFFFF"/>
+              <circle cx="18" cy="9.5" r="1.5" fill="#2B7A9B"/>
+            </svg>
+          </div>
+          <div class="size-label">29pt</div>
+        </div>
+
+        <!-- 視認性評価 -->
+        <div style="flex: 1; min-width: 200px; align-self: center;">
+          <div class="visibility-badge vis-warn">29pt 視認性: 普通</div>
+          <p style="font-size: 12px; color: var(--text-sub); margin-top: 8px; line-height: 1.6;">
+            カーブ2本線は29ptでも白線として認識できるが、縦尺との重なりを避けるレイアウト調整が必要。ピンの球頭が小さくなるため、3要素のうち最も要素が密集する案。Figmaでの微調整を推奨。
+          </p>
+        </div>
+      </div>
+
+      <table class="detail-table">
+        <tr>
+          <td>ピン表現</td>
+          <td>アップライトピン（球頭）— カーブの屈曲点（ドライブの折り返し地点）に設置</td>
+        </tr>
+        <tr>
+          <td>ミチ表現</td>
+          <td>S字カーブの2本線。道路としての立体感・ドライブ感が3案中最も高い</td>
+        </tr>
+        <tr>
+          <td>メジャー表現</td>
+          <td>左側の縦向き定規形状（矩形 + 等間隔目盛り）。距離を「測る」概念を前面に出す</td>
+        </tr>
+        <tr>
+          <td>差別化ポイント</td>
+          <td>カーブ道路 + 縦尺という複合形状はマップ系アイコンに類似例がない</td>
+        </tr>
+        <tr>
+          <td>カラー</td>
+          <td>背景 <code>#2B7A9B</code> / 前景 <code>#FFFFFF</code> — 2色のみ</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- ====================================================
+         PLAN C: ピン本体がメジャーの形をしている
+         ピンのボディ（スティック部）をメジャーテープの
+         巻き出し形状にして1オブジェクトに3要素を込める
+    ===================================================== -->
+    <div class="proposal-card">
+      <div class="proposal-label">Plan C</div>
+      <h3>メジャーボディ・ピン</h3>
+
+      <div class="element-check">
+        <span class="el-tag">ピン: 全体のシルエット</span>
+        <span class="el-tag">ミチ: ピン内の道路ライン</span>
+        <span class="el-tag">メジャー: ピンのボディが巻尺本体</span>
+      </div>
+
+      <p class="concept-text">
+        円形の巻尺ケース（ロールメジャー）を「ピンの頭」として使い、ケースから伸びたテープが「ピンのスティック」になる構成。
+        テープ（スティック）面には目盛り刻みを入れ、メジャーであることを示す。
+        テープの先端（地面接触部）は細くなり、地点を示す先端点になる。
+        ピンの内部（ケース部）に道路の破線センターラインを小さく描き込み「ミチ」要素を補完する。
+        3要素が1つのオブジェクトに凝縮されるため最もシンプルなシルエットになる。
+      </p>
+
+      <div class="preview-row">
+        <!-- 160px -->
+        <div class="icon-wrap">
+          <div class="sz-1024">
+            <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" width="160" height="160">
+              <rect width="160" height="160" fill="#2B7A9B"/>
+
+              <!-- 巻尺ケース（ピン頭 = 巻尺本体） -->
+              <circle cx="80" cy="52" r="36" fill="#FFFFFF"/>
+              <!-- ケース内の道路ライン（ミチ要素） -->
+              <!-- 横断ライン（道路） -->
+              <line x1="48" y1="52" x2="112" y2="52" stroke="#2B7A9B" stroke-width="7" stroke-linecap="round"/>
+              <!-- センターライン（破線） -->
+              <line x1="52"  y1="52" x2="64"  y2="52" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="72"  y1="52" x2="84"  y2="52" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="92"  y1="52" x2="104" y2="52" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- 巻尺テープ引き出し口（ケース下部の切り欠き） -->
+              <rect x="71" y="82" width="18" height="8" rx="2" fill="#2B7A9B"/>
+
+              <!-- テープ（ピンスティック）— 目盛り付き -->
+              <rect x="68" y="88" width="24" height="46" rx="4" fill="#FFFFFF"/>
+              <!-- 目盛り刻み（テープ左側） -->
+              <line x1="68"  y1="96"  x2="74"  y2="96"  stroke="#2B7A9B" stroke-width="1.8"/>
+              <line x1="68"  y1="103" x2="71"  y2="103" stroke="#2B7A9B" stroke-width="1.4"/>
+              <line x1="68"  y1="110" x2="74"  y2="110" stroke="#2B7A9B" stroke-width="1.8"/>
+              <line x1="68"  y1="117" x2="71"  y2="117" stroke="#2B7A9B" stroke-width="1.4"/>
+              <line x1="68"  y1="124" x2="74"  y2="124" stroke="#2B7A9B" stroke-width="1.8"/>
+              <!-- 目盛り刻み（テープ右側） -->
+              <line x1="92"  y1="96"  x2="86"  y2="96"  stroke="#2B7A9B" stroke-width="1.8"/>
+              <line x1="92"  y1="103" x2="89"  y2="103" stroke="#2B7A9B" stroke-width="1.4"/>
+              <line x1="92"  y1="110" x2="86"  y2="110" stroke="#2B7A9B" stroke-width="1.8"/>
+              <line x1="92"  y1="117" x2="89"  y2="117" stroke="#2B7A9B" stroke-width="1.4"/>
+              <line x1="92"  y1="124" x2="86"  y2="124" stroke="#2B7A9B" stroke-width="1.8"/>
+
+              <!-- テープ先端（地点ポイント） -->
+              <polygon points="68,134 92,134 80,148" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <div class="size-label">160px</div>
+        </div>
+
+        <!-- 60px -->
+        <div class="icon-wrap">
+          <div class="sz-60">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+              <rect width="60" height="60" fill="#2B7A9B"/>
+              <!-- ケース -->
+              <circle cx="30" cy="20" r="14" fill="#FFFFFF"/>
+              <!-- 道路ライン -->
+              <line x1="18" y1="20" x2="42" y2="20" stroke="#2B7A9B" stroke-width="3.5" stroke-linecap="round"/>
+              <!-- センターライン -->
+              <line x1="20" y1="20" x2="25" y2="20" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="29" y1="20" x2="34" y2="20" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="38" y1="20" x2="40" y2="20" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- テープ引き出し口 -->
+              <rect x="25.5" y="32" width="9" height="4" rx="1" fill="#2B7A9B"/>
+              <!-- テープ -->
+              <rect x="24" y="35" width="12" height="16" rx="2" fill="#FFFFFF"/>
+              <!-- 目盛り -->
+              <line x1="24" y1="38" x2="27" y2="38" stroke="#2B7A9B" stroke-width="1"/>
+              <line x1="24" y1="42" x2="26" y2="42" stroke="#2B7A9B" stroke-width="0.8"/>
+              <line x1="24" y1="46" x2="27" y2="46" stroke="#2B7A9B" stroke-width="1"/>
+              <line x1="36" y1="38" x2="33" y2="38" stroke="#2B7A9B" stroke-width="1"/>
+              <line x1="36" y1="42" x2="34" y2="42" stroke="#2B7A9B" stroke-width="0.8"/>
+              <line x1="36" y1="46" x2="33" y2="46" stroke="#2B7A9B" stroke-width="1"/>
+              <!-- 先端 -->
+              <polygon points="24,51 36,51 30,57" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <div class="size-label">60px</div>
+        </div>
+
+        <!-- 29px -->
+        <div class="icon-wrap">
+          <div class="sz-29">
+            <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg" width="29" height="29">
+              <rect width="29" height="29" fill="#2B7A9B"/>
+              <!-- ケース -->
+              <circle cx="14.5" cy="10" r="7" fill="#FFFFFF"/>
+              <!-- 道路ライン -->
+              <line x1="8" y1="10" x2="21" y2="10" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- センターライン -->
+              <line x1="9"  y1="10" x2="12" y2="10" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round"/>
+              <line x1="14" y1="10" x2="17" y2="10" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round"/>
+              <line x1="19" y1="10" x2="21" y2="10" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round"/>
+              <!-- テープ -->
+              <rect x="11" y="16" width="7" height="7" rx="1.5" fill="#FFFFFF"/>
+              <!-- 目盛り（最小限） -->
+              <line x1="11" y1="18.5" x2="13" y2="18.5" stroke="#2B7A9B" stroke-width="0.8"/>
+              <line x1="11" y1="21"   x2="13" y2="21"   stroke="#2B7A9B" stroke-width="0.8"/>
+              <line x1="18" y1="18.5" x2="16" y2="18.5" stroke="#2B7A9B" stroke-width="0.8"/>
+              <line x1="18" y1="21"   x2="16" y2="21"   stroke="#2B7A9B" stroke-width="0.8"/>
+              <!-- 先端 -->
+              <polygon points="11,23 18,23 14.5,27" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <div class="size-label">29pt</div>
+        </div>
+
+        <!-- 視認性評価 -->
+        <div style="flex: 1; min-width: 200px; align-self: center;">
+          <div class="visibility-badge vis-good">29pt 視認性: 良好</div>
+          <p style="font-size: 12px; color: var(--text-sub); margin-top: 8px; line-height: 1.6;">
+            大きな円（巻尺ケース）+ 縦帯（テープ）+ 三角先端というシルエットは29ptでも崩れにくい。道路の内部破線は29ptでは省略が現実的。全体の「形」でピン+巻尺が伝わる最もシルエット的に強い案。
+          </p>
+        </div>
+      </div>
+
+      <table class="detail-table">
+        <tr>
+          <td>ピン表現</td>
+          <td>全体のシルエット（円ヘッド + テープボディ + 三角先端）がピン形状</td>
+        </tr>
+        <tr>
+          <td>ミチ表現</td>
+          <td>ケース内を横断する道路ライン（センターライン破線付き）</td>
+        </tr>
+        <tr>
+          <td>メジャー表現</td>
+          <td>円形ケース（巻尺本体）+ テープ引き出し + 両側目盛り刻み</td>
+        </tr>
+        <tr>
+          <td>差別化ポイント</td>
+          <td>「巻尺がピンになっている」という発想の独自性。類似アイコンが存在しない形状</td>
+        </tr>
+        <tr>
+          <td>カラー</td>
+          <td>背景 <code>#2B7A9B</code> / 前景 <code>#FFFFFF</code> — 2色のみ</td>
+        </tr>
+      </table>
+    </div>
+
+  </div><!-- /proposals -->
+</section>
+
+<hr class="divider">
+
+<!-- ===== COMPARISON ===== -->
+<section>
+  <p class="section-heading">COMPARISON</p>
+  <p class="section-title">3案 横並び比較</p>
+
+  <div class="comparison-wrap">
+    <div class="compare-icons">
+
+      <div class="compare-col">
+        <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" width="120" height="120" style="border-radius:27px; box-shadow:0 6px 20px rgba(43,122,155,0.25); display:block;">
+          <rect width="160" height="160" fill="#2B7A9B"/>
+          <rect x="12" y="95" width="136" height="36" rx="7" fill="#FFFFFF"/>
+          <line x1="12"  y1="95" x2="12"  y2="106" stroke="#2B7A9B" stroke-width="2"/>
+          <line x1="26"  y1="95" x2="26"  y2="103" stroke="#2B7A9B" stroke-width="1.5"/>
+          <line x1="40"  y1="95" x2="40"  y2="106" stroke="#2B7A9B" stroke-width="2"/>
+          <line x1="54"  y1="95" x2="54"  y2="103" stroke="#2B7A9B" stroke-width="1.5"/>
+          <line x1="68"  y1="95" x2="68"  y2="106" stroke="#2B7A9B" stroke-width="2"/>
+          <line x1="82"  y1="95" x2="82"  y2="103" stroke="#2B7A9B" stroke-width="1.5"/>
+          <line x1="96"  y1="95" x2="96"  y2="106" stroke="#2B7A9B" stroke-width="2"/>
+          <line x1="110" y1="95" x2="110" y2="103" stroke="#2B7A9B" stroke-width="1.5"/>
+          <line x1="124" y1="95" x2="124" y2="106" stroke="#2B7A9B" stroke-width="2"/>
+          <line x1="138" y1="95" x2="138" y2="103" stroke="#2B7A9B" stroke-width="1.5"/>
+          <line x1="148" y1="95" x2="148" y2="106" stroke="#2B7A9B" stroke-width="2"/>
+          <line x1="20"  y1="113" x2="36"  y2="113" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="44"  y1="113" x2="60"  y2="113" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="68"  y1="113" x2="84"  y2="113" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="92"  y1="113" x2="108" y2="113" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="116" y1="113" x2="132" y2="113" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="140" y1="113" x2="148" y2="113" stroke="#2B7A9B" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="40" y1="40" x2="40" y2="95" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="40" cy="30" r="18" fill="#FFFFFF"/>
+          <circle cx="40" cy="30" r="8" fill="#2B7A9B"/>
+        </svg>
+        <div class="plan-name">Plan A</div>
+        <div class="plan-sub">メジャーテープ刺しピン</div>
+      </div>
+
+      <div class="compare-col">
+        <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" width="120" height="120" style="border-radius:27px; box-shadow:0 6px 20px rgba(43,122,155,0.25); display:block;">
+          <rect width="160" height="160" fill="#2B7A9B"/>
+          <rect x="14" y="20" width="14" height="120" rx="4" fill="#FFFFFF"/>
+          <line x1="28" y1="30"  x2="34"  y2="30"  stroke="#FFFFFF" stroke-width="2"/>
+          <line x1="28" y1="40"  x2="31"  y2="40"  stroke="#FFFFFF" stroke-width="1.5"/>
+          <line x1="28" y1="50"  x2="34"  y2="50"  stroke="#FFFFFF" stroke-width="2"/>
+          <line x1="28" y1="60"  x2="31"  y2="60"  stroke="#FFFFFF" stroke-width="1.5"/>
+          <line x1="28" y1="70"  x2="34"  y2="70"  stroke="#FFFFFF" stroke-width="2"/>
+          <line x1="28" y1="80"  x2="31"  y2="80"  stroke="#FFFFFF" stroke-width="1.5"/>
+          <line x1="28" y1="90"  x2="34"  y2="90"  stroke="#FFFFFF" stroke-width="2"/>
+          <line x1="28" y1="100" x2="31"  y2="100" stroke="#FFFFFF" stroke-width="1.5"/>
+          <line x1="28" y1="110" x2="34"  y2="110" stroke="#FFFFFF" stroke-width="2"/>
+          <line x1="28" y1="120" x2="31"  y2="120" stroke="#FFFFFF" stroke-width="1.5"/>
+          <line x1="28" y1="130" x2="34"  y2="130" stroke="#FFFFFF" stroke-width="2"/>
+          <path d="M 50 145 Q 70 145 90 100 Q 110 55 145 30" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+          <path d="M 68 145 Q 84 145 100 108 Q 118 70 148 50" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+          <line x1="94" y1="70" x2="94" y2="100" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="94" cy="58" r="16" fill="#FFFFFF"/>
+          <circle cx="94" cy="58" r="7" fill="#2B7A9B"/>
+        </svg>
+        <div class="plan-name">Plan B</div>
+        <div class="plan-sub">カーブ道路メジャー型</div>
+      </div>
+
+      <div class="compare-col">
+        <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" width="120" height="120" style="border-radius:27px; box-shadow:0 6px 20px rgba(43,122,155,0.25); display:block;">
+          <rect width="160" height="160" fill="#2B7A9B"/>
+          <circle cx="80" cy="52" r="36" fill="#FFFFFF"/>
+          <line x1="48" y1="52" x2="112" y2="52" stroke="#2B7A9B" stroke-width="7" stroke-linecap="round"/>
+          <line x1="52"  y1="52" x2="64"  y2="52" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="72"  y1="52" x2="84"  y2="52" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="92"  y1="52" x2="104" y2="52" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="71" y="82" width="18" height="8" rx="2" fill="#2B7A9B"/>
+          <rect x="68" y="88" width="24" height="46" rx="4" fill="#FFFFFF"/>
+          <line x1="68"  y1="96"  x2="74"  y2="96"  stroke="#2B7A9B" stroke-width="1.8"/>
+          <line x1="68"  y1="103" x2="71"  y2="103" stroke="#2B7A9B" stroke-width="1.4"/>
+          <line x1="68"  y1="110" x2="74"  y2="110" stroke="#2B7A9B" stroke-width="1.8"/>
+          <line x1="68"  y1="117" x2="71"  y2="117" stroke="#2B7A9B" stroke-width="1.4"/>
+          <line x1="68"  y1="124" x2="74"  y2="124" stroke="#2B7A9B" stroke-width="1.8"/>
+          <line x1="92"  y1="96"  x2="86"  y2="96"  stroke="#2B7A9B" stroke-width="1.8"/>
+          <line x1="92"  y1="103" x2="89"  y2="103" stroke="#2B7A9B" stroke-width="1.4"/>
+          <line x1="92"  y1="110" x2="86"  y2="110" stroke="#2B7A9B" stroke-width="1.8"/>
+          <line x1="92"  y1="117" x2="89"  y2="117" stroke="#2B7A9B" stroke-width="1.4"/>
+          <line x1="92"  y1="124" x2="86"  y2="124" stroke="#2B7A9B" stroke-width="1.8"/>
+          <polygon points="68,134 92,134 80,148" fill="#FFFFFF"/>
+        </svg>
+        <div class="plan-name">Plan C</div>
+        <div class="plan-sub">メジャーボディ・ピン</div>
+      </div>
+
+    </div>
+
+    <!-- 評価表 -->
+    <table class="eval-table">
+      <thead>
+        <tr>
+          <th>評価軸</th>
+          <th>A: テープ刺しピン</th>
+          <th>B: カーブ道路</th>
+          <th>C: メジャーボディ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>3要素の統合度</td>
+          <td>◎</td>
+          <td>○</td>
+          <td>◎</td>
+        </tr>
+        <tr>
+          <td>29pt 視認性</td>
+          <td>◎</td>
+          <td>○</td>
+          <td>◎</td>
+        </tr>
+        <tr>
+          <td>Google マップ差別化</td>
+          <td>○</td>
+          <td>◎</td>
+          <td>◎</td>
+        </tr>
+        <tr>
+          <td>コンセプト直感性</td>
+          <td>◎</td>
+          <td>◎</td>
+          <td>○</td>
+        </tr>
+        <tr>
+          <td>シルエットの独自性</td>
+          <td>○</td>
+          <td>◎</td>
+          <td>◎</td>
+        </tr>
+        <tr>
+          <td>シンプルさ</td>
+          <td>◎</td>
+          <td>○</td>
+          <td>◎</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 20px; padding: 16px 20px; background: var(--gray-100); border-radius: 10px; font-size: 13px; color: var(--text-sub);">
+      <strong style="color: var(--dark);">Designer 所見:</strong>
+      Plan A は「メジャー（道）の上にピンが刺さる」という最も直感的な表現で、コンセプト伝達力と29pt視認性のバランスが最優秀。
+      Plan C は「巻尺がピンになっている」というコンセプトの独自性が高く、一度意味を理解すると記憶に残る。
+      Plan B はドライブ感が最も高いが、3要素を詰め込んだ際の密度が他案より高い。
+      <strong style="color: var(--brand);">ユーザーのフィードバックと「コンセプトが一目で伝わるか」を軸に1案を選定することを推奨。</strong>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== TYPOGRAPHY ===== -->
+<section id="typography">
+  <p class="section-heading">TYPOGRAPHY</p>
+  <p class="section-title">アイコンのテキスト方針</p>
+  <p class="section-desc">アイコン本体にはテキストを入れない。スプラッシュ・App Store ページでブランド名を補完する。</p>
+
+  <div style="background: white; border-radius: 14px; padding: 22px 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);">
+    <p style="font-size: 13px; color: var(--text-sub); line-height: 1.8;">
+      App Store の最小表示（20x20px 程度）でテキストは完全に潰れるため、アイコンはシンボルのみで識別できる設計を維持する。
+      ブランド名「MichiMark」はアイコン下部のアプリ名ラベル（OS が表示）・スプラッシュ画面・App Store のスクリーンショットで補完する。
+    </p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== RATIONALE ===== -->
+<section id="rationale">
+  <p class="section-heading">RATIONALE</p>
+  <p class="section-title">デザイン根拠</p>
+
+  <div class="rationale-grid">
+    <div class="rationale-card">
+      <h4>なぜアップライトピン（画鋲型）を採用したか</h4>
+      <p>Google マップのシンボルはドロップピン（水滴を逆にした形）。アップライトピンは「物理的に刺す」行為を直感的に表し、かつシルエットが球 + 棒という単純な形で小サイズでの視認性に優れる。MapKit・Apple マップも類似のドロップピンを使うため、差別化が明確になる。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>メジャーテープを道路として兼用した理由（Plan A）</h4>
+      <p>横長の帯形状は道路にもメジャーにも解釈できるデュアルシンボル。目盛り刻みを加えることでメジャー性が確定し、センターラインの破線を加えることで道路性が確定する。2要素を1オブジェクトで表現するため、アイコンの密度を低く保てる。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>2色制約の意図</h4>
+      <p>白 + 単色の2色制約はアイコンの輪郭を際立たせ、あらゆる壁紙・ウィジェット配色の上でも視認性を確保する。グラデーション・透過はダークモード・ライトモード・低輝度ディスプレイで予測不能な見え方になるリスクがある。2色固定はそのリスクをゼロにする。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>コントラスト比の確認</h4>
+      <ul>
+        <li>白 <code>#FFFFFF</code> on <code>#2B7A9B</code>: <strong>約 5.6:1</strong></li>
+        <li>WCAG AA 基準（4.5:1）合格</li>
+        <li>アイコン用途では規格基準より、視認の「強さ」を重視</li>
+        <li>5.6:1 は 29pt の極小サイズでも十分な白/青コントラスト</li>
+      </ul>
+    </div>
+    <div class="rationale-card">
+      <h4>v2 からの変更点（フィードバック反映）</h4>
+      <p>v2 のピン単体では Google マップとの差別化が不十分という指摘を受け、全案で「ミチ・メジャー」の2要素を必須統合とした。カラーも v1 の多色パレットから「白 + #2B7A9B」の2色固定に変更。装飾（グラデーション・影・透過）を完全撤廃。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>29pt 視認性の設計基準</h4>
+      <p>App Store の最小アイコン表示（Spotlight 検索、設定画面）は 29pt。Plan A・C は大きな単純形状（球・帯・三角）で構成されるため 29pt でシルエットが崩れにくい。Plan B はカーブ2本線の間隔を確保する必要があり、Figma での実サイズ確認を特に推奨する。</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== NEXT STEPS ===== -->
+<section>
+  <p class="section-heading">NEXT STEPS</p>
+  <p class="section-title">提案後の進め方</p>
+
+  <div style="background: white; border-radius: 14px; padding: 24px 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);">
+    <ol style="font-size: 14px; color: var(--text-sub); line-height: 2.4; padding-left: 20px;">
+      <li>ユーザーが <strong>Plan A / B / C から1案を選択</strong>（または複数案の組み合わせを指示）</li>
+      <li>designer が選択案を <strong>Figma で 1024x1024px の最終アートワーク</strong> に仕上げ（角丸・実ピクセル精度の確認）</li>
+      <li>product-manager が <strong>要件書（docs/Requirements/）</strong> に整形・格納</li>
+      <li>flutter-dev が <strong>flutter_launcher_icons</strong> で各解像度の PNG を自動生成して実装</li>
+    </ol>
+  </div>
+</section>
+
+<p class="footer-note">MichiMark Design Proposal v3 — docs/Design/draft/ — Designer Draft / Not yet approved by PM</p>
+
+</div><!-- /wrapper -->
+</body>
+</html>

@@ -1,6 +1,11 @@
 # 2026-04-20 Bug1/2修正・Feat1/2/3実装（visitWork支払・ActionTime休憩）
 
 ## 完了した作業
+- feat: BRAND-1 アプリアイコン更新（Logo_v2） (c368b8f)
+- chore: T-611 BLOCKED（ユーザー自作に切替） (e5aa9f8)
+- chore: HOTFIX-2 T-620 DONE・進捗記録更新 (530db43)
+- chore: TASKBOARDにHOTFIX-1追加・integration-testルールにビルド競合チェック追記 (189a368)
+- docs: Bug1/2+Feat1/2/3 進捗ファイル追加 (2e92d23)
 
 ### Bug修正
 

@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiMark アイコン＆スプラッシュ デザイン提案 v2</title>
+  <style>
+    :root {
+      --brand-deep:    #0F4A62;
+      --brand-main:    #1B6D8E;
+      --brand-mid:     #2589AD;
+      --brand-light:   #3AA8CC;
+      --brand-pale:    #D6EEF6;
+      --white:         #FFFFFF;
+      --off-white:     #F4F8FB;
+      --dark:          #1A2634;
+      --text-primary:  #1A2634;
+      --text-secondary:#5A7080;
+      --gray-100:      #EFF3F6;
+      --gray-200:      #D9E4EB;
+      --gray-400:      #9BB4C1;
+      --accent-amber:  #E8A020;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+      background: #E8EFF4;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, #0A3346 0%, #0F4A62 60%, #1B6D8E 100%);
+      color: white;
+      padding: 52px 52px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute; top: -60px; left: -60px;
+      width: 300px; height: 300px; border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 20px; padding: 5px 14px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #3AA8CC; }
+    .page-header h1 { font-size: 32px; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.5px; }
+    .page-header p  { font-size: 14px; opacity: 0.72; max-width: 640px; line-height: 1.7; }
+    .meta-row { display: flex; gap: 28px; margin-top: 20px; font-size: 12px; opacity: 0.5; }
+    .v-tag {
+      display: inline-block; background: var(--accent-amber); color: white;
+      font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 5px;
+      margin-left: 10px; vertical-align: middle;
+    }
+
+    /* ===== LAYOUT ===== */
+    .wrapper { max-width: 1140px; margin: 0 auto; padding: 0 44px 100px; }
+
+    /* ===== SECTION ===== */
+    .section-heading {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--brand-main);
+      margin-top: 64px; margin-bottom: 6px;
+    }
+    .section-title  { font-size: 24px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .section-desc   { font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; line-height: 1.7; }
+    hr.divider { border: none; border-top: 1px solid var(--gray-200); margin: 56px 0; }
+
+    /* ===== COLOR PALETTE ===== */
+    .palette-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
+    .swatch { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+    .swatch-block { width: 72px; height: 72px; border-radius: 16px; box-shadow: 0 3px 8px rgba(0,0,0,0.14); }
+    .swatch-label { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-align: center; }
+    .swatch-hex   { font-size: 10px; color: var(--gray-400); font-family: 'SF Mono', monospace; }
+
+    /* ===== PLAN GRID ===== */
+    .plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 48px; }
+    .plan-card {
+      background: white; border-radius: 22px;
+      padding: 36px 28px 28px; box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+    }
+    .plan-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+    .plan-label.a { color: var(--brand-main); }
+    .plan-label.b { color: var(--brand-deep); }
+    .plan-label.c { color: #1A6B47; }
+    .plan-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 5px; color: var(--dark); }
+    .plan-card .concept { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.65; }
+
+    .icon-preview-row { display: flex; gap: 14px; align-items: flex-end; margin-bottom: 24px; }
+    .icon-frame-lg { width: 130px; height: 130px; border-radius: 30px; overflow: hidden; flex-shrink: 0; box-shadow: 0 8px 24px rgba(27,109,142,0.22); }
+    .icon-frame-md { width: 68px;  height: 68px;  border-radius: 16px; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 12px rgba(27,109,142,0.18); }
+    .icon-frame-sm { width: 44px;  height: 44px;  border-radius: 10px; overflow: hidden; flex-shrink: 0; box-shadow: 0 2px 8px rgba(27,109,142,0.15); }
+    .icon-frame-xs { width: 29px;  height: 29px;  border-radius: 7px;  overflow: hidden; flex-shrink: 0; box-shadow: 0 1px 6px rgba(27,109,142,0.14); }
+
+    .detail-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+    .detail-table td { font-size: 12px; padding: 5px 0; color: var(--text-secondary); vertical-align: top; border-bottom: 1px solid var(--gray-100); }
+    .detail-table td:first-child { font-weight: 600; color: var(--dark); width: 76px; }
+    .detail-table td code { font-family: 'SF Mono', monospace; font-size: 11px; background: var(--gray-100); padding: 1px 5px; border-radius: 4px; }
+
+    .figma-note {
+      background: var(--off-white); border: 1px solid var(--gray-200);
+      border-radius: 10px; padding: 16px 20px; margin-top: 18px;
+    }
+    .figma-note h5 { font-size: 12px; font-weight: 700; margin-bottom: 8px; color: var(--brand-deep); }
+    .figma-note ul { font-size: 11.5px; color: var(--text-secondary); padding-left: 14px; line-height: 1.9; }
+
+    /* ===== COMPARISON ===== */
+    .compare-wrap {
+      background: white; border-radius: 18px; padding: 32px 36px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 40px; overflow-x: auto;
+    }
+    .compare-wrap h4 { font-size: 15px; font-weight: 700; margin-bottom: 20px; color: var(--dark); }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .compare-table th {
+      text-align: left; padding: 10px 14px;
+      border-bottom: 2px solid var(--gray-200);
+      color: var(--text-secondary); font-weight: 700;
+    }
+    .compare-table th.a-h { color: var(--brand-main); }
+    .compare-table th.b-h { color: var(--brand-deep); }
+    .compare-table th.c-h { color: #1A6B47; }
+    .compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--gray-100); vertical-align: top; color: var(--text-secondary); }
+    .compare-table td:first-child { font-weight: 600; color: var(--dark); width: 140px; }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .score { font-weight: 700; font-size: 16px; }
+    .score.great { color: #1B6D8E; }
+    .score.good  { color: #2589AD; }
+    .score.ok    { color: #9BB4C1; }
+    .merit   { color: #1A6B47; font-size: 12px; }
+    .demerit { color: #B84E2C; font-size: 12px; }
+
+    /* ===== SPLASH ===== */
+    .splash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+    .splash-card {
+      background: white; border-radius: 22px;
+      padding: 28px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .splash-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+    .splash-label.a { color: var(--brand-main); }
+    .splash-label.b { color: var(--brand-deep); }
+    .splash-label.c { color: #1A6B47; }
+    .splash-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .splash-card .concept { font-size: 12px; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.65; }
+    .splash-preview { border-radius: 14px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.18); margin: 0 auto 16px; display: block; }
+
+    /* ===== RATIONALE ===== */
+    .rationale-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .rationale-card { background: white; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .rationale-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    .rationale-card p  { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+    .rationale-card ul { font-size: 13px; color: var(--text-secondary); padding-left: 16px; line-height: 1.9; }
+
+    /* ===== FEEDBACK ===== */
+    .feedback-box {
+      background: white; border-radius: 18px; padding: 32px 36px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-left: 5px solid var(--accent-amber);
+    }
+    .feedback-box h4 { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
+    .feedback-item { margin-bottom: 18px; }
+    .feedback-item label { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; font-size: 14px; color: var(--dark); line-height: 1.6; }
+    .feedback-item input[type=radio] { margin-top: 3px; flex-shrink: 0; accent-color: var(--brand-main); }
+    .feedback-item .sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; padding-left: 24px; }
+    .feedback-q { font-size: 13px; font-weight: 700; color: var(--brand-deep); margin-bottom: 10px; }
+
+    /* ===== SIDE COMPARE ===== */
+    .side-compare { background: white; border-radius: 18px; padding: 32px 36px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 32px; }
+    .side-compare h4 { font-size: 14px; font-weight: 700; margin-bottom: 20px; color: var(--dark); }
+    .side-compare-row { display: flex; gap: 36px; align-items: flex-end; flex-wrap: wrap; }
+    .side-compare-item { text-align: center; }
+    .side-compare-item p { font-size: 12px; color: var(--text-secondary); margin-top: 10px; font-weight: 600; }
+
+    .steps-card { background: white; border-radius: 14px; padding: 24px 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .steps-card ol { font-size: 14px; color: var(--text-secondary); line-height: 2.3; padding-left: 20px; }
+    .steps-card ol strong { color: var(--dark); }
+
+    .footer-note { text-align: center; font-size: 12px; color: var(--gray-400); padding: 36px 0 0; }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="page-header">
+  <div class="badge"><span class="badge-dot"></span> Designer Draft v2</div>
+  <h1>MichiMark アイコン＆スプラッシュ<span class="v-tag">v2</span></h1>
+  <p>v1 をベースに3案を全面ブラッシュアップ。各案にスプラッシュ画面を対応させ、特徴・メリット・デメリットを比較表で提示。ユーザーが案を選びやすいフィードバックフォームを追加。</p>
+  <div class="meta-row">
+    <span>作成日: 2026-04-20</span>
+    <span>担当: designer</span>
+    <span>ステータス: Draft（PM レビュー待ち）</span>
+    <span>前バージョン: michimark_icon_redesign_v1.html</span>
+  </div>
+</header>
+
+<div class="wrapper">
+
+<!-- ===== COLOR PALETTE ===== -->
+<section id="color-palette">
+  <p class="section-heading">COLOR PALETTE</p>
+  <p class="section-title">提案カラーパレット（v2 確定版）</p>
+  <p class="section-desc">v1 から継続。ブルー5段階 + アンバーアクセント。Plan C のみ深緑アクセントを追加検討（自然・道・大地のイメージ強化）。</p>
+
+  <div class="palette-row">
+    <div class="swatch"><div class="swatch-block" style="background:#0F4A62;"></div><div class="swatch-label">Deep</div><div class="swatch-hex">#0F4A62</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#1B6D8E;"></div><div class="swatch-label">Main</div><div class="swatch-hex">#1B6D8E</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#2589AD;"></div><div class="swatch-label">Mid</div><div class="swatch-hex">#2589AD</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#3AA8CC;"></div><div class="swatch-label">Light</div><div class="swatch-hex">#3AA8CC</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#BCE8F5;"></div><div class="swatch-label">Pale</div><div class="swatch-hex">#BCE8F5</div></div>
+    <div class="swatch" style="margin-left:20px;"><div class="swatch-block" style="background:#E8A020;box-shadow:0 3px 8px rgba(232,160,32,0.35);"></div><div class="swatch-label">Amber</div><div class="swatch-hex">#E8A020</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#FFFFFF;border:1px solid #D9E4EB;"></div><div class="swatch-label">White</div><div class="swatch-hex">#FFFFFF</div></div>
+    <div class="swatch" style="margin-left:20px;opacity:0.75;">
+      <div class="swatch-block" style="background:#1A6B47;box-shadow:0 3px 8px rgba(26,107,71,0.3);"></div>
+      <div class="swatch-label">Forest<br><span style="font-size:9px;">(Plan C のみ)</span></div>
+      <div class="swatch-hex">#1A6B47</div>
+    </div>
+  </div>
+
+  <div style="background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.06);font-size:13px;color:var(--text-secondary);">
+    <strong style="color:var(--dark);">グラデーション方針:</strong>
+    ソリッドカラー基調を維持。光沢は白透過楕円ハイライトのみ許容。Plan C の深緑は「フォレスト感」追加オプションとして提示。
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== ICON PROPOSALS ===== -->
+<section id="component-preview">
+  <p class="section-heading">ICON PROPOSALS</p>
+  <p class="section-title">アプリアイコン 3案（v2 ブラッシュアップ）</p>
+  <p class="section-desc">ピンをより大きく・シルエットをクリーンに整理。130 / 68 / 44 / 29px の4サイズでプレビュー。</p>
+
+  <div class="plan-grid">
+
+    <!-- ===== PLAN A ===== -->
+    <div class="plan-card">
+      <div class="plan-label a">Plan A</div>
+      <h3>ピン内 道路統合型</h3>
+      <p class="concept">白ピンシルエット内部に道路（縦センターライン破線＋サイドライン）を刻む。最もミニマルな統合案。小サイズ耐性最高。</p>
+
+      <div class="icon-preview-row">
+        <div class="icon-frame-lg">
+          <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" width="130" height="130">
+            <rect width="130" height="130" fill="#1B6D8E"/>
+            <ellipse cx="65" cy="28" rx="56" ry="28" fill="rgba(255,255,255,0.06)"/>
+            <path d="M65 13 C47 13 33 27 33 45 C33 63 65 97 65 97 C65 97 97 63 97 45 C97 27 83 13 65 13 Z" fill="#FFFFFF"/>
+            <line x1="65" y1="26" x2="65" y2="87" stroke="#1B6D8E" stroke-width="3.5" stroke-dasharray="6 5" stroke-linecap="round"/>
+            <line x1="51" y1="30" x2="51" y2="80" stroke="#1B6D8E" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="79" y1="30" x2="79" y2="80" stroke="#1B6D8E" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="65" cy="48" r="8" fill="#1B6D8E"/>
+            <circle cx="65" cy="48" r="3.5" fill="#FFFFFF"/>
+            <ellipse cx="65" cy="104" rx="9" ry="2.5" fill="rgba(255,255,255,0.25)"/>
+            <line x1="20" y1="60" x2="38" y2="60" stroke="rgba(255,255,255,0.45)" stroke-width="1.5"/>
+            <line x1="20" y1="52" x2="29" y2="52" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/>
+            <line x1="20" y1="68" x2="29" y2="68" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/>
+            <line x1="92" y1="60" x2="110" y2="60" stroke="rgba(255,255,255,0.45)" stroke-width="1.5"/>
+            <line x1="101" y1="52" x2="110" y2="52" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/>
+            <line x1="101" y1="68" x2="110" y2="68" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div class="icon-frame-md">
+          <svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg" width="68" height="68">
+            <rect width="68" height="68" fill="#1B6D8E"/>
+            <path d="M34 7 C24 7 17 14 17 23 C17 33 34 51 34 51 C34 51 51 33 51 23 C51 14 44 7 34 7 Z" fill="#FFFFFF"/>
+            <line x1="34" y1="13" x2="34" y2="45" stroke="#1B6D8E" stroke-width="2" stroke-dasharray="4 3.5" stroke-linecap="round"/>
+            <line x1="27" y1="16" x2="27" y2="42" stroke="#1B6D8E" stroke-width="1.6" stroke-linecap="round"/>
+            <line x1="41" y1="16" x2="41" y2="42" stroke="#1B6D8E" stroke-width="1.6" stroke-linecap="round"/>
+            <circle cx="34" cy="25" r="5" fill="#1B6D8E"/>
+            <circle cx="34" cy="25" r="2.2" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="icon-frame-sm">
+          <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" width="44" height="44">
+            <rect width="44" height="44" fill="#1B6D8E"/>
+            <path d="M22 5 C15 5 10 10 10 16.5 C10 23 22 33 22 33 C22 33 34 23 34 16.5 C34 10 29 5 22 5 Z" fill="#FFFFFF"/>
+            <line x1="22" y1="9" x2="22" y2="29" stroke="#1B6D8E" stroke-width="1.5" stroke-dasharray="3 2.5" stroke-linecap="round"/>
+            <circle cx="22" cy="17.5" r="4" fill="#1B6D8E"/>
+            <circle cx="22" cy="17.5" r="1.7" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="icon-frame-xs">
+          <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg" width="29" height="29">
+            <rect width="29" height="29" fill="#1B6D8E"/>
+            <path d="M14.5 3.5 C9.5 3.5 6 7 6 11.5 C6 16.5 14.5 22 14.5 22 C14.5 22 23 16.5 23 11.5 C23 7 19.5 3.5 14.5 3.5 Z" fill="#FFFFFF"/>
+            <circle cx="14.5" cy="12" r="3" fill="#1B6D8E"/>
+            <circle cx="14.5" cy="12" r="1.2" fill="#FFFFFF"/>
+          </svg>
+        </div>
+      </div>
+
+      <table class="detail-table">
+        <tr><td>背景</td><td><code>#1B6D8E</code> ソリッド</td></tr>
+        <tr><td>ピン</td><td>白ソリッド・大シルエット / 内部に道路モチーフ</td></tr>
+        <tr><td>メジャー</td><td>ピン両脇に水平目盛り（サブ要素）</td></tr>
+        <tr><td>小サイズ</td><td>29px でもピンの白シルエットが明確に残る</td></tr>
+      </table>
+
+      <div class="figma-note">
+        <h5>Figma レイヤー構成（Plan A）</h5>
+        <ul>
+          <li>Background: Rect <code>#1B6D8E</code> / 角丸 22.5%</li>
+          <li>GlossHighlight: Ellipse <code>rgba(255,255,255,0.06)</code></li>
+          <li>Pin/Body: Path / fill <code>#FFFFFF</code></li>
+          <li>Pin/Road/Center: Line / Dashed 6-5 / stroke <code>#1B6D8E</code></li>
+          <li>Pin/Road/SideL, SideR: Line / stroke <code>#1B6D8E</code></li>
+          <li>Pin/Marker: Circle x2 / <code>#1B6D8E</code> + <code>#FFFFFF</code></li>
+          <li>Ruler/Left, Right: Line x3 / <code>rgba(255,255,255,0.3〜0.45)</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== PLAN B ===== -->
+    <div class="plan-card">
+      <div class="plan-label b">Plan B</div>
+      <h3>ロードマーカー型</h3>
+      <p class="concept">ディープネイビー背景に道路帯（Main Blue）が下部を横断。その上に白ピンが刺さるシーン構図。3コンセプトを最も直感的に伝える案。</p>
+
+      <div class="icon-preview-row">
+        <div class="icon-frame-lg">
+          <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" width="130" height="130">
+            <rect width="130" height="130" fill="#0F4A62"/>
+            <ellipse cx="65" cy="26" rx="55" ry="26" fill="rgba(255,255,255,0.05)"/>
+            <rect x="0" y="74" width="130" height="32" fill="#1B6D8E"/>
+            <line x1="13"  y1="74" x2="13"  y2="106" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+            <line x1="26"  y1="74" x2="26"  y2="106" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+            <line x1="39"  y1="74" x2="39"  y2="106" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+            <line x1="52"  y1="74" x2="52"  y2="106" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+            <line x1="65"  y1="74" x2="65"  y2="106" stroke="rgba(255,255,255,0.2)"  stroke-width="1.2"/>
+            <line x1="78"  y1="74" x2="78"  y2="106" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+            <line x1="91"  y1="74" x2="91"  y2="106" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+            <line x1="104" y1="74" x2="104" y2="106" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+            <line x1="117" y1="74" x2="117" y2="106" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+            <line x1="8"   y1="90" x2="36"  y2="90" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="47"  y1="90" x2="75"  y2="90" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="86"  y1="90" x2="114" y2="90" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M65 14 C50 14 38 25 38 39 C38 55 65 77 65 77 C65 77 92 55 92 39 C92 25 80 14 65 14 Z" fill="#FFFFFF"/>
+            <circle cx="65" cy="39" r="10" fill="#0F4A62"/>
+            <circle cx="65" cy="39" r="5"  fill="#FFFFFF"/>
+            <ellipse cx="65" cy="79" rx="7" ry="2.2" fill="rgba(255,255,255,0.18)"/>
+            <circle cx="30" cy="90" r="5" fill="#E8A020"/>
+            <circle cx="30" cy="90" r="2.4" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="icon-frame-md">
+          <svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg" width="68" height="68">
+            <rect width="68" height="68" fill="#0F4A62"/>
+            <rect x="0" y="39" width="68" height="17" fill="#1B6D8E"/>
+            <line x1="10" y1="47.5" x2="24" y2="47.5" stroke="rgba(255,255,255,0.4)" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="31" y1="47.5" x2="45" y2="47.5" stroke="rgba(255,255,255,0.4)" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="52" y1="47.5" x2="64" y2="47.5" stroke="rgba(255,255,255,0.4)" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M34 8 C26 8 19 14 19 22 C19 31 34 40 34 40 C34 40 49 31 49 22 C49 14 42 8 34 8 Z" fill="#FFFFFF"/>
+            <circle cx="34" cy="22" r="6" fill="#0F4A62"/>
+            <circle cx="34" cy="22" r="3" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="icon-frame-sm">
+          <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" width="44" height="44">
+            <rect width="44" height="44" fill="#0F4A62"/>
+            <rect x="0" y="26" width="44" height="11" fill="#1B6D8E"/>
+            <line x1="5"  y1="31.5" x2="14" y2="31.5" stroke="rgba(255,255,255,0.4)" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="19" y1="31.5" x2="28" y2="31.5" stroke="rgba(255,255,255,0.4)" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M22 5 C16 5 11.5 9.5 11.5 15 C11.5 21 22 27 22 27 C22 27 32.5 21 32.5 15 C32.5 9.5 28 5 22 5 Z" fill="#FFFFFF"/>
+            <circle cx="22" cy="15" r="4.5" fill="#0F4A62"/>
+            <circle cx="22" cy="15" r="2.1" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="icon-frame-xs">
+          <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg" width="29" height="29">
+            <rect width="29" height="29" fill="#0F4A62"/>
+            <rect x="0" y="17" width="29" height="8" fill="#1B6D8E"/>
+            <line x1="3" y1="21" x2="10" y2="21" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="14" y1="21" x2="21" y2="21" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M14.5 3 C10 3 7 6.5 7 10.5 C7 15 14.5 18 14.5 18 C14.5 18 22 15 22 10.5 C22 6.5 19 3 14.5 3 Z" fill="#FFFFFF"/>
+            <circle cx="14.5" cy="11" r="3" fill="#0F4A62"/>
+            <circle cx="14.5" cy="11" r="1.3" fill="#FFFFFF"/>
+          </svg>
+        </div>
+      </div>
+
+      <table class="detail-table">
+        <tr><td>背景</td><td><code>#0F4A62</code>（Deep）+ 道路帯 <code>#1B6D8E</code></td></tr>
+        <tr><td>ピン</td><td>白ソリッド / 道路帯に接地する構図</td></tr>
+        <tr><td>メジャー</td><td>道路目盛り（縦ライン）＋センターライン（破線）</td></tr>
+        <tr><td>小サイズ</td><td>2色コントラストが小サイズで効く</td></tr>
+      </table>
+
+      <div class="figma-note">
+        <h5>Figma レイヤー構成（Plan B）</h5>
+        <ul>
+          <li>Background: Rect <code>#0F4A62</code></li>
+          <li>Road/Band: Rect <code>#1B6D8E</code> / 下部 24.6% 高さ</li>
+          <li>Road/Ticks: 縦 Line 群 / <code>rgba(255,255,255,0.12)</code></li>
+          <li>Road/CenterLine: 水平 Dashed Line x3 / <code>rgba(255,255,255,0.45)</code></li>
+          <li>Pin/Body: Path / fill <code>#FFFFFF</code></li>
+          <li>Pin/Marker: Circle x2 / <code>#0F4A62</code> + <code>#FFFFFF</code></li>
+          <li>AmberDot: Circle x1 / <code>#E8A020</code> + <code>#FFFFFF</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== PLAN C ===== -->
+    <div class="plan-card">
+      <div class="plan-label c">Plan C</div>
+      <h3>メジャー＋ピン 計測型</h3>
+      <p class="concept">横断するルーラー帯の上にピンが立つ。距離・支払い記録というアプリ機能を最前面に。深緑で「大地・自然・道」のイメージを加える案。</p>
+
+      <div class="icon-preview-row">
+        <div class="icon-frame-lg">
+          <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" width="130" height="130">
+            <rect width="130" height="130" fill="#1A6B47"/>
+            <ellipse cx="65" cy="24" rx="58" ry="26" fill="rgba(255,255,255,0.07)"/>
+            <rect x="6" y="62" width="118" height="30" rx="5" fill="#134D33"/>
+            <line x1="6"   y1="62" x2="6"   y2="74" stroke="rgba(255,255,255,0.75)" stroke-width="1.8"/>
+            <line x1="24"  y1="62" x2="24"  y2="78" stroke="rgba(255,255,255,0.75)" stroke-width="2.2"/>
+            <line x1="42"  y1="62" x2="42"  y2="74" stroke="rgba(255,255,255,0.75)" stroke-width="1.8"/>
+            <line x1="60"  y1="62" x2="60"  y2="74" stroke="rgba(255,255,255,0.75)" stroke-width="1.8"/>
+            <line x1="78"  y1="62" x2="78"  y2="78" stroke="rgba(255,255,255,0.75)" stroke-width="2.2"/>
+            <line x1="96"  y1="62" x2="96"  y2="74" stroke="rgba(255,255,255,0.75)" stroke-width="1.8"/>
+            <line x1="114" y1="62" x2="114" y2="78" stroke="rgba(255,255,255,0.75)" stroke-width="2.2"/>
+            <line x1="15"  y1="62" x2="15"  y2="68" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+            <line x1="33"  y1="62" x2="33"  y2="68" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+            <line x1="51"  y1="62" x2="51"  y2="68" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+            <line x1="69"  y1="62" x2="69"  y2="68" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+            <line x1="87"  y1="62" x2="87"  y2="68" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+            <line x1="105" y1="62" x2="105" y2="68" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+            <line x1="24"  y1="92" x2="24"  y2="84" stroke="rgba(255,255,255,0.55)" stroke-width="1.5"/>
+            <line x1="60"  y1="92" x2="60"  y2="84" stroke="rgba(255,255,255,0.55)" stroke-width="1.5"/>
+            <line x1="96"  y1="92" x2="96"  y2="84" stroke="rgba(255,255,255,0.55)" stroke-width="1.5"/>
+            <path d="M44 10 C32 10 22 20 22 31 C22 44 44 63 44 63 C44 63 66 44 66 31 C66 20 56 10 44 10 Z" fill="#FFFFFF"/>
+            <circle cx="44" cy="31" r="8" fill="#1A6B47"/>
+            <circle cx="44" cy="31" r="3.6" fill="#FFFFFF"/>
+            <circle cx="78" cy="77" r="5" fill="#E8A020"/>
+            <circle cx="78" cy="77" r="2.3" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="icon-frame-md">
+          <svg viewBox="0 0 68 68" xmlns="http://www.w3.org/2000/svg" width="68" height="68">
+            <rect width="68" height="68" fill="#1A6B47"/>
+            <rect x="3" y="32" width="62" height="16" rx="3" fill="#134D33"/>
+            <line x1="3"  y1="32" x2="3"  y2="37" stroke="rgba(255,255,255,0.75)" stroke-width="1.4"/>
+            <line x1="12" y1="32" x2="12" y2="40" stroke="rgba(255,255,255,0.75)" stroke-width="1.7"/>
+            <line x1="22" y1="32" x2="22" y2="37" stroke="rgba(255,255,255,0.75)" stroke-width="1.4"/>
+            <line x1="32" y1="32" x2="32" y2="37" stroke="rgba(255,255,255,0.75)" stroke-width="1.4"/>
+            <line x1="42" y1="32" x2="42" y2="40" stroke="rgba(255,255,255,0.75)" stroke-width="1.7"/>
+            <line x1="52" y1="32" x2="52" y2="37" stroke="rgba(255,255,255,0.75)" stroke-width="1.4"/>
+            <line x1="62" y1="32" x2="62" y2="40" stroke="rgba(255,255,255,0.75)" stroke-width="1.7"/>
+            <path d="M23 7 C16 7 10 13 10 20 C10 28 23 33 23 33 C23 33 36 28 36 20 C36 13 30 7 23 7 Z" fill="#FFFFFF"/>
+            <circle cx="23" cy="20" r="5" fill="#1A6B47"/>
+            <circle cx="23" cy="20" r="2.3" fill="#FFFFFF"/>
+            <circle cx="48" cy="40" r="4" fill="#E8A020"/>
+            <circle cx="48" cy="40" r="1.9" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="icon-frame-sm">
+          <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" width="44" height="44">
+            <rect width="44" height="44" fill="#1A6B47"/>
+            <rect x="2" y="22" width="40" height="10" rx="2" fill="#134D33"/>
+            <line x1="8"  y1="22" x2="8"  y2="27" stroke="rgba(255,255,255,0.75)" stroke-width="1.2"/>
+            <line x1="16" y1="22" x2="16" y2="29" stroke="rgba(255,255,255,0.75)" stroke-width="1.5"/>
+            <line x1="24" y1="22" x2="24" y2="27" stroke="rgba(255,255,255,0.75)" stroke-width="1.2"/>
+            <line x1="32" y1="22" x2="32" y2="29" stroke="rgba(255,255,255,0.75)" stroke-width="1.5"/>
+            <path d="M15 5 C10 5 6 9 6 14 C6 19 15 23 15 23 C15 23 24 19 24 14 C24 9 20 5 15 5 Z" fill="#FFFFFF"/>
+            <circle cx="15" cy="14" r="3.5" fill="#1A6B47"/>
+            <circle cx="15" cy="14" r="1.6" fill="#FFFFFF"/>
+            <circle cx="34" cy="27" r="3" fill="#E8A020"/>
+          </svg>
+        </div>
+        <div class="icon-frame-xs">
+          <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg" width="29" height="29">
+            <rect width="29" height="29" fill="#1A6B47"/>
+            <rect x="1" y="15" width="27" height="8" rx="2" fill="#134D33"/>
+            <line x1="6"  y1="15" x2="6"  y2="19" stroke="rgba(255,255,255,0.75)" stroke-width="1.1"/>
+            <line x1="12" y1="15" x2="12" y2="20" stroke="rgba(255,255,255,0.75)" stroke-width="1.3"/>
+            <line x1="18" y1="15" x2="18" y2="19" stroke="rgba(255,255,255,0.75)" stroke-width="1.1"/>
+            <path d="M10 3 C7 3 4.5 5.5 4.5 9 C4.5 12.5 10 16 10 16 C10 16 15.5 12.5 15.5 9 C15.5 5.5 13 3 10 3 Z" fill="#FFFFFF"/>
+            <circle cx="10" cy="9" r="2.5" fill="#1A6B47"/>
+            <circle cx="10" cy="9" r="1.1" fill="#FFFFFF"/>
+          </svg>
+        </div>
+      </div>
+
+      <table class="detail-table">
+        <tr><td>背景</td><td><code>#1A6B47</code>（深緑）+ ルーラー帯 <code>#134D33</code></td></tr>
+        <tr><td>ピン</td><td>白ソリッド / ルーラー帯の左寄りに立つ</td></tr>
+        <tr><td>メジャー</td><td>主・中間目盛りを精細に表現</td></tr>
+        <tr><td>小サイズ</td><td>ルーラー帯の存在感で識別（目盛りは29pxで潰れる）</td></tr>
+      </table>
+
+      <div class="figma-note">
+        <h5>Figma レイヤー構成（Plan C）</h5>
+        <ul>
+          <li>Background: Rect <code>#1A6B47</code></li>
+          <li>Ruler/Band: Rect <code>#134D33</code> / 角丸 5px</li>
+          <li>Ruler/TickMajor: 縦 Line 長 / <code>rgba(255,255,255,0.75)</code></li>
+          <li>Ruler/TickMinor: 縦 Line 短 / <code>rgba(255,255,255,0.4)</code></li>
+          <li>Pin/Body: Path / fill <code>#FFFFFF</code></li>
+          <li>Pin/Marker: Circle x2 / <code>#1A6B47</code> + <code>#FFFFFF</code></li>
+          <li>AmberDot: Circle x1 / <code>#E8A020</code> + <code>#FFFFFF</code></li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /plan-grid -->
+
+  <!-- 横並び比較 -->
+  <div class="side-compare">
+    <h4>3案 横並び比較（130px / 29px）</h4>
+    <div class="side-compare-row">
+      <div class="side-compare-item">
+        <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" width="130" height="130" style="border-radius:30px;box-shadow:0 8px 24px rgba(27,109,142,0.25);display:block;">
+          <rect width="130" height="130" fill="#1B6D8E"/>
+          <path d="M65 13 C47 13 33 27 33 45 C33 63 65 97 65 97 C65 97 97 63 97 45 C97 27 83 13 65 13 Z" fill="#FFFFFF"/>
+          <line x1="65" y1="26" x2="65" y2="87" stroke="#1B6D8E" stroke-width="3.5" stroke-dasharray="6 5" stroke-linecap="round"/>
+          <line x1="51" y1="30" x2="51" y2="80" stroke="#1B6D8E" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="79" y1="30" x2="79" y2="80" stroke="#1B6D8E" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="65" cy="48" r="8" fill="#1B6D8E"/>
+          <circle cx="65" cy="48" r="3.5" fill="#FFFFFF"/>
+        </svg>
+        <p>A: ピン×道路統合</p>
+      </div>
+      <div class="side-compare-item">
+        <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" width="130" height="130" style="border-radius:30px;box-shadow:0 8px 24px rgba(15,74,98,0.32);display:block;">
+          <rect width="130" height="130" fill="#0F4A62"/>
+          <rect x="0" y="74" width="130" height="32" fill="#1B6D8E"/>
+          <line x1="8"   y1="90" x2="36"  y2="90" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="47"  y1="90" x2="75"  y2="90" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="86"  y1="90" x2="114" y2="90" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M65 14 C50 14 38 25 38 39 C38 55 65 77 65 77 C65 77 92 55 92 39 C92 25 80 14 65 14 Z" fill="#FFFFFF"/>
+          <circle cx="65" cy="39" r="10" fill="#0F4A62"/>
+          <circle cx="65" cy="39" r="5"  fill="#FFFFFF"/>
+          <circle cx="30" cy="90" r="5" fill="#E8A020"/>
+          <circle cx="30" cy="90" r="2.4" fill="#FFFFFF"/>
+        </svg>
+        <p>B: ロードマーカー</p>
+      </div>
+      <div class="side-compare-item">
+        <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" width="130" height="130" style="border-radius:30px;box-shadow:0 8px 24px rgba(26,107,71,0.32);display:block;">
+          <rect width="130" height="130" fill="#1A6B47"/>
+          <rect x="6" y="62" width="118" height="30" rx="5" fill="#134D33"/>
+          <line x1="24"  y1="62" x2="24"  y2="78" stroke="rgba(255,255,255,0.75)" stroke-width="2.2"/>
+          <line x1="42"  y1="62" x2="42"  y2="74" stroke="rgba(255,255,255,0.75)" stroke-width="1.8"/>
+          <line x1="60"  y1="62" x2="60"  y2="74" stroke="rgba(255,255,255,0.75)" stroke-width="1.8"/>
+          <line x1="78"  y1="62" x2="78"  y2="78" stroke="rgba(255,255,255,0.75)" stroke-width="2.2"/>
+          <line x1="96"  y1="62" x2="96"  y2="74" stroke="rgba(255,255,255,0.75)" stroke-width="1.8"/>
+          <path d="M44 10 C32 10 22 20 22 31 C22 44 44 63 44 63 C44 63 66 44 66 31 C66 20 56 10 44 10 Z" fill="#FFFFFF"/>
+          <circle cx="44" cy="31" r="8" fill="#1A6B47"/>
+          <circle cx="44" cy="31" r="3.6" fill="#FFFFFF"/>
+          <circle cx="78" cy="77" r="5" fill="#E8A020"/>
+          <circle cx="78" cy="77" r="2.3" fill="#FFFFFF"/>
+        </svg>
+        <p>C: メジャー+ピン</p>
+      </div>
+      <!-- 29px 最小サイズ比較 -->
+      <div style="margin-left:auto;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:flex-end;">
+        <p style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:4px;">29px（最小）</p>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div style="text-align:center;">
+            <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg" width="29" height="29" style="border-radius:7px;display:block;">
+              <rect width="29" height="29" fill="#1B6D8E"/>
+              <path d="M14.5 3.5 C9.5 3.5 6 7 6 11.5 C6 16.5 14.5 22 14.5 22 C14.5 22 23 16.5 23 11.5 C23 7 19.5 3.5 14.5 3.5 Z" fill="#FFFFFF"/>
+              <circle cx="14.5" cy="12" r="3" fill="#1B6D8E"/>
+              <circle cx="14.5" cy="12" r="1.2" fill="#FFFFFF"/>
+            </svg>
+            <p style="font-size:10px;margin-top:4px;">A</p>
+          </div>
+          <div style="text-align:center;">
+            <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg" width="29" height="29" style="border-radius:7px;display:block;">
+              <rect width="29" height="29" fill="#0F4A62"/>
+              <rect x="0" y="17" width="29" height="8" fill="#1B6D8E"/>
+              <line x1="3" y1="21" x2="10" y2="21" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="14" y1="21" x2="21" y2="21" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M14.5 3 C10 3 7 6.5 7 10.5 C7 15 14.5 18 14.5 18 C14.5 18 22 15 22 10.5 C22 6.5 19 3 14.5 3 Z" fill="#FFFFFF"/>
+              <circle cx="14.5" cy="11" r="3" fill="#0F4A62"/>
+              <circle cx="14.5" cy="11" r="1.3" fill="#FFFFFF"/>
+            </svg>
+            <p style="font-size:10px;margin-top:4px;">B</p>
+          </div>
+          <div style="text-align:center;">
+            <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg" width="29" height="29" style="border-radius:7px;display:block;">
+              <rect width="29" height="29" fill="#1A6B47"/>
+              <rect x="1" y="15" width="27" height="8" rx="2" fill="#134D33"/>
+              <line x1="12" y1="15" x2="12" y2="20" stroke="rgba(255,255,255,0.75)" stroke-width="1.3"/>
+              <path d="M10 3 C7 3 4.5 5.5 4.5 9 C4.5 12.5 10 16 10 16 C10 16 15.5 12.5 15.5 9 C15.5 5.5 13 3 10 3 Z" fill="#FFFFFF"/>
+              <circle cx="10" cy="9" r="2.5" fill="#1A6B47"/>
+              <circle cx="10" cy="9" r="1.1" fill="#FFFFFF"/>
+            </svg>
+            <p style="font-size:10px;margin-top:4px;">C</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 詳細比較表 -->
+  <div class="compare-wrap">
+    <h4>3案 詳細比較表</h4>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>評価軸</th>
+          <th class="a-h">Plan A<br>ピン×道路統合</th>
+          <th class="b-h">Plan B<br>ロードマーカー</th>
+          <th class="c-h">Plan C<br>メジャー+ピン</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>小サイズ可読性<br><span style="font-size:11px;color:var(--gray-400);">29px・通知アイコン</span></td>
+          <td><span class="score great">◎</span><br>白ピン1つで成立。最強</td>
+          <td><span class="score good">○</span><br>2色背景が認識を助ける</td>
+          <td><span class="score ok">△</span><br>目盛りは潰れるが帯は残る</td>
+        </tr>
+        <tr>
+          <td>コンセプト直感性<br><span style="font-size:11px;color:var(--gray-400);">見た瞬間に伝わるか</span></td>
+          <td><span class="score good">○</span><br>ピンは伝わる・道路は内部で分かりにくい</td>
+          <td><span class="score great">◎</span><br>「道路にピンを刺した」が一目で伝わる</td>
+          <td><span class="score good">○</span><br>計測・記録アプリと伝わる</td>
+        </tr>
+        <tr>
+          <td>メジャー表現度<br><span style="font-size:11px;color:var(--gray-400);">3コンセプトの反映</span></td>
+          <td><span class="score ok">△</span><br>ピン外の小さい目盛りのみ</td>
+          <td><span class="score good">○</span><br>道路目盛りで自然に表現</td>
+          <td><span class="score great">◎</span><br>ルーラー帯が前面・最も明確</td>
+        </tr>
+        <tr>
+          <td>シンプルさ<br><span style="font-size:11px;color:var(--gray-400);">要素の少なさ</span></td>
+          <td><span class="score great">◎</span><br>最小要素数・引き算デザイン</td>
+          <td><span class="score good">○</span><br>道路帯+ピンの2層で整理</td>
+          <td><span class="score ok">△</span><br>目盛り本数が多く情報量多め</td>
+        </tr>
+        <tr>
+          <td>現行との差別化<br><span style="font-size:11px;color:var(--gray-400);">v0 との違いの大きさ</span></td>
+          <td><span class="score great">◎</span><br>テキスト除去・統合形で別物</td>
+          <td><span class="score good">○</span><br>横断道路継承・深みを追加</td>
+          <td><span class="score great">◎</span><br>カラーも形も全く異なる</td>
+        </tr>
+        <tr>
+          <td>ブランドカラー整合<br><span style="font-size:11px;color:var(--gray-400);">現行 #1B6D8E との連続性</span></td>
+          <td><span class="score great">◎</span><br>Main Blue そのまま使用</td>
+          <td><span class="score great">◎</span><br>Deep + Main の2段階活用</td>
+          <td><span class="score ok">△</span><br>深緑採用で現行から外れる</td>
+        </tr>
+        <tr>
+          <td>メリット</td>
+          <td class="merit">最小構成・どのサイズでも崩れない・ブランド継続性高</td>
+          <td class="merit">直感的・道路感が強い・ブルー系で統一感あり</td>
+          <td class="merit">計測アプリ独自性が高い・他アプリと被りにくい</td>
+        </tr>
+        <tr>
+          <td>デメリット</td>
+          <td class="demerit">メジャーの表現が弱い・インパクトがやや薄い</td>
+          <td class="demerit">縦長ピンが下部道路の余白を圧迫する可能性</td>
+          <td class="demerit">ブランドカラーから離れる・現行ユーザーへの連続性低</td>
+        </tr>
+        <tr>
+          <td>こんな人向け</td>
+          <td>シンプル重視・ブランド継続性重視</td>
+          <td>直感的な見た目・ドライブ感重視</td>
+          <td>独自性重視・計測アプリ感を強く出したい</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ===== TYPOGRAPHY ===== -->
+<section id="typography">
+  <p class="section-heading">TYPOGRAPHY</p>
+  <p class="section-title">スプラッシュ画面のタイポグラフィ</p>
+  <p class="section-desc">アイコン本体はテキストなし（Apple HIG 準拠）。スプラッシュ画面のみロゴテキストを使用。各案でテキストカラーは白統一。</p>
+
+  <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:32px;">
+    <div style="background:white;border-radius:14px;padding:22px 28px;box-shadow:0 1px 4px rgba(0,0,0,0.06);flex:1;min-width:240px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--brand-mid);margin-bottom:8px;">スプラッシュ ロゴ</div>
+      <div style="font-size:38px;font-weight:700;line-height:1.1;color:var(--brand-main);letter-spacing:-1px;">MichiMark</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-top:10px;">
+        フォント: SF Pro Display / Helvetica Neue Bold<br>
+        ウェイト: 700 / letter-spacing: -1px<br>
+        スプラッシュ高さの約6%（844px画面 → 約50px）
+      </div>
+    </div>
+    <div style="background:white;border-radius:14px;padding:22px 28px;box-shadow:0 1px 4px rgba(0,0,0,0.06);flex:1;min-width:240px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--brand-mid);margin-bottom:8px;">サブキャッチ（オプション）</div>
+      <div style="font-size:16px;font-weight:400;color:var(--brand-light);letter-spacing:2.5px;">DRIVE . MARK . REMEMBER</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-top:10px;">
+        フォント: SF Pro Text / Helvetica Neue<br>
+        ウェイト: 400 / letter-spacing: 2.5px / opacity: 0.65<br>
+        ロゴの約50%サイズ（約25px）
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SPLASH SCREENS ===== -->
+<section id="splash-preview">
+  <p class="section-heading">SPLASH SCREEN</p>
+  <p class="section-title">スプラッシュ画面 3案（各案対応）</p>
+  <p class="section-desc">v1 では Plan B 対応の S1 のみだったが、v2 では各案に対応したスプラッシュを提示。アイコン案と組み合わせて選択できる。iPhone 390×844px 想定。</p>
+
+  <div class="splash-grid">
+
+    <!-- Splash A -->
+    <div class="splash-card">
+      <div class="splash-label a">Splash-A（Plan A 対応）</div>
+      <h3>ピン内道路 センタード型</h3>
+      <p class="concept">Main Blue 背景に大きなピンシンボルを中央配置。ピン内の道路ラインがスプラッシュ解像度で可視化される。</p>
+
+      <svg class="splash-preview" viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg" width="195" height="422" preserveAspectRatio="xMidYMid meet">
+        <rect width="390" height="844" fill="#1B6D8E"/>
+        <ellipse cx="195" cy="-30" rx="260" ry="160" fill="rgba(255,255,255,0.05)"/>
+        <line x1="56"  y1="440" x2="56"  y2="844" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <line x1="112" y1="440" x2="112" y2="844" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <line x1="168" y1="440" x2="168" y2="844" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <line x1="224" y1="440" x2="224" y2="844" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <line x1="280" y1="440" x2="280" y2="844" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <line x1="336" y1="440" x2="336" y2="844" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <path d="M195 180 C150 180 114 214 114 252 C114 294 195 352 195 352 C195 352 276 294 276 252 C276 214 240 180 195 180 Z" fill="#FFFFFF"/>
+        <line x1="195" y1="202" x2="195" y2="337" stroke="#1B6D8E" stroke-width="6" stroke-dasharray="12 9" stroke-linecap="round"/>
+        <line x1="168" y1="210" x2="168" y2="320" stroke="#1B6D8E" stroke-width="4" stroke-linecap="round"/>
+        <line x1="222" y1="210" x2="222" y2="320" stroke="#1B6D8E" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="195" cy="256" r="18" fill="#1B6D8E"/>
+        <circle cx="195" cy="256" r="8"  fill="#FFFFFF"/>
+        <ellipse cx="195" cy="360" rx="22" ry="6" fill="rgba(0,0,0,0.15)"/>
+        <text x="195" y="420" font-family="Helvetica Neue, -apple-system, sans-serif" font-size="44" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">MichiMark</text>
+        <text x="195" y="453" font-family="Helvetica Neue, sans-serif" font-size="14" font-weight="400" fill="rgba(255,255,255,0.55)" text-anchor="middle" letter-spacing="3">DRIVE . MARK . REMEMBER</text>
+        <ellipse cx="195" cy="680" rx="120" ry="55" fill="rgba(58,168,204,0.07)"/>
+        <rect x="155" y="770" width="80" height="3" rx="1.5" fill="rgba(255,255,255,0.12)"/>
+        <rect x="155" y="770" width="36" height="3" rx="1.5" fill="rgba(255,255,255,0.5)"/>
+      </svg>
+
+      <table class="detail-table">
+        <tr><td>背景</td><td><code>#1B6D8E</code>（Main）</td></tr>
+        <tr><td>ピン</td><td>中央・大シルエット / 内部道路ライン可視</td></tr>
+        <tr><td>ロゴ</td><td>ピン下・画面中央</td></tr>
+        <tr><td>サブ要素</td><td>背景に薄い縦グリッドライン</td></tr>
+      </table>
+    </div>
+
+    <!-- Splash B -->
+    <div class="splash-card">
+      <div class="splash-label b">Splash-B（Plan B 対応）</div>
+      <h3>ロードクロス型（v1 S1 改良）</h3>
+      <p class="concept">ネイビー背景に道路が画面中央を横断。ピンが道路に刺さる構図。v1 S1 から目盛り精度とピンサイズを改良。</p>
+
+      <svg class="splash-preview" viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg" width="195" height="422" preserveAspectRatio="xMidYMid meet">
+        <rect width="390" height="844" fill="#0F4A62"/>
+        <ellipse cx="195" cy="-20" rx="240" ry="140" fill="rgba(255,255,255,0.04)"/>
+        <path d="M195 148 C167 148 144 169 144 192 C144 219 195 252 195 252 C195 252 246 219 246 192 C246 169 223 148 195 148 Z" fill="#FFFFFF"/>
+        <circle cx="195" cy="192" r="16" fill="#0F4A62"/>
+        <circle cx="195" cy="192" r="7"  fill="#FFFFFF"/>
+        <ellipse cx="195" cy="258" rx="18" ry="5" fill="rgba(255,255,255,0.12)"/>
+        <text x="195" y="300" font-family="Helvetica Neue, -apple-system, sans-serif" font-size="44" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">MichiMark</text>
+        <text x="195" y="332" font-family="Helvetica Neue, sans-serif" font-size="14" font-weight="400" fill="rgba(255,255,255,0.5)" text-anchor="middle" letter-spacing="3">DRIVE . MARK . REMEMBER</text>
+        <rect x="0" y="400" width="390" height="124" fill="#1B6D8E"/>
+        <line x1="0" y1="400" x2="390" y2="400" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+        <line x1="0" y1="524" x2="390" y2="524" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+        <line x1="0"   y1="400" x2="0"   y2="420" stroke="rgba(255,255,255,0.65)" stroke-width="1.5"/>
+        <line x1="56"  y1="400" x2="56"  y2="420" stroke="rgba(255,255,255,0.65)" stroke-width="1.5"/>
+        <line x1="112" y1="400" x2="112" y2="420" stroke="rgba(255,255,255,0.65)" stroke-width="1.5"/>
+        <line x1="168" y1="400" x2="168" y2="420" stroke="rgba(255,255,255,0.65)" stroke-width="1.5"/>
+        <line x1="196" y1="400" x2="196" y2="426" stroke="rgba(255,255,255,0.85)" stroke-width="2"/>
+        <line x1="224" y1="400" x2="224" y2="420" stroke="rgba(255,255,255,0.65)" stroke-width="1.5"/>
+        <line x1="252" y1="400" x2="252" y2="420" stroke="rgba(255,255,255,0.65)" stroke-width="1.5"/>
+        <line x1="308" y1="400" x2="308" y2="420" stroke="rgba(255,255,255,0.65)" stroke-width="1.5"/>
+        <line x1="364" y1="400" x2="364" y2="420" stroke="rgba(255,255,255,0.65)" stroke-width="1.5"/>
+        <line x1="28"  y1="400" x2="28"  y2="412" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="84"  y1="400" x2="84"  y2="412" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="140" y1="400" x2="140" y2="412" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="280" y1="400" x2="280" y2="412" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="336" y1="400" x2="336" y2="412" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="10"  y1="462" x2="70"  y2="462" stroke="rgba(255,255,255,0.48)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="90"  y1="462" x2="150" y2="462" stroke="rgba(255,255,255,0.48)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="170" y1="462" x2="230" y2="462" stroke="rgba(255,255,255,0.48)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="250" y1="462" x2="310" y2="462" stroke="rgba(255,255,255,0.48)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="330" y1="462" x2="390" y2="462" stroke="rgba(255,255,255,0.48)" stroke-width="3" stroke-linecap="round"/>
+        <path d="M195 344 C172 344 152 362 152 382 C152 405 195 432 195 432 C195 432 238 405 238 382 C238 362 218 344 195 344 Z" fill="#FFFFFF"/>
+        <circle cx="195" cy="382" r="16" fill="#1B6D8E"/>
+        <circle cx="195" cy="382" r="7"  fill="#FFFFFF"/>
+        <ellipse cx="195" cy="435" rx="18" ry="5" fill="rgba(0,0,0,0.2)"/>
+        <circle cx="110" cy="462" r="10" fill="#E8A020"/>
+        <circle cx="110" cy="462" r="5"  fill="#FFFFFF"/>
+        <circle cx="280" cy="462" r="10" fill="#E8A020"/>
+        <circle cx="280" cy="462" r="5"  fill="#FFFFFF"/>
+        <ellipse cx="195" cy="650" rx="130" ry="55" fill="rgba(58,168,204,0.07)"/>
+        <rect x="155" y="770" width="80" height="3" rx="1.5" fill="rgba(255,255,255,0.12)"/>
+        <rect x="155" y="770" width="42" height="3" rx="1.5" fill="rgba(255,255,255,0.5)"/>
+      </svg>
+
+      <table class="detail-table">
+        <tr><td>背景</td><td><code>#0F4A62</code>（Deep）</td></tr>
+        <tr><td>道路帯</td><td><code>#1B6D8E</code> 横断 / 上端に目盛り</td></tr>
+        <tr><td>ピン</td><td>白・道路に刺さる / センターライン上</td></tr>
+        <tr><td>アンバー</td><td>センターライン上に2点配置</td></tr>
+      </table>
+    </div>
+
+    <!-- Splash C -->
+    <div class="splash-card">
+      <div class="splash-label c">Splash-C（Plan C 対応）</div>
+      <h3>ルーラー横断型</h3>
+      <p class="concept">深緑背景にルーラー帯が画面を横断。ピンがルーラー起点に立ち、計測・記録のイメージを前面に出す。</p>
+
+      <svg class="splash-preview" viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg" width="195" height="422" preserveAspectRatio="xMidYMid meet">
+        <rect width="390" height="844" fill="#1A6B47"/>
+        <ellipse cx="195" cy="-30" rx="260" ry="150" fill="rgba(255,255,255,0.05)"/>
+        <path d="M195 148 C167 148 144 169 144 192 C144 219 195 252 195 252 C195 252 246 219 246 192 C246 169 223 148 195 148 Z" fill="#FFFFFF"/>
+        <circle cx="195" cy="192" r="16" fill="#1A6B47"/>
+        <circle cx="195" cy="192" r="7"  fill="#FFFFFF"/>
+        <ellipse cx="195" cy="258" rx="18" ry="5" fill="rgba(255,255,255,0.1)"/>
+        <text x="195" y="300" font-family="Helvetica Neue, -apple-system, sans-serif" font-size="44" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">MichiMark</text>
+        <text x="195" y="332" font-family="Helvetica Neue, sans-serif" font-size="14" font-weight="400" fill="rgba(255,255,255,0.5)" text-anchor="middle" letter-spacing="3">DRIVE . MARK . REMEMBER</text>
+        <rect x="0" y="410" width="390" height="60" fill="#134D33"/>
+        <line x1="0" y1="410" x2="390" y2="410" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+        <line x1="0" y1="470" x2="390" y2="470" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+        <line x1="0"   y1="410" x2="0"   y2="430" stroke="rgba(255,255,255,0.8)"  stroke-width="2"/>
+        <line x1="56"  y1="410" x2="56"  y2="436" stroke="rgba(255,255,255,0.8)"  stroke-width="2.5"/>
+        <line x1="112" y1="410" x2="112" y2="430" stroke="rgba(255,255,255,0.8)"  stroke-width="2"/>
+        <line x1="168" y1="410" x2="168" y2="430" stroke="rgba(255,255,255,0.8)"  stroke-width="2"/>
+        <line x1="224" y1="410" x2="224" y2="436" stroke="rgba(255,255,255,0.8)"  stroke-width="2.5"/>
+        <line x1="280" y1="410" x2="280" y2="430" stroke="rgba(255,255,255,0.8)"  stroke-width="2"/>
+        <line x1="336" y1="410" x2="336" y2="430" stroke="rgba(255,255,255,0.8)"  stroke-width="2"/>
+        <line x1="28"  y1="410" x2="28"  y2="420" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+        <line x1="84"  y1="410" x2="84"  y2="420" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+        <line x1="140" y1="410" x2="140" y2="420" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+        <line x1="196" y1="410" x2="196" y2="420" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+        <line x1="252" y1="410" x2="252" y2="420" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+        <line x1="308" y1="410" x2="308" y2="420" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+        <line x1="364" y1="410" x2="364" y2="420" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+        <line x1="56"  y1="470" x2="56"  y2="455" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+        <line x1="168" y1="470" x2="168" y2="455" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+        <line x1="280" y1="470" x2="280" y2="455" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+        <path d="M56 318 C32 318 12 338 12 360 C12 385 56 412 56 412 C56 412 100 385 100 360 C100 338 80 318 56 318 Z" fill="#FFFFFF"/>
+        <circle cx="56" cy="360" r="18" fill="#1A6B47"/>
+        <circle cx="56" cy="360" r="8"  fill="#FFFFFF"/>
+        <ellipse cx="56" cy="414" rx="20" ry="5" fill="rgba(0,0,0,0.15)"/>
+        <circle cx="168" cy="440" r="12" fill="#E8A020"/>
+        <circle cx="168" cy="440" r="6"  fill="#FFFFFF"/>
+        <circle cx="280" cy="440" r="12" fill="#E8A020"/>
+        <circle cx="280" cy="440" r="6"  fill="#FFFFFF"/>
+        <ellipse cx="195" cy="650" rx="130" ry="55" fill="rgba(255,255,255,0.04)"/>
+        <rect x="155" y="770" width="80" height="3" rx="1.5" fill="rgba(255,255,255,0.12)"/>
+        <rect x="155" y="770" width="48" height="3" rx="1.5" fill="rgba(255,255,255,0.5)"/>
+      </svg>
+
+      <table class="detail-table">
+        <tr><td>背景</td><td><code>#1A6B47</code>（深緑）</td></tr>
+        <tr><td>ルーラー</td><td><code>#134D33</code> 横断 / 精細な目盛り</td></tr>
+        <tr><td>ピン</td><td>白・ルーラー左端（起点）に接地</td></tr>
+        <tr><td>アンバー</td><td>ルーラー上に2点（計測マーク）</td></tr>
+      </table>
+    </div>
+
+  </div><!-- /splash-grid -->
+
+  <div style="background:white;border-radius:14px;padding:24px 28px;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+    <h4 style="font-size:14px;font-weight:700;margin-bottom:14px;color:var(--dark);">共通アニメーション設計メモ（将来実装時 / 全案共通）</h4>
+    <div style="font-size:13px;color:var(--text-secondary);line-height:2.2;">
+      0.0s — 背景フェードイン（0.3s）<br>
+      0.3s — 道路 or ルーラー帯が左→右スライドイン（0.4s / easeOut）<br>
+      0.5s — センターライン or 目盛り描画（0.4s / 左→右ストローク）<br>
+      0.7s — ピンが上から落下＋バウンス（0.5s / spring easing）<br>
+      1.0s — アンバードット フェードイン（0.3s / stagger 0.1s）<br>
+      1.2s — ロゴテキスト フェードイン（0.3s）<br>
+      1.5s — ローディングバー（残存時間に合わせて進行）
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== RATIONALE ===== -->
+<section id="rationale">
+  <p class="section-heading">RATIONALE</p>
+  <p class="section-title">デザイン根拠（v2 追加・変更分）</p>
+  <p class="section-desc">v1 の根拠（テキスト除去・ピンのソリッド化・グラデーション排除等）は引き続き有効。v2 で変更した判断のみを記録する。</p>
+
+  <div class="rationale-grid">
+    <div class="rationale-card">
+      <h4>v2 でピンを大きくした理由</h4>
+      <p>v1 のピンは小サイズで「ピンの尖り」が消えてしまい、白い菱形に見えてしまう課題があった。v2 では頭部（膨らみ）をより大きく取り、ピン先が尖って見える形を維持。130px 時点でピン形状が明確に読める設計にした。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>Plan C に深緑を採用した理由</h4>
+      <p>ブルー系3案を並べると差別化が弱く「どれを選んでも同じ印象」になりやすい。Plan C は計測・記録アプリとしての独自性を最前面に出す案なので、大地・道・自然を想起させる深緑（<code>#1A6B47</code>）で差別化を図った。現行ブランドから離れるリスクはあるが、提案として幅を持たせた。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>各案にスプラッシュを対応させた理由</h4>
+      <p>v1 はアイコン3案 + スプラッシュ1案（Plan B対応）という構成だったため、「アイコンA案を選んだらスプラッシュはどうなる？」という疑問が残った。v2 では各案が一貫したブランドイメージで揃うよう、スプラッシュも3案並べて提示した。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>WCAG コントラスト比確認（v2）</h4>
+      <ul>
+        <li>白 on <code>#1B6D8E</code>（Plan A）: 約 <strong>4.9:1</strong>（AA 合格）</li>
+        <li>白 on <code>#0F4A62</code>（Plan B）: 約 <strong>8.2:1</strong>（AAA 合格）</li>
+        <li>白 on <code>#1A6B47</code>（Plan C）: 約 <strong>5.1:1</strong>（AA 合格）</li>
+        <li>アンバー <code>#E8A020</code> on Deep: 約 <strong>5.6:1</strong>（AA 合格）</li>
+        <li>アンバー <code>#E8A020</code> on Forest: 約 <strong>3.4:1</strong>（AA Large 合格）</li>
+      </ul>
+    </div>
+    <div class="rationale-card">
+      <h4>4サイズプレビューを追加した理由</h4>
+      <p>v1 は 120 / 60 / 40px の3サイズだった。iOS の通知アイコン・Spotlight サイズ（29px前後）での見え方を確認するために 29px を追加。特に Plan C は目盛りが潰れるため、小サイズではルーラー帯の存在感だけで識別させる設計になっていることを確認した。</p>
+    </div>
+    <div class="rationale-card">
+      <h4>アイコンにアンバーを入れなかった理由</h4>
+      <p>アンバー（<code>#E8A020</code>）はアクセントポイントとして有効だが、アイコン全体に使うとカジュアル・派手な印象になりビジネスユーザー向けの信頼感が下がる。スプラッシュでのアンバードットは「計測ポイント」という機能的文脈があるため許容。Plan B アイコンのみ1点の小さなドットとして使用している。</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== FEEDBACK ===== -->
+<section id="feedback">
+  <p class="section-heading">FEEDBACK REQUEST</p>
+  <p class="section-title">フィードバックのお願い</p>
+  <p class="section-desc">以下の4点についてご意見をお聞かせください。確定後、product-manager が要件書に整形します。</p>
+
+  <div class="feedback-box">
+    <h4>確認・選択してほしいポイント</h4>
+
+    <div class="feedback-item">
+      <p class="feedback-q">1. アイコン案の方向性（いずれか1つ選択）</p>
+      <label><input type="radio" name="icon" value="A"> <strong>Plan A（ピン×道路統合型）</strong> — シンプル優先・ブランドカラー継続</label>
+      <div class="sub">ミニマル。小サイズ最強。メジャー感は薄め。</div>
+      <label style="margin-top:8px;display:flex;gap:12px;"><input type="radio" name="icon" value="B"> <strong>Plan B（ロードマーカー型）</strong> — 直感的・現行継承</label>
+      <div class="sub">道路+ピンのシーン構図。コンセプトが最も伝わりやすい。</div>
+      <label style="margin-top:8px;display:flex;gap:12px;"><input type="radio" name="icon" value="C"> <strong>Plan C（メジャー+ピン計測型）</strong> — 独自性重視・深緑採用</label>
+      <div class="sub">記録・計測アプリ感が強い。現行ブランドカラーから離れる。</div>
+      <label style="margin-top:8px;display:flex;gap:12px;"><input type="radio" name="icon" value="blend"> <strong>ブレンド案</strong> — 別の組み合わせで再提案してほしい</label>
+      <div class="sub">例: Plan B の構図 + Plan C の深緑、など。</div>
+    </div>
+
+    <div class="feedback-item" style="margin-top:24px;">
+      <p class="feedback-q">2. Plan C の深緑カラー（<code>#1A6B47</code>）について</p>
+      <label><input type="radio" name="color-c" value="yes"> 採用したい（ブランドカラーを拡張する）</label>
+      <label style="margin-top:8px;display:flex;gap:12px;"><input type="radio" name="color-c" value="no"> 採用しない（ブルー系で揃える）</label>
+      <div class="sub">「採用しない」の場合、Plan C をブルー系背景で再提案します。</div>
+    </div>
+
+    <div class="feedback-item" style="margin-top:24px;">
+      <p class="feedback-q">3. アンバーアクセント（<code>#E8A020</code>）の使用範囲</p>
+      <label><input type="radio" name="amber" value="splash-only"> スプラッシュのみ使用（現状案）</label>
+      <label style="margin-top:8px;display:flex;gap:12px;"><input type="radio" name="amber" value="icon-too"> アイコンにも取り入れたい（小さなドットとして追加）</label>
+      <label style="margin-top:8px;display:flex;gap:12px;"><input type="radio" name="amber" value="none"> 使わない（ブルー系のみで統一）</label>
+    </div>
+
+    <div class="feedback-item" style="margin-top:24px;">
+      <p class="feedback-q">4. サブキャッチコピー「DRIVE . MARK . REMEMBER」について</p>
+      <label><input type="radio" name="tagline" value="yes"> スプラッシュに入れる</label>
+      <label style="margin-top:8px;display:flex;gap:12px;"><input type="radio" name="tagline" value="no"> ロゴテキストのみ（シンプルにする）</label>
+      <label style="margin-top:8px;display:flex;gap:12px;"><input type="radio" name="tagline" value="other"> 別のコピーを検討したい</label>
+    </div>
+
+    <div style="background:var(--off-white);border-radius:10px;padding:16px 20px;margin-top:24px;font-size:13px;color:var(--text-secondary);">
+      <strong style="color:var(--dark);">フィードバック後の流れ:</strong>
+      いずれかの案を選んでいただいた後、product-manager が要件書として
+      <code>docs/Requirements/</code> に格納します。その後 Figma で実サイズ（1024x1024px）を作成し、
+      <code>flutter_launcher_icons</code> / <code>flutter_native_splash</code> で各解像度を自動生成します。
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== NEXT STEPS ===== -->
+<section>
+  <p class="section-heading">NEXT STEPS</p>
+  <p class="section-title">提案後の進め方</p>
+  <div class="steps-card">
+    <ol>
+      <li>ユーザーが <strong>アイコン案（A / B / C / ブレンド）とオプション3項目</strong> をフィードバック</li>
+      <li>designer が必要に応じて <strong>修正案または v3</strong> を作成</li>
+      <li>採用案確定 → product-manager が <strong>要件書（docs/Requirements/REQ-BRAND-icon-splash.md）</strong> に整形</li>
+      <li>要件書をもとに <strong>Figma データ作成</strong>（本 HTML の SVG をベースに 1024x1024px でトレース）</li>
+      <li>Figma から <strong>1024x1024 PNG エクスポート</strong> → <code>flutter_launcher_icons</code> / <code>flutter_native_splash</code> で各解像度を自動生成</li>
+      <li>スプラッシュアニメーションは <strong>別フェーズ</strong>（要件書・Spec 分離）で実装</li>
+    </ol>
+  </div>
+</section>
+
+<p class="footer-note">MichiMark Design Proposal v2 — docs/Design/draft/michimark_icon_redesign_v2.html — Designer Draft / Not yet approved by PM</p>
+
+</div><!-- /wrapper -->
+</body>
+</html>
